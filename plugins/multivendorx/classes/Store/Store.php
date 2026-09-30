@@ -69,6 +69,11 @@ class Store {
         }
     }
 
+    /**
+     * Whether this instance is backed by a loaded store row.
+     *
+     * @return bool
+     */
     public function exists() {
         return ! empty( $this->id ) && $this->id > 0;
     }
@@ -628,6 +633,13 @@ class Store {
         return true;
     }
 
+    /**
+     * Get the store's configured payment method(s) from the 'payment_methods' meta.
+     *
+     * @param string $type When 'name', returns the id of the method flagged 'primary' (or '' if none).
+     *                     Otherwise returns all methods keyed by id, with internal-only keys stripped.
+     * @return array|string
+     */
     public function get_payment_method( $type = '' ) {
         $payment_methods = $this->meta_data['payment_methods'] ?? array();
         if ( empty( $payment_methods ) || ! is_array( $payment_methods ) ) {
@@ -653,6 +665,13 @@ class Store {
         return $result;
     }
 
+    /**
+     * Merge fields into an already-configured payment method.
+     *
+     * @param string $method_id Payment method id (e.g. 'stripe-connect').
+     * @param array  $data      Fields to merge into the method's existing settings.
+     * @return bool False if the method isn't configured for this store yet.
+     */
     public function update_payment_method( $method_id, array $data ) {
         $payment_methods = $this->meta_data['payment_methods'] ?? array();
 

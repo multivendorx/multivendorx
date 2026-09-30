@@ -128,7 +128,6 @@ class Block {
             if ( has_block( $block_name, $post ) ) {
                 $has_multivendorx_block = true;
                 $handle                 = $block_script['textdomain'] . '-' . $block_script['name'] . '-view-script';
-                // FrontendScripts::enqueue_script( $handle );
                 FrontendScripts::localize_scripts( $handle );
             }
         }

@@ -106,6 +106,12 @@ class Migrations extends \WP_REST_Controller {
         );
     }
 
+    /**
+     * Migrate vendors/stores from whichever legacy multivendor plugin is active.
+     *
+     * @param \WP_REST_Request $request The REST request object (unused; migrator is resolved from the active legacy plugin).
+     * @return \WP_REST_Response
+     */
     public function import_stores( $request ) {
         $active_plugin = Utill::get_active_multivendor();
         if ( empty( $active_plugin ) ) {
@@ -134,6 +140,12 @@ class Migrations extends \WP_REST_Controller {
         return $response;
     }
 
+    /**
+     * Migrate product-vendor associations from whichever legacy multivendor plugin is active.
+     *
+     * @param \WP_REST_Request $request The REST request object (unused; migrator is resolved from the active legacy plugin).
+     * @return \WP_REST_Response
+     */
     public function import_products( $request ) {
         $active_plugin = Utill::get_active_multivendor();
         if ( empty( $active_plugin ) ) {

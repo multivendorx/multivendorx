@@ -394,6 +394,13 @@ class Hooks {
         }
     }
 
+    /**
+     * Relabel internal order-item meta keys for display in the order edit screen.
+     *
+     * @param array $formatted_meta Formatted order item meta, keyed by meta id.
+     * @param mixed $item           Order item object.
+     * @return array
+     */
     public function get_formatted_meta_data( $formatted_meta, $item ) {
         foreach ( $formatted_meta as $key => $meta ) {
             if ( $meta->key === 'multivendorx_sold_by' ) {

@@ -1929,13 +1929,6 @@ class Notifications {
 		global $wpdb;
 		$table = $wpdb->prefix . Utill::TABLES['notifications'];
 
-		$events = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-			$wpdb->prepare(
-				"SELECT * FROM $table WHERE is_dismissed = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				0
-			)
-		);
-
 		if ( ! empty( $args ) ) {
 			$where = array();
 
@@ -1957,7 +1950,6 @@ class Notifications {
 				$where[] = "created_at BETWEEN '" . esc_sql( $args['start_date'] ) . "' AND '" . esc_sql( $args['end_date'] ) . "'";
 			}
 
-			$table   = $wpdb->prefix . Utill::TABLES['notifications'];
 			$where[] = 'is_dismissed = 0 AND is_read = 0';
 
 			if ( isset( $args['count'] ) ) {
@@ -1986,6 +1978,14 @@ class Notifications {
 				return $results ?? array();
 			}
 		}
+
+		// No filters requested: fall back to the plain, non-dismissed list.
+		$events = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$wpdb->prepare(
+				"SELECT * FROM $table WHERE is_dismissed = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				0
+			)
+		);
 
 		return $events;
 	}
@@ -2049,6 +2049,19 @@ class Notifications {
 		return false;
 	}
 
+	/**
+	 * Build the common notification payload and fire the event's trigger hook.
+	 *
+	 * Merges admin/store/customer contact info derived from $store and $order
+	 * with any event-specific $extra data, then fires
+	 * `multivendorx_notify_{$type}` for `register_notification_hooks()` to pick up.
+	 *
+	 * @param string      $type  Event key (system_action), e.g. 'order_processing'.
+	 * @param object|null $store Store object, if the event is store-scoped.
+	 * @param object|null $order WC_Order object, if the event is order-scoped.
+	 * @param array       $extra Additional payload fields merged in (e.g. 'order_id', 'category').
+	 * @return void
+	 */
 	public function send_notification_helper( $type, $store = null, $order = null, $extra = array() ) {
 		$store_name     = '';
 		$store_email    = '';

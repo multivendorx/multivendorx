@@ -22,6 +22,11 @@ defined( 'ABSPATH' ) || exit;
  */
 class WCFMMarketplace {
 
+    /**
+     * Migrate all WCFM vendors into MultiVendorX stores.
+     *
+     * @return int Number of stores created.
+     */
     public function migrate_vendors() {
         $vendors           = get_users(
             array(
@@ -124,6 +129,11 @@ class WCFMMarketplace {
         return count( $created_store_ids );
     }
 
+    /**
+     * Assign every product owned by a WCFM vendor to its migrated store.
+     *
+     * @return int Number of products updated.
+     */
     public function migrate_products() {
         $products      = wc_get_products(
             array(
@@ -147,6 +157,11 @@ class WCFMMarketplace {
         return $updated_count;
     }
 
+    /**
+     * Migrate WCFM marketplace orders into MultiVendorX suborders, commissions, and transactions.
+     *
+     * @return void
+     */
     public function migrate_orders_and_commissions() {
         global $wpdb;
         $wcfm_orders_table = $wpdb->prefix . 'wcfm_marketplace_orders';
@@ -299,7 +314,11 @@ class WCFMMarketplace {
         wp_clear_scheduled_hook( 'multivendorx_order_migration' );
     }
 
-    // Deactive WCFM multivendor
+    /**
+     * Deactivate the WCFM multivendor/frontend-manager/membership plugins after migration.
+     *
+     * @return void
+     */
 	public function deactive_previous_multivendor() {
 		// WCFM free deactive
 		require_once ABSPATH . '/wp-admin/includes/plugin.php';

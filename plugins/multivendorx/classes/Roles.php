@@ -129,7 +129,7 @@ class Roles {
                     $request_uri  = filter_input( INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_URL ) ?? '';
                     $is_edit_page = strpos( $request_uri, 'element=edit' ) !== false || strpos( $request_uri, '/edit/' ) !== false;
 
-                    if ( defined( 'DOING_AJAX' ) && DOING_AJAX || $is_edit_page ) {
+                    if ( ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || $is_edit_page ) {
                         $caps = array( 'edit_posts' );
                     } else {
                         $caps = array( 'do_not_allow' );

@@ -1250,6 +1250,13 @@ class Rest {
         return new \WP_Error( sprintf( 'Call to unknown class %s.', $class ) );
     }
 
+    /**
+     * Scope the product shipping-class list to marketplace-wide vs. store-owned classes.
+     *
+     * @param array            $args    WP_Term_Query arguments.
+     * @param \WP_REST_Request $request REST API request object.
+     * @return array
+     */
     public function filter_shipping_classes_by_meta( $args, $request ) {
         $meta_key   = sanitize_text_field( $request->get_param( 'meta_key' ) );
         $meta_value = sanitize_text_field( $request->get_param( 'meta_value' ) );

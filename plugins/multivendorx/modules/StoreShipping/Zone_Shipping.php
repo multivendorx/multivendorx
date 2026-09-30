@@ -55,6 +55,7 @@ class Zone_Shipping extends \WC_Shipping_Method {
         $this->supports           = array( 'shipping-zones', 'instance-settings', 'instance-settings-modal' );
         $this->default            = '';
 
+        $shipping_modules   = MultiVendorX()->setting->get_setting( 'shipping_modules', array() );
         $zone_wise_shipping = $shipping_modules['zone-wise-shipping'] ?? array();
 
         // Enable / disable module.

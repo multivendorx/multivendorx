@@ -259,6 +259,11 @@ class Install {
         }
     }
 
+    /**
+     * Run first-time install (table/page/default-settings creation) or version-gated migration.
+     *
+     * @return void
+     */
     public function run_migration() {
         if ( ! get_option( 'multivendorx_version', false ) ) {
             $this->create_database_table();
@@ -1736,18 +1741,18 @@ class Install {
 
         if ( ! empty( $previous_store_settings['mvx_store_sidebar_position'] ) ) {
             $position = $previous_store_settings['mvx_store_sidebar_position'];
-            if ( $position === 'At Left' ) {
+            if ( 'At Left' === $position ) {
                 $appearance_settings['store_sidebar'] = 'left';
-            } elseif ( $position === 'At Right' ) {
+            } elseif ( 'At Right' === $position ) {
                 $appearance_settings['store_sidebar'] = 'right';
             }
         }
 
         if ( ! empty( $previous_store_settings['choose_map_api'] ) ) {
-            if ( 'google_map_set' == $previous_store_settings['choose_map_api']['value'] ) {
+            if ( 'google_map_set' === $previous_store_settings['choose_map_api']['value'] ) {
                 $map_settings['choose_map_api'] = 'google_map';
             }
-            if ( 'mapbox_api_set' == $previous_store_settings['choose_map_api']['value'] ) {
+            if ( 'mapbox_api_set' === $previous_store_settings['choose_map_api']['value'] ) {
                 $map_settings['choose_map_api'] = 'mapbox';
             }
             $map_settings['google_map_api_key'] = $previous_store_settings['google_map_api_key'];
@@ -2202,7 +2207,8 @@ class Install {
             'store_owner' => $store_owner_caps,
         );
 
-        if ( $role = get_role( 'store_owner' ) ) {
+        $role = get_role( 'store_owner' );
+        if ( $role ) {
             foreach ( $role->capabilities as $cap => $_ ) {
                 $role->remove_cap( $cap );
             }

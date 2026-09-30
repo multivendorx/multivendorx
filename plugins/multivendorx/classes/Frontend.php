@@ -10,6 +10,8 @@ namespace MultiVendorX;
 use MultiVendorX\Store\Store;
 use MultiVendorX\Store\StoreUtil;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Frontend class
  *
@@ -68,6 +70,13 @@ class Frontend {
         }
     }
 
+    /**
+     * Grant the active store owner the 'edit_stores' capability for notifima/catalogx contexts.
+     *
+     * @param array|string $capability Capability or capabilities being checked.
+     * @param string       $context    Permission check context.
+     * @return array|string
+     */
     public function add_permission_capability( $capability, $context ) {
         if ( empty( $context ) ) {
             return $capability;
@@ -93,7 +102,7 @@ class Frontend {
      * @param \WP_REST_Request $request Request object.
      * @return array
      */
-    public function get_enquiry_args( $args, $request ) {
+    public function get_enquiry_args( $args, $request ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
         $store_id = MultiVendorX()->active_store;
 
         if ( $store_id ) {
@@ -124,7 +133,7 @@ class Frontend {
      * @param \WP_REST_Request $request Request object.
      * @return array
      */
-    public function get_subscribers_args( $args, $request ) {
+    public function get_subscribers_args( $args, $request ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
         $store_id = MultiVendorX()->active_store;
 
         if ( $store_id ) {
@@ -138,6 +147,12 @@ class Frontend {
         return $args;
     }
 
+    /**
+     * Apply under-review/suspended store restriction settings to the permissions array.
+     *
+     * @param array $permissions Default permission flags.
+     * @return array
+     */
     public function modify_permissions( $permissions ) {
         $review_settings  = MultiVendorX()->setting->get_setting( 'restriction_for_under_review', array() );
         $suspend_settings = MultiVendorX()->setting->get_setting( 'restriction_for_suspended', array() );
@@ -161,6 +176,12 @@ class Frontend {
         return $permissions;
     }
 
+    /**
+     * Hide dashboard menu items disabled by the current store's permission restrictions.
+     *
+     * @param array $menu Dashboard menu items.
+     * @return array
+     */
     public function hide_menu( $menu ) {
         $permissions = MultiVendorX()->util->get_permissions();
         if ( $permissions['disable_payouts'] ) {
@@ -699,6 +720,12 @@ class Frontend {
         return $query;
     }
 
+    /**
+     * Attribute a staff-uploaded attachment to the store's primary owner and track media usage.
+     *
+     * @param array $data Attachment data to be inserted.
+     * @return array
+     */
     public function attach_store_owner_id( $data ) {
         if ( ! empty( array_intersect( array( 'store_manager', 'product_manager', 'customer_support', 'order_assistant', 'inactive_staff' ), MultiVendorX()->current_user->roles ) ) ) {
             $store         = new Store( MultiVendorX()->active_store );
@@ -716,6 +743,12 @@ class Frontend {
         return $data;
     }
 
+    /**
+     * Calculate total media library disk space (in MB) used by a user's attachments.
+     *
+     * @param int $user_id User ID.
+     * @return float Size in megabytes.
+     */
     public function get_user_media_space_used( $user_id ) {
         $attachments = get_posts(
             array(
@@ -734,9 +767,14 @@ class Frontend {
             }
         }
 
-        // Return size in MB
+        // Return size in MB.
         return round( $total_size / 1024 / 1024, 2 );
     }
+    /**
+     * Show a "Manage your store" button on the WooCommerce My Account dashboard for store owners.
+     *
+     * @return void
+     */
     public function add_dashboard_button() {
 
         $user = MultiVendorX()->current_user;

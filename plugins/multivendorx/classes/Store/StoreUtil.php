@@ -907,6 +907,13 @@ class StoreUtil {
         return $wpdb->get_col( $sql );
     }
 
+    /**
+     * Reassign a former store owner's media attachments to the store's new owner.
+     *
+     * @param int $old_owner Previous primary owner's user ID.
+     * @param int $new_owner New primary owner's user ID.
+     * @return void
+     */
     public static function reassign_attachments_to_new_owner( $old_owner, $new_owner ) {
         if ( ! $old_owner || ! $new_owner || $old_owner == $new_owner ) {
             return;
@@ -935,6 +942,12 @@ class StoreUtil {
         }
     }
 
+    /**
+     * Count pending stores, products, coupons, withdrawal and deactivation requests
+     * awaiting marketplace-admin action, for the admin "approval queue" badge.
+     *
+     * @return int
+     */
     public static function get_approval_queue_count() {
         $pending_stores   = (int) self::get_store_information(
             array(
@@ -1002,6 +1015,11 @@ class StoreUtil {
         );
     }
 
+    /**
+     * Compliance tab badge count. Always 0 unless a filter provides one.
+     *
+     * @return int
+     */
     public static function get_compliance_tab_count() {
         $total = 0;
         return apply_filters(
@@ -1010,6 +1028,11 @@ class StoreUtil {
         );
     }
 
+    /**
+     * Customer tab badge count. Always 0 unless a filter provides one.
+     *
+     * @return int
+     */
     public static function get_customer_tab_count() {
         $total = 0;
         return apply_filters(

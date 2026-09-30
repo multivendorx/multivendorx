@@ -249,6 +249,15 @@ class Frontend {
         return $selected_id;
     }
 
+    /**
+     * Calculate great-circle distance between two lat/lng points (Haversine formula).
+     *
+     * @param float $ulat User latitude.
+     * @param float $ulng User longitude.
+     * @param float $slat Store latitude.
+     * @param float $slng Store longitude.
+     * @return float Distance in kilometers.
+     */
     public function calculate_distance( $ulat, $ulng, $slat, $slng ) {
         $earth_radius = 6371; // in KM
 

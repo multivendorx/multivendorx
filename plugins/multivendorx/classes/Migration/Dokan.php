@@ -285,6 +285,11 @@ class Dokan {
 		wp_clear_scheduled_hook( 'multivendorx_order_migration' );
     }
 
+    /**
+     * Deactivate the Dokan free/pro plugins after migration.
+     *
+     * @return void
+     */
     public function deactive_previous_multivendor() {
 		require_once ABSPATH . '/wp-admin/includes/plugin.php';
 		// dokan free deactive

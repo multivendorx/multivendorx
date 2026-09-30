@@ -553,7 +553,7 @@ class Utill {
 	 * @return string|null Formatted date time string as per WordPress settings, or null if invalid.
 	 */
 	public static function multivendorx_rest_prepare_date_response( $date, $utc = false ) {
-        if ( empty( $date ) || $date === '0000-00-00 00:00:00' || $date === '0000-00-00' ) {
+        if ( empty( $date ) || '0000-00-00 00:00:00' === $date || '0000-00-00' === $date ) {
             return '-';
         }
 		// Convert date to timestamp.
@@ -572,6 +572,11 @@ class Utill {
 		}
 	}
 
+    /**
+     * Detect which third-party multivendor plugin (if any) is active, for migration/compatibility checks.
+     *
+     * @return string One of 'Dokan', 'WCFMMarketplace', 'WCVendors', or '' if none detected.
+     */
     public static function get_active_multivendor() {
         if ( self::is_active_plugin( 'dokan-lite/dokan.php' ) ) {
             return 'Dokan';
@@ -588,6 +593,11 @@ class Utill {
         return '';
     }
 
+    /**
+     * Get the default set of store-restriction permission flags.
+     *
+     * @return array
+     */
     public function get_permissions() {
         $permissions = array(
             'hide_store_products'    => false,
@@ -601,6 +611,14 @@ class Utill {
         return apply_filters( 'multivendorx_modify_permissions', $permissions );
     }
 
+    /**
+     * Insert a row into the store activity log table.
+     *
+     * @param int    $store_id Store ID.
+     * @param string $message  Log message.
+     * @param string $tag      Optional log tag/category.
+     * @return void
+     */
     public function set_activity_logs( $store_id, $message, $tag = '' ) {
         global $wpdb;
         $table_name = $wpdb->prefix . self::TABLES['activity_logs'];
@@ -620,6 +638,13 @@ class Utill {
         );
     }
 
+    /**
+     * Get the most recent activity log rows for a store.
+     *
+     * @param int $store_id Store ID.
+     * @param int $limit    Maximum number of rows to return.
+     * @return array
+     */
     public function get_activity_logs( $store_id, $limit = 10 ) {
         global $wpdb;
         $table_name = $wpdb->prefix . self::TABLES['activity_logs'];

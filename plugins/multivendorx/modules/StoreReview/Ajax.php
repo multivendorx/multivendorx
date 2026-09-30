@@ -93,6 +93,8 @@ class Ajax {
 	 * Get reviews for a store.
 	 */
 	public function get_reviews() {
+		check_ajax_referer( 'multivendorx-review-frontend-script', 'nonce' );
+
 		$store_id = absint( filter_input( INPUT_POST, 'store_id', FILTER_SANITIZE_NUMBER_INT ) );
 		$reviews  = Util::get_reviews_by_store( $store_id );
 		ob_start();
@@ -190,6 +192,8 @@ class Ajax {
      * Get average ratings for a store.
      */
     public function get_avg_ratings() {
+        check_ajax_referer( 'multivendorx-review-frontend-script', 'nonce' );
+
         $store_id   = absint( filter_input( INPUT_POST, 'store_id', FILTER_SANITIZE_NUMBER_INT ) );
         $parameters = MultiVendorX()->setting->get_setting( 'ratings_parameters', array() );
 

@@ -199,7 +199,7 @@ class Promotions {
 			array(
 				'timeout'     => 30,
 				'headers'     => array(
-					'User-Agent' => 'MultiVendorX/' . $this->plugin_version ?? '1.0.0; ' . home_url(),
+					'User-Agent' => 'MultiVendorX/' . $this->plugin_version,
 				),
 				'body'        => $data,
 				'data_format' => 'body',

@@ -249,6 +249,12 @@ class Frontend {
         return $store;
     }
 
+    /**
+     * Add pending store review count to the customer tab count.
+     *
+     * @param int $total Existing customer tab count.
+     * @return int Updated count including pending reviews.
+     */
     public function customer_count( $total ) {
         $base_args     = array( 'count' => true );
         $pending_args  = array_merge(

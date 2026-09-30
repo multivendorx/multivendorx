@@ -437,6 +437,13 @@ class Frontend {
         return $min ? str_replace( '<a ', '<a data-quantity="' . $min . '" ', $html ) : $html;
     }
 
+    /**
+     * Bump the requested add-to-cart quantity up to the product's minimum quantity rule.
+     *
+     * @param int $quantity   Requested quantity.
+     * @param int $product_id Product ID.
+     * @return int Adjusted quantity.
+     */
     public function add_to_cart_min_qty( $quantity, $product_id ) {
         $min = $this->get_rules( $product_id, 'quantity' )['min'];
         if ( $min && $quantity < $min ) {

@@ -88,6 +88,11 @@ class Settings extends \WP_REST_Controller {
         return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 
+    /**
+     * Check if a given request has access to read the active modules list.
+     *
+     * @param object $request The REST request object.
+     */
     public function get_item_permissions_check( $request ) {
         return is_user_logged_in() && ! empty(
             array_intersect(

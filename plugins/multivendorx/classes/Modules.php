@@ -164,7 +164,7 @@ class Modules {
         $validated_active = array();
         foreach ( $active_modules as $module_id ) {
             foreach ( $all_modules as $key => $module ) {
-                // Match same module id (free + pro both)
+                // Match same module id (free + pro both).
                 if ( empty( $module['id'] ) || $module['id'] !== $module_id ) {
                     continue;
                 }

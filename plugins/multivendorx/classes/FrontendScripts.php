@@ -40,14 +40,17 @@ class FrontendScripts {
     /**
 	 * Get the build path for assets based on environment.
 	 *
+	 * @param string $path_type   'file' for a filesystem path, anything else for a URL.
+	 * @param string $plugin_path Optional. Plugin path override. Default MultiVendorX()->plugin_path.
+	 * @param string $plugin_url  Optional. Plugin URL override. Default MultiVendorX()->plugin_url.
 	 * @return string Relative path to the build directory.
 	 */
     public static function get_asset_path( $path_type = 'url', $plugin_path = '', $plugin_url = '' ) {
         $build_path = 'assets/';
-        if ( $plugin_path === '' ) {
+        if ( '' === $plugin_path ) {
             $plugin_path = MultiVendorX()->plugin_path;
         }
-        if ( $plugin_url === '' ) {
+        if ( '' === $plugin_url ) {
             $plugin_url = MultiVendorX()->plugin_url;
         }
 
@@ -226,6 +229,11 @@ class FrontendScripts {
 		}
 	}
 
+    /**
+     * Get all registered settings tabs' values, keyed by tab name, cached for the request.
+     *
+     * @return array
+     */
     public static function get_admin_settings() {
         if ( null !== self::$settings_cache ) {
             return self::$settings_cache;
@@ -340,7 +348,7 @@ class FrontendScripts {
 
         $store_ids = array();
         $all_meta  = array();
-        if ( ! is_admin() && in_array( 'store_owner', MultiVendorX()->current_user->roles ) ) {
+        if ( ! is_admin() && in_array( 'store_owner', MultiVendorX()->current_user->roles, true ) ) {
             $active_store = MultiVendorX()->active_store;
             $store_ids    = Store::get_store( MultiVendorX()->current_user_id, 'user' );
             if ( empty( $active_store ) && ! empty( $store_ids ) ) {

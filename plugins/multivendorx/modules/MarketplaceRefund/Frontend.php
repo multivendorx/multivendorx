@@ -10,6 +10,8 @@ namespace MultiVendorX\MarketplaceRefund;
 use MultiVendorX\Utill;
 use MultiVendorX\Store\Store;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Refund Frontend class
  *
@@ -30,6 +32,12 @@ class Frontend {
         add_filter( 'multivendorx_approval_queue_count', array( $this, 'approval_count' ), 10 );
     }
 
+    /**
+     * Add pending refund-requested orders to the approval queue badge count.
+     *
+     * @param int $total Running approval queue total.
+     * @return int Updated approval queue total.
+     */
     public function approval_count( $total ) {
         $query = wc_get_orders(
             array(
@@ -515,6 +523,12 @@ class Frontend {
         wc_add_notice( __( 'Refund request successfully submitted.', 'multivendorx' ) );
     }
 
+    /**
+     * Render the refund reason and request timeline on the customer's order view page.
+     *
+     * @param int $order_id Order ID.
+     * @return void
+     */
     public function view_order_content( $order_id ) {
         if ( ! is_wc_endpoint_url( 'view-order' ) ) {
             return;

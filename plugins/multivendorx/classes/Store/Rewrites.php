@@ -197,6 +197,12 @@ class Rewrites {
         }
     }
 
+    /**
+     * Stop WordPress from 404ing the virtualized store endpoint.
+     *
+     * @param bool $preempt Current 404 pre-check value.
+     * @return bool
+     */
     public function prevent_store_404( $preempt ) {
         if ( get_query_var( $this->custom_store_url ) ) {
             return true;
@@ -204,6 +210,12 @@ class Rewrites {
         return $preempt;
     }
 
+    /**
+     * Replace the document title with the store name on a store page.
+     *
+     * @param string $title Default document title.
+     * @return string
+     */
     public function set_store_page_title( $title ) {
         if ( get_query_var( $this->custom_store_url ) ) {
             $store = $this->get_current_store();
@@ -215,6 +227,12 @@ class Rewrites {
         return $title;
     }
 
+    /**
+     * Replace the last breadcrumb label with the store name on a store page.
+     *
+     * @param array $items Breadcrumb items.
+     * @return array
+     */
     public function set_breadcrumbs_title( $items ) {
 		if ( ! get_query_var( $this->custom_store_url ) ) {
             return $items;
