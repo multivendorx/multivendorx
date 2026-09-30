@@ -8,6 +8,7 @@
 namespace MultiVendorX\FollowStore;
 
 use MultiVendorX\Store\Store;
+use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\Utill;
 
 defined( 'ABSPATH' ) || exit;
@@ -121,6 +122,15 @@ class Rest extends \WP_REST_Controller {
                 return rest_ensure_response( array( 'error' => 'Store does not exists' ) );
             }
 
+            // Follower names/emails are that store's data, not any vendor's.
+            if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to view this store\'s followers.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
+
             $followers = $store->get_meta( Utill::STORE_SETTINGS_KEYS['followers'] ) ?? array();
 
             $response = rest_ensure_response( array() );
@@ -224,6 +234,9 @@ class Rest extends \WP_REST_Controller {
             $follower_ids = array_column( $followers, 'id' );
 
             $following = $user_id ? get_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['following_stores'], true ) : array();
+            if ( ! is_array( $following ) ) {
+                $following = array();
+            }
 
             return rest_ensure_response(
                 array(

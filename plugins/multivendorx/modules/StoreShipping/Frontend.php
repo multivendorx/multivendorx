@@ -10,6 +10,8 @@ namespace MultiVendorX\StoreShipping;
 use MultiVendorX\FrontendScripts;
 use MultiVendorX\Utill;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Store Review Frontend class
  *
@@ -291,7 +293,6 @@ class Frontend {
         $checkout_page_id  = wc_get_page_id( 'checkout' );
         $is_block_checkout = $checkout_page_id && has_block( 'woocommerce/checkout', $checkout_page_id );
 
-        FrontendScripts::load_scripts();
         if ( $is_block_checkout ) {
             FrontendScripts::enqueue_script( 'multivendorx-store-shipping-block-checkout' );
             FrontendScripts::localize_scripts( 'multivendorx-store-shipping-block-checkout' );

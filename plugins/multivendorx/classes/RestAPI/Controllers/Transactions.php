@@ -318,6 +318,15 @@ class Transactions extends \WP_REST_Controller {
             return;
         }
 
+        // Releasing a payout is an admin decision, not a store's own.
+        if ( ( $disbursement || $withdraw ) && ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+            return new \WP_Error(
+                'rest_forbidden',
+                __( 'You are not allowed to approve or release this store\'s withdrawal.', 'multivendorx' ),
+                array( 'status' => 403 )
+            );
+        }
+
         if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
             return new \WP_Error(
                 'rest_forbidden',
@@ -378,6 +387,16 @@ class Transactions extends \WP_REST_Controller {
             );
         }
 
+        if ( $amount <= 0 || $amount > $balance ) {
+            return rest_ensure_response(
+                array(
+                    'success' => false,
+                    'message' => __( 'Requested amount is invalid or exceeds your available balance.', 'multivendorx' ),
+                    'id'      => $store_id,
+                )
+            );
+        }
+
         // Check if a withdrawal request already exists.
         $existing_request = $store->get_meta( Utill::STORE_SETTINGS_KEYS['request_withdrawal_amount'] );
         if ( $existing_request ) {
@@ -394,7 +413,7 @@ class Transactions extends \WP_REST_Controller {
 
         $should_update_meta = true;
 
-        if ( 'automatic' === $withdraw_type && $threshold_amount < $amount ) {
+        if ( 'automatic' === $withdraw_type && $threshold_amount < $amount && $balance >= $amount ) {
             $payment_method = $store->get_payment_method( 'name' ) ?? '';
 
             if ( ! empty( $payment_method ) && ( 'stripe-connect' === $payment_method || 'paypal-payout' === $payment_method ) ) {

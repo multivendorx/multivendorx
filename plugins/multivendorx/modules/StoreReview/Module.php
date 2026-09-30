@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\StoreReview;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Store Review Module class
  *

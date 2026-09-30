@@ -21,6 +21,11 @@ defined( 'ABSPATH' ) || exit;
  * @author      MultiVendorX
  */
 class WCVendors {
+    /**
+     * Migrate all WC Vendors sellers into MultiVendorX stores.
+     *
+     * @return int Number of stores created.
+     */
     public function migrate_vendors() {
         $vendors           = get_users(
             array(
@@ -92,6 +97,11 @@ class WCVendors {
         return count( $created_store_ids );
     }
 
+    /**
+     * Assign every product owned by a WC Vendors seller to its migrated store.
+     *
+     * @return int Number of products updated.
+     */
     public function migrate_products() {
         $products      = wc_get_products(
             array(
@@ -115,6 +125,11 @@ class WCVendors {
         return $updated_count;
     }
 
+    /**
+     * Migrate WC Vendors commission records into MultiVendorX suborders, commissions, and transactions.
+     *
+     * @return void
+     */
     public function migrate_orders_and_commissions() {
         global $wpdb;
         $wc_orders_table = $wpdb->prefix . 'pv_commission';
@@ -212,7 +227,7 @@ class WCVendors {
                 $status           = 'Completed';
             }
 
-            $data = array(
+            $transaction_data = array(
                 'store_id'         => (int) $store_id,
                 'order_id'         => (int) $suborder->get_id(),
                 'commission_id'    => (int) $insert_id,
@@ -228,14 +243,18 @@ class WCVendors {
             $format = array( '%d', '%d', '%d', '%s', '%s', '%f', '%s', '%s', '%s', '%s' );
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-            $wpdb->insert( $wpdb->prefix . Utill::TABLES['transaction'], $data, $format );
+            $wpdb->insert( $wpdb->prefix . Utill::TABLES['transaction'], $transaction_data, $format );
         }
 
         $this->deactive_previous_multivendor();
         wp_clear_scheduled_hook( 'multivendorx_order_migration' );
     }
 
-    // Deactive wc vendor multivendor
+    /**
+     * Deactivate the WC Vendors plugin after migration.
+     *
+     * @return void
+     */
 	public function deactive_previous_multivendor() {
 		// WC vendor free deactive
 		require_once ABSPATH . '/wp-admin/includes/plugin.php';

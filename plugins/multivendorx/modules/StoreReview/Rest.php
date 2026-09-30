@@ -211,7 +211,7 @@ class Rest extends \WP_REST_Controller {
                     return get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id );
             }
             // --- Step 6: Fetch Review Data ---.
-            $reviews = Util::get_review_information( $args );
+            $reviews = Util::query_reviews( $args );
 
             // --- Step 7: Format Data for Response ---.
             $formatted = array_map( array( $this, 'prepare_rest_item_for_response' ), $reviews ? $reviews : array() );
@@ -227,19 +227,19 @@ class Rest extends \WP_REST_Controller {
             $base_args['count'] = true;
 
             $all_args  = $base_args;
-            $all_count = Util::get_review_information( $all_args );
+            $all_count = Util::query_reviews( $all_args );
 
             $pending_args           = $base_args;
             $pending_args['status'] = 'pending';
-            $pending_count          = Util::get_review_information( $pending_args );
+            $pending_count          = Util::query_reviews( $pending_args );
 
             $approved_args           = $base_args;
             $approved_args['status'] = 'approved';
-            $approved_count          = Util::get_review_information( $approved_args );
+            $approved_count          = Util::query_reviews( $approved_args );
 
             $rejected_args           = $base_args;
             $rejected_args['status'] = 'rejected';
-            $rejected_count          = Util::get_review_information( $rejected_args );
+            $rejected_count          = Util::query_reviews( $rejected_args );
 
             $response = rest_ensure_response( $formatted );
             $response->header( 'X-WP-Total', $all_count );
@@ -290,7 +290,7 @@ class Rest extends \WP_REST_Controller {
             $review_id = $request->get_param( 'id' );
 
             // --- Step 6: Fetch Review Data ---.
-            $review = reset( Util::get_review_information( array( 'review_id' => $review_id ) ) );
+            $review = reset( Util::query_reviews( array( 'review_id' => $review_id ) ) );
 
             $response = rest_ensure_response( array() );
 
@@ -341,7 +341,7 @@ class Rest extends \WP_REST_Controller {
             $store_id       = absint( $request->get_param( 'store_id' ) );
             $review_title   = sanitize_text_field( $request->get_param( 'review_title' ) );
             $review_content = sanitize_textarea_field( $request->get_param( 'review_content' ) );
-            $ratings        = (array) $request->get_param( 'rating' );
+            $ratings        = Util::sanitize_rating_values( $request->get_param( 'rating' ) );
 
             if ( ! $store_id || empty( $ratings ) ) {
                 return new \WP_Error(
@@ -361,45 +361,10 @@ class Rest extends \WP_REST_Controller {
 
             $order_id = Util::is_verified_buyer( $store_id, $user_id );
 
-            $overall = array_sum( array_map( 'intval', $ratings ) ) / count( $ratings );
+            $overall = array_sum( $ratings ) / count( $ratings );
 
-            $uploaded_images = array();
-            $files           = $_FILES['review_images'] ?? null;
-
-            if ( ! empty( ( $files['name'] )[0] ) ) {
-                require_once ABSPATH . 'wp-admin/includes/file.php';
-                // Normalize + sanitize
-                $file_names  = array_map( 'sanitize_file_name', (array) ( $files['name'] ?? array() ) );
-                $file_types  = (array) ( $files['type'] ?? array() );
-                $file_tmp    = (array) ( $files['tmp_name'] ?? array() );
-                $file_errors = array_map( 'intval', (array) ( $files['error'] ?? array() ) );
-                $file_sizes  = array_map( 'intval', (array) ( $files['size'] ?? array() ) );
-
-                foreach ( $file_names as $index => $name ) {
-                    $tmp   = $file_tmp[ $index ] ?? '';
-                    $type  = $file_types[ $index ] ?? '';
-                    $error = $file_errors[ $index ] ?? UPLOAD_ERR_NO_FILE;
-                    $size  = $file_sizes[ $index ] ?? 0;
-
-                    if ( $error !== UPLOAD_ERR_OK ) {
-                        continue;
-                    }
-
-                    $file   = array(
-                        'name'     => $name,
-                        'type'     => sanitize_mime_type( $type ),
-                        'tmp_name' => $tmp,
-                        'error'    => $error,
-                        'size'     => $size,
-                    );
-                    $upload = wp_handle_upload( $file, array( 'test_form' => false ) );
-
-                    if ( ! empty( $upload['error'] ) || empty( $upload['url'] ) ) {
-                        continue;
-                    }
-                    $uploaded_images[] = esc_url_raw( $upload['url'] );
-                }
-            }
+            $file_params     = $request->get_file_params();
+            $uploaded_images = Util::upload_review_images( $file_params['review_images'] ?? array() );
 
             $review_id = Util::insert_review(
                 $store_id,
@@ -414,7 +379,7 @@ class Rest extends \WP_REST_Controller {
             Util::insert_ratings( $review_id, $ratings );
 
             $review = reset(
-                Util::get_review_information( array( 'review_id' => $review_id ) )
+                Util::query_reviews( array( 'review_id' => $review_id ) )
             );
 
             if ( ! $review ) {
@@ -472,7 +437,7 @@ class Rest extends \WP_REST_Controller {
             }
 
             // Fetch review info (replace this with your correct util function).
-            $review = reset( Util::get_review_information( array( 'id' => $id ) ) );
+            $review = reset( Util::query_reviews( array( 'id' => $id ) ) );
             if ( ! $review ) {
                 return new \WP_Error(
                     'not_found',
@@ -589,7 +554,7 @@ class Rest extends \WP_REST_Controller {
             }
 
             // 🔹 Fetch the review (to confirm it exists).
-            $review = reset( Util::get_review_information( array( 'review_id' => $id ) ) );
+            $review = reset( Util::query_reviews( array( 'review_id' => $id ) ) );
             if ( ! $review ) {
                 return new \WP_Error(
                     'not_found',

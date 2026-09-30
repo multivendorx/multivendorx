@@ -109,6 +109,19 @@ class Rest extends \WP_REST_Controller {
                 $request->get_param( 'end_date' )
             );
 
+            // Non-admins only ever see reports against their own store.
+            if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+                $store_id = (int) MultiVendorX()->active_store;
+
+                if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                    return new \WP_Error(
+                        'rest_forbidden',
+                        __( 'You are not allowed to view this store\'s reports.', 'multivendorx' ),
+                        array( 'status' => 403 )
+                    );
+                }
+            }
+
             $allowed_order_by   = array( 'created_at', 'updated_at', 'id', 'store_id', 'product_id' );
             $requested_order_by = $request->get_param( 'order_by' );
             $order_by           = in_array( $requested_order_by, $allowed_order_by, true )
@@ -161,7 +174,11 @@ class Rest extends \WP_REST_Controller {
             );
 
             $response    = rest_ensure_response( $formatted );
-            $total_count = Util::get_report_abuse_information( array( 'count' => true ) );
+            $count_args  = array( 'count' => true );
+            if ( ! empty( $args['store_ids'] ) ) {
+                $count_args['store_ids'] = $args['store_ids'];
+            }
+            $total_count = Util::get_report_abuse_information( $count_args );
             $response->header( 'X-WP-Total', (int) $total_count );
             return $response;
         } catch ( \Exception $e ) {
