@@ -81,9 +81,9 @@ class Util {
 
         // Build query.
         if ( isset( $args['count'] ) ) {
-            $query = "SELECT COUNT(*) FROM $table";
+            $query = $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table );
         } else {
-            $query = "SELECT * FROM $table";
+            $query = $wpdb->prepare( 'SELECT * FROM %i', $table );
         }
 
         if ( ! empty( $where ) ) {

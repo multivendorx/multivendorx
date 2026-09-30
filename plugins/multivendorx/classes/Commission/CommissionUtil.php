@@ -33,7 +33,7 @@ class CommissionUtil {
 
 		$table_name = $wpdb->prefix . Utill::TABLES['commission'];
 		$commission = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            $wpdb->prepare( "SELECT * FROM {$table_name} WHERE ID = %d", $id ) // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $wpdb->prepare( 'SELECT * FROM %i WHERE ID = %d', $table_name, $id )
 		);
 
 		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
@@ -65,7 +65,7 @@ class CommissionUtil {
 
 		$table_name = $wpdb->prefix . Utill::TABLES['commission'];
 		$commission = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            $wpdb->prepare( "SELECT * FROM {$table_name} WHERE store_id = %d AND order_id = %d", $store_id, $order_id ) // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $wpdb->prepare( 'SELECT * FROM %i WHERE store_id = %d AND order_id = %d', $table_name, $store_id, $order_id )
 		);
 
 		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
@@ -139,10 +139,12 @@ class CommissionUtil {
         $is_count = ! empty( $args['count'] );
 
         if ( $is_count ) {
-            $query = "SELECT COUNT(*) FROM {$table}";
+            $query = 'SELECT COUNT(*) FROM %i';
         } else {
-            $query = "SELECT * FROM {$table}";
+            $query = 'SELECT * FROM %i';
         }
+
+        array_unshift( $params, $table );
 
         if ( ! empty( $where ) || ! empty( $or_where ) ) {
             $query .= ' WHERE ';
@@ -174,7 +176,7 @@ class CommissionUtil {
             $query .= " LIMIT {$limit} OFFSET {$offset}";
         }
 
-        $query = $params ? $wpdb->prepare( $query, ...$params ) : $query; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $query = $wpdb->prepare( $query, ...$params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
         if ( $is_count ) {
             $results = (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
@@ -208,10 +210,9 @@ class CommissionUtil {
 
 		// If $top_stores = true, fetch top N stores by total order value.
         if ( $top_stores ) {
-            // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             $query = $wpdb->prepare(
-                "
-                SELECT 
+                '
+                SELECT
                     store_id,
                     COALESCE(SUM(total_order_value), 0) AS total_order_amount,
                     COALESCE(SUM(facilitator_fee), 0) AS facilitator_fee,
@@ -221,14 +222,14 @@ class CommissionUtil {
                     COALESCE(SUM(store_shipping_tax), 0) AS shipping_tax_amount,
                     COALESCE(SUM(store_payable), 0) AS commission_total,
                     COALESCE(SUM(store_refunded), 0) AS commission_refunded
-                FROM {$table_name} 
+                FROM %i
                 GROUP BY store_id
                 ORDER BY total_order_amount DESC
                 LIMIT %d
-                ",
+                ',
+                $table_name,
                 $limit
             );
-            // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
             // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
             // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
@@ -273,11 +274,11 @@ class CommissionUtil {
                 ROUND(SUM(total_order_value), 2) AS total_order_amount,
                 ROUND(SUM(store_earning), 2) AS store_earnings,
                 COUNT(DISTINCT order_id) AS orders
-            FROM {$table_name} 
+            FROM %i
             WHERE store_id = %d
             ";
 
-			$params = array( $store_id );
+			$params = array( $table_name, $store_id );
 
 			if ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) {
 				$query   .= ' AND DATE(created_at) BETWEEN %s AND %s';
@@ -290,7 +291,6 @@ class CommissionUtil {
             ORDER BY created_at ASC
             ';
 
-			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
 			// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
 			// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
@@ -298,7 +298,6 @@ class CommissionUtil {
                 $wpdb->prepare( $query, $params ),
                 ARRAY_A
 			);
-			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
 			// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
 			// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
@@ -307,10 +306,10 @@ class CommissionUtil {
 		}
 
 		// Summary for a specific store.
-        $params = array();
+        $params = array( $table_name );
 
-        $query = "
-        SELECT 
+        $query = '
+        SELECT
             COUNT(DISTINCT order_id) AS order_count,
             COALESCE(SUM(total_order_value), 0) AS total_order_amount,
             COALESCE(SUM(facilitator_fee), 0) AS facilitator_fee,
@@ -320,9 +319,9 @@ class CommissionUtil {
             COALESCE(SUM(store_shipping_tax), 0) AS shipping_tax_amount,
             COALESCE(SUM(store_payable), 0) AS commission_total,
             COALESCE(SUM(store_refunded), 0) AS commission_refunded
-        FROM {$table_name}
+        FROM %i
         WHERE 1=1
-        ";
+        ';
 
         if ( ! empty( $store_id ) ) {
             $query   .= ' AND store_id = %d';

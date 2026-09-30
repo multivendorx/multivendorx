@@ -636,7 +636,8 @@ class Utill {
 
         return $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$table_name} WHERE store_id = %d ORDER BY id DESC LIMIT %d",
+                'SELECT * FROM %i WHERE store_id = %d ORDER BY id DESC LIMIT %d',
+                $table_name,
                 $store_id,
                 $limit
             )

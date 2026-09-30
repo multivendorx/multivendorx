@@ -36,7 +36,8 @@ class StoreUtil {
 		// Remove old users not in list.
 		$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "DELETE FROM {$table} WHERE store_id = %d AND role_id = %s AND user_id NOT IN (" . implode( ',', array_map( 'intval', $owners ) ) . ')', // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+                'DELETE FROM %i WHERE store_id = %d AND role_id = %s AND user_id NOT IN (' . implode( ',', array_map( 'intval', $owners ) ) . ')', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+                $table,
                 $store_id,
                 $role_id
             )
@@ -46,7 +47,8 @@ class StoreUtil {
 		foreach ( $owners as $user_id ) {
 			$exists = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->prepare(
-                    "SELECT ID FROM {$table} WHERE store_id = %d AND role_id = %s AND user_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                    'SELECT ID FROM %i WHERE store_id = %d AND role_id = %s AND user_id = %d',
+                    $table,
                     $store_id,
                     $role_id,
                     $user_id
@@ -84,7 +86,8 @@ class StoreUtil {
 		$primary_owner_id = self::get_primary_owner( $store_id );
 		$users            = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT user_id FROM $table WHERE store_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                'SELECT user_id FROM %i WHERE store_id = %d',
+                $table,
                 $store_id
             ),
             ARRAY_A
@@ -111,7 +114,7 @@ class StoreUtil {
 
 		$table = "{$wpdb->prefix}" . Utill::TABLES['store'];
 		$store = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-            "SELECT * FROM {$table}", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $wpdb->prepare( 'SELECT * FROM %i', $table ),
             ARRAY_A
 		);
 
@@ -503,7 +506,8 @@ class StoreUtil {
 		$table_name    = $wpdb->prefix . Utill::TABLES['store_users'];
 		$primary_owner = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT primary_owner FROM $table_name WHERE store_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                'SELECT primary_owner FROM %i WHERE store_id = %d',
+                $table_name,
                 $store_id
             )
 		);
@@ -567,7 +571,8 @@ class StoreUtil {
 		// Check if store_id already exists.
 		$exists = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT ID FROM $table_name WHERE store_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                'SELECT ID FROM %i WHERE store_id = %d',
+                $table_name,
                 $store_id
             )
 		);
@@ -657,10 +662,12 @@ class StoreUtil {
 		$table = $wpdb->prefix . Utill::TABLES['store'];
 
 		if ( isset( $args['count'] ) ) {
-			$query = "SELECT COUNT(*) FROM {$table}";
+			$query = 'SELECT COUNT(*) FROM %i';
 		} else {
-			$query = "SELECT * FROM {$table}";
+			$query = 'SELECT * FROM %i';
 		}
+
+		array_unshift( $params, $table );
 
 		if ( ! empty( $where ) ) {
 			$condition = $args['condition'] ?? ' AND ';
@@ -683,7 +690,7 @@ class StoreUtil {
 			$query .= " LIMIT $limit OFFSET $offset";
 		}
 
-		$query = $params ? $wpdb->prepare( $query, ...$params ) : $query; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$query = $wpdb->prepare( $query, ...$params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( isset( $args['count'] ) ) {
 			$results = $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
@@ -759,13 +766,13 @@ class StoreUtil {
         $start_date = ! empty( $args['start_date'] ) ? $args['start_date'] : null;
         $end_date   = ! empty( $args['end_date'] ) ? $args['end_date'] : null;
 
-        $query = "
+        $query = '
             SELECT COUNT(DISTINCT user_id) as total
-            FROM {$table_name}
+            FROM %i
             WHERE store_id = %d
-        ";
+        ';
 
-        $params = array( $store_id );
+        $params = array( $table_name, $store_id );
 
         if ( $start_date && $end_date ) {
             $query   .= ' AND created BETWEEN %s AND %s';
@@ -1094,8 +1101,8 @@ class StoreUtil {
         $where_clause = implode( ' AND ', $conditions );
 
         // Direct query execution
-        $sql     = "SELECT DISTINCT store_id FROM {$table} WHERE {$where_clause}";
-        $results = $wpdb->get_col( $wpdb->prepare( $sql, $params ) );
+        $sql     = "SELECT DISTINCT store_id FROM %i WHERE {$where_clause}";
+        $results = $wpdb->get_col( $wpdb->prepare( $sql, array_merge( array( $table ), $params ) ) );
 
         return $results ? array_map( 'intval', $results ) : array();
     }

@@ -605,10 +605,9 @@ class Frontend {
 
 		$table_name = $wpdb->prefix . Utill::TABLES['visitors_stats'];
 
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "INSERT INTO {$table_name}
+                'INSERT INTO %i
             ( store_id
             , user_id
             , user_cookie
@@ -639,7 +638,8 @@ class Frontend {
             , %s
             , %s
             , %s
-            ) ON DUPLICATE KEY UPDATE `created` = now()",
+            ) ON DUPLICATE KEY UPDATE `created` = now()',
+                $table_name,
                 $store_id,
                 $visitor_data->user_id,
                 $visitor_data->user_cookie,
@@ -657,7 +657,6 @@ class Frontend {
                 $visitor_data->timezone
             )
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 
 	/**

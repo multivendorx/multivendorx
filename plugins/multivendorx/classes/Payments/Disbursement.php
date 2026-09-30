@@ -35,14 +35,15 @@ class Disbursement {
         global $wpdb;
         $table = $wpdb->prefix . Utill::TABLES['transaction'];
 
-        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         $results = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            "SELECT * FROM {$table}
+            $wpdb->prepare(
+                "SELECT * FROM %i
             WHERE status = 'Upcoming'
             AND available_at IS NOT NULL
-            AND available_at < NOW()"
+            AND available_at < NOW()",
+                $table
+            )
         );
-        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
         foreach ( $results as $row ) {
             $wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
@@ -88,13 +89,15 @@ class Disbursement {
         global $wpdb;
         $table = $wpdb->prefix . Utill::TABLES['transaction'];
 
-        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         $results = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            "
-            SELECT store_id, balance FROM {$table} WHERE id IN ( SELECT MAX(id) FROM {$table} GROUP BY store_id );
-        "
+            $wpdb->prepare(
+                '
+            SELECT store_id, balance FROM %i WHERE id IN ( SELECT MAX(id) FROM %i GROUP BY store_id );
+        ',
+                $table,
+                $table
+            )
         );
-        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
         if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );

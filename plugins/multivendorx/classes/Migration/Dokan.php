@@ -188,7 +188,7 @@ class Dokan {
         $table      = $wpdb->prefix . 'dokan_orders';
         $table_name = $wpdb->prefix . Utill::TABLES['commission'];
 
-        $dokan_orders = $wpdb->get_results( "SELECT * FROM {$table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $dokan_orders = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i', $table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
         foreach ( $dokan_orders as $row ) {
             $order_id = $row->order_id;

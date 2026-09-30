@@ -86,8 +86,8 @@ class Util {
 
 		// Build base query.
 		$query = isset( $args['count'] ) && $args['count']
-			? "SELECT COUNT(*) FROM $table" // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-			: "SELECT * FROM $table"; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			? $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table )
+			: $wpdb->prepare( 'SELECT * FROM %i', $table );
 
 		if ( ! empty( $where ) ) {
 			$query .= ' WHERE ' . implode( ' AND ', $where );

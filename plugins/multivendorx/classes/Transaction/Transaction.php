@@ -266,10 +266,12 @@ class Transaction {
 
         // Base query (count or select).
         if ( isset( $args['count'] ) ) {
-            $query = "SELECT COUNT(*) FROM $table";
+            $query = 'SELECT COUNT(*) FROM %i';
         } else {
-            $query = "SELECT * FROM $table";
+            $query = 'SELECT * FROM %i';
         }
+
+        array_unshift( $params, $table );
 
         // Add WHERE.
         if ( ! empty( $where ) ) {
@@ -294,7 +296,7 @@ class Transaction {
         }
 
         // Run query.
-        $query = $params ? $wpdb->prepare( $query, ...$params ) : $query; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $query = $wpdb->prepare( $query, ...$params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
         if ( isset( $args['count'] ) ) {
             return (int) ( $wpdb->get_var( $query ) ?? 0 );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
@@ -320,34 +322,36 @@ class Transaction {
         $table_name = esc_sql( $wpdb->prefix . Utill::TABLES['transaction'] );
 
         if ( $total ) {
-            /* phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
+            /* phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching */
             $total_earning = $wpdb->get_var(
                 $wpdb->prepare(
-                    "SELECT SUM(amount) 
-                    FROM {$table_name} 
-                    WHERE store_id = %d",
+                    'SELECT SUM(amount)
+                    FROM %i
+                    WHERE store_id = %d',
+                    $table_name,
                     $store_id
                 )
             );
-            /* phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
+            /* phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching */
 
             return $total_earning;
         }
 
-        /* phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
+        /* phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching */
         $result = $wpdb->get_row(
             $wpdb->prepare(
-                "
+                '
                 SELECT balance, locking_balance
-                FROM {$table_name}
+                FROM %i
                 WHERE store_id = %d
                 ORDER BY id DESC
                 LIMIT 1
-                ",
+                ',
+                $table_name,
                 $store_id
             )
         );
-        /* phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
+        /* phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching */
 
         if ( ! $result ) {
             return array(

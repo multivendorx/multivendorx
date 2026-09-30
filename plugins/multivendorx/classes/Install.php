@@ -80,12 +80,15 @@ class Install {
 
             $table = $wpdb->prefix . Utill::TABLES['store'];
 
-            $wpdb->query(
-                "
-                ALTER TABLE {$table}
+            $wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+                $wpdb->prepare(
+                    '
+                ALTER TABLE %i
                 MODIFY name VARCHAR(100) NOT NULL,
                 MODIFY slug VARCHAR(100) NOT NULL
-            "
+            ',
+                    $table
+                )
             );
         }
 
@@ -551,7 +554,7 @@ class Install {
         // Create the trigger.
         $sql = "
         CREATE TRIGGER update_store_balance
-        BEFORE INSERT ON {$table}
+        BEFORE INSERT ON %i
         FOR EACH ROW
         BEGIN
             DECLARE last_balance DECIMAL(20,2);
@@ -559,7 +562,7 @@ class Install {
 
             SELECT balance, locking_balance
             INTO last_balance, last_locking_balance
-            FROM {$table}
+            FROM %i
             WHERE store_id = NEW.store_id
             ORDER BY id DESC
             LIMIT 1;
@@ -621,8 +624,8 @@ class Install {
         END;
         ";
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        $wpdb->query( $sql );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+        $wpdb->query( $wpdb->prepare( $sql, $table, $table ) );
     }
 
     /**

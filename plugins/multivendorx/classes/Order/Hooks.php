@@ -146,7 +146,7 @@ class Hooks {
 		$table_name = $wpdb->prefix . 'wc_order_stats';
 
 		// Inject the constraint: parent_id must be 0.
-		$clauses[] = "AND {$table_name}.parent_id = 0";
+		$clauses[] = $wpdb->prepare( 'AND %i.parent_id = 0', $table_name );
 
 		return $clauses;
 	}

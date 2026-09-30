@@ -185,7 +185,8 @@ class Util {
 
 		$result = (bool) $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT COUNT(*) FROM {$table_review} WHERE store_id = %d AND customer_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                'SELECT COUNT(*) FROM %i WHERE store_id = %d AND customer_id = %d',
+                $table_review,
                 $store_id,
                 $user_id
             )
@@ -275,7 +276,8 @@ class Util {
 
 		$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT * FROM {$table_review} WHERE store_id = %d AND status = 'approved' ORDER BY date_created DESC LIMIT %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                "SELECT * FROM %i WHERE store_id = %d AND status = 'approved' ORDER BY date_created DESC LIMIT %d",
+                $table_review,
                 $store_id,
                 $limit
             )
@@ -306,19 +308,24 @@ class Util {
 				continue;
 			}
 
-        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$avg = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->prepare(
-                    "SELECT AVG(rating_value) FROM {$table_rating}
-        INNER JOIN {$table_review} ON {$table_review}.review_id = {$table_rating}.review_id
-        WHERE {$table_review}.store_id = %d
-        AND {$table_rating}.parameter = %s
-        AND {$table_review}.status = 'approved'",
+                    "SELECT AVG(rating_value) FROM %i
+        INNER JOIN %i ON %i.review_id = %i.review_id
+        WHERE %i.store_id = %d
+        AND %i.parameter = %s
+        AND %i.status = 'approved'",
+                    $table_rating,
+                    $table_review,
+                    $table_review,
+                    $table_rating,
+                    $table_review,
                     $store_id,
-                    $param_value
+                    $table_rating,
+                    $param_value,
+                    $table_review
                 )
 			);
-        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 			$averages[ $param_value ] = $avg ? round( $avg, 2 ) : 0;
 		}
@@ -341,7 +348,8 @@ class Util {
 
 		$overall = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT AVG(overall_rating) FROM {$table_review} WHERE store_id = %d AND status = 'approved'", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                "SELECT AVG(overall_rating) FROM %i WHERE store_id = %d AND status = 'approved'",
+                $table_review,
                 $store_id
             )
 		);
@@ -367,19 +375,18 @@ class Util {
 		global $wpdb;
 		$table_review = $wpdb->prefix . Utill::TABLES['review'];
 
-        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$result = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT status FROM {$table_review}
-        WHERE store_id = %d 
-        AND customer_id = %d 
-        ORDER BY date_created DESC 
+                "SELECT status FROM %i
+        WHERE store_id = %d
+        AND customer_id = %d
+        ORDER BY date_created DESC
         LIMIT 1",
+                $table_review,
                 $store_id,
                 $user_id
             )
 		);
-        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
@@ -456,9 +463,9 @@ class Util {
 
         // Build query.
         if ( isset( $args['count'] ) ) {
-            $query = "SELECT COUNT(*) FROM $table";
+            $query = $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table );
         } else {
-            $query = "SELECT * FROM $table";
+            $query = $wpdb->prepare( 'SELECT * FROM %i', $table );
         }
 
         // Add WHERE conditions.

@@ -116,8 +116,7 @@ class Frontend {
 
         $table = $wpdb->prefix . Utill::TABLES['shared_listing'];
         $limit = apply_filters( 'multivendorx_shared_listing_products_query_limit', 100 );
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-        $query = $wpdb->prepare( "SELECT listing_products FROM {$table} LIMIT %d", $limit );
+        $query = $wpdb->prepare( 'SELECT listing_products FROM %i LIMIT %d', $table, $limit );
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
         $maps = $wpdb->get_results( $query );
         foreach ( $maps as $map ) {
@@ -305,10 +304,11 @@ class Frontend {
 		// Search serialized data.
 		$like = '%' . $wpdb->esc_like( 'i:' . $product_id . ';' ) . '%';
 
-        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $row = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT listing_products FROM {$table} WHERE listing_products LIKE %s",
+                'SELECT listing_products FROM %i WHERE listing_products LIKE %s',
+                $table,
                 $like
             )
         );

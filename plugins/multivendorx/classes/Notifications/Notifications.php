@@ -1621,7 +1621,7 @@ class Notifications {
 		if ( ! $is_new ) {
 			$table = $wpdb->prefix . Utill::TABLES['system_events'];
 			$count = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-				"SELECT COUNT(*) FROM {$table}" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table )
 			);
 
 			if ( $count > 0 ) {
@@ -1685,7 +1685,8 @@ class Notifications {
 		$table = $wpdb->prefix . Utill::TABLES['system_events'];
 		$event = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE system_action = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				'SELECT * FROM %i WHERE system_action = %s',
+				$table,
 				$action_name
 			)
 		);
@@ -1805,12 +1806,13 @@ class Notifications {
 		if ( ! empty( $id ) ) {
 			$events = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 				$wpdb->prepare(
-					"SELECT * FROM $table WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+					'SELECT * FROM %i WHERE id = %d',
+					$table,
 					$id
 				)
 			);
 		} else {
-			$events = $wpdb->get_results( "SELECT * FROM $table" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$events = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i', $table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		}
 
 		return $events;
@@ -1826,7 +1828,7 @@ class Notifications {
 
 		$table = "{$wpdb->prefix}" . Utill::TABLES['system_events'];
 
-		return $wpdb->query( "DELETE FROM $table" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->query( $wpdb->prepare( 'DELETE FROM %i', $table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	/**
@@ -1960,10 +1962,12 @@ class Notifications {
 			$where[] = 'is_dismissed = 0 AND is_read = 0';
 
 			if ( isset( $args['count'] ) ) {
-				$query = "SELECT COUNT(*) FROM {$table}"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$query = 'SELECT COUNT(*) FROM %i';
 			} else {
-				$query = "SELECT * FROM {$table}"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$query = 'SELECT * FROM %i';
 			}
+
+			array_unshift( $params, $table );
 
 			if ( ! empty( $where ) ) {
 				$condition = $args['condition'] ?? ' AND ';
@@ -1977,7 +1981,7 @@ class Notifications {
 				$params[] = intval( $args['offset'] );
 			}
 
-			$query = $params ? $wpdb->prepare( $query, ...$params ) : $query; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$query = $wpdb->prepare( $query, ...$params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 			if ( isset( $args['count'] ) ) {
 				$results = $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
@@ -1991,7 +1995,8 @@ class Notifications {
 		// No filters requested: fall back to the plain, non-dismissed list.
 		$events = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->prepare(
-				"SELECT * FROM $table WHERE is_dismissed = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				'SELECT * FROM %i WHERE is_dismissed = %d',
+				$table,
 				0
 			)
 		);
@@ -2014,18 +2019,17 @@ class Notifications {
 
 		$current_date = current_time( 'mysql' );
 
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$query = $wpdb->prepare(
-			"
-		DELETE FROM {$table}
+			'
+		DELETE FROM %i
 		WHERE (expires_at IS NOT NULL AND expires_at < %s)
 		OR (created_at < DATE_SUB(%s, INTERVAL %d DAY))
-		",
+		',
+			$table,
 			$current_date,
 			$current_date,
 			$days
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		$wpdb->query( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 	}

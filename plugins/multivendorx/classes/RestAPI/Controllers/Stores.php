@@ -1438,20 +1438,19 @@ class Stores extends \WP_REST_Controller {
 
         $table_name = $wpdb->prefix . Utill::TABLES['visitors_stats'];
 
-        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         $rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT country
-                FROM {$table_name}
+                'SELECT country
+                FROM %i
                 WHERE store_id = %d
                 AND created >= %s
-                AND created <= %s",
+                AND created <= %s',
+                $table_name,
                 $store_id,
                 $start,
                 $end
             )
         );
-        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
         $map_stats = array();
 
