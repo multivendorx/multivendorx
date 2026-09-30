@@ -24,8 +24,8 @@ class Frontend {
     public function __construct() {
         // Redirect store dashboard page.
         add_filter( 'template_include', array( $this, 'store_dashboard_template' ) );
-        add_filter( 'woocommerce_login_redirect', array( $this, 'redirect_store_dashboard' ), 10 );
-        add_filter( 'login_redirect', array( $this, 'redirect_store_dashboard' ), 10 );
+        add_filter( 'woocommerce_login_redirect', array( $this, 'redirect_store_dashboard' ), 10, 2 );
+        add_filter( 'login_redirect', array( $this, 'redirect_store_dashboard' ), 10, 3 );
 
         // Modify related products section in single product page.
         add_filter( 'woocommerce_related_products', array( $this, 'show_related_products' ), 99, 3 );
@@ -421,18 +421,53 @@ class Frontend {
     /**
      * Redirect Store dashboard
      *
+     * Handles both `login_redirect` (redirect, requested_redirect_to, user) and
+     * `woocommerce_login_redirect` (redirect, user) - the freshly logged-in user
+     * is read from whichever extra argument is a WP_User, never from
+     * MultiVendorX()->current_user/active_store, since those are cached once on
+     * `init` (before this request's login is processed) and are still the
+     * pre-login/anonymous values when this filter runs.
+     *
      * @param string $redirect redirect url.
+     * @param mixed  ...$args  Remaining filter args; one of them is the logged-in WP_User.
      *
      * @return string
      */
-    public function redirect_store_dashboard( $redirect ) {
+    public function redirect_store_dashboard( $redirect, ...$args ) {
         if ( Utill::is_store_registration_page() ) {
             return $redirect;
         }
-        if ( in_array( 'store_owner', MultiVendorX()->current_user->roles, true ) && MultiVendorX()->active_store ) {
-            return get_permalink( MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) );
+
+        $user = null;
+
+        foreach ( $args as $arg ) {
+            if ( $arg instanceof \WP_User ) {
+                $user = $arg;
+                break;
+            }
         }
-        return $redirect;
+
+        if ( ! $user || ! in_array( 'store_owner', (array) $user->roles, true ) ) {
+            return $redirect;
+        }
+
+        $active_store = get_user_meta( $user->ID, Utill::USER_SETTINGS_KEYS['active_store'], true );
+
+        if ( ! $active_store ) {
+            // Not set yet (e.g. first-ever login) - fall back to the user's first store,
+            // same as FrontendScripts does when localizing the dashboard's own scripts.
+            $store_ids = Store::get_store( $user->ID, 'user' );
+
+            if ( empty( $store_ids ) ) {
+                return $redirect;
+            }
+
+            $first_store  = reset( $store_ids );
+            $active_store = $first_store['id'];
+            update_user_meta( $user->ID, Utill::USER_SETTINGS_KEYS['active_store'], $active_store );
+        }
+
+        return get_permalink( MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) );
     }
 
     /**
@@ -710,7 +745,7 @@ class Frontend {
             return;
         }
 
-        $dashboard_url = home_url( '/dashboard' );
+        $dashboard_url = get_permalink( MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) );
 
         echo '<h3>' . esc_html__( 'Manage your store', 'multivendorx' ) . '</h3>';
 

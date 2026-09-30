@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-29T12:50:43+00:00\n"
+"POT-Creation-Date: 2026-09-30T05:50:32+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: multivendorx\n"
@@ -34,78 +34,78 @@ msgstr ""
 msgid "An AI-powered WooCommerce multivendor marketplace solution to build, manage, and scale your platform."
 msgstr ""
 
-#: classes/Admin.php:85
+#: classes/Admin.php:86
 #: classes/RestAPI/Controllers/Dashboard.php:112
 #: assets/js/index.js:1
 msgid "Dashboard"
 msgstr ""
 
-#: classes/Admin.php:90
+#: classes/Admin.php:91
 #: assets/js/index.js:1
 msgid "Stores"
 msgstr ""
 
-#: classes/Admin.php:95
+#: classes/Admin.php:96
 #: classes/RestAPI/Controllers/Dashboard.php:151
 #: assets/js/index.js:1
 msgid "Commissions"
 msgstr ""
 
-#: classes/Admin.php:100
+#: classes/Admin.php:101
 msgid "Transaction History"
 msgstr ""
 
-#: classes/Admin.php:105
+#: classes/Admin.php:106
 #: assets/js/index.js:1
 msgid "Approval Queue"
 msgstr ""
 
-#: classes/Admin.php:110
+#: classes/Admin.php:111
 #: assets/js/index.js:1
 msgid "Compliance"
 msgstr ""
 
-#: classes/Admin.php:115
+#: classes/Admin.php:116
 msgid "Customers"
 msgstr ""
 
-#: classes/Admin.php:120
+#: classes/Admin.php:121
 #: assets/js/index.js:1
 msgid "Reports"
 msgstr ""
 
-#: classes/Admin.php:125
+#: classes/Admin.php:126
 #: classes/RestAPI/Controllers/Dashboard.php:237
-#: classes/Tracker.php:136
+#: classes/Tracker.php:137
 #: assets/js/index.js:1
 msgid "Settings"
 msgstr ""
 
-#: classes/Admin.php:130
+#: classes/Admin.php:131
 #: assets/js/index.js:1
 msgid "Modules"
 msgstr ""
 
-#: classes/Admin.php:135
+#: classes/Admin.php:136
 msgid "Status & Tools"
 msgstr ""
 
-#: classes/Admin.php:140
+#: classes/Admin.php:141
 #: assets/js/index.js:1
 msgid "Help & Support"
 msgstr ""
 
-#: classes/Admin.php:191
 #: classes/Admin.php:192
+#: classes/Admin.php:193
 #: classes/MultiVendorX.php:260
-#: classes/Tracker.php:147
+#: classes/Tracker.php:148
 #: assets/js/index.js:1
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: classes/Admin.php:316
-#: classes/Admin.php:550
-#: classes/Admin.php:643
+#: classes/Admin.php:325
+#: classes/Admin.php:559
+#: classes/Admin.php:652
 #: classes/Product.php:56
 #: modules/Privacy/Frontend.php:52
 #: templates/store/shared-listing-single-product-tab.php:25
@@ -113,65 +113,65 @@ msgstr ""
 msgid "Store"
 msgstr ""
 
-#: classes/Admin.php:337
-#: classes/Admin.php:567
+#: classes/Admin.php:346
+#: classes/Admin.php:576
 #: classes/Product.php:177
 msgid "Assign Store"
 msgstr ""
 
-#: classes/Admin.php:342
-#: classes/Admin.php:572
+#: classes/Admin.php:351
+#: classes/Admin.php:581
 msgid "Search for a store…"
 msgstr ""
 
-#: classes/Admin.php:360
+#: classes/Admin.php:369
 msgid "Marketplace commission (fixed)"
 msgstr ""
 
-#: classes/Admin.php:362
+#: classes/Admin.php:371
 msgid "Fixed commission."
 msgstr ""
 
-#: classes/Admin.php:374
+#: classes/Admin.php:383
 msgid "Marketplace commission (%)"
 msgstr ""
 
-#: classes/Admin.php:376
+#: classes/Admin.php:385
 msgid "Percentage commission."
 msgstr ""
 
-#: classes/Admin.php:427
-#: classes/Admin.php:475
+#: classes/Admin.php:436
+#: classes/Admin.php:484
 msgid "Commission Fixed"
 msgstr ""
 
-#: classes/Admin.php:429
+#: classes/Admin.php:438
 msgid "Fixed Commission."
 msgstr ""
 
-#: classes/Admin.php:437
-#: classes/Admin.php:471
-#: classes/Admin.php:491
+#: classes/Admin.php:446
+#: classes/Admin.php:480
+#: classes/Admin.php:500
 msgid "Commission Percentage"
 msgstr ""
 
-#: classes/Admin.php:439
+#: classes/Admin.php:448
 msgid "Percentage Commission."
 msgstr ""
 
-#: classes/Admin.php:496
+#: classes/Admin.php:505
 msgid "Commission Fixed per transaction"
 msgstr ""
 
-#: classes/Admin.php:526
+#: classes/Admin.php:535
 msgid "You are not allowed to search stores."
 msgstr ""
 
-#: classes/Admin.php:617
+#: classes/Admin.php:626
 msgid "COD Order Payment"
 msgstr ""
 
-#: classes/Admin.php:639
+#: classes/Admin.php:648
 #: templates/store/shared-listing-single-product-tab.php:48
 #: assets/js/index.js:1
 msgid "Admin"
@@ -203,40 +203,40 @@ msgid "Your cart has products from various stores. They’ll be processed and sh
 msgstr ""
 
 #. translators: %s: Current user display name
-#: classes/Frontend.php:622
+#: classes/Frontend.php:657
 #, php-format
 msgid " %s you're one step away from setting up your store. Fill in your business information below to get started."
 msgstr ""
 
-#: classes/Frontend.php:631
+#: classes/Frontend.php:666
 msgid "Step 1 of 2"
 msgstr ""
 
-#: classes/Frontend.php:632
+#: classes/Frontend.php:667
 msgid "Create your account"
 msgstr ""
 
-#: classes/Frontend.php:633
+#: classes/Frontend.php:668
 msgid "Start by setting up a free account. If you already have one, just sign in."
 msgstr ""
 
-#: classes/Frontend.php:635
+#: classes/Frontend.php:670
 msgid "Already have an account"
 msgstr ""
 
-#: classes/Frontend.php:636
+#: classes/Frontend.php:671
 msgid "New here? Sign up"
 msgstr ""
 
-#: classes/Frontend.php:715
+#: classes/Frontend.php:750
 msgid "Manage your store"
 msgstr ""
 
-#: classes/Frontend.php:717
+#: classes/Frontend.php:752
 msgid "To view orders, manage products, and access your full store settings, visit your store dashboard."
 msgstr ""
 
-#: classes/Frontend.php:720
+#: classes/Frontend.php:755
 msgid "Go to store dashboard"
 msgstr ""
 
@@ -979,8 +979,8 @@ msgstr ""
 #: classes/RestAPI/Controllers/Notifications.php:102
 #: classes/RestAPI/Controllers/Notifications.php:370
 #: classes/RestAPI/Controllers/Notifications.php:505
-#: classes/RestAPI/Controllers/Settings.php:99
-#: classes/RestAPI/Controllers/Settings.php:232
+#: classes/RestAPI/Controllers/Settings.php:108
+#: classes/RestAPI/Controllers/Settings.php:241
 #: classes/RestAPI/Controllers/Status.php:72
 #: classes/RestAPI/Controllers/Status.php:111
 #: classes/RestAPI/Controllers/Stores.php:128
@@ -1037,8 +1037,8 @@ msgstr ""
 #: classes/RestAPI/Controllers/Notifications.php:306
 #: classes/RestAPI/Controllers/Notifications.php:493
 #: classes/RestAPI/Controllers/Notifications.php:523
-#: classes/RestAPI/Controllers/Settings.php:220
-#: classes/RestAPI/Controllers/Settings.php:277
+#: classes/RestAPI/Controllers/Settings.php:229
+#: classes/RestAPI/Controllers/Settings.php:286
 #: classes/RestAPI/Controllers/Status.php:93
 #: classes/RestAPI/Controllers/Status.php:178
 #: classes/RestAPI/Controllers/Stores.php:225
@@ -1237,11 +1237,11 @@ msgstr ""
 msgid "Notification(s) updated successfully."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Settings.php:152
+#: classes/RestAPI/Controllers/Settings.php:161
 msgid "You are not allowed to change role permissions."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Settings.php:215
+#: classes/RestAPI/Controllers/Settings.php:224
 #: classes/RestAPI/Controllers/Stores.php:1227
 msgid "Settings Saved"
 msgstr ""
@@ -1418,77 +1418,77 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: classes/Tracker.php:143
+#: classes/Tracker.php:144
 #: modules/StoreReview/assets/js/frontend.js:256
 msgid "Write a Review"
 msgstr ""
 
-#: classes/Tracker.php:215
+#: classes/Tracker.php:216
 msgid "Support Forum"
 msgstr ""
 
-#: classes/Tracker.php:219
+#: classes/Tracker.php:220
 msgid "Facebook Group"
 msgstr ""
 
-#: classes/Tracker.php:223
+#: classes/Tracker.php:224
 msgid "Book a Call"
 msgstr ""
 
-#: classes/Tracker.php:252
+#: classes/Tracker.php:253
 msgid "We collect non-sensitive diagnostic data and plugin usage information along with your feedback."
 msgstr ""
 
-#: classes/Tracker.php:257
+#: classes/Tracker.php:258
 msgid "Skip & Deactivate"
 msgstr ""
 
-#: classes/Tracker.php:258
+#: classes/Tracker.php:259
 msgid "Submit & Deactivate"
 msgstr ""
 
-#: classes/Tracker.php:296
+#: classes/Tracker.php:307
 msgid "Submitting…"
 msgstr ""
 
-#: classes/Tracker.php:333
+#: classes/Tracker.php:344
 msgid "We're sorry to see you leave 😔"
 msgstr ""
 
-#: classes/Tracker.php:334
+#: classes/Tracker.php:345
 msgid "Thinking about deactivating? We're here to help — contact us anytime."
 msgstr ""
 
-#: classes/Tracker.php:335
+#: classes/Tracker.php:346
 msgid "Would you quickly share your reason for deactivating?"
 msgstr ""
 
-#: classes/Tracker.php:337
+#: classes/Tracker.php:348
 msgid "I no longer need the plugin"
 msgstr ""
 
-#: classes/Tracker.php:339
+#: classes/Tracker.php:350
 msgid "I found a better plugin"
 msgstr ""
 
-#: classes/Tracker.php:340
+#: classes/Tracker.php:351
 msgid "Please share which plugin"
 msgstr ""
 
-#: classes/Tracker.php:342
+#: classes/Tracker.php:353
 msgid "I couldn't get the plugin to work"
 msgstr ""
 
-#: classes/Tracker.php:343
+#: classes/Tracker.php:354
 msgid "It's a temporary deactivation"
 msgstr ""
 
-#: classes/Tracker.php:345
+#: classes/Tracker.php:356
 #: modules/MarketplaceCompliance/Ajax.php:122
 msgid "Other"
 msgstr ""
 
-#: classes/Tracker.php:346
+#: classes/Tracker.php:357
 msgid "Please share the reason"
 msgstr ""
 

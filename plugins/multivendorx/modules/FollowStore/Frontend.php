@@ -54,7 +54,9 @@ class Frontend {
      * Enqueue the login modal's CSS.
      */
     public function enqueue_login_modal_style() {
-        FrontendScripts::enqueue_style( 'multivendorx-follow-store-login-modal' );
+        if ( Utill::is_store_page() && ! is_user_logged_in() ) {
+            FrontendScripts::enqueue_style( 'multivendorx-follow-store-login-modal' );
+        }
     }
 	/**
 	 * Register follow store frontend script
@@ -131,6 +133,13 @@ class Frontend {
      * @return void
      */
     public function render_login_modal() {
+        // Only needed as a "log in to follow" prompt on a store page for anonymous visitors -
+        // rendering it elsewhere (e.g. the vendor dashboard) unconditionally on every page's
+        // wp_footer causes a flash of this unstyled WooCommerce My Account markup before the
+        // modal's own CSS (display:none) has a chance to load.
+        if ( ! Utill::is_store_page() || is_user_logged_in() ) {
+            return;
+        }
         ?>
         <div id="multivendorx-login-modal" class="multivendorx-modal">
             <div class="multivendorx-modal-content">
