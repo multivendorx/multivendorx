@@ -311,9 +311,9 @@ class Rest extends \WP_REST_Controller {
                 );
             }
             // Fetch the question.
-            $q = reset( Util::query_questions( array( 'id' => $id ) ) );
+            $question = reset( Util::query_questions( array( 'id' => $id ) ) );
 
-            if ( ! $q ) {
+            if ( ! $question ) {
                 return new \WP_Error(
                     'not_found',
                     __( 'Question not found', 'multivendorx' ),
@@ -321,7 +321,7 @@ class Rest extends \WP_REST_Controller {
                 );
             }
 
-            if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) && (int) MultiVendorX()->active_store !== (int) $q['store_id'] ) {
+            if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) && (int) MultiVendorX()->active_store !== (int) $question['store_id'] ) {
                 return new \WP_Error(
                     'forbidden',
                     __( 'You cannot manage this question.', 'multivendorx' ),
@@ -373,14 +373,14 @@ class Rest extends \WP_REST_Controller {
             // Save via Util helper.
             $updated = Util::update_question( $id, $data_to_update );
 
-            $store = new Store( $q['store_id'] );
-            $user  = get_user_by( 'id', $q['question_by'] );
+            $store = new Store( $question['store_id'] );
+            $user  = get_user_by( 'id', $question['question_by'] );
             do_action(
                 'multivendorx_notify_product_question_reply',
                 'product_question_reply',
                 array(
                     'customer_email' => $user->user_email,
-					'customer_phone' => get_user_meta( $q['question_by'], 'billing_phone', true ),
+					'customer_phone' => get_user_meta( $question['question_by'], 'billing_phone', true ),
                     'store_name'     => $store->exists() ? $store->get( Utill::STORE_SETTINGS_KEYS['name'] ) : '',
                     'customer_name'  => $user->display_name,
                     'category'       => 'activity',
@@ -435,8 +435,8 @@ class Rest extends \WP_REST_Controller {
         }
 
         // Fetch the question.
-        $q = reset( Util::query_questions( array( 'id' => $id ) ) );
-        if ( ! $q ) {
+        $question = reset( Util::query_questions( array( 'id' => $id ) ) );
+        if ( ! $question ) {
             return new \WP_Error(
                 'not_found',
                 __( 'Question not found', 'multivendorx' ),
@@ -460,45 +460,45 @@ class Rest extends \WP_REST_Controller {
     /**
      * Prepare a single Queries item for REST response.
      *
-     * @param array $q Queries item data.
+     * @param array $question Queries item data.
      * @return array Formatted Queries item for REST.
      */
-    public function prepare_rest_item_for_response( $q ) {
-        $product       = wc_get_product( $q['product_id'] );
+    public function prepare_rest_item_for_response( $question ) {
+        $product       = wc_get_product( $question['product_id'] );
         $product_name  = $product ? $product->get_name() : '';
         $product_link  = $product ? get_permalink( $product->get_id() ) : '';
         $product_image = $product && $product->get_image_id()
             ? wp_get_attachment_image_url( $product->get_image_id(), 'woocommerce_thumbnail' )
             : '';
 
-        $author_data = get_userdata( $q['question_by'] );
+        $author_data = get_userdata( $question['question_by'] );
         $author_name = $author_data && trim( $author_data->first_name . ' ' . $author_data->last_name )
             ? trim( $author_data->first_name . ' ' . $author_data->last_name )
             : ( $author_data->display_name ?? '' );
 
-        $store_obj  = MultiVendorX()->store->get_store( $q['store_id'] );
+        $store_obj  = MultiVendorX()->store->get_store( $question['store_id'] );
         $store_name = $store_obj ? $store_obj->get( 'name' ) : '';
 
         return array(
-            'id'                  => (int) $q['id'],
-            'product_id'          => (int) $q['product_id'],
+            'id'                  => (int) $question['id'],
+            'product_id'          => (int) $question['product_id'],
             'product_name'        => $product_name,
             'product_link'        => $product_link,
             'product_image'       => $product_image,
-            'store_id'            => $q['store_id'],
+            'store_id'            => $question['store_id'],
             'store_name'          => $store_name,
-            'question_text'       => $q['question_text'],
-            'answer_text'         => $q['answer_text'],
-            'question_by'         => (int) $q['question_by'],
+            'question_text'       => $question['question_text'],
+            'answer_text'         => $question['answer_text'],
+            'question_by'         => (int) $question['question_by'],
             'author_name'         => $author_name,
-            'question_date'       => Utill::multivendorx_rest_prepare_date_response( $q['question_date'] ),
-            'question_date_gmt'   => Utill::multivendorx_rest_prepare_date_response( $q['question_date'], true ),
-            'answer_by'           => (int) ( $q['answer_by'] ?? 0 ),
-            'answer_date'         => Utill::multivendorx_rest_prepare_date_response( $q['answer_date'] ) ?? '',
-            'answer_date_gmt'     => Utill::multivendorx_rest_prepare_date_response( $q['answer_date'], true ) ?? '',
-            'time_ago'            => human_time_diff( strtotime( $q['question_date'] ), time() ) . ' ago',
-            'total_votes'         => (int) $q['total_votes'],
-            'question_visibility' => $q['question_visibility'] ?? 'public',
+            'question_date'       => Utill::multivendorx_rest_prepare_date_response( $question['question_date'] ),
+            'question_date_gmt'   => Utill::multivendorx_rest_prepare_date_response( $question['question_date'], true ),
+            'answer_by'           => (int) ( $question['answer_by'] ?? 0 ),
+            'answer_date'         => Utill::multivendorx_rest_prepare_date_response( $question['answer_date'] ) ?? '',
+            'answer_date_gmt'     => Utill::multivendorx_rest_prepare_date_response( $question['answer_date'], true ) ?? '',
+            'time_ago'            => human_time_diff( strtotime( $question['question_date'] ), time() ) . ' ago',
+            'total_votes'         => (int) $question['total_votes'],
+            'question_visibility' => $question['question_visibility'] ?? 'public',
         );
     }
 }
