@@ -75,14 +75,6 @@ class Rest extends \WP_REST_Controller {
     public function get_items_permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'read_shop_orders', 'edit_shop_orders' ) );
     }
-    /**
-     * Update an existing refund.
-     *
-     * @param object $request Full details about the request.
-     */
-    public function update_item_permissions_check( $request ) {
-        return Utill::current_user_has_capability( array( 'edit_shop_orders' ) );
-    }
 
     /**
      * Get all refunds filtered by store, search, and date.

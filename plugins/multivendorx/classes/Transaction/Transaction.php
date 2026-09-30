@@ -196,7 +196,8 @@ class Transaction {
     public static function get_transaction_information( $args ) {
         global $wpdb;
 
-        $where = array();
+        $where  = array();
+        $params = array();
 
         // Extract and sanitize order/orderBy early so they don't go into WHERE.
         $allowed  = array( 'created_at', 'entry_type', 'transaction_type', 'id', 'store_id', 'order_id', 'commission_id' );
@@ -208,47 +209,57 @@ class Transaction {
 
         // Filter by id(s).
         if ( isset( $args['id'] ) ) {
-            $ids     = is_array( $args['id'] ) ? $args['id'] : array( $args['id'] );
-            $ids     = implode( ',', array_map( 'intval', $ids ) );
-            $where[] = "id IN ($ids)";
+            $ids          = is_array( $args['id'] ) ? $args['id'] : array( $args['id'] );
+            $ids          = array_map( 'intval', $ids );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $where[]      = "id IN ($placeholders)";
+            $params       = array_merge( $params, $ids );
         }
 
         // Filter by store_id.
         if ( isset( $args['store_id'] ) ) {
-            $where[] = ' ( store_id = ' . esc_sql( intval( $args['store_id'] ) ) . ' ) ';
+            $where[]  = '( store_id = %d )';
+            $params[] = intval( $args['store_id'] );
         }
 
         // Filter by order_id.
         if ( isset( $args['order_id'] ) ) {
-            $where[] = ' ( order_id = ' . esc_sql( intval( $args['order_id'] ) ) . ' ) ';
+            $where[]  = '( order_id = %d )';
+            $params[] = intval( $args['order_id'] );
         }
 
         // Filter by commission_id.
         if ( isset( $args['commission_id'] ) ) {
-            $where[] = ' ( commission_id = ' . esc_sql( intval( $args['commission_id'] ) ) . ' ) ';
+            $where[]  = '( commission_id = %d )';
+            $params[] = intval( $args['commission_id'] );
         }
 
         // Filter by transaction_type.
         if ( isset( $args['transaction_type'] ) ) {
-            $where[] = " ( transaction_type = '" . esc_sql( $args['transaction_type'] ) . "' ) ";
+            $where[]  = '( transaction_type = %s )';
+            $params[] = $args['transaction_type'];
         }
 
         // Filter by entry_type (Cr/Dr).
         if ( isset( $args['entry_type'] ) ) {
-            $where[] = " ( entry_type = '" . esc_sql( $args['entry_type'] ) . "' ) ";
+            $where[]  = '( entry_type = %s )';
+            $params[] = $args['entry_type'];
         }
 
         // Filter by status.
         if ( isset( $args['status'] ) ) {
-            $where[] = " ( status = '" . esc_sql( $args['status'] ) . "' ) ";
+            $where[]  = '( status = %s )';
+            $params[] = $args['status'];
         }
 
         // Filter by date range.
         if ( isset( $args['start_date'] ) ) {
-            $where[] = " ( created_at >= '" . esc_sql( $args['start_date'] ) . "' ) ";
+            $where[]  = '( created_at >= %s )';
+            $params[] = $args['start_date'];
         }
         if ( isset( $args['end_date'] ) ) {
-            $where[] = " ( created_at <= '" . esc_sql( $args['end_date'] ) . "' ) ";
+            $where[]  = '( created_at <= %s )';
+            $params[] = $args['end_date'];
         }
 
         $table = $wpdb->prefix . Utill::TABLES['transaction'];
@@ -283,6 +294,8 @@ class Transaction {
         }
 
         // Run query.
+        $query = $params ? $wpdb->prepare( $query, ...$params ) : $query; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
         if ( isset( $args['count'] ) ) {
             return (int) ( $wpdb->get_var( $query ) ?? 0 );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
         }

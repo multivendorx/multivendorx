@@ -254,7 +254,7 @@ class Promotions {
 
         if (
             version_compare( $this->plugin_version, '5.0.0', '>=' ) &&
-            defined( $this->pro_plugin_version ) &&
+            ! empty( $this->pro_plugin_version ) &&
             version_compare( $this->pro_plugin_version, '2.0.0', '<' )
         ) {
             ?>

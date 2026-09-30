@@ -22,30 +22,6 @@ class Util {
 
 
     /**
-     * Fetch questions & answers for a product
-     *
-     * @param int    $product_id Product id.
-     * @param string $search Search term.
-     * @return array An array of questions with their details.
-     */
-    public static function get_questions( $product_id, $search = '' ) {
-        global $wpdb;
-        $table = $wpdb->prefix . Utill::TABLES['customer_queries'];
-
-        $query  = "SELECT * FROM $table WHERE product_id=%d AND question_visibility='public'";
-        $params = array( $product_id );
-
-        if ( $search ) {
-            $query   .= ' AND (question_text LIKE %s OR answer_text LIKE %s)';
-            $like     = '%' . $wpdb->esc_like( $search ) . '%';
-            $params[] = $like;
-            $params[] = $like;
-        }
-
-        return $wpdb->get_results( $wpdb->prepare( $query, ...$params ) );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-    }
-
-    /**
      * Fetch question information from database
      * Supports filtering by product, store, answer status, date, and count
      *

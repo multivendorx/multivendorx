@@ -1930,24 +1930,31 @@ class Notifications {
 		$table = $wpdb->prefix . Utill::TABLES['notifications'];
 
 		if ( ! empty( $args ) ) {
-			$where = array();
+			$where  = array();
+			$params = array();
 
 			if ( isset( $args['ID'] ) ) {
-				$ids     = is_array( $args['ID'] ) ? $args['ID'] : array( $args['ID'] );
-				$ids     = implode( ',', array_map( 'intval', $ids ) );
-				$where[] = "ID IN ($ids)"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$ids          = is_array( $args['ID'] ) ? $args['ID'] : array( $args['ID'] );
+				$ids          = array_map( 'intval', $ids );
+				$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+				$where[]      = "ID IN ($placeholders)";
+				$params       = array_merge( $params, $ids );
 			}
 
 			if ( isset( $args['category'] ) ) {
-				$where[] = "category = '" . esc_sql( $args['category'] ) . "'";
+				$where[]  = 'category = %s';
+				$params[] = $args['category'];
 			}
 
 			if ( isset( $args['store_id'] ) && ! empty( $args['store_id'] ) ) {
-				$where[] = "store_id = '" . esc_sql( $args['store_id'] ) . "'";
+				$where[]  = 'store_id = %d';
+				$params[] = intval( $args['store_id'] );
 			}
 
 			if ( isset( $args['start_date'] ) && isset( $args['end_date'] ) ) {
-				$where[] = "created_at BETWEEN '" . esc_sql( $args['start_date'] ) . "' AND '" . esc_sql( $args['end_date'] ) . "'";
+				$where[]  = 'created_at BETWEEN %s AND %s';
+				$params[] = $args['start_date'];
+				$params[] = $args['end_date'];
 			}
 
 			$where[] = 'is_dismissed = 0 AND is_read = 0';
@@ -1965,10 +1972,12 @@ class Notifications {
 
 			// Keep your pagination logic.
 			if ( isset( $args['limit'] ) && isset( $args['offset'] ) && empty( $args['count'] ) ) {
-				$limit  = intval( $args['limit'] );
-				$offset = intval( $args['offset'] );
-				$query .= $wpdb->prepare( ' LIMIT %d OFFSET %d', $limit, $offset );
+				$query   .= ' LIMIT %d OFFSET %d';
+				$params[] = intval( $args['limit'] );
+				$params[] = intval( $args['offset'] );
 			}
+
+			$query = $params ? $wpdb->prepare( $query, ...$params ) : $query; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 			if ( isset( $args['count'] ) ) {
 				$results = $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared

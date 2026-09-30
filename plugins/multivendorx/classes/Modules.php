@@ -224,15 +224,6 @@ class Modules {
     }
 
     /**
-     * Get list of all module's id
-     *
-     * @return array
-     */
-    public function get_all_modules_ids() {
-        return array_keys( $this->get_all_modules() );
-    }
-
-    /**
      * Get all available modules.
      *
      * @return array

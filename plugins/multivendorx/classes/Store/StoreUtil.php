@@ -609,39 +609,49 @@ class StoreUtil {
 	public static function get_store_information( $args = array() ) {
 		global $wpdb;
 
-		$where = array();
+		$where  = array();
+		$params = array();
 
 		if ( isset( $args['ID'] ) ) {
-			$ids     = is_array( $args['ID'] ) ? $args['ID'] : array( $args['ID'] );
-			$ids     = implode( ',', array_map( 'intval', $ids ) );
-			$where[] = "ID IN ($ids)";
+			$ids          = is_array( $args['ID'] ) ? $args['ID'] : array( $args['ID'] );
+			$ids          = array_map( 'intval', $ids );
+			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+			$where[]      = "ID IN ($placeholders)";
+			$params       = array_merge( $params, $ids );
 		}
 
         if ( isset( $args['exclude_ids'] ) ) {
-            $ids     = is_array( $args['exclude_ids'] ) ? $args['exclude_ids'] : array( $args['exclude_ids'] );
-            $ids     = implode( ',', array_map( 'intval', $ids ) );
-            $where[] = "ID NOT IN ($ids)";
+            $ids          = is_array( $args['exclude_ids'] ) ? $args['exclude_ids'] : array( $args['exclude_ids'] );
+            $ids          = array_map( 'intval', $ids );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $where[]      = "ID NOT IN ($placeholders)";
+            $params       = array_merge( $params, $ids );
         }
 
 		if ( isset( $args['status'] ) ) {
-			$where[] = "status = '" . esc_sql( $args['status'] ) . "'";
+			$where[]  = 'status = %s';
+			$params[] = $args['status'];
 		}
 
 		if ( isset( $args['name'] ) ) {
-			$where[] = "name LIKE '%" . esc_sql( $args['name'] ) . "%'";
+			$where[]  = 'name LIKE %s';
+			$params[] = '%' . $wpdb->esc_like( $args['name'] ) . '%';
 		}
 
 		if ( isset( $args['slug'] ) ) {
-			$where[] = "slug = '" . esc_sql( $args['slug'] ) . "'";
+			$where[]  = 'slug = %s';
+			$params[] = $args['slug'];
 		}
 
 		if ( isset( $args['searchField'] ) ) {
-			$search  = esc_sql( $args['searchField'] );
-			$where[] = "(name LIKE '%$search%')";
+			$where[]  = '(name LIKE %s)';
+			$params[] = '%' . $wpdb->esc_like( $args['searchField'] ) . '%';
 		}
 
 		if ( isset( $args['start_date'] ) && isset( $args['end_date'] ) ) {
-			$where[] = "create_time BETWEEN '" . esc_sql( $args['start_date'] ) . "' AND '" . esc_sql( $args['end_date'] ) . "'";
+			$where[]  = 'create_time BETWEEN %s AND %s';
+			$params[] = $args['start_date'];
+			$params[] = $args['end_date'];
 		}
 
 		$table = $wpdb->prefix . Utill::TABLES['store'];
@@ -672,6 +682,8 @@ class StoreUtil {
 			$offset = intval( $args['offset'] );
 			$query .= " LIMIT $limit OFFSET $offset";
 		}
+
+		$query = $params ? $wpdb->prepare( $query, ...$params ) : $query; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( isset( $args['count'] ) ) {
 			$results = $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared

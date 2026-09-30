@@ -89,37 +89,49 @@ class CommissionUtil {
 
         $where    = array();
         $or_where = array();
+        $params   = array();
 
         if ( isset( $args['ID'] ) ) {
-            $ids        = is_array( $args['ID'] ) ? $args['ID'] : array( $args['ID'] );
-            $ids        = implode( ',', array_map( 'intval', $ids ) );
-            $or_where[] = "ID IN ($ids)";
+            $ids          = is_array( $args['ID'] ) ? $args['ID'] : array( $args['ID'] );
+            $ids          = array_map( 'intval', $ids );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $or_where[]   = "ID IN ($placeholders)";
+            $params       = array_merge( $params, $ids );
         }
 
         if ( isset( $args['order_id'] ) ) {
-            $ids        = is_array( $args['order_id'] ) ? $args['order_id'] : array( $args['order_id'] );
-            $ids        = implode( ',', array_map( 'intval', $ids ) );
-            $or_where[] = "order_id IN ($ids)";
+            $ids          = is_array( $args['order_id'] ) ? $args['order_id'] : array( $args['order_id'] );
+            $ids          = array_map( 'intval', $ids );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $or_where[]   = "order_id IN ($placeholders)";
+            $params       = array_merge( $params, $ids );
         }
 
         if ( isset( $args['store_id'] ) ) {
-            $ids     = is_array( $args['store_id'] ) ? $args['store_id'] : array( $args['store_id'] );
-            $ids     = implode( ',', array_map( 'intval', $ids ) );
-            $where[] = "store_id IN ($ids)";
+            $ids          = is_array( $args['store_id'] ) ? $args['store_id'] : array( $args['store_id'] );
+            $ids          = array_map( 'intval', $ids );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $where[]      = "store_id IN ($placeholders)";
+            $params       = array_merge( $params, $ids );
         }
 
         if ( isset( $args['customer_id'] ) ) {
-            $ids     = is_array( $args['customer_id'] ) ? $args['customer_id'] : array( $args['customer_id'] );
-            $ids     = implode( ',', array_map( 'intval', $ids ) );
-            $where[] = "customer_id IN ($ids)";
+            $ids          = is_array( $args['customer_id'] ) ? $args['customer_id'] : array( $args['customer_id'] );
+            $ids          = array_map( 'intval', $ids );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $where[]      = "customer_id IN ($placeholders)";
+            $params       = array_merge( $params, $ids );
         }
 
         if ( isset( $args['status'] ) ) {
-            $where[] = "status = '" . esc_sql( $args['status'] ) . "'";
+            $where[]  = 'status = %s';
+            $params[] = $args['status'];
         }
 
         if ( isset( $args['start_date'], $args['end_date'] ) ) {
-            $where[] = "created_at BETWEEN '" . esc_sql( $args['start_date'] ) . "' AND '" . esc_sql( $args['end_date'] ) . "'";
+            $where[]  = 'created_at BETWEEN %s AND %s';
+            $params[] = $args['start_date'];
+            $params[] = $args['end_date'];
         }
 
         $table = $wpdb->prefix . Utill::TABLES['commission'];
@@ -161,6 +173,8 @@ class CommissionUtil {
             $offset = intval( $args['offset'] );
             $query .= " LIMIT {$limit} OFFSET {$offset}";
         }
+
+        $query = $params ? $wpdb->prepare( $query, ...$params ) : $query; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
         if ( $is_count ) {
             $results = (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared

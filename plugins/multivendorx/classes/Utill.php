@@ -403,21 +403,6 @@ class Utill {
 
 
     /**
-     * Utility function to wrap a string in single quotes.
-     *
-     * @param string $value The input string to be wrapped.
-     *
-     * @return string The string wrapped in single quotes, or the original value if not a string.
-     */
-    public static function add_single_quotes( $value ) {
-        if ( is_string( $value ) ) {
-            return "'" . $value . "'";
-        }
-
-        return $value;
-    }
-
-    /**
      * Check if current page is store dashboard page.
      *
      * @return bool

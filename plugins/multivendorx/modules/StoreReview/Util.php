@@ -289,29 +289,6 @@ class Util {
 	}
 
 	/**
-	 * Get individual parameter ratings for a review
-	 *
-	 * @param int $review_id Review ID.
-	 */
-	public static function get_ratings_for_review( $review_id ) {
-		global $wpdb;
-		$table_rating = $wpdb->prefix . Utill::TABLES['rating'];
-
-		$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            $wpdb->prepare(
-                "SELECT * FROM {$table_rating} WHERE review_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                $review_id
-            )
-		);
-
-		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
-			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
-		}
-
-		return $result;
-	}
-
-	/**
 	 * Get average rating per parameter
 	 *
 	 * @param int   $store_id Store ID.

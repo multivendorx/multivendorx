@@ -116,13 +116,6 @@ class Zone_Shipping extends \WC_Shipping_Method {
     }
 
     /**
-     * Force WooCommerce to recalculate shipping
-     */
-    public function multivendorx_force_shipping_recalculation() {
-        WC()->cart->calculate_shipping();
-    }
-
-    /**
      * Work out fee (shortcode).
      *
      * @param  array $atts Shortcode attributes.
@@ -437,18 +430,6 @@ class Zone_Shipping extends \WC_Shipping_Method {
     }
 
     /**
-     * Split state code from country:state string
-     *
-     * @param string $value [like: IN:WB].
-     *
-     * @return string [like: WB ]
-     */
-    public function split_state_code( $value ) {
-        $state_code = explode( ':', $value );
-        return $state_code[1];
-    }
-
-    /**
      * Alter the default rate if one is chosen in settings.
      *
      * @param string $chosen_method      Chosen shipping method.
@@ -463,72 +444,6 @@ class Zone_Shipping extends \WC_Shipping_Method {
         }
 
         return $chosen_method;
-    }
-
-    /**
-     * Hide shipping rates when free shipping is available.
-     * Updated to support WooCommerce 2.6 Shipping Zones.
-     *
-     * @access public
-     *
-     * @param array $rates Array of rates found for the package.
-     *
-     * @return array
-     */
-    public function hide_shipping_when_free_is_available( $rates ) {
-        if ( 'yes' !== $this->hide_method ) {
-			return $rates;
-        }
-
-        // determine if free shipping is available.
-        $free_shipping = false;
-        foreach ( $rates as $rate_id => $rate ) {
-            if ( 'free_shipping' === $rate->method_id ) {
-                $free_shipping = true;
-                break;
-            }
-        }
-        // if available, remove all options from this method.
-        if ( $free_shipping ) {
-            foreach ( $rates as $rate_id => $rate ) {
-                if ( $this->id === $rate->method_id && strpos( $rate_id, $this->id . ':' . $this->instance_id . '-' ) !== false ) {
-                    unset( $rates[ $rate_id ] );
-                }
-            }
-        }
-
-        return $rates;
-    }
-
-    /**
-     * Hide shipping rates when one has option enabled.
-     *
-     * @access public
-     *
-     * @param array $rates Array of rates found for the package.
-     *
-     * @return array
-     */
-    public function hide_other_options( $rates ) {
-        $hide_key = false;
-
-        // return if no rates have been added.
-        if ( ! isset( $rates ) || empty( $rates ) ) {
-            return $rates;
-        }
-
-        // cycle through available rates.
-        foreach ( $rates as $key => $rate ) {
-            if ( 'on' === $rate['hide_ops'] ) {
-                $hide_key = $key;
-            }
-        }
-
-        if ( $hide_key ) {
-            return array( $hide_key => $rates[ $hide_key ] );
-        }
-
-        return $rates;
     }
 
     /**
