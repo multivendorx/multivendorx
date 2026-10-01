@@ -143,10 +143,8 @@ class Notifima {
      * @return void
      */
     public function deactivate() {
-        if ( get_option( 'notifima_cron_start' ) ) {
-            wp_clear_scheduled_hook( 'notifima_start_notification_cron_job' );
-            delete_option( 'notifima_cron_start' );
-        }
+        wp_clear_scheduled_hook( 'notifima_retry_notification_cron_job' );
+        wp_clear_scheduled_hook( 'notifima_batch_notification_cron_job' );
 
         delete_option( 'notifima_installed' );
     }

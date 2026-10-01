@@ -40,8 +40,6 @@ class Install {
      * Class constructor
      */
     public function __construct() {
-		// phpcs:ignore WordPress.WP.CronInterval.ChangeDetected
-        add_filter( 'cron_schedules', array( $this, 'register_custom_schedule' ) );
         add_action( 'init', array( $this, 'run_migration' ) );
     }
 
@@ -59,7 +57,6 @@ class Install {
         } else {
             $this->do_migration( $previous_version );
         }
-        $this->start_cron_job();
 
         update_option( 'notifima_version', NOTIFIMA_PLUGIN_VERSION );
 
@@ -167,10 +164,10 @@ class Install {
             );
             update_option( Utill::NOTIFIMA_SETTINGS['subscription-form-designer'], $registration_from_settings );
         }
-        
+
         if ( version_compare( $previous_version, '3.1.6', '<' ) ) {
             global $wpdb;
-            
+
             $automation_settings = get_option( Utill::NOTIFIMA_SETTINGS['automation'], array() );
 
             if ( 'out_of_stock' === $automation_settings['is_enable_backorders'] ) {
@@ -199,6 +196,26 @@ class Install {
                     'mailsent'
                 )
             );
+        }
+
+        if ( version_compare( $previous_version, '3.1.7', '<' ) ) {
+            global $wpdb;
+
+            $table_name = $wpdb->prefix . 'notifima_subscribers';
+
+            // Add retry count column.
+            $wpdb->query(
+                "ALTER TABLE `{$table_name}`
+                ADD COLUMN `retry_count` int(11) NOT NULL DEFAULT 0 AFTER `status`"
+            );
+
+            $automation_settings = get_option( Utill::NOTIFIMA_SETTINGS['automation'], array() );
+
+			$automation_settings['notification_delivery_method'] = 'all';
+			$automation_settings['notification_retry_enable']    = 'no';
+
+			update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
+            delete_option( 'notifima_cron_start' );
         }
     }
 
@@ -314,6 +331,7 @@ class Install {
                 `email` varchar(50) NOT NULL,
                 `phone` varchar(30) DEFAULT NULL,
                 `status` varchar(20) NOT NULL,
+                 `retry_count` int(11) NOT NULL DEFAULT 0,
                 `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE KEY unique_product_email_status (product_id, email, status),
                 PRIMARY KEY (`id`)
@@ -325,25 +343,6 @@ class Install {
         }
 
         dbDelta( $sql_subscribers );
-    }
-
-    /**
-     * Function that schedules the notification cron job.
-     *
-     * @return void
-     */
-    private function start_cron_job() {
-        wp_clear_scheduled_hook( 'notifima_start_notification_cron_job' );
-
-        if ( ! wp_next_scheduled( 'notifima_start_notification_cron_job' ) ) {
-            wp_schedule_event(
-                time(),
-                'notifima_ten_minutes',
-                'notifima_start_notification_cron_job'
-            );
-        }
-
-        update_option( 'notifima_cron_start', true );
     }
 
 
@@ -369,6 +368,8 @@ class Install {
             'email_placeholder_text'        => Notifima()->default_value['email_placeholder_text'],
             'alert_text'                    => Notifima()->default_value['alert_text'],
             'unsubscribe_button_text'       => Notifima()->default_value['unsubscribe_button_text'],
+            'notification_delivery_method'     => 'all',
+            'notification_retry_enable'        => 'no',
         );
 
         update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
@@ -655,20 +656,5 @@ class Install {
 
         $email_settings['additional_alert_email'] = ! empty( $previous_appearance_settings['additional_alert_email'] ) ? $previous_appearance_settings['additional_alert_email'] : '';
         update_option( Utill::NOTIFIMA_SETTINGS['notifications'], array_merge( $previous_email_settings, $email_settings ) );
-    }
-
-    /**
-     * Add additional schedule interval.
-     *
-     * @param array $schedules All schedules.
-     * @return array Modified schedules.
-     */
-    public function register_custom_schedule( $schedules ) {
-        $schedules['notifima_ten_minutes'] = array(
-            'interval' => 10 * MINUTE_IN_SECONDS,
-            'display'  => __( 'Every 10 Minutes', 'notifima' ),
-        );
-
-        return $schedules;
     }
 }

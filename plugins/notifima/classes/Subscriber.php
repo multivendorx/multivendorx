@@ -22,14 +22,17 @@ class Subscriber {
      * Subscriber constructor.
      */
     public function __construct() {
-        add_action( 'notifima_start_notification_cron_job', array( $this, 'send_instock_notification_cron' ) );
-        add_action( 'woocommerce_update_product', array( $this, 'send_instock_notification' ), 10, 2 );
+        add_filter( 'cron_schedules', array( $this, 'register_cron_schedule' ) );
+        add_action( 'notifima_retry_notification_cron_job', array( $this, 'send_retry_notification_cron' ) );
+        add_action( 'notifima_batch_notification_cron_job', array( $this, 'send_instock_notification' ), 10, 2 );
+        add_action( 'woocommerce_update_product', array( $this, 'send_notification' ), 10, 2 );
         add_action( 'delete_post', array( $this, 'delete_product_subscribers' ) );
         add_action( 'notifima_start_subscriber_migration', array( Install::class, 'subscriber_migration' ) );
 
         if ( Install::is_migration_running() ) {
             $this->register_post_statuses();
         }
+        $this->start_cron_job();
     }
 
     /**
@@ -76,13 +79,23 @@ class Subscriber {
     }
 
     /**
-     * Send instock notification on every product's subscriber if product is instock.
-     * It will run every hour through corn job.
+     * Retry failed product notification emails.
+     *
+     * Gets products with failed subscriber notifications that have not
+     * exceeded the maximum retry attempts and sends the notifications again.
      *
      * @return void
      */
-    public function send_instock_notification_cron() {
+    public function send_retry_notification_cron() {
         global $wpdb;
+
+        $retry_enable = Notifima()->setting->get_setting( 'notification_retry_enable', 'no' );
+
+        if ( 'yes' !== $retry_enable ) {
+            return;
+        }
+
+        $max_attempts = (int) Notifima()->setting->get_setting( 'notification_retry_max_attempts', 3 );
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $product_ids = $wpdb->get_col(
@@ -91,75 +104,126 @@ class Subscriber {
                 SELECT DISTINCT product_id
                 FROM {$wpdb->prefix}notifima_subscribers
                 WHERE status = %s
-                LIMIT %d
+                AND retry_count <= %d
                 ",
-                'subscribed',
-                50
+                'notification_failed',
+                $max_attempts
             )
         );
+
         if ( empty( $product_ids ) ) {
             return;
         }
 
         foreach ( $product_ids as $product_id ) {
-            $product = wc_get_product( $product_id );
-
-            if ( $product ) {
-                $this->send_instock_notification( $product_id, $product );
-            }
+            $this->send_instock_notification( $product_id, 'notification_failed' );
         }
     }
 
     /**
-     * Send instock notification of a product's all subscribers on 'woocommerce_update_product' hook
+     * Send product back-in-stock notifications to subscribers.
      *
-     * @param  int    $product_id product id.
-     * @param  object $product the product object.
+     * Schedules batch notifications when batch delivery is enabled,
+     * otherwise sends notifications immediately.
+     *
+     * @param int         $product_id The product ID.
+     * @param \WC_Product $product    The WooCommerce product object.
      * @return void
      */
-    public function send_instock_notification( $product_id, $product ) {
-        $related_products = self::get_related_product( $product );
+    public function send_notification( $product_id, $product ) {
+
+        $delivery_method = Notifima()->setting->get_setting( 'notification_delivery_method', 'all' );
+        $status          = 'subscribed';
+
+        if ( 'batch' === $delivery_method && ! wp_next_scheduled( 'notifima_batch_notification_cron_job', array( $product_id, $status ) ) ) {
+            wp_schedule_single_event( time(), 'notifima_batch_notification_cron_job', array( $product_id, $status ) );
+        }
+
+        if ( 'batch' === $delivery_method ) {
+            return;
+        }
+
+        $this->send_instock_notification( $product_id, $status );
+    }
+
+    /**
+     * Send notifications to product subscribers based on their status.
+     *
+     * @param int    $product_id The product ID.
+     * @param string $status     The subscriber status to process.
+     * @return void
+     */
+    public function send_instock_notification( $product_id, $status = 'subscribed' ) {
+
+        $related_products          = self::get_related_product( $product_id );
+        $has_remaining_subscribers = false;
 
         foreach ( $related_products as $related_product ) {
-            $this->notify_all_product_subscribers( wc_get_product( $related_product ) );
+            if ( $this->notify_all_product_subscribers( wc_get_product( $related_product ), $status ) ) {
+                $has_remaining_subscribers = true;
+            }
+        }
+
+        if ( $has_remaining_subscribers && 'subscribed' === $status ) {
+            wp_schedule_single_event(
+                time() + MINUTE_IN_SECONDS,
+                'notifima_batch_notification_cron_job',
+                array( $product_id, $status )
+            );
         }
     }
 
     /**
-     * Send notification to all subscriber, subscribed to a particular product.
+     * Send notifications to subscribers of a particular product.
      *
-     * @param  \WC_Product $product the product object.
-     * @return void
+     * @param \WC_Product $product The product object.
+     * @param string      $status  The subscriber status to process.
+     * @return bool True if subscribers remain, false otherwise.
      */
-    public function notify_all_product_subscribers( $product ) {
+    public function notify_all_product_subscribers( $product, $status ) {
 
         if ( ! $product || $product->is_type( 'variable' ) ) {
-            return;
+            return false;
         }
 
         if ( self::is_product_outofstock( $product ) ) {
-            return;
+            return false;
         }
 
-        $product_subscribers = self::get_product_subscribers_email( $product->get_id() );
+        $delivery_method = Notifima()->setting->get_setting( 'notification_delivery_method', 'all' );
+        $batch_size      = (int) Notifima()->setting->get_setting( 'notification_batch_size', 50 );
 
-        if ( ! empty( $product_subscribers ) ) {
-            /**
-             * Trigger notification for all product subscribers.
-             *
-             * @param int $product_id Product ID.
-             */
-            do_action( 'notifima_send_product_notification', $product->get_id());
-            
-            $email = WC()->mailer()->emails['Product_Back_In_Stock_Email'];
+        $limit = 'batch' === $delivery_method ? $batch_size : 0;
 
-            foreach ( $product_subscribers as $subscribe_id => $to ) {
-                $email->trigger( $to, $product );
-                self::update_subscriber( $subscribe_id, 'notification_sent' );
-            }
+        $product_subscribers = self::get_product_subscribers_email( $product->get_id(), $limit, $status );
 
+        if ( empty( $product_subscribers ) ) {
             delete_post_meta( $product->get_id(), 'no_of_subscribers' );
+            return false;
         }
+
+        do_action( 'notifima_send_product_notification', $product->get_id() );
+
+        $email = WC()->mailer()->emails['Product_Back_In_Stock_Email'];
+
+        foreach ( $product_subscribers as $subscribe_id => $to ) {
+            $sent = $email->trigger( $to, $product );
+
+            if ( $sent ) {
+                self::update_subscriber( $subscribe_id, 'notification_sent' );
+            } else {
+                self::update_subscriber( $subscribe_id, 'notification_failed' );
+            }
+        }
+
+        $remaining_subscribers = self::get_product_subscribers_email( $product->get_id(), 0, $status );
+
+        if ( empty( $remaining_subscribers ) ) {
+            delete_post_meta( $product->get_id(), 'no_of_subscribers' );
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -349,13 +413,30 @@ class Subscriber {
     public static function update_subscriber( $notifima_id, $status ) {
         global $wpdb;
 
+        $table_name = "{$wpdb->prefix}notifima_subscribers";
+
         // Update subscriber status.
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->update(
-            "{$wpdb->prefix}notifima_subscribers",
-            array( 'status' => $status ),
+            $table_name,
+            array(
+                'status' => $status,
+            ),
             array( 'id' => $notifima_id )
         );
+
+        // Increment retry count when notification fails.
+        if ( 'notification_failed' === $status ) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            $wpdb->query(
+                $wpdb->prepare(
+                    "UPDATE {$table_name}
+                    SET retry_count = retry_count + 1
+                    WHERE id = %d",
+                    $notifima_id
+                )
+            );
+        }
 
         return $notifima_id;
     }
@@ -397,31 +478,41 @@ class Subscriber {
     }
 
     /**
-     * Get the email of all subscriber of a particular product.
+     * Get the emails of subscribers for a particular product.
      *
-     * @param  int $product_id The Product ID.
-     * @return array array of email
+     * @param int    $product_id The Product ID.
+     * @param int    $limit      Maximum number of subscribers to return.
+     * @param string $status     Subscriber status to filter by.
+     * @return array Array of subscriber IDs and emails.
      */
-    public static function get_product_subscribers_email( $product_id ) {
+    public static function get_product_subscribers_email( $product_id, $limit = 0, $status = 'subscribed' ) {
         global $wpdb;
 
-        if ( ! $product_id || $product_id <= '0' ) {
+        if ( ! $product_id || $product_id <= 0 ) {
             return array();
         }
 
         $emails = array();
 
-        // Migration is over use custom subscription table for information.
+        $query = "
+            SELECT id, email
+            FROM {$wpdb->prefix}notifima_subscribers
+            WHERE product_id = %d
+            AND status = %s
+        ";
+
+        $args = array( $product_id, $status );
+
+        if ( $limit > 0 ) {
+            $query .= ' LIMIT %d';
+            $args[] = $limit;
+        }
+
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $emails_data = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT id, email from {$wpdb->prefix}notifima_subscribers
-                WHERE product_id = %d AND status = %s",
-                array( $product_id, 'subscribed' )
-            )
+            $wpdb->prepare( $query, $args )
         );
 
-        // Prepare email data.
         foreach ( $emails_data as $email ) {
             $emails[ $email->id ] = $email->email;
         }
@@ -511,5 +602,52 @@ class Subscriber {
         }
 
         return false;
+    }
+
+    /**
+     * Register the custom cron schedule for retry notifications.
+     *
+     * @param array $schedules Existing WordPress cron schedules.
+     * @return array Updated cron schedules.
+     */
+    public function register_cron_schedule( $schedules ) {
+        if ( 'yes' !== Notifima()->setting->get_setting( 'notification_retry_enable', 'no' ) ) {
+            return $schedules;
+        }
+
+        $retry_interval = Notifima()->setting->get_setting( 'notification_retry_interval', 'hourly' );
+
+        $intervals = array(
+            'hourly'    => HOUR_IN_SECONDS,
+            'six_hours' => 6 * HOUR_IN_SECONDS,
+            'daily'     => DAY_IN_SECONDS,
+        );
+
+        $schedules['notifima_retry'] = array(
+            'interval' => $intervals[ $retry_interval ] ?? HOUR_IN_SECONDS,
+            'display'  => __( 'Notifima Retry Interval', 'notifima' ),
+        );
+
+        return $schedules;
+    }
+
+    /**
+     * Schedule the retry notification cron job.
+     *
+     * @return void
+     */
+    private function start_cron_job() {
+        if ( 'yes' !== Notifima()->setting->get_setting( 'notification_retry_enable', 'no' ) ) {
+            wp_clear_scheduled_hook( 'notifima_retry_notification_cron_job' );
+            return;
+        }
+
+        if ( ! wp_next_scheduled( 'notifima_retry_notification_cron_job' ) ) {
+            wp_schedule_event(
+                time(),
+                'notifima_retry',
+                'notifima_retry_notification_cron_job'
+            );
+        }
     }
 }

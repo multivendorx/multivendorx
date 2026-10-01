@@ -162,7 +162,7 @@ class Subscribers extends \WP_REST_Controller {
 
             $total_subscribers = 0;
 
-            foreach ( array( 'subscribed', 'unsubscribed', 'notification_sent' ) as $status ) {
+            foreach ( array( 'subscribed', 'unsubscribed', 'notification_sent', 'notification_failed' ) as $status ) {
                 $count = Utill::get_subscribers(
                     array(
                         'count'       => true,

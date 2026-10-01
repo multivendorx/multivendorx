@@ -622,5 +622,72 @@ export default {
             },
             proSetting: true,
         },
+
+        {
+            key: 'section',
+            type: 'section',
+            icon: 'mail',
+            title: __('Notification Delivery', 'notifima'),
+            desc: __('Control how back-in-stock notifications are delivered to subscribers.', 'notifima'),
+        },
+        {
+            key: 'notification_delivery_method',
+            type: 'choice-toggle',
+            label: __('Notification delivery', 'notifima'),
+            settingDescription: __('Choose how back-in-stock notifications are sent to subscribers.', 'notifima'),
+            options: [
+                { key: 'all', label: __('Send all at once', 'notifima'), value: 'all' },
+                { key: 'batch', label: __('Send in batches', 'notifima'), value: 'batch' },
+            ],
+        },
+        {
+            key: 'notification_batch_size',
+            type: 'number',
+            size: '17rem',
+            label: __('Batch size per minute', 'notifima'),
+            settingDescription: __('Choose how many subscriber notifications are sent each minute when batch delivery is enabled.', 'notifima'),
+            dependent: {
+                key: 'notification_delivery_method',
+                set: true,
+                value: 'batch',
+            },
+        },
+        {
+            key: 'notification_retry_enable',
+            type: 'choice-toggle',
+            label: __('Retry Failed Notifications', 'notifima'),
+            settingDescription: __('Choose whether failed notification emails should be retried automatically.', 'notifima'),
+            options: [
+                { key: 'yes', label: __('Yes', 'notifima'), value: 'yes' },
+                { key: 'no', label: __('No', 'notifima'), value: 'no' },
+            ],
+        },
+        {
+            key: 'notification_retry_interval',
+            type: 'choice-toggle',
+            label: __('Retry Interval', 'notifima'),
+            settingDescription: __('Choose how often failed notification emails are retried.', 'notifima'),
+            dependent: {
+                key: 'notification_retry_enable',
+                set: true,
+                value: 'yes',
+            },
+            options: [
+                { key: 'hourly', label: __('Every Hour', 'notifima'), value: 'hourly' },
+                { key: 'six_hours', label: __('Every 6 Hours', 'notifima'), value: 'six_hours' },
+                { key: 'daily', label: __('Once a Day', 'notifima'), value: 'daily' },
+            ],
+        },
+        {
+            key: 'notification_retry_max_attempts',
+            type: 'number',
+            label: __('Maximum Retry Attempts', 'notifima'),
+            settingDescription: __('Choose how many times a failed notification email should be retried.', 'notifima'),
+            dependent: {
+                key: 'notification_retry_enable',
+                set: true,
+                value: 'yes',
+            },
+        },
     ],
 };
