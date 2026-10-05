@@ -305,6 +305,7 @@ class Utill {
 
         $statuses = array(
             'notification_sent' => __( 'Notification Sent', 'notifima' ),
+            'notification_failed' => __( 'Notification Failed', 'notifima' ),
             'subscribed'        => __( 'Subscribed', 'notifima' ),
             'unsubscribed'      => __( 'Unsubscribed', 'notifima' ),
         );
