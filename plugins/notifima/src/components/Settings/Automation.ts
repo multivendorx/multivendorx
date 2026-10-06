@@ -682,6 +682,7 @@ export default {
             key: 'notification_retry_max_attempts',
             type: 'number',
             label: __('Maximum Retry Attempts', 'notifima'),
+            size: '17rem',
             settingDescription: __('Choose how many times a failed notification email should be retried.', 'notifima'),
             dependent: {
                 key: 'notification_retry_enable',
