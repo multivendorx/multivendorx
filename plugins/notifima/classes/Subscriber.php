@@ -370,38 +370,30 @@ class Subscriber {
     /**
      * Update the status of notifima subscriber.
      *
+     * Increments retry_count when the status is 'notification_failed',
+     * and resets it to 0 for any other status.
+     *
      * @param int    $notifima_id The ID of the subscriber row.
      * @param string $status      The new status to set (e.g., 'subscribed', 'unsubscribed').
-     * @return \WP_Error|int
+     * @return int The subscriber row ID.
      */
     public static function update_subscriber( $notifima_id, $status ) {
         global $wpdb;
 
-        $table_name = "{$wpdb->prefix}notifima_subscribers";
+        // 1 = failed (increment retry_count), 0 = any other status (reset it).
+        $is_failed = (int) ( 'notification_failed' === $status );
 
-        // Update subscriber status.
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $wpdb->update(
-            $table_name,
-            array(
-                'status' => $status,
-                'retry_count' => 0,
-            ),
-            array( 'id' => $notifima_id )
+        $wpdb->query(
+            $wpdb->prepare(
+                "UPDATE {$wpdb->prefix}notifima_subscribers
+                SET status = %s, retry_count = IF( %d = 1, retry_count + 1, 0 )
+                WHERE id = %d",
+                $status,
+                $is_failed,
+                $notifima_id
+            )
         );
-
-        // Increment retry count when notification fails.
-        if ( 'notification_failed' === $status ) {
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            $wpdb->query(
-                $wpdb->prepare(
-                    "UPDATE {$table_name}
-                    SET retry_count = retry_count + 1
-                    WHERE id = %d",
-                    $notifima_id
-                )
-            );
-        }
 
         return $notifima_id;
     }
