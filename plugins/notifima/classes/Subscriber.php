@@ -147,35 +147,31 @@ class Subscriber {
 
         $limit = 'batch' === $delivery_method ? $batch_size : 0;
 
-        $product_subscribers = self::get_product_subscribers_email( $product->get_id(), $limit, $status );
+        $fetch_limit = $limit > 0 ? $limit + 1 : 0;
+
+        $product_subscribers = self::get_product_subscribers_email( $product->get_id(), $fetch_limit, $status );
 
         if ( empty( $product_subscribers ) ) {
-            delete_post_meta( $product->get_id(), 'no_of_subscribers' );
             return false;
         }
+
+        $has_more = $limit > 0 && count( $product_subscribers ) > $limit;
+
+        $product_subscribers = $has_more ? array_slice( $product_subscribers, 0, $limit, true ) : $product_subscribers;
 
         do_action( 'notifima_send_product_notification', $product->get_id() );
 
         $email = WC()->mailer()->emails['Product_Back_In_Stock_Email'];
 
         foreach ( $product_subscribers as $subscribe_id => $to ) {
-            $sent = $email->trigger( $to, $product );
-
-            if ( $sent ) {
-                self::update_subscriber( $subscribe_id, 'notification_sent' );
-            } else {
-                self::update_subscriber( $subscribe_id, 'notification_failed' );
-            }
+            $sent           = $email->trigger( $to, $product );
+            $updated_status = $sent ? 'notification_sent' : 'notification_failed';
+            self::update_subscriber( $subscribe_id, $updated_status );
         }
 
-        $remaining_subscribers = self::get_product_subscribers_email( $product->get_id(), 0, $status );
+        self::update_product_subscriber_count( $product->get_id() );
 
-        if ( empty( $remaining_subscribers ) ) {
-            delete_post_meta( $product->get_id(), 'no_of_subscribers' );
-            return false;
-        }
-
-        return true;
+        return $has_more;
     }
 
     /**

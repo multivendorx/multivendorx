@@ -207,7 +207,7 @@ class Install {
                 "SHOW COLUMNS FROM `{$table_name}` LIKE 'retry_count'"
             );
 
-            if (empty($column)) {
+            if ( empty( $column ) ) {
                 $wpdb->query(
                     "ALTER TABLE `{$table_name}`
                     ADD `retry_count` int(11) NOT NULL DEFAULT 0 AFTER `status`"

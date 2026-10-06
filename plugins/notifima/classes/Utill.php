@@ -304,10 +304,10 @@ class Utill {
         $subscriber_items = array();
 
         $statuses = array(
-            'notification_sent' => __( 'Notification Sent', 'notifima' ),
+            'notification_sent'   => __( 'Notification Sent', 'notifima' ),
             'notification_failed' => __( 'Notification Failed', 'notifima' ),
-            'subscribed'        => __( 'Subscribed', 'notifima' ),
-            'unsubscribed'      => __( 'Unsubscribed', 'notifima' ),
+            'subscribed'          => __( 'Subscribed', 'notifima' ),
+            'unsubscribed'        => __( 'Unsubscribed', 'notifima' ),
         );
 
         foreach ( $subscriber_records as $subscriber ) {
