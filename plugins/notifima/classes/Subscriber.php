@@ -25,7 +25,7 @@ class Subscriber {
         add_filter( 'cron_schedules', array( $this, 'register_cron_schedule' ) );
         add_action( 'notifima_retry_notification_cron_job', array( $this, 'send_retry_notification_cron' ) );
         add_action( 'notifima_batch_notification_cron_job', array( $this, 'send_instock_notification' ), 10, 2 );
-        add_action( 'woocommerce_update_product', array( $this, 'send_notification' ), 10, 2 );
+        add_action( 'woocommerce_update_product', array( $this, 'send_instock_notification' ), 10, 1 );
         add_action( 'delete_post', array( $this, 'delete_product_subscribers' ) );
         add_action( 'notifima_start_subscriber_migration', array( Install::class, 'subscriber_migration' ) );
 
@@ -89,12 +89,6 @@ class Subscriber {
     public function send_retry_notification_cron() {
         global $wpdb;
 
-        $retry_enable = Notifima()->setting->get_setting( 'notification_retry_enable', 'no' );
-
-        if ( 'yes' !== $retry_enable ) {
-            return;
-        }
-
         $max_attempts = (int) Notifima()->setting->get_setting( 'notification_retry_max_attempts', 3 );
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
@@ -121,32 +115,6 @@ class Subscriber {
     }
 
     /**
-     * Send product back-in-stock notifications to subscribers.
-     *
-     * Schedules batch notifications when batch delivery is enabled,
-     * otherwise sends notifications immediately.
-     *
-     * @param int         $product_id The product ID.
-     * @param \WC_Product $product    The WooCommerce product object.
-     * @return void
-     */
-    public function send_notification( $product_id, $product ) {
-
-        $delivery_method = Notifima()->setting->get_setting( 'notification_delivery_method', 'all' );
-        $status          = 'subscribed';
-
-        if ( 'batch' === $delivery_method && ! wp_next_scheduled( 'notifima_batch_notification_cron_job', array( $product_id, $status ) ) ) {
-            wp_schedule_single_event( time(), 'notifima_batch_notification_cron_job', array( $product_id, $status ) );
-        }
-
-        if ( 'batch' === $delivery_method ) {
-            return;
-        }
-
-        $this->send_instock_notification( $product_id, $status );
-    }
-
-    /**
      * Send notifications to product subscribers based on their status.
      *
      * @param int    $product_id The product ID.
@@ -165,11 +133,7 @@ class Subscriber {
         }
 
         if ( $has_remaining_subscribers && 'subscribed' === $status ) {
-            wp_schedule_single_event(
-                time() + MINUTE_IN_SECONDS,
-                'notifima_batch_notification_cron_job',
-                array( $product_id, $status )
-            );
+            wp_schedule_single_event( time() + MINUTE_IN_SECONDS, 'notifima_batch_notification_cron_job', array( $product_id, $status ) );
         }
     }
 
@@ -611,10 +575,6 @@ class Subscriber {
      * @return array Updated cron schedules.
      */
     public function register_cron_schedule( $schedules ) {
-        if ( 'yes' !== Notifima()->setting->get_setting( 'notification_retry_enable', 'no' ) ) {
-            return $schedules;
-        }
-
         $retry_interval = Notifima()->setting->get_setting( 'notification_retry_interval', 'hourly' );
 
         $intervals = array(
@@ -643,11 +603,7 @@ class Subscriber {
         }
 
         if ( ! wp_next_scheduled( 'notifima_retry_notification_cron_job' ) ) {
-            wp_schedule_event(
-                time(),
-                'notifima_retry',
-                'notifima_retry_notification_cron_job'
-            );
+            wp_schedule_event( time(), 'notifima_retry', 'notifima_retry_notification_cron_job' );
         }
     }
 }
