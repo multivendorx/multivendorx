@@ -120,7 +120,7 @@ class Subscriber {
             }
         }
 
-        if ( $has_remaining_subscribers && 'subscribed' === $status ) {
+        if ( $has_remaining_subscribers ) {
             wp_schedule_single_event( time() + MINUTE_IN_SECONDS, 'notifima_batch_notification_cron_job', array( $product_id, $status ) );
         }
     }
