@@ -203,12 +203,16 @@ class Install {
 
             $table_name = $wpdb->prefix . 'notifima_subscribers';
 
-            // Add retry count column.
-            $wpdb->query(
-                "ALTER TABLE `{$table_name}`
-                ADD COLUMN `retry_count` int(11) NOT NULL DEFAULT 0 AFTER `status`"
+            $column = $wpdb->get_results(
+                "SHOW COLUMNS FROM `{$table_name}` LIKE 'retry_count'"
             );
 
+            if (empty($column)) {
+                $wpdb->query(
+                    "ALTER TABLE `{$table_name}`
+                    ADD `retry_count` int(11) NOT NULL DEFAULT 0 AFTER `status`"
+                );
+            }
             $automation_settings = get_option( Utill::NOTIFIMA_SETTINGS['automation'], array() );
 
 			$automation_settings['notification_delivery_method'] = 'all';
@@ -368,8 +372,8 @@ class Install {
             'email_placeholder_text'        => Notifima()->default_value['email_placeholder_text'],
             'alert_text'                    => Notifima()->default_value['alert_text'],
             'unsubscribe_button_text'       => Notifima()->default_value['unsubscribe_button_text'],
-            'notification_delivery_method'     => 'all',
-            'notification_retry_enable'        => 'no',
+            'notification_delivery_method'  => 'all',
+            'notification_retry_enable'     => 'no',
         );
 
         update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
