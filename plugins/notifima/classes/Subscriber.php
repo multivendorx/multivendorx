@@ -385,6 +385,7 @@ class Subscriber {
             $table_name,
             array(
                 'status' => $status,
+                'retry_count' => 0,
             ),
             array( 'id' => $notifima_id )
         );
