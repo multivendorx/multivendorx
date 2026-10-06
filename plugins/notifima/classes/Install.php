@@ -617,6 +617,8 @@ class Install {
             $appearance_settings['is_enable_backorders']          = ! empty( $previous_appearance_settings['is_enable_backorders'] ) ? 'out_of_stock_and_backorder' : 'out_of_stock';
             $appearance_settings['is_guest_subscriptions_enable'] = ! empty( $previous_appearance_settings['is_guest_subscriptions_enable'] ) ? 'logged_in' : 'everyone';
             $appearance_settings['display_subscription_form_as']  = 'inline';
+            $appearance_settings['notification_delivery_method']  = 'all';
+            $appearance_settings['notification_retry_enable']     = 'no';
 
             delete_option( 'woo_stock_manager_appearance_tab_settings' );
             delete_option( 'woo_stock_manager_form_submission_tab_settings' );
