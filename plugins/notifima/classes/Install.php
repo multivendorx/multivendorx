@@ -368,12 +368,12 @@ class Install {
             'is_guest_subscriptions_enable' => 'logged_in',
             'lead_time_format'              => 'static',
             'display_subscription_form_as'  => 'inline',
+            'notification_delivery_method'  => 'all',
+            'notification_retry_enable'     => 'no',
             // Form customization settings.
             'email_placeholder_text'        => Notifima()->default_value['email_placeholder_text'],
             'alert_text'                    => Notifima()->default_value['alert_text'],
             'unsubscribe_button_text'       => Notifima()->default_value['unsubscribe_button_text'],
-            'notification_delivery_method'  => 'all',
-            'notification_retry_enable'     => 'no',
         );
 
         update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
