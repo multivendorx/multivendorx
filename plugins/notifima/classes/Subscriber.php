@@ -81,33 +81,21 @@ class Subscriber {
     /**
      * Retry failed product notification emails.
      *
-     * Gets products with failed subscriber notifications that have not
-     * exceeded the maximum retry attempts and sends the notifications again.
+     * Finds products that have failed notifications and sends them again.
+     * The retry limit is applied per subscriber in get_product_subscribers_email().
      *
      * @return void
      */
     public function send_retry_notification_cron() {
         global $wpdb;
 
-        $max_attempts = (int) Notifima()->setting->get_setting( 'notification_retry_max_attempts', 3 );
-
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $product_ids = $wpdb->get_col(
             $wpdb->prepare(
-                "
-                SELECT DISTINCT product_id
-                FROM {$wpdb->prefix}notifima_subscribers
-                WHERE status = %s
-                AND retry_count <= %d
-                ",
-                'notification_failed',
-                $max_attempts
+                "SELECT DISTINCT product_id FROM {$wpdb->prefix}notifima_subscribers WHERE status = %s",
+                'notification_failed'
             )
         );
-
-        if ( empty( $product_ids ) ) {
-            return;
-        }
 
         foreach ( $product_ids as $product_id ) {
             $this->send_instock_notification( $product_id, 'notification_failed' );
@@ -445,36 +433,33 @@ class Subscriber {
     public static function get_product_subscribers_email( $product_id, $limit = 0, $status = 'subscribed' ) {
         global $wpdb;
 
-        if ( ! $product_id || $product_id <= 0 ) {
+        $product_id = (int) $product_id;
+
+        if ( $product_id <= 0 ) {
             return array();
         }
 
-        $emails = array();
+        $query = "SELECT id, email FROM {$wpdb->prefix}notifima_subscribers WHERE product_id = %d AND status = %s";
+        $args  = array( $product_id, $status );
 
-        $query = "
-            SELECT id, email
-            FROM {$wpdb->prefix}notifima_subscribers
-            WHERE product_id = %d
-            AND status = %s
-        ";
+        // Failed notifications: skip subscribers who reached the max retry attempts.
+        if ( 'notification_failed' === $status ) {
+            $query .= ' AND retry_count < %d';
+            $args[] = (int) Notifima()->setting->get_setting( 'notification_retry_max_attempts', 3 );
+        }
 
-        $args = array( $product_id, $status );
+        // Lowest retry count first (it is always 0 for other statuses).
+        $query .= ' ORDER BY retry_count ASC, id ASC';
 
         if ( $limit > 0 ) {
             $query .= ' LIMIT %d';
-            $args[] = $limit;
+            $args[] = (int) $limit;
         }
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $emails_data = $wpdb->get_results(
-            $wpdb->prepare( $query, $args )
-        );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+        $rows = $wpdb->get_results( $wpdb->prepare( $query, $args ) );
 
-        foreach ( $emails_data as $email ) {
-            $emails[ $email->id ] = $email->email;
-        }
-
-        return $emails;
+        return wp_list_pluck( (array) $rows, 'email', 'id' );
     }
 
     /**
