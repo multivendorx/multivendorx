@@ -68,11 +68,10 @@ class FrontendScripts {
 	 * @param array  $deps         Optional. Script dependencies. Default empty array.
 	 * @param string $version      Optional. Script version. Default empty string.
 	 */
-    public static function register_script( $handle, $path, $deps = array(), $version = '' ) {
-        wp_register_script( $handle, $path, $deps, $version, true );
-        wp_set_script_translations( $handle, 'multivendorx' );
-    }
-
+    public static function register_script( $handle, $path, $deps = array(), $version = '', $args = true ) {
+		wp_register_script( $handle, $path, $deps, $version, $args );
+		wp_set_script_translations( $handle, 'multivendorx' );
+	}
     /**
 	 * Register and store a style for later use.
 	 *

@@ -438,8 +438,8 @@ class Store {
                     return $stores;
 
                 case 'primary_owner':
-                    $status = sanitize_text_field( $value );
-					$stores = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+                    $status                          = sanitize_text_field( $value );
+					$stores                          = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 						$wpdb->prepare(
                             'SELECT * FROM %i WHERE who_created = %d AND status = %s',
                             $table,

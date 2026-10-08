@@ -377,11 +377,11 @@ class Util {
 
 		$result = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT status FROM %i
+                'SELECT status FROM %i
         WHERE store_id = %d
         AND customer_id = %d
         ORDER BY date_created DESC
-        LIMIT 1",
+        LIMIT 1',
                 $table_review,
                 $store_id,
                 $user_id

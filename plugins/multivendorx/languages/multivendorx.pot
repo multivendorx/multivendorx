@@ -1,14 +1,14 @@
 # Copyright (c) 2026 MultiVendorX Inc. All Rights Reserved.
 msgid ""
 msgstr ""
-"Project-Id-Version: MultiVendorX 5.0.18\n"
+"Project-Id-Version: MultiVendorX 5.0.19\n"
 "Report-Msgid-Bugs-To: https://multivendorx.com/contact/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-30T05:50:32+00:00\n"
+"POT-Creation-Date: 2026-10-08T06:36:46+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: multivendorx\n"
@@ -16,7 +16,7 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: dc_product_vendor.php
-#: classes/FrontendScripts.php:402
+#: classes/FrontendScripts.php:409
 #: classes/Pattern.php:46
 #: classes/Status.php:43
 #: modules/Elementor/WidgetLoader.php:106
@@ -189,76 +189,76 @@ msgstr ""
 msgid "Once Monthly"
 msgstr ""
 
-#: classes/Frontend.php:233
+#: classes/Frontend.php:254
 msgid "This product cannot be purchased at the moment."
 msgstr ""
 
-#: classes/Frontend.php:265
+#: classes/Frontend.php:286
 msgid "Checkout blocked: your cart contains products from a restricted store."
 msgstr ""
 
-#: classes/Frontend.php:325
-#: classes/Frontend.php:340
+#: classes/Frontend.php:346
+#: classes/Frontend.php:361
 msgid "Your cart has products from various stores. They’ll be processed and shipped individually, so expect more than one delivery."
 msgstr ""
 
 #. translators: %s: Current user display name
-#: classes/Frontend.php:657
+#: classes/Frontend.php:677
 #, php-format
 msgid " %s you're one step away from setting up your store. Fill in your business information below to get started."
 msgstr ""
 
-#: classes/Frontend.php:666
+#: classes/Frontend.php:686
 msgid "Step 1 of 2"
 msgstr ""
 
-#: classes/Frontend.php:667
+#: classes/Frontend.php:687
 msgid "Create your account"
 msgstr ""
 
-#: classes/Frontend.php:668
+#: classes/Frontend.php:688
 msgid "Start by setting up a free account. If you already have one, just sign in."
 msgstr ""
 
-#: classes/Frontend.php:670
+#: classes/Frontend.php:690
 msgid "Already have an account"
 msgstr ""
 
-#: classes/Frontend.php:671
+#: classes/Frontend.php:691
 msgid "New here? Sign up"
 msgstr ""
 
-#: classes/Frontend.php:750
+#: classes/Frontend.php:787
 msgid "Manage your store"
 msgstr ""
 
-#: classes/Frontend.php:752
+#: classes/Frontend.php:789
 msgid "To view orders, manage products, and access your full store settings, visit your store dashboard."
 msgstr ""
 
-#: classes/Frontend.php:755
+#: classes/Frontend.php:792
 msgid "Go to store dashboard"
 msgstr ""
 
-#: classes/FrontendScripts.php:445
+#: classes/FrontendScripts.php:452
 msgid "Select an item..."
 msgstr ""
 
-#: classes/FrontendScripts.php:507
-#: classes/FrontendScripts.php:523
+#: classes/FrontendScripts.php:514
+#: classes/FrontendScripts.php:530
 msgid "This field is required"
 msgstr ""
 
-#: classes/FrontendScripts.php:508
-#: classes/FrontendScripts.php:524
+#: classes/FrontendScripts.php:515
+#: classes/FrontendScripts.php:531
 msgid "Invalid email format"
 msgstr ""
 
-#: classes/Migration/Cron.php:42
+#: classes/Migration/Cron.php:51
 msgid "Every 5 Minutes"
 msgstr ""
 
-#: classes/Migration/Cron.php:46
+#: classes/Migration/Cron.php:55
 msgid "Every minute"
 msgstr ""
 
@@ -449,7 +449,7 @@ msgid "Order marked as delivered."
 msgstr ""
 
 #: classes/Notifications/Notifications.php:740
-#: modules/MarketplaceRefund/Frontend.php:634
+#: modules/MarketplaceRefund/Frontend.php:648
 #: assets/js/index.js:1
 msgid "Refund requested"
 msgstr ""
@@ -467,7 +467,7 @@ msgid "Refund request approved for the order."
 msgstr ""
 
 #: classes/Notifications/Notifications.php:810
-#: modules/MarketplaceRefund/Frontend.php:659
+#: modules/MarketplaceRefund/Frontend.php:673
 msgid "Refund rejected"
 msgstr ""
 
@@ -681,7 +681,7 @@ msgid "Regenerate suborders"
 msgstr ""
 
 #: classes/Order/Frontend.php:79
-#: classes/Order/Hooks.php:400
+#: classes/Order/Hooks.php:407
 msgid "Sold by"
 msgstr ""
 
@@ -701,7 +701,7 @@ msgctxt "Order note"
 msgid "Sync from store's suborders: "
 msgstr ""
 
-#: classes/Order/Hooks.php:403
+#: classes/Order/Hooks.php:410
 msgid "Item id"
 msgstr ""
 
@@ -979,8 +979,8 @@ msgstr ""
 #: classes/RestAPI/Controllers/Notifications.php:102
 #: classes/RestAPI/Controllers/Notifications.php:370
 #: classes/RestAPI/Controllers/Notifications.php:505
-#: classes/RestAPI/Controllers/Settings.php:108
-#: classes/RestAPI/Controllers/Settings.php:241
+#: classes/RestAPI/Controllers/Settings.php:113
+#: classes/RestAPI/Controllers/Settings.php:246
 #: classes/RestAPI/Controllers/Status.php:72
 #: classes/RestAPI/Controllers/Status.php:111
 #: classes/RestAPI/Controllers/Stores.php:128
@@ -1011,7 +1011,7 @@ msgstr ""
 #: modules/Knowledgebase/Rest.php:400
 #: modules/MarketplaceCompliance/Rest.php:91
 #: modules/MarketplaceCompliance/Rest.php:200
-#: modules/MarketplaceRefund/Rest.php:101
+#: modules/MarketplaceRefund/Rest.php:93
 #: modules/StoreReview/Rest.php:128
 #: modules/StoreReview/Rest.php:274
 #: modules/StoreReview/Rest.php:333
@@ -1037,8 +1037,8 @@ msgstr ""
 #: classes/RestAPI/Controllers/Notifications.php:306
 #: classes/RestAPI/Controllers/Notifications.php:493
 #: classes/RestAPI/Controllers/Notifications.php:523
-#: classes/RestAPI/Controllers/Settings.php:229
-#: classes/RestAPI/Controllers/Settings.php:286
+#: classes/RestAPI/Controllers/Settings.php:234
+#: classes/RestAPI/Controllers/Settings.php:291
 #: classes/RestAPI/Controllers/Status.php:93
 #: classes/RestAPI/Controllers/Status.php:178
 #: classes/RestAPI/Controllers/Stores.php:225
@@ -1063,7 +1063,7 @@ msgstr ""
 #: modules/Knowledgebase/Rest.php:386
 #: modules/MarketplaceCompliance/Rest.php:187
 #: modules/MarketplaceCompliance/Rest.php:251
-#: modules/MarketplaceRefund/Rest.php:285
+#: modules/MarketplaceRefund/Rest.php:277
 #: modules/StoreReview/Rest.php:262
 #: modules/StoreReview/Rest.php:314
 #: modules/StoreReview/Rest.php:405
@@ -1090,7 +1090,7 @@ msgid "You are not allowed to regenerate commissions."
 msgstr ""
 
 #: classes/RestAPI/Controllers/Dashboard.php:119
-#: classes/Store/StoreUtil.php:135
+#: classes/Store/StoreUtil.php:138
 #: modules/Elementor/Widgets/StoreTab.php:117
 #: assets/js/block/marketplace-products/index.js:1
 #: assets/js/block/marketplace-products/view.js:1
@@ -1194,12 +1194,12 @@ msgid "Invalid XML structure."
 msgstr ""
 
 #: classes/RestAPI/Controllers/ImportDummyData.php:336
-#: classes/RestAPI/Controllers/Migrations.php:130
+#: classes/RestAPI/Controllers/Migrations.php:136
 msgid "Stores imported successfully."
 msgstr ""
 
 #: classes/RestAPI/Controllers/ImportDummyData.php:517
-#: classes/RestAPI/Controllers/Migrations.php:158
+#: classes/RestAPI/Controllers/Migrations.php:170
 msgid "Products imported successfully."
 msgstr ""
 
@@ -1215,8 +1215,8 @@ msgstr ""
 msgid "Reviews imported successfully."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Migrations.php:115
-#: classes/RestAPI/Controllers/Migrations.php:143
+#: classes/RestAPI/Controllers/Migrations.php:121
+#: classes/RestAPI/Controllers/Migrations.php:155
 msgid "No active plugin found."
 msgstr ""
 
@@ -1237,11 +1237,11 @@ msgstr ""
 msgid "Notification(s) updated successfully."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Settings.php:161
+#: classes/RestAPI/Controllers/Settings.php:166
 msgid "You are not allowed to change role permissions."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Settings.php:224
+#: classes/RestAPI/Controllers/Settings.php:229
 #: classes/RestAPI/Controllers/Stores.php:1227
 msgid "Settings Saved"
 msgstr ""
@@ -1792,11 +1792,11 @@ msgid_plural "%d Followers"
 msgstr[0] ""
 msgstr[1] ""
 
-#: modules/Intelligence/Rest.php:45
+#: modules/Intelligence/Rest.php:57
 msgid "Invalid nonce."
 msgstr ""
 
-#: modules/Intelligence/Rest.php:59
+#: modules/Intelligence/Rest.php:71
 msgid "Server error."
 msgstr ""
 
@@ -1926,132 +1926,132 @@ msgstr ""
 msgid " refund request for order #"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:97
+#: modules/MarketplaceRefund/Frontend.php:105
 msgid "Request a refund"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:121
+#: modules/MarketplaceRefund/Frontend.php:129
 msgid "Choose the product(s) you want a refund for"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:149
+#: modules/MarketplaceRefund/Frontend.php:157
 msgid "Please mention your reason for refund"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:168
+#: modules/MarketplaceRefund/Frontend.php:176
 msgid "Others reason"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:172
 #: modules/MarketplaceRefund/Frontend.php:180
-#: modules/MarketplaceRefund/Frontend.php:581
+#: modules/MarketplaceRefund/Frontend.php:188
+#: modules/MarketplaceRefund/Frontend.php:595
 msgid "Refund reason"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:189
+#: modules/MarketplaceRefund/Frontend.php:197
 msgid "Provide additional information"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:194
+#: modules/MarketplaceRefund/Frontend.php:202
 msgid "Upload an image of the product"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:198
+#: modules/MarketplaceRefund/Frontend.php:206
 msgid "You can select multiple images."
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:203
+#: modules/MarketplaceRefund/Frontend.php:211
 #: assets/js/index.js:1
 msgid "Submit"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:265
-#: modules/MarketplaceRefund/Frontend.php:287
+#: modules/MarketplaceRefund/Frontend.php:273
+#: modules/MarketplaceRefund/Frontend.php:295
 msgid "Refund is not allowed for the current order status."
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:266
+#: modules/MarketplaceRefund/Frontend.php:274
 msgid "Your refund period has expired"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:267
+#: modules/MarketplaceRefund/Frontend.php:275
 msgid "*** Your request has been rejected ***"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:268
-#: modules/MarketplaceRefund/Frontend.php:294
+#: modules/MarketplaceRefund/Frontend.php:276
+#: modules/MarketplaceRefund/Frontend.php:302
 msgid "Your request is pending."
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:269
+#: modules/MarketplaceRefund/Frontend.php:277
 msgid "*** Your request has been accepted. *** "
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:283
+#: modules/MarketplaceRefund/Frontend.php:291
 msgid "Your refund period has expired."
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:291
+#: modules/MarketplaceRefund/Frontend.php:299
 msgid "Sorry!! Your request has been rejected"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:297
+#: modules/MarketplaceRefund/Frontend.php:305
 msgid "Congratulation: *** Your request has been accepted. *** "
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:333
+#: modules/MarketplaceRefund/Frontend.php:341
 msgid "Kindly choose a product"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:338
+#: modules/MarketplaceRefund/Frontend.php:346
 msgid "Kindly choose a refund reason"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:515
+#: modules/MarketplaceRefund/Frontend.php:523
 msgid "Refund request successfully submitted."
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:587
+#: modules/MarketplaceRefund/Frontend.php:601
 msgid "Category:"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:589
+#: modules/MarketplaceRefund/Frontend.php:603
 msgid "N/A"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:599
+#: modules/MarketplaceRefund/Frontend.php:613
 msgid "No additional information provided."
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:606
+#: modules/MarketplaceRefund/Frontend.php:620
 msgid "Attached images:"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:623
+#: modules/MarketplaceRefund/Frontend.php:637
 msgid "Request timeline"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:645
+#: modules/MarketplaceRefund/Frontend.php:659
 msgid "Under review"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:661
+#: modules/MarketplaceRefund/Frontend.php:675
 msgid "Decision pending"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:671
+#: modules/MarketplaceRefund/Frontend.php:685
 msgid "Rejected by admin:"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:676
+#: modules/MarketplaceRefund/Frontend.php:690
 msgid "Rejected by store:"
 msgstr ""
 
-#: modules/MarketplaceRefund/Frontend.php:691
+#: modules/MarketplaceRefund/Frontend.php:705
 msgid "Refund processed"
 msgstr ""
 
-#: modules/MarketplaceRefund/Rest.php:133
+#: modules/MarketplaceRefund/Rest.php:125
 msgid "You cannot view refunds for this store."
 msgstr ""
 
@@ -2111,11 +2111,11 @@ msgstr ""
 msgid "Minimum quantity required is %d"
 msgstr ""
 
-#: modules/SharedListing/Frontend.php:278
+#: modules/SharedListing/Frontend.php:286
 msgid "More Offers"
 msgstr ""
 
-#: modules/SharedListing/Frontend.php:344
+#: modules/SharedListing/Frontend.php:353
 msgid "More Stores"
 msgstr ""
 
@@ -2175,13 +2175,13 @@ msgstr ""
 msgid "Review submitted successfully!"
 msgstr ""
 
-#: modules/StoreReview/Ajax.php:105
+#: modules/StoreReview/Ajax.php:107
 msgid "Anonymous"
 msgstr ""
 
 #. translators: %s: rating value
 #. Translators: %s is the rating value out of 5.
-#: modules/StoreReview/Ajax.php:123
+#: modules/StoreReview/Ajax.php:125
 #: modules/StoreReview/Widgets/StoreRating.php:302
 #: templates/store/store-banner-info.php:144
 #: assets/js/block/marketplace-stores/index.js:1
@@ -2190,7 +2190,7 @@ msgstr ""
 msgid "Rated %s out of 5"
 msgstr ""
 
-#: modules/StoreReview/Ajax.php:129
+#: modules/StoreReview/Ajax.php:131
 #: modules/StoreReview/Widgets/StoreRating.php:308
 #: templates/store/store-banner-info.php:149
 #: assets/js/block/marketplace-stores/index.js:1
@@ -2203,21 +2203,21 @@ msgid "out of 5"
 msgstr ""
 
 #. translators: %s: time difference
-#: modules/StoreReview/Ajax.php:140
+#: modules/StoreReview/Ajax.php:142
 #, php-format
 msgid "%s ago"
 msgstr ""
 
-#: modules/StoreReview/Ajax.php:160
+#: modules/StoreReview/Ajax.php:162
 #: assets/js/block/store-review/view.js:1
 msgid "Review Image"
 msgstr ""
 
-#: modules/StoreReview/Ajax.php:170
+#: modules/StoreReview/Ajax.php:172
 msgid "Store's reply:"
 msgstr ""
 
-#: modules/StoreReview/Ajax.php:183
+#: modules/StoreReview/Ajax.php:185
 msgid "No reviews yet — they'll show up here once received."
 msgstr ""
 
@@ -2441,7 +2441,7 @@ msgid "Shipping method not found"
 msgstr ""
 
 #: modules/StoreShipping/Zone_Shipping.php:53
-#: modules/StoreShipping/Zone_Shipping.php:211
+#: modules/StoreShipping/Zone_Shipping.php:205
 #: assets/js/index.js:1
 msgid "Store Shipping"
 msgstr ""
@@ -2450,23 +2450,23 @@ msgstr ""
 msgid "Charge varying rates based on user defined conditions"
 msgstr ""
 
-#: modules/StoreShipping/Zone_Shipping.php:208
+#: modules/StoreShipping/Zone_Shipping.php:202
 msgid "Method title"
 msgstr ""
 
-#: modules/StoreShipping/Zone_Shipping.php:210
+#: modules/StoreShipping/Zone_Shipping.php:204
 msgid "This controls the title which the user sees during checkout."
 msgstr ""
 
-#: modules/StoreShipping/Zone_Shipping.php:215
+#: modules/StoreShipping/Zone_Shipping.php:209
 msgid "Tax status"
 msgstr ""
 
-#: modules/StoreShipping/Zone_Shipping.php:220
+#: modules/StoreShipping/Zone_Shipping.php:214
 msgid "Taxable"
 msgstr ""
 
-#: modules/StoreShipping/Zone_Shipping.php:221
+#: modules/StoreShipping/Zone_Shipping.php:215
 msgctxt "Tax status"
 msgid "None"
 msgstr ""
