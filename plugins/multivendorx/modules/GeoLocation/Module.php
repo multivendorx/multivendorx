@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\GeoLocation;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Geolocation Module
  *

@@ -19,7 +19,7 @@ class Cron {
 	 * Cron class constructor function
 	 */
     public function __construct() {
-		add_action( 'moowoodle_process_course_expiry', array( $this, 'process_expired_courses' ));
+		add_action( 'moowoodle_process_course_expiry', array( $this, 'process_expired_courses' ) );
 
 		$this->schedule_course_expired_cron();
     }

@@ -2,16 +2,9 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { addFilter, applyFilters } from '@wordpress/hooks';
-import {
-	BasicInputUI,
-	Card,
-	FormGroup,
-	FormGroupWrapper,
-	SelectInputUI,
-	ChoiceToggleUI,
-	useModules,
-	SectionUI,
-} from 'zyra';
+import { CardComponent, FormGroupComponent, FormGroupWrapperComponent, SectionComponent } from '@zyra/components';
+import { TextInput, SelectInput, ToggleInput } from '@zyra/inputs';
+import { useModules } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
 
 const ShippingCard = ({
@@ -23,7 +16,25 @@ const ShippingCard = ({
 }) => {
 	const { modules } = useModules();
 	const [shippingClasses, setShippingClasses] = useState([]);
-	const [productType, setProductType] = useState('physical');
+	const [productType, setProductType] = useState(['physical']);
+
+	useEffect(() => {
+		const selectedTypes = [];
+
+		if (product.downloadable) {
+			selectedTypes.push('downloadable');
+		}
+
+		if (product.virtual) {
+			selectedTypes.push('digital_product_service');
+		}
+
+		if (selectedTypes.length === 0) {
+			selectedTypes.push('physical');
+		}
+
+		setProductType(selectedTypes);
+	}, [product.downloadable, product.virtual]);
 
 	useEffect(() => {
 		axios
@@ -46,7 +57,7 @@ const ShippingCard = ({
 
 	return (
 		(
-			<Card
+			<CardComponent
 				title={__('How will this be delivered?', 'multivendorx')}
 				className="full-width"
 				desc={__(
@@ -55,10 +66,11 @@ const ShippingCard = ({
 				)}
 			>
 				{/* Dimensions */}
-				<FormGroupWrapper>
-					<FormGroup className="full-width">
-						<ChoiceToggleUI
+				<FormGroupWrapperComponent>
+					<FormGroupComponent className="full-width">
+						<ToggleInput
 							width="49%"
+							multiSelect={true}
 							options={[
 								{
 									key: 'physical',
@@ -121,19 +133,31 @@ const ShippingCard = ({
 							custom={true}
 							value={productType}
 							onChange={(val) => {
-								setProductType(val);
-								if (val == 'physical') {
-									handleChange('virtual', false);
+								let selectedTypes = val.filter(
+									(type) => type !== 'physical' && type !== 'others'
+								);
+
+								if (selectedTypes.length === 0) {
+									selectedTypes = ['physical'];
 								}
-								if (val == 'downloadable') {
-									handleChange('downloadable', true);
-								}
+
+								setProductType(selectedTypes);
+
+								handleChange(
+									'downloadable',
+									selectedTypes.includes('downloadable')
+								);
+
+								handleChange(
+									'virtual',
+									selectedTypes.includes('digital_product_service')
+								);
 							}}
 						/>
-					</FormGroup>
-					{productType === 'physical' &&
+					</FormGroupComponent>
+					{productType.includes('physical') &&
 						<>
-							<SectionUI
+							<SectionComponent
 								title={__(
 									'Package dimensions & weight',
 									'multivendorx'
@@ -144,20 +168,20 @@ const ShippingCard = ({
 								)}
 							/>
 							{/* Weight & Shipping class */}
-							<FormGroup
+							<FormGroupComponent
 								cols={6}
 								label={__('Weight (kg)', 'multivendorx')}
 								htmlFor="Weight"
 							>
-								<BasicInputUI
+								<TextInput
 									name="weight"
 									value={product.weight}
 									onChange={(value) => {
 										handleChange('weight', value);
 									}}
 								/>
-							</FormGroup>
-							<FormGroup
+							</FormGroupComponent>
+							<FormGroupComponent
 								cols={6}
 								label={__(
 									'Shipping classes',
@@ -165,7 +189,7 @@ const ShippingCard = ({
 								)}
 								htmlFor="shipping-classes"
 							>
-								<SelectInputUI
+								<SelectInput
 									name="shipping_class"
 									options={shippingClasses}
 									value={product.shipping_class}
@@ -176,12 +200,12 @@ const ShippingCard = ({
 										)
 									}
 								/>
-							</FormGroup>
-							<FormGroup
+							</FormGroupComponent>
+							<FormGroupComponent
 								cols={4}
 								label={`${__('Length', 'multivendorx')} (${appLocalizer.dimension_unit})`}
 							>
-								<BasicInputUI
+								<TextInput
 									name="product_length"
 									value={product.dimensions?.length || ''}
 									placeholder={__(
@@ -195,13 +219,13 @@ const ShippingCard = ({
 										})
 									}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup
+							<FormGroupComponent
 								cols={4}
 								label={`${__('Width', 'multivendorx')} (${appLocalizer.dimension_unit})`}
 							>
-								<BasicInputUI
+								<TextInput
 									name="product_width"
 									value={product.dimensions?.width}
 									placeholder={__(
@@ -215,13 +239,13 @@ const ShippingCard = ({
 										})
 									}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup
+							<FormGroupComponent
 								cols={4}
 								label={`${__('Height', 'multivendorx')} (${appLocalizer.dimension_unit})`}
 							>
-								<BasicInputUI
+								<TextInput
 									name="product_height"
 									value={product.dimensions?.height}
 									placeholder={__(
@@ -235,7 +259,7 @@ const ShippingCard = ({
 										})
 									}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 							{applyFilters(
 								'multivendorx_product_shipping_meta',
 								null,
@@ -244,7 +268,7 @@ const ShippingCard = ({
 							)}
 						</>
 					}
-					{productType === 'downloadable' &&
+					{productType.includes('downloadable') &&
 						applyFilters(
 							'product_downloadable',
 							null,
@@ -252,8 +276,8 @@ const ShippingCard = ({
 							setProduct,
 							handleChange
 						)}
-				</FormGroupWrapper>
-			</Card>
+				</FormGroupWrapperComponent>
+			</CardComponent>
 		)
 	);
 };

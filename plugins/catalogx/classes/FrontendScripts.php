@@ -155,8 +155,8 @@ class FrontendScripts {
                     'deps'    => array(),
                     'version' => $version,
                 ),
-                'catalogx-index-style' => array(
-					'src' => self::get_asset_path() . 'styles/index.css',
+                'catalogx-index-style'        => array(
+					'src'     => self::get_asset_path() . 'styles/index.css',
                     'deps'    => array(),
                     'version' => $version,
                 ),
@@ -412,7 +412,7 @@ class FrontendScripts {
             'restUrl' => CatalogX()->rest_namespace,
             'nonce'   => wp_create_nonce( 'wp_rest' ),
         );
-        $currency_data = array(
+        $currency_data    = array(
             'currency'           => get_woocommerce_currency(),
             'currency_symbol'    => get_woocommerce_currency_symbol(),
             'price_format'       => get_woocommerce_price_format(),
@@ -424,51 +424,52 @@ class FrontendScripts {
         $localize_scripts = apply_filters(
             'catalogx_localize_scripts',
             array(
-                'catalogx-admin-script'                 => array(
+                'catalogx-admin-script'                  => array(
                     'object_name' => 'appLocalizer',
                     'data'        => array_merge(
                         $base_rest,
                         $currency_data,
                         array(
-                            'tab_name'                   => 'CatalogX',
-                            'pages_data'                 => $pages_data,
-                            'role_array'                 => $roles_data,
-                            'users_data'                 => $users_data,
-                            'products_data'              => $products_data,
-                            'all_product_categories'     => $product_categories,
-                            'product_brands'             => $product_brands,
-                            'all_product_tag'            => $product_tags,
-                            'settings_databases_value'   => $settings_databases_value,
-                            'active_modules'             => CatalogX()->modules->get_active_modules(),
-                            'user_role'                  => $current_user_role,
-                            'khali_dabba'                => Utill::is_khali_dabba(),
-                            'active_plugins'             => get_option( 'active_plugins', array() ),
-                            'pro_url'                    => esc_url( CATALOGX_PRO_SHOP_URL ),
-                            'order_edit'                 => admin_url( 'admin.php?page=wc-orders&action=edit' ),
-                            'admin_url'                  => admin_url( 'admin.php?page=catalogx' ),
-                            'currency'                   => get_woocommerce_currency(),
-                            'notifima_active'            => Utill::is_active_plugin( 'notifima' ),
-                            'multivendorx_active'        => Utill::is_active_plugin( 'multivendorx' ),
-                            'quote_module_active'        => CatalogX()->modules->is_active( 'quote' ),
-                            'quote_base_url'             => $quote_base_url,
-                            'free_version'               => CatalogX()->version,
-                            'date_format'                => Utill::wp_to_react_date_format( get_option( 'date_format' ) ),
-                            'pro_data'                   => apply_filters(
+                            'tab_name'                 => 'CatalogX',
+                            'pages_data'               => $pages_data,
+                            'role_array'               => $roles_data,
+                            'users_data'               => $users_data,
+                            'products_data'            => $products_data,
+                            'all_product_categories'   => $product_categories,
+                            'product_brands'           => $product_brands,
+                            'all_product_tag'          => $product_tags,
+                            'settings_databases_value' => $settings_databases_value,
+                            'active_modules'           => CatalogX()->modules->get_active_modules(),
+                            'user_role'                => $current_user_role,
+                            'khali_dabba'              => Utill::is_khali_dabba(),
+                            'active_plugins'           => get_option( 'active_plugins', array() ),
+                            'pro_url'                  => esc_url( CATALOGX_PRO_SHOP_URL ),
+                            'order_edit'               => admin_url( 'admin.php?page=wc-orders&action=edit' ),
+                            'admin_url'                => admin_url( 'admin.php?page=catalogx' ),
+                            'currency'                 => get_woocommerce_currency(),
+                            'notifima_active'          => Utill::is_active_plugin( 'notifima' ),
+                            'multivendorx_active'      => Utill::is_active_plugin( 'multivendorx' ),
+                            'quote_module_active'      => CatalogX()->modules->is_active( 'quote' ),
+                            'quote_base_url'           => $quote_base_url,
+                            'free_version'             => CatalogX()->version,
+                            'date_format'              => Utill::wp_to_react_date_format( get_option( 'date_format' ) ),
+                            'url'                      => admin_url(),
+                            'pro_data'                 => apply_filters(
 								'catalogx_update_pro_data',
 								array(
 									'version'         => false,
 									'manage_plan_url' => CATALOGX_PRO_SHOP_URL,
 								)
 							),
-                            'email_tags'    => Utill::get_tags_enquiry_form()
+                            'email_tags'               => Utill::get_tags_enquiry_form(),
                         )
                     ),
                 ),
-                'catalogx-enquiry-frontend-script'      => array(
+                'catalogx-enquiry-frontend-script'       => array(
                     'object_name' => 'enquiryFrontend',
                     'data'        => self::get_base_ajax_data( 'catalogx-enquiry-frontend-script' ),
                 ),
-                'catalogx-enquiry-form-script'          => array(
+                'catalogx-enquiry-form-script'           => array(
                     'object_name' => 'enquiryFormData',
                     'data'        => array_merge(
                         $base_rest,
@@ -490,7 +491,7 @@ class FrontendScripts {
                         )
                     ),
                 ),
-                'catalogx-add-to-quote-cart-script'     => array(
+                'catalogx-add-to-quote-cart-script'      => array(
                     'object_name' => 'addToQuoteCart',
                     'data'        => array_merge(
                         $base_rest,
@@ -500,23 +501,23 @@ class FrontendScripts {
                         )
                     ),
                 ),
-                'catalogx-enquiry-button-editor-script'   => array(
+                'catalogx-enquiry-button-editor-script'  => array(
                     'object_name' => 'enquiryButton',
                     'data'        => $base_rest,
                 ),
-                'catalogx-quote-button-editor-script'          => array(
+                'catalogx-quote-button-editor-script'    => array(
                     'object_name' => 'quoteButton',
                     'data'        => $base_rest,
                 ),
-                'catalogx-enquiry-button-view-script'   => array(
+                'catalogx-enquiry-button-view-script'    => array(
                     'object_name' => 'enquiryButton',
                     'data'        => $base_rest,
                 ),
-                'catalogx-quote-button-view-script'          => array(
+                'catalogx-quote-button-view-script'      => array(
                     'object_name' => 'quoteButton',
                     'data'        => $base_rest,
                 ),
-                'catalogx-quote-cart-editor-script'     => array(
+                'catalogx-quote-cart-editor-script'      => array(
                     'object_name' => 'quoteCart',
                     'data'        => array_merge(
                         $base_rest,
@@ -528,7 +529,7 @@ class FrontendScripts {
                         )
                     ),
                 ),
-                'catalogx-quote-cart-view-script'            => array(
+                'catalogx-quote-cart-view-script'        => array(
                     'object_name' => 'quoteCart',
                     'data'        => array_merge(
                         $base_rest,
@@ -539,6 +540,10 @@ class FrontendScripts {
                             'khali_dabba'          => Utill::is_khali_dabba(),
                         )
                     ),
+                ),
+                'catalogx-excluded-products-view-script' => array(
+                    'object_name' => 'excludedProducts',
+                    'data'        => $base_rest,
                 ),
             )
         );

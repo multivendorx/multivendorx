@@ -9,20 +9,22 @@
  * @version   6.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-do_action( 'catalogx_email_header', $args['email_heading'] ); 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+do_action( 'catalogx_email_header', $args['email_heading'] );
 $enquiry_data = $args['enquiry_data'];
 ?>
 <body>
     <div style="width:600px; margin: 0 auto; ">
         <div class="email-container">
                 <div style="width:100%; background: #557DA1; padding: 40px 30px; border: 1px solid #557DA1;">
-                    <h2 style="font-family: Arial; line-height: 43px; text-align: center; color: #fff; font-size: 46px; font-weight: 700; margin: 0;padding: 0 0 0px 0;"><?php echo __('New Product Enquiry','catalogx') . $product_title ;?> </h2>
+                    <h2 style="font-family: Arial; line-height: 43px; text-align: center; color: #fff; font-size: 46px; font-weight: 700; margin: 0;padding: 0 0 0px 0;"><?php echo __( 'New Product Enquiry', 'catalogx' ) . $product_title; ?> </h2>
                 </div>
             
                 <div style="width: 100%;">
-            <p><?php esc_html_e('Dear Admin','catalogx');?>,</p>
-            <p><?php esc_html_e('Please find the product enquiry, details are given below','catalogx');?>.</p>
+            <p><?php esc_html_e( 'Dear Admin', 'catalogx' ); ?>,</p>
+            <p><?php esc_html_e( 'Please find the product enquiry, details are given below', 'catalogx' ); ?>.</p>
             <h3 style="font-size: 20px; color:#557da1; "><?php esc_html_e( 'Product Details', 'catalogx' ); ?></h3>
             <div class="table-wrapper">
                 <table cellspacing="0" cellpadding="6" style="width: 100%; border: 1px solid #eee;" border="1" bordercolor="#eee">
@@ -35,66 +37,66 @@ $enquiry_data = $args['enquiry_data'];
                     </thead>
                     <tbody>
                         <?php
-                        if (is_array($args['product_id']) && count($args['product_id']) > 1) {
-                            foreach ($args['product_id'] as $id => $value) {
-                                $product_obj = wc_get_product( $id ); ?>
+                        if ( is_array( $args['product_id'] ) && count( $args['product_id'] ) > 1 ) {
+                            foreach ( $args['product_id'] as $id => $value ) {
+                                $product_obj = wc_get_product( $id );
+                                ?>
                                 <tr>
-                                <td scope="col"><?php echo $product_obj->get_name(); ?>
+                                <td scope="col"><?php echo esc_html( $product_obj->get_name() ); ?>
                                 <?php
-                                    if ($product_obj->get_type() == 'variation') {
-                                        if (isset($enquiry_data['variations']) && count($enquiry_data['variations']) > 0 ) {
-                                            foreach ($enquiry_data['variations'] as $label => $value) {
-                                                $label = str_replace( 'attribute_pa_', '', $label );
-                                                $label = str_replace( 'attribute_', '', $label );
-                                                echo "<br>".ucfirst($label).": ".ucfirst($value);
-                                            }
-                                        }else{
-                                            if ($product_obj->get_attributes()) {
-                                                foreach ($product_obj->get_attributes() as $label => $value) {
-                                                    echo "<br>".ucfirst(wc_attribute_label($label)).": ".ucfirst($value);
-                                                }
-                                            }
-                                        }
-                                    } ?>
+								if ( $product_obj->get_type() == 'variation' ) {
+									if ( isset( $enquiry_data['variations'] ) && count( $enquiry_data['variations'] ) > 0 ) {
+										foreach ( $enquiry_data['variations'] as $label => $value ) {
+											$label = str_replace( 'attribute_pa_', '', $label );
+											$label = str_replace( 'attribute_', '', $label );
+											echo '<br>' . esc_html( ucfirst( $label ) . ': ' . ucfirst( $value ) );
+										}
+									} elseif ( $product_obj->get_attributes() ) {
+										foreach ( $product_obj->get_attributes() as $label => $value ) {
+											echo '<br>' . esc_html( ucfirst( wc_attribute_label( $label ) ) . ': ' . ucfirst( $value ) );
+										}
+									}
+								}
+								?>
                                 </td>
-                                <td scope="col"><a href="<?php echo $product_obj->get_permalink(); ?>" target="_blank"><?php echo $product_obj->get_title(); ?></a></td>
-                                <?php if ($product_obj->get_sku()) { ?>
-                                <td scope="col"><?php echo $product_obj->get_sku(); ?></td>
+                                <td scope="col"><a href="<?php echo esc_url( $product_obj->get_permalink() ); ?>" target="_blank"><?php echo esc_html( $product_obj->get_title() ); ?></a></td>
+                                <?php if ( $product_obj->get_sku() ) { ?>
+                                <td scope="col"><?php echo esc_html( $product_obj->get_sku() ); ?></td>
                                 <?php } else { ?>
                                     <td scope="col"><?php echo '-'; ?></td>
-                                <?php }?>
+                                <?php } ?>
                             </tr>
-                            <?php
+								<?php
                             }
                         } else {
-                            $product_obj = wc_get_product( key($args['product_id']) ); ?>
+                            $product_obj = wc_get_product( key( $args['product_id'] ) );
+                            ?>
                             <tr>
                             <td scope="col"><?php echo $product_obj->get_name(); ?>
                             <?php
-                                if ($product_obj->get_type() == 'variation') {
-                                    if (isset($enquiry_data['variations']) && count($enquiry_data['variations']) > 0 ) {
-                                        foreach ($enquiry_data['variations'] as $label => $value) {
-                                            $label = str_replace( 'attribute_pa_', '', $label );
-                                            $label = str_replace( 'attribute_', '', $label );
-                                            echo "<br>".ucfirst($label).": ".ucfirst($value);
-                                        }
-                                    }else{
-                                        if ($product_obj->get_attributes()) {
-                                            foreach ($product_obj->get_attributes() as $label => $value) {
-                                                echo "<br>".ucfirst(wc_attribute_label($label)).": ".ucfirst($value);
-                                            }
-                                        }
-                                    }
-                                } ?>
+							if ( $product_obj->get_type() == 'variation' ) {
+								if ( isset( $enquiry_data['variations'] ) && count( $enquiry_data['variations'] ) > 0 ) {
+									foreach ( $enquiry_data['variations'] as $label => $value ) {
+										$label = str_replace( 'attribute_pa_', '', $label );
+										$label = str_replace( 'attribute_', '', $label );
+										echo '<br>' . ucfirst( $label ) . ': ' . ucfirst( $value );
+									}
+								} elseif ( $product_obj->get_attributes() ) {
+									foreach ( $product_obj->get_attributes() as $label => $value ) {
+										echo '<br>' . ucfirst( wc_attribute_label( $label ) ) . ': ' . ucfirst( $value );
+									}
+								}
+							}
+							?>
                             </td>
                             <td scope="col"><a href="<?php echo $product_obj->get_permalink(); ?>" target="_blank"><?php echo $product_obj->get_title(); ?></a></td>
-                            <?php if ($product_obj->get_sku()) { ?>
+                            <?php if ( $product_obj->get_sku() ) { ?>
                             <td scope="col"><?php echo $product_obj->get_sku(); ?></td>
                             <?php } else { ?>
                                 <td scope="col"><?php echo '-'; ?></td>
-                            <?php }?>
+                            <?php } ?>
                         </tr>
-                        <?php
+							<?php
                         }
                         ?>
                     </tbody>
@@ -110,32 +112,40 @@ $enquiry_data = $args['enquiry_data'];
                 <a target="_blank" href="mailto:<?php echo $enquiry_data['user_email']; ?>"><?php echo $enquiry_data['user_email']; ?></a>
             </p>
             <?php
-            foreach ($enquiry_data['user_enquiry_fields'] as $field) {
-                if (isset($field['name']) && isset($field['value'])) {
-                    if ($field['name'] === 'phone') { ?>
+            foreach ( $enquiry_data['user_enquiry_fields'] as $field ) {
+                if ( isset( $field['name'] ) && isset( $field['value'] ) ) {
+                    if ( $field['name'] === 'phone' ) {
+						?>
                         <p>
-                            <strong><?php esc_html_e("User Phone : ", 'catalogx'); ?></strong>
-                            <?php echo esc_html($field['value']); ?>
+                            <strong><?php esc_html_e( 'User Phone : ', 'catalogx' ); ?></strong>
+                            <?php echo esc_html( $field['value'] ); ?>
                         </p>
-                    <?php }
-                    if ($field['name'] === 'address') { ?>
+						<?php
+                    }
+                    if ( $field['name'] === 'address' ) {
+						?>
                         <p>
-                            <strong><?php esc_html_e("User Address : ", 'catalogx'); ?></strong>
-                            <?php echo esc_html($field['value']); ?>
+                            <strong><?php esc_html_e( 'User Address : ', 'catalogx' ); ?></strong>
+                            <?php echo esc_html( $field['value'] ); ?>
                         </p>
-                    <?php }
-                    if ($field['name'] === 'subject') { ?>
+						<?php
+                    }
+                    if ( $field['name'] === 'subject' ) {
+						?>
                         <p>
-                            <strong><?php esc_html_e("User Subject : ", 'catalogx'); ?></strong>
-                            <?php echo esc_html($field['value']); ?>
+                            <strong><?php esc_html_e( 'User Subject : ', 'catalogx' ); ?></strong>
+                            <?php echo esc_html( $field['value'] ); ?>
                         </p>
-                    <?php }
-                    if ($field['name'] === 'comment') { ?>
+						<?php
+                    }
+                    if ( $field['name'] === 'comment' ) {
+						?>
                         <p>
-                            <strong><?php esc_html_e("User Comments : ", 'catalogx'); ?></strong>
-                            <?php echo esc_html($field['value']); ?>
+                            <strong><?php esc_html_e( 'User Comments : ', 'catalogx' ); ?></strong>
+                            <?php echo esc_html( $field['value'] ); ?>
                         </p>
-                    <?php }
+						<?php
+                    }
                 }
             }
             ?>
@@ -146,7 +156,7 @@ $enquiry_data = $args['enquiry_data'];
                 <tr>
                     <td colspan="2" valign="middle" align="center">
                     <?php /* translators: %s: email footer which display the site name. */ ?>
-                    <p><?php echo apply_filters('catalogx_email_footer_text', sprintf( __( '%s - Powered by CatalogX', 'catalogx' ), get_bloginfo( 'name', 'display' ) ) );?></a>.</p>
+                    <p><?php echo apply_filters( 'catalogx_email_footer_text', sprintf( __( '%s - Powered by CatalogX', 'catalogx' ), get_bloginfo( 'name', 'display' ) ) ); ?>.</p>
                     </td>
                 </tr>
             </tbody>

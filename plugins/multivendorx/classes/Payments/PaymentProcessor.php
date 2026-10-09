@@ -52,7 +52,7 @@ class PaymentProcessor {
 		if ( $method ) {
 			$payment_method = $method;
 		} else {
-			$payment_method = $store->get_meta( Utill::STORE_SETTINGS_KEYS['payment_method'] ) ?? '';
+			$payment_method = $store->get_payment_method( 'name' ) ?? '';
 		}
 
 		if ( ! $disbursement && ( 'bank-transfer' === $payment_method || 'cash' === $payment_method || 'custom-gateway' === $payment_method ) ) {
@@ -60,14 +60,16 @@ class PaymentProcessor {
 		}
 
 		if ( ! $order_id ) {
-			$withdrawals_fees  = MultiVendorX()->setting->get_setting( 'withdrawals_fees', array() );
-			$withdrawals_count = (int) $store->get_meta( Utill::STORE_SETTINGS_KEYS['withdrawals_count'] );
+				$withdrawals_fees  = MultiVendorX()->setting->get_setting( 'withdrawals_fees', array() );
+				$withdrawals_fees  = reset( $withdrawals_fees );
+				$free_withdrawals  = (int) ( $withdrawals_fees['free_withdrawals'] ?? 0 );
+				$withdrawals_count = (int) $store->get_meta( Utill::STORE_SETTINGS_KEYS['withdrawals_count'] );
 
-			if ( ! empty( $withdrawals_fees['free_withdrawals'] ) && ( (int) $withdrawals_fees['free_withdrawals'] < $withdrawals_count ) ) {
+			if ( $withdrawals_count > $free_withdrawals ) {
 				$deduct_amount = (float) $amount * ( (float) $withdrawals_fees['withdrawal_percentage'] / 100 ) + (float) $withdrawals_fees['withdrawal_fixed'];
 				$amount        = $amount - $deduct_amount;
 
-				$data = array(
+				$transaction_data = array(
 					'store_id'         => (int) $store_id,
 					'entry_type'       => 'Dr',
 					'transaction_type' => 'Withdrawal',
@@ -81,7 +83,7 @@ class PaymentProcessor {
 
 				$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
                     $wpdb->prefix . Utill::TABLES['transaction'],
-                    $data,
+                    $transaction_data,
                     $format
 				);
 
@@ -94,7 +96,7 @@ class PaymentProcessor {
 		}
 
 		if ( empty( $payment_method ) ) {
-			$data = array(
+			$transaction_data = array(
 				'store_id'         => (int) $store_id,
 				'order_id'         => $order_id,
 				'entry_type'       => 'Dr',
@@ -110,7 +112,7 @@ class PaymentProcessor {
 
 			$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
                 $wpdb->prefix . Utill::TABLES['transaction'],
-                $data,
+                $transaction_data,
                 $format
 			);
 
@@ -162,7 +164,7 @@ class PaymentProcessor {
 
 		$amount = $amount ? $amount : ( $commission ? (float) $commission->store_payable : 0.00 );
 
-		$data = array(
+		$transaction_data = array(
 			'store_id'         => (int) $store_id,
 			'order_id'         => $order_id > 0 ? (int) $order_id : null,
 			'commission_id'    => $commission_id ? (int) $commission_id : null,
@@ -170,7 +172,7 @@ class PaymentProcessor {
 			'transaction_type' => 'Withdrawal',
 			'amount'           => $amount,
 			'currency'         => get_woocommerce_currency(),
-			'payment_method'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['payment_method'] ),
+			'payment_method'   => $store->get_payment_method( 'name' ),
 			'narration'        => $note ? $note : ( ( 'success' === $status )
 									? "Withdrawal released via {$method} Payment Processor"
 									: "Withdrawal failed via {$method} Payment Processor" ),
@@ -181,7 +183,7 @@ class PaymentProcessor {
 
 		$result = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
             $wpdb->prefix . Utill::TABLES['transaction'],
-            $data,
+            $transaction_data,
             $format
 		);
 
@@ -274,7 +276,7 @@ class PaymentProcessor {
 			$amount = $commission ? (float) $commission->total_order_value : 0.00;
 			$store  = new Store( (int) $commission->store_id );
 
-            $data = array(
+            $transaction_data = array(
                 'store_id'         => (int) $commission->store_id,
                 'order_id'         => (int) $order_id,
                 'commission_id'    => (int) $commission_id,
@@ -282,7 +284,7 @@ class PaymentProcessor {
                 'transaction_type' => 'COD received',
                 'amount'           => $amount,
                 'currency'         => get_woocommerce_currency(),
-                'payment_method'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['payment_method'] ) ?? '',
+                'payment_method'   => $store->get_payment_method( 'name' ) ?? '',
                 'narration'        => 'COD payment received for order no. - ' . $order_id,
                 'status'           => 'Completed',
             );
@@ -296,7 +298,7 @@ class PaymentProcessor {
 			} elseif ( 'store' === $payment ) {
                 $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
                     $wpdb->prefix . Utill::TABLES['transaction'],
-                    $data,
+                    $transaction_data,
                     $format
                 );
                 if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {

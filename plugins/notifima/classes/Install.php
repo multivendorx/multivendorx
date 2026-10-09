@@ -40,8 +40,15 @@ class Install {
      * Class constructor
      */
     public function __construct() {
-		// phpcs:ignore WordPress.WP.CronInterval.ChangeDetected
-        add_filter( 'cron_schedules', array( $this, 'register_custom_schedule' ) );
+        add_action( 'init', array( $this, 'run_migration' ) );
+    }
+
+    /**
+     * Run first-time install or version-gated migration on plugin init.
+     *
+     * @return void
+     */
+    public function run_migration() {
         $previous_version = get_option( 'notifima_version', false );
         if ( ! $previous_version ) {
             $this->create_database_table();
@@ -50,7 +57,6 @@ class Install {
         } else {
             $this->do_migration( $previous_version );
         }
-        $this->start_cron_job();
 
         update_option( 'notifima_version', NOTIFIMA_PLUGIN_VERSION );
 
@@ -87,30 +93,14 @@ class Install {
 
     /**
      * Runs the database migration process.
+     *
+     * @param string $previous_version The previously installed plugin version.
      */
     public static function do_migration( $previous_version ) {
 
         // write migration code from 3.0.1.
         if ( version_compare( $previous_version, '3.1.0', '<' ) ) {
-            $mailchimp_settings = get_option( 'notifima_mailchimp_settings', array() );
-            $email_settings     = get_option( Utill::NOTIFIMA_SETTINGS['email'], array() );
-
-            update_option( Utill::NOTIFIMA_SETTINGS['email'], array_merge( $email_settings, $mailchimp_settings ) );
-
-            delete_option( 'notifima_mailchimp_settings' );
-
-            $email_settings = get_option( Utill::NOTIFIMA_SETTINGS['email'], array() );
-
-            $email_settings['is_mailchimp_enable'] = ! empty( $email_settings['is_mailchimp_enable'] ) ? 'mailchimp' : 'store_only';
-
-            $email_settings['mailchimp'] = array(
-                'options'  => $email_settings['mailchimp_list_options'] ?? array(),
-                'selected' => $email_settings['selected_mailchimp_list'] ?? '',
-            );
-
-            update_option( Utill::NOTIFIMA_SETTINGS['email'], $email_settings );
-
-            $appearance_settings = get_option( Utill::NOTIFIMA_SETTINGS['appearance'], array() );
+            $appearance_settings = get_option( 'notifima_appearance_settings', array() );
 
             $appearance_settings['is_double_optin']               = ! empty( $appearance_settings['is_double_optin'] ) ? 'confirm_via_email' : 'subscribe_immediately';
             $appearance_settings['is_enable_no_interest']         = ! empty( $appearance_settings['is_enable_no_interest'] ) ? 'show_count' : 'hide_count';
@@ -118,7 +108,36 @@ class Install {
             $appearance_settings['is_guest_subscriptions_enable'] = ! empty( $appearance_settings['is_guest_subscriptions_enable'] ) ? 'logged_in' : 'everyone';
             $appearance_settings['display_subscription_form_as']  = 'inline';
 
-            update_option( Utill::NOTIFIMA_SETTINGS['appearance'], $appearance_settings );
+            $mailchimp_settings = get_option( 'notifima_mailchimp_settings', array() );
+            if ( ! is_array( $mailchimp_settings ) ) {
+                $mailchimp_settings = array();
+            }
+
+            update_option( Utill::NOTIFIMA_SETTINGS['automation'], array_merge( $appearance_settings, $mailchimp_settings ) );
+
+            $automation_settings = get_option( Utill::NOTIFIMA_SETTINGS['automation'], array() );
+
+            $automation_settings['is_mailchimp_enable'] = ! empty( $automation_settings['is_mailchimp_enable'] ) ? 'mailchimp' : 'store_only';
+
+            $automation_settings['mailchimp'] = array(
+                'options'  => $automation_settings['mailchimp_list_options'] ?? array(),
+                'selected' => $automation_settings['selected_mailchimp_list'] ?? '',
+            );
+
+            update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
+
+            delete_option( 'notifima_mailchimp_settings' );
+
+            $email_settings = get_option( 'notifima_email_settings', array() );
+
+            $email_settings['additional_alert_email'] = ! empty( $appearance_settings['additional_alert_email'] ) ? $appearance_settings['additional_alert_email'] : '';
+
+            update_option( Utill::NOTIFIMA_SETTINGS['notifications'], $email_settings );
+
+            $customer_messages_settings = get_option( 'notifima_form_submission_settings', array() );
+
+            update_option( Utill::NOTIFIMA_SETTINGS['customer-messages'], $customer_messages_settings );
+
             $registration_form = array(
                 array(
                     'id'          => 1,
@@ -143,7 +162,64 @@ class Install {
                     'formfieldlist' => $registration_form,
                 ),
             );
-            update_option( Utill::NOTIFIMA_SETTINGS['personalize-layout'], $registration_from_settings );
+            update_option( Utill::NOTIFIMA_SETTINGS['subscription-form-designer'], $registration_from_settings );
+        }
+
+        if ( version_compare( $previous_version, '3.1.6', '<' ) ) {
+            global $wpdb;
+
+            $automation_settings = get_option( Utill::NOTIFIMA_SETTINGS['automation'], array() );
+
+            if ( 'out_of_stock' === $automation_settings['is_enable_backorders'] ) {
+                $automation_settings['is_enable_backorders'] = array( 'outofstock' );
+            } elseif ( 'out_of_stock_and_backorder' === $automation_settings['is_enable_backorders'] ) {
+                $automation_settings['is_enable_backorders'] = array( 'outofstock', 'onbackorder' );
+            }
+
+            update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
+
+            $table_name = $wpdb->prefix . 'notifima_subscribers';
+
+            // Add phone column.
+            $wpdb->query(
+                "ALTER TABLE `{$table_name}`
+                ADD COLUMN `phone` varchar(30) DEFAULT NULL AFTER `email`"
+            );
+
+            // Rename mailsent status to notification_sent.
+            $wpdb->query(
+                $wpdb->prepare(
+                    "UPDATE `{$table_name}`
+                    SET `status` = %s
+                    WHERE `status` = %s",
+                    'notification_sent',
+                    'mailsent'
+                )
+            );
+        }
+
+        if ( version_compare( $previous_version, '3.1.7', '<' ) ) {
+            global $wpdb;
+
+            $table_name = $wpdb->prefix . 'notifima_subscribers';
+
+            $column = $wpdb->get_results(
+                "SHOW COLUMNS FROM `{$table_name}` LIKE 'retry_count'"
+            );
+
+            if ( empty( $column ) ) {
+                $wpdb->query(
+                    "ALTER TABLE `{$table_name}`
+                    ADD `retry_count` int(11) NOT NULL DEFAULT 0 AFTER `status`"
+                );
+            }
+            $automation_settings = get_option( Utill::NOTIFIMA_SETTINGS['automation'], array() );
+
+			$automation_settings['notification_delivery_method'] = 'all';
+			$automation_settings['notification_retry_enable']    = 'no';
+
+			update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
+            delete_option( 'notifima_cron_start' );
         }
     }
 
@@ -257,7 +333,9 @@ class Install {
                 `product_id` bigint(20) NOT NULL,
                 `user_id` bigint(20) NOT NULL DEFAULT 0,
                 `email` varchar(50) NOT NULL,
+                `phone` varchar(30) DEFAULT NULL,
                 `status` varchar(20) NOT NULL,
+                 `retry_count` int(11) NOT NULL DEFAULT 0,
                 `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE KEY unique_product_email_status (product_id, email, status),
                 PRIMARY KEY (`id`)
@@ -271,25 +349,6 @@ class Install {
         dbDelta( $sql_subscribers );
     }
 
-    /**
-     * Function that schedules the notification cron job.
-     *
-     * @return void
-     */
-    private function start_cron_job() {
-        wp_clear_scheduled_hook( 'notifima_start_notification_cron_job' );
-
-        if ( ! wp_next_scheduled( 'notifima_start_notification_cron_job' ) ) {
-            wp_schedule_event(
-                time(),
-                'notifima_ten_minutes',
-                'notifima_start_notification_cron_job'
-            );
-        }
-
-        update_option( 'notifima_cron_start', true );
-    }
-
 
     /**
      * Set default settings for the plugin or module.
@@ -299,26 +358,27 @@ class Install {
     private function set_default_settings() {
 
         // Default messages for settings array.
-        $appearance_settings = array(
-            'is_enable_backorders'          => 'out_of_stock',
+        $automation_settings = array(
+            'is_enable_backorders'          => array( 'outofstock' ),
             'is_enable_no_interest'         => 'hide_count',
             'is_double_optin'               => 'subscribe_immediately',
             'is_remove_admin_email'         => false,
             'double_opt_in_success'         => Notifima()->default_value['double_opt_in_success'],
             'shown_interest_text'           => Notifima()->default_value['shown_interest_text'],
-            'additional_alert_email'        => get_option( 'admin_email' ),
             'is_guest_subscriptions_enable' => 'logged_in',
             'lead_time_format'              => 'static',
             'display_subscription_form_as'  => 'inline',
+            'notification_delivery_method'  => 'all',
+            'notification_retry_enable'     => 'no',
             // Form customization settings.
             'email_placeholder_text'        => Notifima()->default_value['email_placeholder_text'],
             'alert_text'                    => Notifima()->default_value['alert_text'],
             'unsubscribe_button_text'       => Notifima()->default_value['unsubscribe_button_text'],
         );
 
-        update_option( Utill::NOTIFIMA_SETTINGS['appearance'], $appearance_settings );
+        update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
 
-        $submit_settings = array(
+        $customer_messages_settings = array(
             'alert_success'             => Notifima()->default_value['alert_success'],
             'alert_email_exist'         => Notifima()->default_value['alert_email_exist'],
             'valid_email'               => Notifima()->default_value['valid_email'],
@@ -326,14 +386,15 @@ class Install {
             'alert_unsubscribe_message' => Notifima()->default_value['alert_unsubscribe_message'],
         );
 
-        update_option( Utill::NOTIFIMA_SETTINGS['form-submission'], $submit_settings );
+        update_option( Utill::NOTIFIMA_SETTINGS['customer-messages'], $customer_messages_settings );
 
-        $email_settings = array(
+        $notifications_settings = array(
             'ban_email_domain_text'  => Notifima()->default_value['ban_email_domain_text'],
             'ban_email_address_text' => Notifima()->default_value['ban_email_address_text'],
+            'additional_alert_email' => get_option( 'admin_email' ),
         );
 
-        update_option( Utill::NOTIFIMA_SETTINGS['email'], $email_settings );
+        update_option( Utill::NOTIFIMA_SETTINGS['notifications'], $notifications_settings );
 
         $registration_form = array(
 			array(
@@ -359,7 +420,7 @@ class Install {
                 'formfieldlist' => $registration_form,
             ),
         );
-        update_option( Utill::NOTIFIMA_SETTINGS['personalize-layout'], $registration_from_settings );
+        update_option( Utill::NOTIFIMA_SETTINGS['subscription-form-designer'], $registration_from_settings );
     }
 
     /**
@@ -372,9 +433,9 @@ class Install {
         $previous_version = get_option( 'woo_stock_manager_version', '' );
 
         // Default messages for settings array.
-        $appearance_settings = get_option( Utill::NOTIFIMA_SETTINGS['appearance'], array() );
-        $submit_settings     = get_option( Utill::NOTIFIMA_SETTINGS['form-submission'], array() );
-        $email_settings      = get_option( Utill::NOTIFIMA_SETTINGS['email'], array() );
+        $appearance_settings = get_option( 'notifima_appearance_settings', array() );
+        $submit_settings     = get_option( 'notifima_form_submission_settings', array() );
+        $email_settings      = get_option( 'notifima_email_settings', array() );
 
         if ( version_compare( $previous_version, '2.5.0', '<' ) ) {
             // Used to check the plugin version before 2.1.0.
@@ -539,9 +600,14 @@ class Install {
         $previous_email_settings      = get_option( 'woo_stock_manager_email_tab_settings', $previous_email_settings );
 
         if ( version_compare( $previous_version, '3.0.0', '<=' ) ) {
-            $previous_mailchimp_settings = get_option( 'woo_stock_manager_mailchimp_tab_settings', array() );
+            $previous_mailchimp_settings                = get_option( 'woo_stock_manager_mailchimp_tab_settings', array() );
+            $appearance_settings['is_mailchimp_enable'] = ! empty( $previous_mailchimp_settings ['is_mailchimp_enable'] ) ? 'mailchimp' : 'store_only';
 
-            update_option( Utill::NOTIFIMA_SETTINGS['mailchimp'], $previous_mailchimp_settings );
+            $appearance_settings['mailchimp'] = array(
+                'options'  => $previous_mailchimp_settings ['mailchimp_list_options'] ?? array(),
+                'selected' => $previous_mailchimp_settings ['selected_mailchimp_list'] ?? '',
+            );
+            update_option( 'notifima_mailchimp_settings', $previous_mailchimp_settings );
 
             $version_key = get_option( 'woo_stock_manager_version', '' );
             update_option( 'notifima_version', $version_key );
@@ -551,6 +617,8 @@ class Install {
             $appearance_settings['is_enable_backorders']          = ! empty( $previous_appearance_settings['is_enable_backorders'] ) ? 'out_of_stock_and_backorder' : 'out_of_stock';
             $appearance_settings['is_guest_subscriptions_enable'] = ! empty( $previous_appearance_settings['is_guest_subscriptions_enable'] ) ? 'logged_in' : 'everyone';
             $appearance_settings['display_subscription_form_as']  = 'inline';
+            $appearance_settings['notification_delivery_method']  = 'all';
+            $appearance_settings['notification_retry_enable']     = 'no';
 
             delete_option( 'woo_stock_manager_appearance_tab_settings' );
             delete_option( 'woo_stock_manager_form_submission_tab_settings' );
@@ -589,23 +657,10 @@ class Install {
             }
         }
 
-        update_option( Utill::NOTIFIMA_SETTINGS['appearance'], array_merge( $appearance_settings, $previous_appearance_settings ) );
-        update_option( Utill::NOTIFIMA_SETTINGS['form-submission'], array_merge( $submit_settings, $previous_submit_settings ) );
-        update_option( Utill::NOTIFIMA_SETTINGS['email'], array_merge( $email_settings, $previous_email_settings ) );
-    }
+        update_option( Utill::NOTIFIMA_SETTINGS['automation'], array_merge( $previous_appearance_settings, $appearance_settings ) );
+        update_option( Utill::NOTIFIMA_SETTINGS['customer-messages'], array_merge( $previous_submit_settings, $submit_settings ) );
 
-    /**
-     * Add additional schedule interval.
-     *
-     * @param array $schedules All schedules.
-     * @return array Modified schedules.
-     */
-    public function register_custom_schedule( $schedules ) {
-        $schedules['notifima_ten_minutes'] = array(
-            'interval' => 10 * MINUTE_IN_SECONDS,
-            'display'  => __( 'Every 10 Minutes', 'notifima' ),
-        );
-
-        return $schedules;
+        $email_settings['additional_alert_email'] = ! empty( $previous_appearance_settings['additional_alert_email'] ) ? $previous_appearance_settings['additional_alert_email'] : '';
+        update_option( Utill::NOTIFIMA_SETTINGS['notifications'], array_merge( $previous_email_settings, $email_settings ) );
     }
 }

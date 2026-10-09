@@ -112,6 +112,14 @@ const REGISTRATION_BLOCK_GROUPS = [
                 label: 'Terms & Conditions',
                 fixedName: 'Terms & Conditions'
             },
+            {
+                id: 'phone',
+                icon: 'form-phone',
+                value: 'phone',
+                label: 'Phone',
+                fixedName: 'Phone',
+                placeholder: 'Enter your phone number',
+            },
         ],
     },
     // {
@@ -165,7 +173,7 @@ const REGISTRATION_BLOCK_GROUPS = [
 export default {
     id: 'enquiry-form-customization',
     priority: 1,
-    headerTitle: __('Enquiry Form Builder', 'catalogx'),
+    headerTitle: __('Enquiry', 'catalogx'),
     headerDescription: __(
         'Design a personalized enquiry form with built-in form builder.',
         'catalogx'

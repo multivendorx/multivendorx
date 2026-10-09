@@ -10,6 +10,8 @@ namespace MultiVendorX\MarketplaceRefund;
 use MultiVendorX\Utill;
 use MultiVendorX\Store\Store;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Refund Frontend class
  *
@@ -30,6 +32,12 @@ class Frontend {
         add_filter( 'multivendorx_approval_queue_count', array( $this, 'approval_count' ), 10 );
     }
 
+    /**
+     * Add pending refund-requested orders to the approval queue badge count.
+     *
+     * @param int $total Running approval queue total.
+     * @return int Updated approval queue total.
+     */
     public function approval_count( $total ) {
         $query = wc_get_orders(
             array(
@@ -309,7 +317,7 @@ class Frontend {
         global $wp;
 
         // Sanitize POST data.
-        $data = filter_input_array(
+        $refund_request_input = filter_input_array(
             INPUT_POST,
             array(
                 'cust-request-refund-nonce' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
@@ -323,18 +331,18 @@ class Frontend {
             )
         );
 
-        $nonce_value = $data['cust-request-refund-nonce'] ?? '';
+        $nonce_value = $refund_request_input['cust-request-refund-nonce'] ?? '';
 
         if ( ! wp_verify_nonce( $nonce_value, 'customer_request_refund' ) ) {
             return;
         }
 
-        if ( empty( $data['refund_product'] ) ) {
+        if ( empty( $refund_request_input['refund_product'] ) ) {
             wc_add_notice( __( 'Kindly choose a product', 'multivendorx' ), 'error' );
             return;
         }
 
-        if ( empty( $data['refund_reason_option'] ) ) {
+        if ( empty( $refund_request_input['refund_reason_option'] ) ) {
             wc_add_notice( __( 'Kindly choose a refund reason', 'multivendorx' ), 'error' );
             return;
         }
@@ -346,11 +354,16 @@ class Frontend {
         $order_id = absint( $wp->query_vars['view-order'] );
         $order    = wc_get_order( $order_id );
 
+        // Only the customer who placed the order may request a refund on it.
+        if ( ! $order || ! is_user_logged_in() || (int) $order->get_customer_id() !== get_current_user_id() ) {
+            return;
+        }
+
         // Clean request values.
-        $reason_option            = wc_clean( $data['refund_reason_option'] ?? '' );
-        $refund_reason_other      = wc_clean( $data['refund_reason_other'] ?? '' );
-        $refund_request_addi_info = wc_clean( $data['refund_request_addi_info'] ?? '' );
-        $refund_product           = array_map( 'wc_clean', (array) ( $data['refund_product'] ?? array() ) );
+        $reason_option            = wc_clean( $refund_request_input['refund_reason_option'] ?? '' );
+        $refund_reason_other      = wc_clean( $refund_request_input['refund_reason_other'] ?? '' );
+        $refund_request_addi_info = wc_clean( $refund_request_input['refund_request_addi_info'] ?? '' );
+        $refund_product           = array_map( 'wc_clean', (array) ( $refund_request_input['refund_product'] ?? array() ) );
 
         // Build refund reason.
         $refund_reason_options = MultiVendorX()->setting->get_setting( 'refund_reasons', array() );
@@ -361,23 +374,14 @@ class Frontend {
         $uploaded_image_urls = array();
         $attach_ids          = array();
 
-        /**
-         * Handle uploaded images safely.
-         *
-         * PHPCS: The $_FILES superglobal cannot be sanitized using filter_input().
-         * All indexes are validated, mime types checked, filenames sanitized.
-         */
-        /* phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized */
-        $files = $_FILES['product_img'] ?? null;
+        // $_FILES is sanitized field-by-field below ($_FILES isn't slashed, so no wp_unslash()).
+        $file_names  = isset( $_FILES['product_img']['name'] ) ? array_map( 'sanitize_file_name', (array) $_FILES['product_img']['name'] ) : array();
+        $file_types  = isset( $_FILES['product_img']['type'] ) ? array_map( 'sanitize_mime_type', (array) $_FILES['product_img']['type'] ) : array();
+        $file_tmp    = isset( $_FILES['product_img']['tmp_name'] ) ? array_map( 'sanitize_text_field', (array) $_FILES['product_img']['tmp_name'] ) : array();
+        $file_errors = isset( $_FILES['product_img']['error'] ) ? array_map( 'absint', (array) $_FILES['product_img']['error'] ) : array();
+        $file_sizes  = isset( $_FILES['product_img']['size'] ) ? array_map( 'absint', (array) $_FILES['product_img']['size'] ) : array();
 
-        if ( ! empty( $files ) && ! empty( $files['name'] ) ) {
-            // Normalize safely.
-            $file_names  = array_map( 'sanitize_file_name', (array) ( $files['name'] ?? array() ) );
-            $file_types  = (array) ( $files['type'] ?? array() );
-            $file_tmp    = (array) ( $files['tmp_name'] ?? array() );
-            $file_errors = (array) ( $files['error'] ?? array() );
-            $file_sizes  = (array) ( $files['size'] ?? array() );
-
+        if ( ! empty( $file_names ) ) {
             require_once ABSPATH . 'wp-admin/includes/file.php';
             require_once ABSPATH . 'wp-admin/includes/image.php';
 
@@ -408,6 +412,10 @@ class Frontend {
                 }
 
                 if ( (int) $file_sizes[ $index ] > $max_file_size ) {
+                    continue;
+                }
+
+                if ( ! is_uploaded_file( $file_tmp[ $index ] ) ) {
                     continue;
                 }
 
@@ -447,7 +455,6 @@ class Frontend {
                 }
             }
         }
-        /* phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized */
 
         // Save order meta.
         $order->update_meta_data( Utill::ORDER_META_SETTINGS['customer_refund_order'], 'refund_request' );
@@ -516,6 +523,12 @@ class Frontend {
         wc_add_notice( __( 'Refund request successfully submitted.', 'multivendorx' ) );
     }
 
+    /**
+     * Render the refund reason and request timeline on the customer's order view page.
+     *
+     * @param int $order_id Order ID.
+     * @return void
+     */
     public function view_order_content( $order_id ) {
         if ( ! is_wc_endpoint_url( 'view-order' ) ) {
             return;

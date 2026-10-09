@@ -1,68 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import { __ } from '@wordpress/i18n';
-import axios from 'axios';
 
 interface QuoteThankYouProps {
     orderId: string | null;
-    status: string;
 }
 
-const QuoteThankYou = ({ orderId, status }: QuoteThankYouProps) => {
-    const [reason, setReason] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
-
-    const handleRejectQuote = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();        
-        axios({
-            method: 'post',
-            url: `${quoteCart.apiUrl}/catalogx/v1/quotes`,
-            headers: { 'X-WP-Nonce': quoteCart.nonce },
-            data: { orderId: orderId, status, reason },
-        }).then((response) => {
-            setSuccessMessage(response.data?.message ?? '');
-        });
-    };
-
-    if (successMessage) {
-        return (
-            <div className="woocommerce-notices-wrapper">
-                <ul className="woocommerce-message" role="alert">
-                    <li>{successMessage}</li>
-                </ul>
-            </div>
-        );
-    }
-
-    if (orderId && status) {
-        return (
-            <div className="reject-quote-from-mail woocommerce">
-                <h2>{`${__('You are about to reject the quote', 'catalogx')} ${orderId}`}</h2>
-                <form className="woocommerce-form woocommerce-form-login login" onSubmit={handleRejectQuote}>
-                    <p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                        <label>
-                            {__(
-                                'Please feel free to enter here your reason or provide us your feedback:',
-                                'catalogx'
-                            )}
-                        </label>
-
-                        <textarea
-                            name="message"
-                            rows={4}
-                            value={reason}
-                            onChange={(e) => setReason(e.target.value)}
-                            className='woocommerce-Input input-text'
-                        />
-                    </p>
-                    <p className='form-row'>
-                        <button type="submit" className='woocommerce-button button wp-element-button wp-block-button__link'>
-                            {__('Reject the quote', 'catalogx')}
-                        </button>
-                    </p>
-                </form>
-            </div>
-        );
-    }
+const QuoteThankYou = ({ orderId }: QuoteThankYouProps) => {
 
     if (orderId) {
         return (

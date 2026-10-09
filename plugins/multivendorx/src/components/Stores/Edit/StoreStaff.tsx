@@ -1,19 +1,18 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+
 import {
-	getApiLink,
-	useModules,
-	Container,
-	Column,
-	FormGroupWrapper,
-	FormGroup,
-	Card,
-	SelectInputUI,
+	ContainerComponent,
+	ColumnComponent,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	CardComponent,
 	NoticeManager,
-	InfoItem,
-	ButtonInputUI,
-} from 'zyra';
+	InformationItemComponent,
+} from '@zyra/components';
+import { SelectInput, ButtonInput } from '@zyra/inputs';
+import { getApiLink, useModules } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 
@@ -79,7 +78,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 			const data = res.data || {};
 			setFormData((prev) => ({ ...prev, ...data }));
 
-			// If there's an existing primary owner, show the InfoItem instead of select
+			// If there's an existing primary owner, show the InformationItemComponent instead of select
 			if (data.primary_owner) {
 				const owner = (appLocalizer.store_owners || []).find(
 					(opt: StoreOwner) => opt.value === data.primary_owner
@@ -219,7 +218,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 	};
 
 	return (
-		<Container>
+		<ContainerComponent>
 			{applyFilters(
 				'multivendorx_store_edit_staff_top_section',
 				null,
@@ -227,13 +226,13 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 				modules
 			)}
 
-			<Column grid={4}>
-				<Card
+			<ColumnComponent grid={4}>
+				<CardComponent
 					id="primary-owner"
 					title={__('Store ownership', 'multivendorx')}
 				>
-					<FormGroupWrapper>
-						<FormGroup
+					<FormGroupWrapperComponent>
+						<FormGroupComponent
 							label={__('Primary owner', 'multivendorx')}
 							desc={__(
 								'Primary owner cannot be removed.',
@@ -241,7 +240,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 							)}
 						>
 							<>
-								<InfoItem
+								<InformationItemComponent
 									title={
 										selectedOwnerInfo?.label ||
 										__('Store Owner', 'multivendorx')
@@ -255,8 +254,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 										{
 											label: __('Email', 'multivendorx'),
 											value:
-												formData?.primary_owner_info?.data
-													?.user_email,
+												formData?.primary_owner_info?.user_email,
 										},
 									]}
 									badges={[
@@ -269,7 +267,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 										},
 									]}
 									rightContent={
-										<ButtonInputUI
+										<ButtonInput
 											buttons={[
 												{
 													text: __(
@@ -288,23 +286,23 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 									}
 								/>
 							</>
-						</FormGroup>
-						<FormGroup>
+						</FormGroupComponent>
+						<FormGroupComponent>
 							{showPrimaryOwnerSelect && (
-								<SelectInputUI
+								<SelectInput
 									name="primary_owner"
 									options={appLocalizer?.store_owners || []}
 									value={formData.primary_owner}
 									onChange={handlePrimaryOwnerSelect}
 								/>
 							)}
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							label={__('Additional owners', 'multivendorx')}
 						>
 							<div className="additional-owners-wrapper">
 								{additionalOwners.map((owner) => (
-									<InfoItem
+									<InformationItemComponent
 										key={owner.id}
 										title={owner.label}
 										avatar={{
@@ -329,7 +327,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 											},
 										]}
 										rightContent={
-											<ButtonInputUI
+											<ButtonInput
 												buttons={[
 													{
 														text: __(
@@ -351,7 +349,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 							</div>
 
 							{showAdditionalOwnerSelect && (
-								<SelectInputUI
+								<SelectInput
 									name="store_owners"
 									options={appLocalizer.store_owners || []}
 									type="multi-select"
@@ -361,7 +359,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 								/>
 							)}
 
-							<ButtonInputUI
+							<ButtonInput
 								buttons={[
 									{
 										text: __(
@@ -374,11 +372,11 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 									},
 								]}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</Card>
-			</Column>
-		</Container>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</CardComponent>
+			</ColumnComponent>
+		</ContainerComponent>
 	);
 };
 

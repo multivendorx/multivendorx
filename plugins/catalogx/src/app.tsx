@@ -6,7 +6,9 @@ import Modules from './components/Modules/Modules';
 import EnquiryMessages from './components/EnquiryMessages/enquiryMessages';
 import WholesaleUser from './components/WholesaleUser/wholesaleUser.tsx';
 import Rules from './components/Rules/Rules';
-import { AdminHeader, GuidedTourProvider, Notice, initializeModules } from 'zyra';
+
+import { NoticeComponent, TourComponent, HeaderComponent } from '@zyra/components';
+import { initializeModules } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
 import Brand from './assets/images/catalogx-logo.png';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
@@ -79,6 +81,7 @@ const bannerItem = [
 		'catalogx'
 	)
 ];
+const BANNER_DISMISS_STORAGE_KEY = 'catalogx_banner_dismissed';
 const App = () => {
 	const [results, setResults] = useState<SearchItem[]>([]);
 	const currentTabParams = new URLSearchParams(useLocation().hash);
@@ -107,8 +110,9 @@ const App = () => {
 			}
 		});
 
-	const isBannerDismissed =
-		localStorage.getItem('banner_dismissed') === 'true';
+    const isBannerDismissed =
+        appLocalizer.khali_dabba ||
+        localStorage.getItem(BANNER_DISMISS_STORAGE_KEY) === 'true';
 
 	// --- INIT MODULES ---
 	useEffect(() => {
@@ -139,7 +143,7 @@ const App = () => {
 		{
 			toggleIcon: 'admin-icon adminfont-user-circle',
 			tooltipName: __('Support', 'catalogx'),
-			tooltipPosition: 'end',
+			tooltipPosition: 'bottom',
 			items: profileItems,
 		},
 	];
@@ -184,9 +188,10 @@ const App = () => {
 	return (
 		<>
 			{!isBannerDismissed && (
-				<Notice
+				<NoticeComponent
 					uniqueKey="banner"
 					type="banner"
+					dismissStorageKey={BANNER_DISMISS_STORAGE_KEY}
 					validity="lifetime"
 					displayPosition="banner"
 					message={bannerItem}
@@ -196,7 +201,7 @@ const App = () => {
 					}}
 				/>
 			)}
-			<AdminHeader
+			<HeaderComponent
 				brandImg={Brand}
 				results={results}
 				search={{
@@ -222,7 +227,7 @@ const App = () => {
 				pro={appLocalizer.pro_data.version}
 				utilityList={utilityList}
 			/>
-			<GuidedTourProvider
+			<TourComponent
 				appLocalizer={appLocalizer}
 				steps={getTourSteps(appLocalizer)}
 			/>

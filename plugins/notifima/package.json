@@ -3,7 +3,7 @@
     "displayName": "Notifima",
     "pluginSlug": "woocommerce-product-stock-alert",
     "description": "Notifima – WooCommerce Stock Manager, Inventory Management, Waitlist",
-    "version": "3.1.0",
+    "version": "3.1.7",
     "license": "GPL-2.0-or-later",
     "author": "MultiVendorX",
     "homepage": "https://github.com/multivendorx/multivendorx/blob/main/plugins/notifima/README.md",
@@ -16,6 +16,7 @@
     },
     "main": "index.js",
     "mainPluginFile": "product_stock_alert.php",
+    "packageManager": "pnpm@10.34.1",
     "engines": {
         "node": "^22.22.3"
     },
@@ -95,21 +96,19 @@
         }
     },
     "dependencies": {
-        "@emotion/react": "^11.14.0",
-        "@emotion/styled": "^11.14.1",
-        "@mui/material": "^9.0.1",
-        "@tanstack/react-table": "^8.21.3",
-        "@tinymce/tinymce-react": "^6.3.0",
         "@wordpress/data": "wp-6.6",
         "@wordpress/element": "wp-6.6",
         "@wordpress/hooks": "^4.46.0",
         "@wordpress/i18n": "wp-6.6",
         "@wordpress/react-i18n": "wp-6.6",
         "axios": "^1.16.1",
+        "body-scroll-lock": "4.0.0-beta.0",
         "react": "19.2.6",
         "react-dom": "19.2.6",
         "react-router-dom": "^7.15.1",
-        "react-select": "^5.10.2",
-        "zyra": "workspace:*"
+        "@multivendorx/zyra": "1.0.56"
+    },
+    "devDependencies": {
+        "wireit": "^0.14.12"
     }
 }

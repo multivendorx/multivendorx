@@ -121,7 +121,6 @@ class Block {
 
             if ( has_block( $block_name, $post ) ) {
                 $handle = $block_script['textdomain'] . '-' . $block_script['name'] . '-view-script';
-                // FrontendScripts::enqueue_script( $handle );
                 FrontendScripts::localize_scripts( $handle );
             }
         }

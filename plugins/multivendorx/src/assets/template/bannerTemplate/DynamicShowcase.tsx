@@ -54,12 +54,7 @@ const DynamicShowcase = () => {
 							</div>{' '}
 						</div>
 						<div className="right-section">
-							<button className="admin-btn btn-purple">
-								Support
-							</button>
-							<button className="admin-btn btn-purple">
-								Chat
-							</button>
+							
 							<div className="follow-wrapper">
 								{' '}
 								<button className="follow-btn admin-btn btn-purple">

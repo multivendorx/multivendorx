@@ -180,6 +180,25 @@ function generateModuleEntries(rootDir) {
 	return moduleEntries;
 }
 
+/**
+ * Optional Block Editor sidebar entry — `src/post-editor/index.tsx`, not
+ * every plugin's own admin dashboard mount (`src/index.tsx`, always
+ * present). Guarded by existence, same "skip if the file doesn't exist"
+ * posture as the block/module entry generators above, so plugins without
+ * a post-editor integration (every plugin except vulopilot, today) are
+ * unaffected.
+ */
+function generatePostEditorEntry(rootDir) {
+	const entryFile = path.resolve(
+		rootDir,
+		'src/post-editor/index.tsx'
+	);
+
+	return fs.existsSync(entryFile)
+		? { 'post-editor': entryFile }
+		: {};
+}
+
 module.exports = function createWebpackConfig(
 	rootDir
 ) {
@@ -192,6 +211,9 @@ module.exports = function createWebpackConfig(
 	const moduleEntries =
 		generateModuleEntries(rootDir);
 
+	const postEditorEntry =
+		generatePostEditorEntry(rootDir);
+
 	return {
 		...defaultConfig,
 
@@ -203,6 +225,7 @@ module.exports = function createWebpackConfig(
 
 			...dynamicEntries,
 			...moduleEntries,
+			...postEditorEntry,
 		},
 
 		output: {
@@ -427,6 +450,39 @@ module.exports = function createWebpackConfig(
 					rootDir,
 					'./src'
 				),
+
+				// The real installed dependency is '@multivendorx/zyra'
+				// (published to GitHub Packages). 'zyra' stays aliased to
+				// it so the ~292 existing `import ... from 'zyra'` call
+				// sites don't need a mass rename. The '@zyra/*' aliases
+				// let source files import from the more specific
+				// '@zyra/components', '@zyra/inputs', etc. names for
+				// readability without needing each sub-package installed
+				// separately — everything resolves to the one real
+				// dependency below.
+				zyra: '@multivendorx/zyra',
+				'@zyra/core': '@multivendorx/zyra',
+				// @zyra/components is the former @zyra/elements package
+				// (renamed upstream, itself formerly @zyra/primitives), and
+				// also absorbed the former @zyra/recaptcha package
+				// (RecaptchaUI, Recaptcha, CustomRecaptcha), the settings
+				// navigation/module list (Modules, SettingsNavigator), and
+				// MapProvider/GuidedTourProvider (formerly @zyra/providers,
+				// now removed — don't re-add an alias for it;
+				// useModules/SettingProvider/ThemeProvider moved to
+				// @zyra/core instead). It has also now fully absorbed
+				// @zyra/admin (HeaderComponent/HeaderSearchComponent,
+				// formerly AdminHeader/AdminHeaderSearch) — @zyra/admin no
+				// longer exists as a package, so don't re-add an alias for
+				// it either.
+				'@zyra/components': '@multivendorx/zyra',
+				'@zyra/inputs': '@multivendorx/zyra',
+				'@zyra/table': '@multivendorx/zyra',
+				// @zyra/builders covers what used to be the separate
+				// @zyra/editor and @zyra/formbuilder packages (merged
+				// upstream in the zyra repo) — BlockBuilder, CanvasEditor,
+				// SettingMetaBox, FormViewer, FreeFormCustomizer, FIELD_REGISTRY.
+				'@zyra/builders': '@multivendorx/zyra',
 			},
 		},
 
@@ -441,6 +497,12 @@ module.exports = function createWebpackConfig(
 			'@wordpress/plugins': ['wp', 'plugins'],
 			'@wordpress/blocks': ['wp', 'blocks'],
 			'@wordpress/block-editor': ['wp', 'blockEditor'],
+			// Only imported by vulopilot's src/post-editor/* (the
+			// PluginSidebar-based "Meta Box" — react-frontend.md doesn't
+			// cover this since it's this codebase's first Block Editor
+			// integration) — maps to the same `wp-edit-post` script handle
+			// every other @wordpress/edit-post consumer in WP core uses.
+			'@wordpress/edit-post': ['wp', 'editPost'],
 		},
 	};
 };

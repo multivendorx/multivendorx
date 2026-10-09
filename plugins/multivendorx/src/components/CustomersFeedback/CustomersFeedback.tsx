@@ -1,11 +1,12 @@
 /* global appLocalizer */
+
+import { useModules } from '@zyra/core';
 import {
-	useModules,
-	Container,
-	Column,
-	ComponentStatusView,
-	SettingsNavigator,
-} from 'zyra';
+	ContainerComponent,
+	ColumnComponent,
+	ModuleGuardComponent,
+	NavigatorComponent,
+} from '@zyra/components';
 import '../AdminDashboard/AdminDashboard.scss';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -84,6 +85,14 @@ const CustomersFeedback = () => {
 		[]
 	).filter((tab) => !tab.module || modules.includes(tab.module));
 
+	const settingContentWithCounts = settingContent.map((tab) => ({
+		...tab,
+		content: {
+			...tab.content,
+			count: counts[tab.content.id] || 0,
+		},
+	}));
+
 	const getForm = (tabId: string) => {
 		return (
 			applyFilters('multivendorx_customers_tab_content', null, {
@@ -91,12 +100,11 @@ const CustomersFeedback = () => {
 			}) || <div />
 		);
 	};
-
 	return (
 		<>
 			{settingContent.length > 0 ? (
-				<SettingsNavigator
-					settingContent={settingContent}
+				<NavigatorComponent
+					settingContent={settingContentWithCounts}
 					currentSetting={location.get('subtab') as string}
 					getForm={getForm}
 					prepareUrl={(subTab: string) =>
@@ -104,7 +112,7 @@ const CustomersFeedback = () => {
 					}
 					appLocalizer={appLocalizer}
 					Link={Link}
-					variant={'compact'}
+					variant={'card'}
 					menuIcon={true}
 					headerIcon="customer-service"
 					headerTitle={__('Customer Support', 'multivendorx')}
@@ -114,9 +122,9 @@ const CustomersFeedback = () => {
 					)}
 				/>
 			) : (
-				<Container general>
-					<Column>
-						<ComponentStatusView
+				<ContainerComponent general>
+					<ColumnComponent>
+						<ModuleGuardComponent
 							title={__(
 								'Looks like customer support isn’t set up yet!',
 								'multivendorx'
@@ -128,8 +136,8 @@ const CustomersFeedback = () => {
 							buttonText={__('Enable Now', 'multivendorx')}
 							buttonLink={`${appLocalizer.admin_dashboard_url}#&tab=modules&module=customer-queries`}
 						/>
-					</Column>
-				</Container>
+					</ColumnComponent>
+				</ContainerComponent>
 			)}
 		</>
 	);

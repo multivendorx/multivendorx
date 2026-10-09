@@ -29,13 +29,16 @@ class Ajax {
      * @return void
      */
     public function add_variation_for_enquiry_mail() {
-        $product_id = filter_input( INPUT_POST, 'product_id', FILTER_VALIDATE_INT );
-
-        if ( $product_id ) {
-            $variation_payload = filter_input( INPUT_POST, 'variation_payload', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
-            set_transient( 'variation_list', $variation_payload, 30 * MINUTE_IN_SECONDS );
+        if ( ! check_ajax_referer( 'catalogx-enquiry-frontend-script', 'nonce', false ) ) {
+            wp_send_json_error( array( 'message' => __( 'Security check failed.', 'catalogx' ) ), 403 );
         }
 
+        $product_id = filter_input( INPUT_POST, 'product_id', FILTER_VALIDATE_INT );
+
+        if ( $product_id && WC()->session ) {
+            $variation_payload = filter_input( INPUT_POST, 'variation_payload', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+            WC()->session->set( 'catalogx_variation_list', $variation_payload );
+        }
         wp_die();
     }
 }

@@ -1,17 +1,19 @@
 import { useState } from 'react';
+
 import {
-    Column,
-    Container,
-    InfoItem,
-    NavigatorHeader,
-    PopupUI,
-    TableCard,
-    ComponentStatusView
-} from 'zyra';
+    ColumnComponent,
+    ContainerComponent,
+    InformationItemComponent,
+    PopupComponent,
+    ModuleGuardComponent,
+    NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { defaultCategoryCounts, dummyQuotes } from './QuoteRequestsUtil';
+import { formatDate } from '../../services/commonFunction';
 export interface QuoteRow {
     id?: number;
     order_id?: string;
@@ -27,29 +29,39 @@ const QuoteRequests = () => {
     let tableProps: any = {};
     const headers = {
         order_id: {
-            label: __('Order ID', 'catalogx'),
+            label: __('Order', 'catalogx'),
+            width: '50%',
             render: (row: QuoteRow) => (
-                <InfoItem
-                    title={`${row.order_id}`}
+                <InformationItemComponent
+                    title={`#${row.order_id}`}
                     titleLink={row.order_url || ''}
-                    descriptions={[
-                        {
-                            label: __('By', 'catalogx'),
-                            value: row.customer_name || '—',
-                        },
-                    ]}
+                    avatar={{
+                        iconClass: 'quote',
+                    }}
+                    descriptions={
+                        [
+                            {
+                                label: __('By', 'catalogx'),
+                                icon: 'person',
+                                value: row.customer_name || '—',
+                            },
+                            {
+                                icon: 'calendar',
+                                label: __('Date', 'catalogx'),
+                                value: formatDate(row.date),
+                            },
+                        ]}
                 />
             ),
-        },
-        date: { label: __('Date', 'catalogx'), type: 'date' },
-        status: {
-            label: __('Status', 'catalogx'),
-            type: 'status',
-            statusClass: (row: QuoteRow) => `${row.status}`
         },
         total: {
             label: __('Total', 'catalogx'),
             type: 'currency'
+        },
+        status: {
+            label: __('Status', 'catalogx'),
+            type: 'status',
+            statusClass: (row: QuoteRow) => `${row.status}`
         },
         action: {
             label: __('Action', 'catalogx-pro'),
@@ -86,6 +98,7 @@ const QuoteRequests = () => {
     const defaultTableProps = {
         headers,
         format: appLocalizer.date_format,
+        hideHeader: true,
         buttonActions,
         categoryCounts: defaultCategoryCounts,
         filters,
@@ -131,7 +144,8 @@ const QuoteRequests = () => {
     const renderTableContent = () => {
         if (!appLocalizer.khali_dabba) {
             return (
-                <div onClick={() => setopenPopup(true)}>
+                <div className="demo-wrapper" onClick={() => setopenPopup(true)}>
+                    <div className="watermark">{__('This is sample Data', 'catalogx')}</div>
                     <TableCard {...tableProps} />
                 </div>
             );
@@ -139,7 +153,7 @@ const QuoteRequests = () => {
 
         if (!appLocalizer.active_modules.includes('quote')) {
             return (
-                <ComponentStatusView
+                <ModuleGuardComponent
                     title={__(
                         'Looks like the Quote module isn’t enabled yet!',
                         'catalogx'
@@ -164,7 +178,7 @@ const QuoteRequests = () => {
     return (
         <>
             {openPopup && (
-                <PopupUI
+                <PopupComponent
                     position="lightbox"
                     open={openPopup}
                     onClose={() => setopenPopup(false)}
@@ -176,9 +190,9 @@ const QuoteRequests = () => {
                     ) : (
                         <ShowProPopup moduleName="quote" />
                     )}
-                </PopupUI>
+                </PopupComponent>
             )}
-            <NavigatorHeader
+            <NavigatorHeaderComponent
                 headerIcon="quote"
                 headerDescription={__(
                     'Quote requests are displayed with customer details, totals, and statuses to support sales and order management workflows.',
@@ -201,14 +215,14 @@ const QuoteRequests = () => {
                     },
                 ] : ''}
             />
-            {tableProps.addingNewRule && tableProps.addingNewRule && (
+            {tableProps.addingNewRule && (
                 tableProps.addNewRuleForm
             )}
-            <Container general>
-                <Column>
+            <ContainerComponent general>
+                <ColumnComponent>
                     {renderTableContent()}
-                </Column>
-            </Container>
+                </ColumnComponent>
+            </ContainerComponent>
         </>
     );
 };

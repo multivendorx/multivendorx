@@ -2,14 +2,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	NavigatorHeader,
-	TableCard,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { NavigatorHeaderComponent } from '@zyra/components';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import TransactionDetailsModal from './TransactionDetailsModal';
 import { downloadCSV, formatLocalDate, normalizeText } from '../services/commonFunction';
 import ViewCommission from './viewCommission';
@@ -87,10 +82,9 @@ const Transactions: React.FC = () => {
 	const filters = [
 		{
 			key: 'transactionType',
-			label: 'Transaction Type',
+			label: 'Select Transaction Type',
 			type: 'select',
 			options: [
-				{ label: __('Transaction Type', 'multivendorx'), value: '' },
 				{
 					label: __('Commission', 'multivendorx'),
 					value: 'Commission',
@@ -272,7 +266,7 @@ const Transactions: React.FC = () => {
 	];
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Transactions', 'multivendorx')}
 				headerDescription={__(
 					'Track your earnings, withdrawals, and current balance at a glance.',

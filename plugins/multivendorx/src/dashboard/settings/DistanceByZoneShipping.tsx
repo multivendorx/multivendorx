@@ -1,20 +1,17 @@
 /* global appLocalizer */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+
 import {
-	getApiLink,
-	BasicInputUI,
-	ButtonInputUI,
-	ChoiceToggleUI,
-	PopupUI,
-	useModules,
-	SectionUI,
-	TableCard,
-	TableRow,
-	FormGroup,
-	FormGroupWrapper,
-	Notice,
-} from 'zyra';
+	PopupComponent,
+	SectionComponent,
+	FormGroupComponent,
+	FormGroupWrapperComponent,
+	NoticeComponent,
+} from '@zyra/components';
+import { TextInput, ButtonInput, ToggleInput } from '@zyra/inputs';
+import { getApiLink, useModules } from '@zyra/core';
+import { TableCard, TableRow } from '@zyra/table';
 import { __ } from '@wordpress/i18n';
 import { applyFilters, doAction } from '@wordpress/hooks';
 
@@ -60,7 +57,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 	const [editingMethod, setEditingMethod] = useState<ShippingMethod | null>(
 		null
 	);
-
+	const [isLoadingShipping, setIsLoadingShipping] = useState(false);
 	const [formData, setFormData] = useState<FormData>({
 		shippingMethod: '',
 		localPickupCost: '',
@@ -117,7 +114,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 		});
 
 		setSelectedZone(zoneWithMethod || null);
-		setAddShipping(true);
+		setIsLoadingShipping(true);
 
 		if (!zoneWithMethod) {
 			return;
@@ -161,13 +158,27 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 				}
 
 				setFormData(form);
+				setAddShipping(true);
 			}
 		} catch (err) {
 			console.error('Error loading shipping method:', err);
 			alert('Error loading shipping method');
+		} finally {
+			setIsLoadingShipping(false);
 		}
 	};
+	const handleClosePopup = () => {
+		setAddShipping(false);
 
+		setFormData({
+			shippingMethod: '',
+			localPickupCost: '',
+			freeShippingType: '',
+			minOrderCost: '',
+			flatRateCost: '',
+			flatRateClassCost: '',
+		});
+	};
 	const handleDelete = async (method: ShippingMethod, zone: Zone) => {
 		if (!confirm(`Are you sure you want to delete "${method.title}"?`)) {
 			return;
@@ -237,9 +248,9 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 			const isUpdate = isEditing && editingMethod;
 			const url = isUpdate
 				? getApiLink(
-						appLocalizer,
-						`zone-shipping/${selectedZone.zone_id}`
-					)
+					appLocalizer,
+					`zone-shipping/${selectedZone.zone_id}`
+				)
 				: getApiLink(appLocalizer, 'zone-shipping');
 
 			const requestData = {
@@ -283,15 +294,15 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 		} catch (err) {
 			console.error(
 				'Error ' +
-					(isEditing ? 'updating' : 'adding') +
-					' shipping method:',
+				(isEditing ? 'updating' : 'adding') +
+				' shipping method:',
 				err
 			);
 			alert(
 				__(
 					'Error ' +
-						(isEditing ? 'updating' : 'adding') +
-						' shipping method',
+					(isEditing ? 'updating' : 'adding') +
+					' shipping method',
 					'multivendorx'
 				)
 			);
@@ -369,35 +380,34 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 
 	return (
 		<>
-			<SectionUI
+			<SectionComponent
 				title={__('Zone-wise Shipping Configuration', 'multivendorx')}
 			/>
-			<FormGroup>
+			<FormGroupComponent>
 				<TableCard
 					headers={headers}
 					rows={rows}
 					isLoading={false}
 					showMenu={false}
-					onQueryUpdate={() => {}}
+					onQueryUpdate={() => { }}
 					emptyMessage={__('No shipping zones found', 'multivendorx')}
 				/>
-			</FormGroup>
+			</FormGroupComponent>
 			{addShipping && selectedZone && (
-				<PopupUI
+				<PopupComponent
 					open={addShipping}
 					width='80%'
 					height="90%"
-					onClose={() => setAddShipping(false)}
+					onClose={handleClosePopup}
 					header={{
 						icon: 'shipping',
-						title: `${
-							isEditing
-								? __('Edit Shipping', 'multivendorx')
-								: __('Add Shipping', 'multivendorx')
-						} - ${selectedZone.zone_name}`,
+						title: `${isEditing
+							? __('Edit Shipping', 'multivendorx')
+							: __('Add Shipping', 'multivendorx')
+							} - ${selectedZone.zone_name}`,
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',
@@ -416,11 +426,11 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 						/>
 					}
 				>
-					<FormGroupWrapper>
-						<FormGroup
+					<FormGroupWrapperComponent>
+						<FormGroupComponent
 							label={__('Shipping Method', 'multivendorx')}
 						>
-							<ChoiceToggleUI
+							<ToggleInput
 								value={formData.shippingMethod}
 								onChange={(val: string) => {
 									if (!isEditing) {
@@ -430,69 +440,69 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 								options={
 									isEditing
 										? [
+											{
+												key: formData.shippingMethod,
+												value: formData.shippingMethod,
+												label: __(
+													formData.shippingMethod
+														.replace('_', ' ')
+														.replace(
+															/\b\w/g,
+															(c) =>
+																c.toUpperCase()
+														),
+													'multivendorx'
+												),
+											},
+										]
+										: applyFilters(
+											'multivendorx_zone_shipping_methods',
+											[
 												{
-													key: formData.shippingMethod,
-													value: formData.shippingMethod,
+													key: 'local_pickup',
+													value: 'local_pickup',
 													label: __(
-														formData.shippingMethod
-															.replace('_', ' ')
-															.replace(
-																/\b\w/g,
-																(c) =>
-																	c.toUpperCase()
-															),
+														'Local pickup',
 														'multivendorx'
 													),
 												},
-											]
-										: applyFilters(
-												'multivendorx_zone_shipping_methods',
-												[
-													{
-														key: 'local_pickup',
-														value: 'local_pickup',
-														label: __(
-															'Local pickup',
-															'multivendorx'
-														),
-													},
-													{
-														key: 'free_shipping',
-														value: 'free_shipping',
-														label: __(
-															'Free shipping',
-															'multivendorx'
-														),
-													},
-													{
-														key: 'flat_rate',
-														value: 'flat_rate',
-														label: __(
-															'Flat Rate',
-															'multivendorx'
-														),
-													},
-												],
-												modules
-											)
+												{
+													key: 'free_shipping',
+													value: 'free_shipping',
+													label: __(
+														'Free shipping',
+														'multivendorx'
+													),
+												},
+												{
+													key: 'flat_rate',
+													value: 'flat_rate',
+													label: __(
+														'Flat Rate',
+														'multivendorx'
+													),
+												},
+											],
+											modules
+										)
 								}
 								disabled={isEditing}
 							/>
-						</FormGroup>
+						</FormGroupComponent>
 
 						{/* Local Pickup */}
 						{formData.shippingMethod === 'local_pickup' && (
-							<FormGroup label={__('Cost', 'multivendorx')}>
-								<BasicInputUI
+							<FormGroupComponent label={__('Cost', 'multivendorx')}>
+								<TextInput
 									type="number"
 									name="localPickupCost"
-									placeholder="Enter cost"
+									placeholder={__("Enter cost", 'multivendorx')}
 									value={formData.localPickupCost}
 									onChange={(val: string) =>
 										handleChange('localPickupCost', val)
 									}
 								/>
-								<Notice
+								<NoticeComponent
 									type="info"
 									displayPosition="inline-notice"
 									message={__(
@@ -500,14 +510,14 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 										'multivendorx'
 									)}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 						)}
 
 						{/* Free Shipping */}
 						{formData.shippingMethod === 'free_shipping' && (
 							<>
 								<div className="form-group">
-									<ChoiceToggleUI
+									<ToggleInput
 										value={formData.freeShippingType}
 										onChange={(val: string) =>
 											handleChange(
@@ -543,7 +553,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 												'multivendorx'
 											)}
 										</label>
-										<BasicInputUI
+										<TextInput
 											type="number"
 											name="minOrderCost"
 											placeholder="Enter minimum order cost"
@@ -557,7 +567,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 										/>
 									</div>
 								)}
-								<Notice
+								<NoticeComponent
 									type="info"
 									displayPosition="inline-notice"
 									message={__(
@@ -571,11 +581,11 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 						{/* Flat Rate */}
 						{formData.shippingMethod === 'flat_rate' && (
 							<>
-								<FormGroup label={__('Cost', 'multivendorx')}>
-									<BasicInputUI
+								<FormGroupComponent label={__('Cost', 'multivendorx')}>
+									<TextInput
 										type="number"
 										name="flatRateCost"
-										placeholder="Enter cost"
+										placeholder={__("Enter cost", 'multivendorx')}
 										value={formData.flatRateCost}
 										onChange={(value) =>
 											handleChange('flatRateCost', value)
@@ -593,7 +603,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 											'multivendorx'
 										)}
 									</div>
-									<Notice
+									<NoticeComponent
 										type="info"
 										displayPosition="inline-notice"
 										message={__(
@@ -601,18 +611,18 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 											'multivendorx'
 										)}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 
-								<FormGroup
+								<FormGroupComponent
 									label={__(
 										'Cost of Shipping Class',
 										'multivendorx'
 									)}
 								>
-									<BasicInputUI
+									<TextInput
 										type="text"
 										name="flatRateClassCost"
-										placeholder="Enter class cost"
+										placeholder={__("Enter class cost", 'multivendorx')}
 										value={formData.flatRateClassCost}
 										onChange={(value) =>
 											handleChange(
@@ -630,7 +640,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 											)}
 										</b>
 									</div>
-									<Notice
+									<NoticeComponent
 										type="info"
 										displayPosition="inline-notice"
 										message={__(
@@ -638,7 +648,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 											'multivendorx'
 										)}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 							</>
 						)}
 
@@ -651,8 +661,8 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 								storeId: id,
 							}
 						)}
-					</FormGroupWrapper>
-				</PopupUI>
+					</FormGroupWrapperComponent>
+				</PopupComponent>
 			)}
 		</>
 	);

@@ -48,7 +48,7 @@ class Logs extends \WP_REST_Controller {
      * @param mixed $request all requests params from api.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' );
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 
     /**
@@ -60,7 +60,7 @@ class Logs extends \WP_REST_Controller {
     public function get_items( $request ) {
         global $wp_filesystem;
         $nonce     = $request->get_header( 'X-WP-Nonce' );
-        $log_count = $request->get_param( 'logcount' );
+        $log_count = absint( $request->get_param( 'logcount' ) );
         $log_count = $log_count ? $log_count : 100;
         if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
             return new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
@@ -69,7 +69,7 @@ class Logs extends \WP_REST_Controller {
             require_once ABSPATH . '/wp-admin/includes/file.php';
             WP_Filesystem();
         }
-        $action = $request->get_param( 'action' );
+        $action = sanitize_key( (string) $request->get_param( 'action' ) );
         switch ( $action ) {
             case 'download':
                 return $this->download_log( $request );

@@ -1,12 +1,14 @@
 import { useState } from 'react';
+
 import {
-    Column,
-    Container,
-    NavigatorHeader,
-    ComponentStatusView,
-    PopupUI,
-    TableCard,
-} from 'zyra';
+    ColumnComponent,
+    ContainerComponent,
+    ModuleGuardComponent,
+    PopupComponent,
+    NavigatorHeaderComponent,
+    InformationItemComponent
+} from '@zyra/components';
+import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
@@ -38,8 +40,21 @@ const Rules = () => {
     const [openPopup, setopenPopup] = useState(false);
     let tableProps: any = {};
     const headers = {
-        name: {
+        order_id: {
             label: __('Name', 'catalogx'),
+            render: (row) => (
+                <InformationItemComponent
+                    title={`${row.name}`}
+                    badges={[
+                        {
+                            text: String(row.active) === '1'
+                                ? __('Active', 'catalogx')
+                                : __('Suspended', 'catalogx'),
+                            className: `badge-${String(row.active) === '1' ? 'active' : 'suspended'}`,
+                        },
+                    ]}
+                />
+            ),
         },
         applicable_for: {
             label: __('Applicable For', 'catalogx'),
@@ -115,14 +130,6 @@ const Rules = () => {
                 return `${price} for min ${quantity || ''} quantity`;
             }
         },
-
-        status: {
-            label: __('Status', 'catalogx'),
-            render: (row: RuleRow) =>
-                String(row.active) === '1'
-                    ? <span className='admin-badge green'>{__('Active', 'catalogx')} </span>
-                    : <span className='admin-badge red'>{__('Suspended', 'catalogx')} </span>,
-        },
         action: {
             type: 'action',
             label: __('Action', 'catalogx'),
@@ -145,7 +152,7 @@ const Rules = () => {
             ],
         },
     };
-    
+
     const filters = [
         {
             key: 'applicable_for',
@@ -176,7 +183,7 @@ const Rules = () => {
         filters,
         rows: dummyRules,
         totalRows: dummyRules.length,
-        onRowReorder: () => {},
+        onRowReorder: () => { },
     };
 
     tableProps = applyFilters(
@@ -187,7 +194,8 @@ const Rules = () => {
     const renderTableContent = () => {
         if (!appLocalizer.khali_dabba) {
             return (
-                <div onClick={() => setopenPopup(true)}>
+                <div className="demo-wrapper" onClick={() => setopenPopup(true)}>
+                    <div className="watermark">{__('This is sample Data', 'catalogx')}</div>
                     <TableCard {...tableProps} />
                 </div>
             );
@@ -195,7 +203,7 @@ const Rules = () => {
 
         if (!appLocalizer.active_modules.includes('rules')) {
             return (
-                <ComponentStatusView
+                <ModuleGuardComponent
                     title={__(
                         'Looks like product rules aren’t set up yet!',
                         'catalogx'
@@ -221,7 +229,7 @@ const Rules = () => {
     return (
         <>
             {openPopup && (
-                <PopupUI
+                <PopupComponent
                     position="lightbox"
                     open={openPopup}
                     onClose={() => setopenPopup(false)}
@@ -233,9 +241,9 @@ const Rules = () => {
                     ) : (
                         <ShowProPopup moduleName="rules" />
                     )}
-                </PopupUI>
+                </PopupComponent>
             )}
-            <NavigatorHeader
+            <NavigatorHeaderComponent
                 headerIcon="rules"
                 headerDescription={__(
                     'Create and manage rules to control product visibility, pricing behavior, and catalog conditions.',
@@ -256,14 +264,14 @@ const Rules = () => {
                     },
                 ]}
             />
-            {tableProps.addingNewRule && tableProps.addingNewRule && (
+            {tableProps.addingNewRule && (
                 tableProps.addNewRuleForm
             )}
-            <Container general>
-                <Column>
+            <ContainerComponent general>
+                <ColumnComponent>
                     {renderTableContent()}
-                </Column>
-            </Container>
+                </ColumnComponent>
+            </ContainerComponent>
         </>
     );
 };

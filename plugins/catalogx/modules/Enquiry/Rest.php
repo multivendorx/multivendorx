@@ -55,14 +55,7 @@ class Rest {
      * @return bool True if the user has permission, false otherwise.
      */
     public function create_item_permissions_check() {
-        $user_id = CatalogX()->current_user_id;
-        // For non-logged in user.
-        if (0 === $user_id && 'everyone' === CatalogX()->setting->get_setting( 'enquiry_user_permission', 'everyone' )) {
-            return true;
-        }
-
-        // Check if user is admin or customer.
-        return current_user_can( 'read' ) || current_user_can( 'manage_options' );
+        return Utill::current_user_has_capability( array( 'customer', 'wholesale_user', 'manage_options' ), '', 'enquiry_user_permission' );
     }
 
     /**
@@ -95,9 +88,9 @@ class Rest {
             $enquiry_form_fields = $request->get_body_params();
             $uploaded_files      = $request->get_file_params();
 
-            $user        = CatalogX()->current_user;
-            $user_name   = $user->display_name;
-            $user_email  = $user->user_email;
+            $user       = CatalogX()->current_user;
+            $user_name  = $user->display_name;
+            $user_email = $user->user_email;
 
             // Create attachment of files.
             foreach ( $uploaded_files as $file ) {
@@ -145,9 +138,12 @@ class Rest {
                 'user_additional_fields' => serialize( $additional_fields ),
             );
 
-            $product_variations = get_transient( 'variation_list' ) ?: array();
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-            $result = $wpdb->insert( "{$wpdb->prefix}" . Utill::TABLES['enquiry'], $enquiry_record );
+            if ( ! WC()->session ) {
+                WC()->initialize_session();
+            }
+
+            $product_variations = WC()->session ? WC()->session->get( 'catalogx_variation_list', array() ) : array();            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+            $result             = $wpdb->insert( "{$wpdb->prefix}" . Utill::TABLES['enquiry'], $enquiry_record );
 
             if ( $result ) {
                 $enquiry_id   = $wpdb->insert_id;
@@ -202,7 +198,7 @@ class Rest {
                     )
                 );
 
-                $attachments = apply_filters( 'catalogx_set_enquiry_pdf_and_attachments', array(), $enquiry_id, $enquiry_data );
+                $attachments      = apply_filters( 'catalogx_set_enquiry_pdf_and_attachments', array(), $enquiry_id, $enquiry_data );
                 $additional_email = CatalogX()->setting->get_setting( 'additional_alert_email' );
                 $email_handler    = WC()->mailer()->emails['EnquiryEmail'];
 

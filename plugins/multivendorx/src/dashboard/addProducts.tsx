@@ -2,23 +2,26 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+
+
 import {
-	useModules,
-	Card,
-	Column,
-	Container,
-	FormGroupWrapper,
-	FormGroup,
-	getApiLink,
-	BasicInputUI,
-	SelectInputUI,
-	TextAreaUI,
-	FileInputUI,
-	NavigatorHeader,
-	PopupUI,
-	ButtonInputUI,
-	Notice,
-} from 'zyra';
+	TextInput,
+	SelectInput,
+	TextAreaInput,
+	FileInput,
+	ButtonInput,
+} from '@zyra/inputs';
+import { getApiLink, useModules } from '@zyra/core';
+import {
+	CardComponent,
+	ColumnComponent,
+	ContainerComponent,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	PopupComponent,
+	NoticeComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import { dashNavigate } from '@/services/commonFunction';
@@ -55,6 +58,11 @@ const AddProduct = () => {
 				}
 
 				setGalleryImages(images.slice(1));
+
+				if (res.data.cost_of_goods_sold?.values?.[0]?.defined_value === null) {
+					res.data.cost_of_goods_sold.values[0].defined_value = 0;
+				}
+
 				setProduct(res.data);
 			})
 			.catch((error) => {
@@ -257,14 +265,14 @@ const AddProduct = () => {
 					</div>
 				))}
 			{errorMsg && (
-				<Notice
+				<NoticeComponent
 					type="error"
 					validity={5000}
 					displayPosition="notice"
 					message={errorMsg}
 				/>
 			)}
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Add Product', 'multivendorx')}
 				headerDescription={__(
 					'Enter your product details - name, price, stock, and image & publish.',
@@ -285,9 +293,9 @@ const AddProduct = () => {
 					},
 				])}
 			/>
-			<Container>
-				<Column grid={3}>
-					<Card
+			<ContainerComponent>
+				<ColumnComponent grid={3}>
+					<CardComponent
 						title={__(
 							'What kind of product is this?',
 							'multivendorx'
@@ -297,9 +305,9 @@ const AddProduct = () => {
 							'multivendorx'
 						)}
 					>
-						<FormGroupWrapper>
-							<FormGroup>
-								<SelectInputUI
+						<FormGroupWrapperComponent>
+							<FormGroupComponent>
+								<SelectInput
 									name="type"
 									type="single-select"
 									options={typeOptions}
@@ -308,152 +316,152 @@ const AddProduct = () => {
 										handleChange('type', selected);
 									}}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
-					</Card>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
+					</CardComponent>
 					<div className='sticky-card-wrapper'>
-					<Card
-						title={__('Recommended', 'multivendorx')}
-						toggle={true}
-						action={
-							<div className="admin-badge blue">
-								{completedCount}/{totalCount}
+						<CardComponent
+							title={__('Recommended', 'multivendorx')}
+							toggle={true}
+							action={
+								<div className="admin-badge blue">
+									{completedCount}/{totalCount}
+								</div>
+							}
+							className="recommended-card"
+						>
+							<div className="checklist-wrapper">
+								<ul>
+									<li className={checklist.name ? 'checked' : ''}>
+										<div className="check-icon">
+											<span></span>
+										</div>
+										<div className="details">
+											<div className="title">
+												{__('Product Name', 'multivendorx')}
+											</div>
+											<div className="des">
+												{__('A clear, descriptive title that helps customers find your product', 'multivendorx')}
+											</div>
+										</div>
+									</li>
+									{product.type === 'simple' && (
+										<>
+											<li
+												className={
+													checklist.price ? 'checked' : ''
+												}
+											>
+												<div className="check-icon">
+													<span></span>
+												</div>
+												<div className="details">
+													<div className="title">
+														Price
+													</div>
+													<div className="des">
+														Set competitive prices
+														including any sale or
+														discount options
+													</div>
+												</div>
+											</li>
+
+											<li
+												className={
+													checklist.stock ? 'checked' : ''
+												}
+											>
+												<div className="check-icon">
+													<span></span>
+												</div>
+												<div className="details">
+													<div className="title">
+														Stock
+													</div>
+													<div className="des">
+														A clear, descriptive title
+														that helps customers find
+														your product
+													</div>
+												</div>
+											</li>
+										</>
+									)}
+									<li
+										className={checklist.image ? 'checked' : ''}
+									>
+										<div className="check-icon">
+											<span></span>
+										</div>
+										<div className="details">
+											<div className="title">
+												{__('Product Images', 'multivendorx')}
+											</div>
+											<div className="des">
+												{__('High-quality photos showing your product from multiple angles', 'multivendorx')}
+											</div>
+										</div>
+									</li>
+
+									<li
+										className={
+											checklist.categories ? 'checked' : ''
+										}
+									>
+										<div className="check-icon">
+											<span></span>
+										</div>
+										<div className="details">
+											<div className="title">{__('Category', 'multivendorx')}</div>
+											<div className="des">
+												{__('Organize your product to help customers browse your store', 'multivendorx')}
+											</div>
+										</div>
+									</li>
+
+									<li
+										className={
+											checklist.policies ? 'checked' : ''
+										}
+									>
+										<div className="check-icon">
+											<span></span>
+										</div>
+										<div className="details">
+											<div className="title">{__('Policies', 'multivendorx')}</div>
+											<div className="des">
+												{__('A clear, descriptive title that helps customers find your product', 'multivendorx')}
+											</div>
+										</div>
+									</li>
+
+									{applyFilters(
+										'product_checklist_items_render',
+										null,
+										checklist,
+										product
+									)}
+								</ul>
 							</div>
-						}
-						className="recommended-card"
-					>
-						<div className="checklist-wrapper">
-							<ul>
-								<li className={checklist.name ? 'checked' : ''}>
-									<div className="check-icon">
-										<span></span>
-									</div>
-									<div className="details">
-										<div className="title">
-											{__('Product Name', 'multivendorx')}
-										</div>
-										<div className="des">
-											{__('A clear, descriptive title that helps customers find your product', 'multivendorx')}
-										</div>
-									</div>
-								</li>
-								{product.type === 'simple' && (
-									<>
-										<li
-											className={
-												checklist.price ? 'checked' : ''
-											}
-										>
-											<div className="check-icon">
-												<span></span>
-											</div>
-											<div className="details">
-												<div className="title">
-													Price
-												</div>
-												<div className="des">
-													Set competitive prices
-													including any sale or
-													discount options
-												</div>
-											</div>
-										</li>
-
-										<li
-											className={
-												checklist.stock ? 'checked' : ''
-											}
-										>
-											<div className="check-icon">
-												<span></span>
-											</div>
-											<div className="details">
-												<div className="title">
-													Stock
-												</div>
-												<div className="des">
-													A clear, descriptive title
-													that helps customers find
-													your product
-												</div>
-											</div>
-										</li>
-									</>
-								)}
-								<li
-									className={checklist.image ? 'checked' : ''}
-								>
-									<div className="check-icon">
-										<span></span>
-									</div>
-									<div className="details">
-										<div className="title">
-											{__('Product Images', 'multivendorx')}
-										</div>
-										<div className="des">
-											{__('High-quality photos showing your product from multiple angles', 'multivendorx')}
-										</div>
-									</div>
-								</li>
-
-								<li
-									className={
-										checklist.categories ? 'checked' : ''
-									}
-								>
-									<div className="check-icon">
-										<span></span>
-									</div>
-									<div className="details">
-										<div className="title">{__('Category', 'multivendorx')}</div>
-										<div className="des">
-											{__('Organize your product to help customers browse your store', 'multivendorx')}
-										</div>
-									</div>
-								</li>
-
-								<li
-									className={
-										checklist.policies ? 'checked' : ''
-									}
-								>
-									<div className="check-icon">
-										<span></span>
-									</div>
-									<div className="details">
-										<div className="title">{__('Policies', 'multivendorx')}</div>
-										<div className="des">
-											{__('A clear, descriptive title that helps customers find your product', 'multivendorx')}
-										</div>
-									</div>
-								</li>
-
-								{applyFilters(
-									'product_checklist_items_render',
-									null,
-									checklist,
-									product
-								)}
-							</ul>
-						</div>
-					</Card>
-					{applyFilters(
-						'multivendorx_product_sidebar_cards',
-						null,
-						product
-					)}
+						</CardComponent>
+						{applyFilters(
+							'multivendorx_product_sidebar_cards',
+							null,
+							product
+						)}
 					</div>
-				</Column>
+				</ColumnComponent>
 
-				<Column grid={6}>
+				<ColumnComponent grid={6}>
 					{rejectNote && (
-						<Card
+						<CardComponent
 							title={__(
 								'Product Rejected by Admin',
 								'multivendorx'
 							)}
 						// action={
-						// <ButtonInputUI
+						// <ButtonInput
 						// 	buttons={[
 						// 		{
 						// 			icon: 'plus',
@@ -464,15 +472,15 @@ const AddProduct = () => {
 						// 	]}
 						// />}
 						>
-							<Notice
+							<NoticeComponent
 								type="error"
 								title={__('Admin Note', 'multivendorx')}
 								displayPosition="inline-notice"
 								message={rejectNote}
 							/>
-						</Card>
+						</CardComponent>
 					)}
-					<Card
+					<CardComponent
 						title={__(
 							'General information - Tell customers what you are selling',
 							'multivendorx'
@@ -482,7 +490,7 @@ const AddProduct = () => {
 							'multivendorx'
 						)}
 					>
-						<FormGroupWrapper>
+						<FormGroupWrapperComponent>
 							<div className="form-group  ai-form">
 								<label className="settings-form-label">
 									{__('Product name', 'multivendorx')}
@@ -498,7 +506,7 @@ const AddProduct = () => {
 								</label>
 
 								<div className="settings-input-content">
-									<BasicInputUI
+									<TextInput
 										name="name"
 										value={product.name}
 										onChange={(value) =>
@@ -539,7 +547,7 @@ const AddProduct = () => {
 										</label>
 
 										<div className="settings-input-content">
-											<TextAreaUI
+											<TextAreaInput
 												name="short_description"
 												value={appLocalizer.tinymceApiKey ? product.short_description : htmlToText(product.short_description)}
 												tinymceApiKey={appLocalizer.tinymceApiKey}
@@ -577,7 +585,7 @@ const AddProduct = () => {
 										</label>
 
 										<div className="settings-input-content">
-											<TextAreaUI
+											<TextAreaInput
 												name="description"
 												value={appLocalizer.tinymceApiKey ? product.description : htmlToText(product.description)}
 												tinymceApiKey={appLocalizer.tinymceApiKey}
@@ -598,9 +606,9 @@ const AddProduct = () => {
 									</div>
 								</>
 							)}
-						</FormGroupWrapper>
-					</Card>
-					<PopupUI
+						</FormGroupWrapperComponent>
+					</CardComponent>
+					<PopupComponent
 						open={appeal}
 						onClose={() => {
 							setAppeal(false);
@@ -618,7 +626,7 @@ const AddProduct = () => {
 							),
 						}}
 						footer={
-							<ButtonInputUI
+							<ButtonInput
 								buttons={[
 									{
 										icon: 'close',
@@ -638,67 +646,92 @@ const AddProduct = () => {
 							/>
 						}
 					>
-						<FormGroupWrapper>
-							<FormGroup
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__(
 									'Your appeal message',
 									'multivendorx'
 								)}
 								htmlFor="title"
 							>
-								<TextAreaUI name="content" />
-							</FormGroup>
-						</FormGroupWrapper>
-					</PopupUI>
-					{product?.type === 'simple' &&
-						productFields.includes('general') && (
-							<Card
-								title={__(
-									'Pricing - How much does it cost?',
-									'multivendorx'
+								<TextAreaInput name="content" />
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
+					</PopupComponent>
+					{productFields.includes('general') && (
+						<CardComponent
+							title={__(
+								'Pricing - How much does it cost?',
+								'multivendorx'
+							)}
+							desc={__(
+								'Set your normal price. If you are running a promotion, you can add sale price',
+								'multivendorx'
+							)}
+						>
+							<FormGroupWrapperComponent>
+								{product?.type === 'simple' && (
+									<>
+										<FormGroupComponent
+											row
+											label={__('Regular price', 'multivendorx')}
+										>
+											<TextInput
+												size="10rem"
+												name="regular_price"
+												value={product.regular_price}
+												onChange={(value) =>
+													handleChange('regular_price', value)
+												}
+											/>
+										</FormGroupComponent>
+
+										<FormGroupComponent
+											row
+											label={__('Sale price', 'multivendorx')}
+										>
+											<TextInput
+												size="10rem"
+												name="sale_price"
+												value={product.sale_price}
+												onChange={(value) =>
+													handleChange('sale_price', value)
+												}
+											/>
+										</FormGroupComponent>
+									</>
 								)}
-								desc={__(
-									'Set your normal price. If you are running a promotion, you can add sale price',
-									'multivendorx'
-								)}
-							>
-								<FormGroupWrapper>
-									<FormGroup
-										cols={6}
-										label={__(
-											'Regular price',
-											'multivendorx'
-										)}
-									>
-										<BasicInputUI
-											name="regular_price"
-											value={product.regular_price}
-											onChange={(value) =>
-												handleChange(
-													'regular_price',
-													value
-												)
-											}
-										/>
-									</FormGroup>
-									<FormGroup
-										cols={6}
-										label={__('Sale price', 'multivendorx')}
-									>
-										<BasicInputUI
-											name="sale_price"
-											value={product.sale_price}
-											onChange={(value) =>
-												handleChange(
-													'sale_price',
-													value
-												)
-											}
-										/>
-									</FormGroup>
-								</FormGroupWrapper>
-							</Card>
-						)}
+
+								{['simple', 'variable'].includes(product?.type) &&
+									Object.prototype.hasOwnProperty.call(
+										product,
+										'cost_of_goods_sold'
+									) && (
+										<FormGroupComponent
+											row
+											label={__(
+												`Cost of goods ${appLocalizer.currency_symbol}`,
+												'multivendorx'
+											)}
+										>
+											<TextInput
+												size="10rem"
+												name="cost_of_goods_sold"
+												value={
+													product.cost_of_goods_sold?.values?.[0]
+														?.defined_value ?? ''
+												}
+												onChange={(value) =>
+													handleChange('cost_of_goods_sold', {
+														values: [{ defined_value: value }],
+													})
+												}
+											/>
+										</FormGroupComponent>
+									)}
+							</FormGroupWrapperComponent>
+						</CardComponent>
+					)}
 					{applyFilters(
 						'multivendorx_add_product_middle_section',
 						null,
@@ -710,8 +743,8 @@ const AddProduct = () => {
 						modules,
 						setFeaturedImage
 					)}
-				</Column>
-				<Column grid={3}>
+				</ColumnComponent>
+				<ColumnComponent grid={3}>
 					{applyFilters(
 						'multivendorx_add_product_right_section',
 						null,
@@ -723,12 +756,12 @@ const AddProduct = () => {
 					)}
 
 					{modules.includes('wpml') && (
-						<Card
+						<CardComponent
 							title={__('Translations', 'multivendorx')}
 							iconName="translate"
 							toggle={true}
 						>
-							<FormGroupWrapper>
+							<FormGroupWrapperComponent>
 								<div className="multivendorx-translation-list">
 									{translation
 										?.filter((lang) => !lang.is_default)
@@ -760,16 +793,16 @@ const AddProduct = () => {
 											</div>
 										))}
 								</div>
-							</FormGroupWrapper>
-						</Card>
+							</FormGroupWrapperComponent>
+						</CardComponent>
 					)}
 
-					<Card title={__('Upload image', 'multivendorx')}>
-						<FormGroupWrapper>
-							<FormGroup
+					<CardComponent title={__('Upload image', 'multivendorx')}>
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__('Features Image', 'multivendorx')}
 							>
-								<FileInputUI
+								<FileInput
 									imageSrc={featuredImage?.thumbnail || ''}
 									multiple={false}
 									openUploader={__(
@@ -786,13 +819,13 @@ const AddProduct = () => {
 											return;
 										}
 										setFeaturedImage({
-											id: file?.id, // wp.media id not available from current FileInput
+											id: file?.id, // wp.media id not available from current FileInputFieldComponent
 											src: url,
 											thumbnail: url,
 										});
 									}}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 							{applyFilters('product_image_enhancement', null, {
 								currentImage: featuredImage ?? null,
 								isFeaturedImage: true,
@@ -805,11 +838,11 @@ const AddProduct = () => {
 								true,
 								{ product }
 							) && (
-									<FormGroup label={__('Product gallery', 'multivendorx')}>
-										<FileInputUI
+									<FormGroupComponent label={__('Product gallery', 'multivendorx')}>
+										<FileInput
 											imageSrc={galleryImages.map((img) => img.thumbnail)}
 											multiple={true}
-											openUploader="Add Gallery Image"
+											openUploader={__('Add Gallery Image', 'multivendorx')}
 											onChange={(val) => {
 												if (!val) {
 													setGalleryImages([]);
@@ -818,8 +851,8 @@ const AddProduct = () => {
 
 												const urls = Array.isArray(val) ? val : [val];
 
-												const formatted = urls.map((file) => ({
-													id: file?.id,
+												const formatted = urls.map((file, index) => ({
+													id: file?.id || galleryImages[index]?.id,
 													src: file?.url,
 													thumbnail: file?.url,
 												}));
@@ -827,13 +860,13 @@ const AddProduct = () => {
 												setGalleryImages(formatted);
 											}}
 										/>
-									</FormGroup>
+									</FormGroupComponent>
 								)}
 
-						</FormGroupWrapper>
-					</Card>
-				</Column>
-			</Container>
+						</FormGroupWrapperComponent>
+					</CardComponent>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

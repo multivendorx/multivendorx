@@ -1,10 +1,17 @@
 <?php
+/**
+ * MultiVendorX Tracker class file.
+ *
+ * @package MultiVendorX
+ */
 
 namespace MultiVendorX;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * MultiVendorX Tracker class.
+ *
  * @class       MultiVendorX Tracker Class
  *
  * @version     PRODUCT_VERSION
@@ -13,18 +20,86 @@ defined( 'ABSPATH' ) || exit;
  */
 class Tracker {
 
+    /**
+     * Plugin slug.
+     *
+     * @var string
+     */
     private string $slug;
+
+    /**
+     * URL to leave a WordPress.org review.
+     *
+     * @var string
+     */
     private string $review_url;
+
+    /**
+     * Support forum URL.
+     *
+     * @var string
+     */
     private string $support_url;
+
+    /**
+     * Community Facebook group URL.
+     *
+     * @var string
+     */
     private string $facebook_url;
+
+    /**
+     * URL to book a support call.
+     *
+     * @var string
+     */
     private string $calendly_url;
+
+    /**
+     * URL to purchase/upgrade to Pro.
+     *
+     * @var string
+     */
     private string $pro_shop_url;
+
+    /**
+     * Current free plugin version.
+     *
+     * @var string
+     */
     private string $plugin_version;
+
+    /**
+     * Human-readable plugin name.
+     *
+     * @var string
+     */
     private string $plugin_name;
+
+    /**
+     * URL to the plugin's settings page.
+     *
+     * @var string
+     */
     private string $settings_url;
+
+    /**
+     * Tracking data submission API endpoint.
+     *
+     * @var string
+     */
     private string $api_url;
+
+    /**
+     * Installed Pro plugin version, if active.
+     *
+     * @var string
+     */
     private string $pro_plugin_version;
 
+    /**
+     * Constructor. Sets up tracker URLs and registers deactivation/tracking hooks.
+     */
     public function __construct() {
         $this->slug               = MultiVendorX()->plugin_slug;
         $this->plugin_name        = 'MultiVendorX';
@@ -39,8 +114,10 @@ class Tracker {
         $this->api_url            = 'https://multivendorx.com/wp-json/mvx_thirdparty/v1/users_database_update';
 
         add_filter( 'plugin_action_links_' . MultiVendorX()->plugin_base, array( $this, 'deactivate_action_links' ) );
+        add_filter( 'admin_multivendorx_register_scripts', array( $this, 'register_deactivation_script' ) );
+        add_filter( 'admin_multivendorx_register_styles', array( $this, 'register_deactivation_style' ) );
         add_action( 'admin_print_footer_scripts-plugins.php', array( $this, 'print_deactivation_form' ) );
-        add_action( 'admin_print_styles-plugins.php', array( $this, 'print_deactivation_styles' ) );
+        add_action( 'admin_enqueue_scripts-plugins.php', array( $this, 'enqueue_deactivation_assets' ) );
         add_action( 'wp_ajax_deactivation_form_' . $this->slug, array( $this, 'handle_form_submit' ) );
 
         register_deactivation_hook(
@@ -49,6 +126,12 @@ class Tracker {
         );
     }
 
+    /**
+     * Add settings/review/upgrade links to the plugin's row on the Plugins screen.
+     *
+     * @param array $links Existing plugin action links.
+     * @return array
+     */
     public function deactivate_action_links( array $links ): array {
         $links['settings'] = '<a href="' . esc_url( $this->settings_url ) . '">'
             . esc_html__( 'Settings', 'multivendorx' ) . '</a>';
@@ -68,6 +151,12 @@ class Tracker {
         return $links;
     }
 
+    /**
+     * Wrap the "Deactivate" link with the deactivation-feedback modal markup.
+     *
+     * @param string $link Original deactivate link HTML.
+     * @return string
+     */
     private function wrap_deactivate_link( string $link ): string {
         $slug  = esc_attr( $this->slug );
         $modal = '<div class="modal-wrap" id="modal-' . $slug . '" style="display: none">'
@@ -82,13 +171,16 @@ class Tracker {
         );
     }
 
+    /**
+     * Send final deactivation tracking data when the plugin is deactivated.
+     */
     public function on_plugin_deactivated(): void {
         if ( get_option( 'plugin_action_block_notice' ) !== 'yes' ) {
             return;
         }
 
         $slug                         = $this->slug;
-        $body                         = $this->get_data();
+        $body                         = $this->get_tracking_payload();
         $body['status']               = 'Deactivated';
         $body['deactivated_date']     = time();
         $body['deactivation_reason']  = get_option( 'deactivation_reason_' . $slug, '' );
@@ -100,6 +192,9 @@ class Tracker {
         delete_option( 'deactivation_details_' . $slug );
     }
 
+    /**
+     * Print the deactivation-feedback modal's HTML template.
+     */
     public function print_deactivation_form(): void {
         $slug  = $this->slug;
         $form  = $this->deactivation_reasons();
@@ -164,70 +259,63 @@ class Tracker {
                 <button type="button" class="footer-button button-submit"><?php esc_html_e( 'Submit & Deactivate', 'multivendorx' ); ?></button>
             </div>
         </script>
-
-        <script>
-        jQuery(function($) {
-            var slug      = <?php echo wp_json_encode( $slug ); ?>;
-            var nonce     = <?php echo wp_json_encode( $nonce ); ?>;
-            var ajaxUrl   = <?php echo wp_json_encode( admin_url( 'admin-ajax.php' ) ); ?>;
-            var template  = $( '#form-template-' + slug ).html();
-
-            var $modal    = $( '#modal-' + slug );
-            var $box      = $( '#modal-box-' + slug );
-            var $bg       = $modal.find( '.modal-bg' );
-
-            // Populate box once
-            $box.html( template );
-            $box.find( '.extra-field' ).hide();
-            $modal.hide();
-
-            var deactivateUrl = '';
-
-            // Open modal
-            $( '#deactivate-link-' + slug ).on( 'click', function(e) {
-                e.preventDefault();
-                deactivateUrl = $( this ).attr( 'href' );
-                $modal.show();
-                $box.find( '.button-skip' ).attr( 'href', deactivateUrl );
-            });
-
-            // Show extra field when radio selected
-            $box.on( 'change', 'input[type="radio"]', function() {
-                $box.find( '.extra-field' ).hide();
-                $( this ).closest( 'li' ).find( '.extra-field' ).show();
-            });
-
-            // Submit
-            $box.on( 'click', '.button-submit', function() {
-                var $checked = $box.find( 'input[name="deactivate-reason"]:checked' );
-                var reason   = $checked.length ? $checked.val() : 'No Reason';
-                var details  = $checked.closest( 'li' ).find( '.extra-field' ).val() || '';
-
-                $box.find( '.form-body, .form-footer' ).hide();
-                $box.find( '.form-head' ).after( '<p><span class="spinner is-active"></span> <?php esc_html_e( 'Submitting…', 'multivendorx' ); ?></p>' );
-
-                $.post( ajaxUrl, {
-                    action   : 'deactivation_form_' + slug,
-                    values   : reason,
-                    details  : details,
-                    security : nonce
-                }).always(function() {
-                    window.location.href = deactivateUrl;
-                });
-            });
-
-            $bg.on( 'click', function() {
-                $modal.hide();
-            });
-        });
-        </script>
         <?php
     }
 
+    /**
+     * Register the deactivation modal's behavior script.
+     *
+     * @param array $scripts Existing admin scripts.
+     * @return array
+     */
+    public function register_deactivation_script( $scripts ) {
+        $scripts['multivendorx-deactivation-modal'] = array(
+            'src'  => FrontendScripts::get_asset_path() . 'js/public/' . MULTIVENDORX_PLUGIN_SLUG . '-deactivation-modal.min.js',
+            'deps' => array( 'jquery' ),
+        );
+        return $scripts;
+    }
+
+    /**
+     * Register the deactivation modal's stylesheet.
+     *
+     * @param array $styles Existing admin styles.
+     * @return array
+     */
+    public function register_deactivation_style( $styles ) {
+        $styles['multivendorx-deactivation-modal'] = array(
+            'src' => FrontendScripts::get_asset_path() . 'styles/public/' . MULTIVENDORX_PLUGIN_SLUG . '-deactivation-modal.min.css',
+        );
+        return $styles;
+    }
+
+    /**
+     * Enqueue the deactivation modal's styles and behavior on the Plugins screen.
+     */
+    public function enqueue_deactivation_assets(): void {
+        $slug = $this->slug;
+
+        FrontendScripts::enqueue_style( 'multivendorx-deactivation-modal' );
+        FrontendScripts::enqueue_script( 'multivendorx-deactivation-modal' );
+        FrontendScripts::localize_script(
+            'multivendorx-deactivation-modal',
+            'multivendorxDeactivation',
+            array(
+                'slug'           => $slug,
+                'nonce'          => wp_create_nonce( 'deactivation_nonce' ),
+                'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
+                'submittingText' => __( 'Submitting…', 'multivendorx' ),
+            )
+        );
+    }
+
+    /**
+     * Handle the deactivation-feedback form's AJAX submission.
+     */
     public function handle_form_submit(): void {
         check_ajax_referer( 'deactivation_nonce', 'security' );
 
-        if ( ! current_user_can( 'activate_plugins' ) ) {
+        if ( ! Utill::current_user_has_capability( array( 'activate_plugins' ) ) ) {
             wp_send_json_error( 'Insufficient permissions.', 403 );
         }
 
@@ -246,6 +334,11 @@ class Tracker {
         wp_send_json_success();
     }
 
+    /**
+     * Build the deactivation-feedback form's heading, labels, and reason options.
+     *
+     * @return array
+     */
     private function deactivation_reasons(): array {
         $form = array(
             'heading'      => __( "We're sorry to see you leave 😔", 'multivendorx' ),
@@ -270,7 +363,12 @@ class Tracker {
         return $form;
     }
 
-    public function get_data(): array {
+    /**
+     * Build the anonymous site/plugin usage data payload sent to the tracking API.
+     *
+     * @return array
+     */
+    public function get_tracking_payload(): array {
         if ( ! function_exists( 'get_plugins' ) ) {
             require_once ABSPATH . '/wp-admin/includes/plugin.php';
         }
@@ -301,7 +399,7 @@ class Tracker {
             'php_version'      => phpversion(),
             'multisite'        => is_multisite(),
             'text_direction'   => function_exists( 'is_rtl' ) ? ( is_rtl() ? 'RTL' : 'LTR' ) : 'NOT SET',
-            'server'           => sanitize_text_field( wp_unslash( $_SERVER['SERVER_SOFTWARE'] ?? '' ) ),
+            'server'           => sanitize_text_field( (string) ( filter_input( INPUT_SERVER, 'SERVER_SOFTWARE', FILTER_UNSAFE_RAW ) ?? getenv( 'SERVER_SOFTWARE' ) ) ),
             'email'            => implode(
                 ',',
                 array_filter(
@@ -314,7 +412,9 @@ class Tracker {
             ),
             'active_plugins'   => maybe_serialize( $active_plugins ),
             'inactive_plugins' => maybe_serialize( array_values( array_diff( $all_plugins, $active_plugins ) ) ),
+            // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WP_Theme::__get() only recognizes the capitalized 'Name'/'Version' header keys.
             'theme'            => sanitize_text_field( $theme->Name ),
+            // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WP_Theme::__get() only recognizes the capitalized 'Name'/'Version' header keys.
             'theme_version'    => sanitize_text_field( $theme->Version ),
             'status'           => 'Active',
             'file_location'    => __FILE__,
@@ -325,6 +425,11 @@ class Tracker {
         );
     }
 
+    /**
+     * Send the tracking data payload to the MultiVendorX API, registering the site if needed.
+     *
+     * @param array $body Tracking data payload.
+     */
     public function send_data( array $body ): void {
         $slug         = $this->slug;
         $site_id_key  = "{$slug}_site_id";
@@ -334,17 +439,17 @@ class Tracker {
         $site_id  = get_option( $site_id_key, false );
         $orig_url = get_option( $orig_url_key, false );
 
-        // Reset if site URL changed
-        if ( $orig_url !== false && $orig_url !== $site_url ) {
+        // Reset if site URL changed.
+        if ( false !== $orig_url && $orig_url !== $site_url ) {
             $site_id = false;
         }
 
-        if ( $site_id !== false ) {
-            return; // Already registered
+        if ( false !== $site_id ) {
+            return; // Already registered.
         }
 
-        $ip = $_SERVER['REMOTE_ADDR'] ?? '';
-        if ( $ip && $ip !== '127.0.0.1' && filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
+        $ip = sanitize_text_field( (string) ( filter_input( INPUT_SERVER, 'REMOTE_ADDR', FILTER_VALIDATE_IP ) ?? getenv( 'REMOTE_ADDR' ) ) );
+        if ( $ip && '127.0.0.1' !== $ip && filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
             $geo = wp_remote_get( 'https://ip-api.com/json/' . rawurlencode( $ip ) . '?fields=country' );
             if ( ! is_wp_error( $geo ) && wp_remote_retrieve_response_code( $geo ) === 200 ) {
                 $geo_data        = json_decode( wp_remote_retrieve_body( $geo ) );
@@ -377,100 +482,5 @@ class Tracker {
             update_option( $orig_url_key, $site_url, false );
             update_option( "{$slug}_{$sid}", $body, false );
         }
-    }
-
-    public function print_deactivation_styles(): void {
-        ?>
-        <style>
-        .modal-wrap {
-            position: fixed; inset: 0;
-            display: flex; align-items: center; justify-content: center;
-            z-index: 99999;
-        }
-        .modal-bg {
-            position: absolute; inset: 0;
-            background: rgba(0,0,0,.75);
-        }
-        .modal-box {
-            position: relative; z-index: 1;
-            width: 35%; max-width: 90vw; max-height: 85vh;
-            background: #fff; border-radius: .375rem;
-            overflow-y: auto;
-            box-shadow: 0 .5rem 2rem rgba(0,0,0,.25);
-        }
-
-        .form-head {
-            padding: 1.25rem; text-align: center;
-            border-bottom: 0.063rem solid #eee; font-size: 1.625rem; color: #333;
-            font-weight: 600;
-        }
-
-        .form-body { padding: 1.25rem; color: #444; }
-        .form-body p { margin: 0 0 1rem; font-size: .9rem; line-height: 1.5; }
-
-        .support-cards {
-            display: flex; gap: .75rem;
-            margin-bottom: 1.25rem;
-        }
-        .support-card {
-            flex: 1 0 6rem; padding: 1rem .75rem;
-            border: 0.063rem solid #dbdbdb; border-radius: .25rem;
-            display: flex; flex-direction: column; align-items: center; gap: .5rem;
-            text-decoration: none; color: #5007aa; font-size: .8rem; text-align: center;
-            transition: background .2s;
-        }
-        .support-card  span{
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-        .support-card:hover { background: #f5f0fb; }
-        .support-card:hover span{ color: #5007aa; }
-        .support-card svg { width: 2rem; height: 2rem; fill: #5007aa; }
-
-        /* ── Reasons list ── */
-        .deactivation-reasons { margin: 0 0 1rem; padding: 0; list-style: none; }
-        .deactivation-reasons li { margin-bottom: .75rem; }
-        .deactivation-reasons label { margin-left: .4rem; color: #555; cursor: pointer; }
-        .deactivation-reasons .extra-field {
-            display: block; margin-top: .5rem; margin-left: 1.4rem;
-            width: calc(100% - 1.4rem); padding: .4rem .5rem;
-            border: 0.063rem solid #ccc; border-radius: .25rem; font-size: .875rem;
-        }
-        .deactivation-reasons textarea.extra-field { height: 5rem; resize: vertical; }
-
-        .data-notice {
-            border: .063rem solid #5007aa;
-            border-radius: .25rem;
-            box-sizing: border-box;
-            display: flex;
-            gap: .5rem;
-            padding: .5rem .8rem;
-            background: #ece2f9f1;
-            color: #5007aa;
-            font-size: 0.813rem;
-            font-weight: 500;
-        }
-
-        .form-footer {
-            display: flex; justify-content: flex-end; align-items: center; gap: .75rem;
-            padding: 1rem 1.25rem;
-            border-top: 0.063rem solid #eee;
-            position: sticky; bottom: 0; background: #fff;
-        }
-        .footer-button {
-            padding: .6rem 1.2rem; border-radius: .25rem;
-            font-size: .875rem; font-weight: 500; cursor: pointer;
-            text-decoration: none; border: none; display: inline-block;
-        }
-        .button-skip {
-            background: #fff3f1; color: #ef9587;
-        }
-        .button-skip:hover { background: #e0e0e0; color: #333; }
-        .button-submit {
-            background: #5007aa;
-            color: #fff;
-        }
-        </style>
-        <?php
     }
 }

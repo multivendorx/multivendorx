@@ -72,8 +72,8 @@ class Notifications {
 			array(
 				// Store Registration & Approval.
 				'store_pending_approval'              => array(
-					'name'                   => 'Store pending approval',
-					'desc'                   => 'Triggered when a new store application is submitted and placed under admin review.',
+					'name'                   => __( 'Store pending approval', 'multivendorx' ),
+					'desc'                   => __( 'Triggered when a new store application is submitted and placed under admin review.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -111,8 +111,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_rejected'                      => array(
-					'name'                   => 'Store rejected',
-					'desc'                   => 'Admin rejected the store application.',
+					'name'                   => __( 'Store rejected', 'multivendorx' ),
+					'desc'                   => __( 'Admin rejected the store application.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
@@ -150,8 +150,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_permanently_rejected'          => array(
-					'name'                   => 'Store permanently rejected',
-					'desc'                   => 'Permanent rejection of a store application by the admin',
+					'name'                   => __( 'Store permanently rejected', 'multivendorx' ),
+					'desc'                   => __( 'Permanent rejection of a store application by the admin', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -189,8 +189,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_account_created_by_admin'      => array(
-					'name'                   => 'Store account created by admin',
-					'desc'                   => 'Admin manually created store account.',
+					'name'                   => __( 'Store account created by admin', 'multivendorx' ),
+					'desc'                   => __( 'Admin manually created store account.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
@@ -229,8 +229,8 @@ class Notifications {
 				),
 				// POST ACTIVATION FLOW.
 				'store_activated'                     => array(
-					'name'                   => 'Store activated',
-					'desc'                   => 'Store activated and ready to start selling.',
+					'name'                   => __( 'Store activated', 'multivendorx' ),
+					'desc'                   => __( 'Store activated and ready to start selling.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
@@ -268,8 +268,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_under_review'                  => array(
-					'name'                   => 'Store under review',
-					'desc'                   => 'Store temporarily placed under admin review.',
+					'name'                   => __( 'Store under review', 'multivendorx' ),
+					'desc'                   => __( 'Store temporarily placed under admin review.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -306,8 +306,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_suspended'                     => array(
-					'name'                   => 'Store suspended',
-					'desc'                   => 'Store temporarily suspended by the admin.',
+					'name'                   => __( 'Store suspended', 'multivendorx' ),
+					'desc'                   => __( 'Store temporarily suspended by the admin.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -345,8 +345,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_permanently_deactivated'       => array(
-					'name'                   => 'Store permanently deactivated',
-					'desc'                   => 'Admin permanently deactivated the store.',
+					'name'                   => __( 'Store permanently deactivated', 'multivendorx' ),
+					'desc'                   => __( 'Admin permanently deactivated the store.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -384,8 +384,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_account_deactivation_request'  => array(
-					'name'                   => 'Store account deactivation request',
-					'desc'                   => 'Store owner requests deactivation of their store account.',
+					'name'                   => __( 'Store account deactivation request', 'multivendorx' ),
+					'desc'                   => __( 'Store owner requests deactivation of their store account.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => false,
 					'admin_enabled'          => true,
@@ -423,8 +423,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_deactivation_request_rejected' => array(
-					'name'                   => 'Store deactivation rejected',
-					'desc'                   => 'Store deactivation request rejected by the admin.',
+					'name'                   => __( 'Store deactivation rejected', 'multivendorx' ),
+					'desc'                   => __( 'Store deactivation request rejected by the admin.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
@@ -462,8 +462,8 @@ class Notifications {
 				),
 				// ORDER NOTIFICATIONS.
 				'new_order_store'                     => array(
-					'name'                   => 'New order received',
-					'desc'                   => 'New order received by the store.',
+					'name'                   => __( 'New order received', 'multivendorx' ),
+					'desc'                   => __( 'New order received by the store.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -501,8 +501,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'order_processing'                    => array(
-					'name'                   => 'Order processing',
-					'desc'                   => 'An order status is changed to processing.',
+					'name'                   => __( 'Order processing', 'multivendorx' ),
+					'desc'                   => __( 'An order status is changed to processing.', 'multivendorx' ),
 					'store_enabled'          => true,
 					'customer_enabled'       => true,
 					'email_subject'          => 'Order processing started',
@@ -537,8 +537,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'order_completed'                     => array(
-					'name'                   => 'Order completed',
-					'desc'                   => 'An order is completed successfully.',
+					'name'                   => __( 'Order completed', 'multivendorx' ),
+					'desc'                   => __( 'An order is completed successfully.', 'multivendorx' ),
 					'store_enabled'          => true,
 					'customer_enabled'       => true,
 					'email_subject'          => 'Order completed',
@@ -575,8 +575,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'order_cancelled'                     => array(
-					'name'                   => 'Order cancelled',
-					'desc'                   => 'An order is cancelled by the customer or admin.',
+					'name'                   => __( 'Order cancelled', 'multivendorx' ),
+					'desc'                   => __( 'An order is cancelled by the customer or admin.', 'multivendorx' ),
 					'store_enabled'          => true,
 					'customer_enabled'       => true,
 					'admin_enabled'          => true,
@@ -614,8 +614,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'order_refunded'                      => array(
-					'name'                   => 'Order refunded',
-					'desc'                   => 'A refund is issued for an order.',
+					'name'                   => __( 'Order refunded', 'multivendorx' ),
+					'desc'                   => __( 'A refund is issued for an order.', 'multivendorx' ),
 					'store_enabled'          => true,
 					'customer_enabled'       => true,
 					'email_subject'          => 'Order refunded',
@@ -653,8 +653,8 @@ class Notifications {
 				),
 				// SHIPMENT TRACKING.
 				'shipment_tracking_added'             => array(
-					'name'                   => 'Shipment tracking added',
-					'desc'                   => 'Tracking details added for the order shipment.',
+					'name'                   => __( 'Shipment tracking added', 'multivendorx' ),
+					'desc'                   => __( 'Tracking details added for the order shipment.', 'multivendorx' ),
 					'customer_enabled'       => true,
 					'store_enabled'          => false,
 					'admin_enabled'          => false,
@@ -696,8 +696,8 @@ class Notifications {
 				),
 				// Pro.
 				'order_delivered'                     => array(
-					'name'                   => 'Order delivered',
-					'desc'                   => 'Order marked as delivered.',
+					'name'                   => __( 'Order delivered', 'multivendorx' ),
+					'desc'                   => __( 'Order marked as delivered.', 'multivendorx' ),
 					'customer_enabled'       => true,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
@@ -737,8 +737,8 @@ class Notifications {
 				),
 				// REFUND NOTIFICATIONS.
 				'refund_requested'                    => array(
-					'name'                   => 'Refund requested',
-					'desc'                   => 'Refund request submitted for the order.',
+					'name'                   => __( 'Refund requested', 'multivendorx' ),
+					'desc'                   => __( 'Refund request submitted for the order.', 'multivendorx' ),
 					'customer_enabled'       => true,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -777,8 +777,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'refund_accepted'                     => array(
-					'name'                   => 'Refund accepted',
-					'desc'                   => 'Refund request approved for the order.',
+					'name'                   => __( 'Refund accepted', 'multivendorx' ),
+					'desc'                   => __( 'Refund request approved for the order.', 'multivendorx' ),
 					'customer_enabled'       => true,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -807,8 +807,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'refund_rejected'                     => array(
-					'name'                   => 'Refund rejected',
-					'desc'                   => 'Refund request rejected for the order.',
+					'name'                   => __( 'Refund rejected', 'multivendorx' ),
+					'desc'                   => __( 'Refund request rejected for the order.', 'multivendorx' ),
 					'customer_enabled'       => true,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -838,8 +838,8 @@ class Notifications {
 				),
 				// REVIEWS.
 				'new_store_review'                    => array(
-					'name'                   => 'New store review',
-					'desc'                   => 'New customer review submitted for the store.',
+					'name'                   => __( 'New store review', 'multivendorx' ),
+					'desc'                   => __( 'New customer review submitted for the store.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
@@ -867,8 +867,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'review_reply'                        => array(
-					'name'                   => 'Admin replied to review',
-					'desc'                   => 'Marketplace admin replies to a review.',
+					'name'                   => __( 'Admin replied to review', 'multivendorx' ),
+					'desc'                   => __( 'Marketplace admin replies to a review.', 'multivendorx' ),
 					'customer_enabled'       => true,
 					'store_enabled'          => false,
 					'admin_enabled'          => false,
@@ -898,8 +898,8 @@ class Notifications {
 				),
 				// PRODUCT NOTIFICATIONS.
 				'product_submitted'                   => array(
-					'name'                   => 'Product submitted',
-					'desc'                   => 'Product submitted for admin review.',
+					'name'                   => __( 'Product submitted', 'multivendorx' ),
+					'desc'                   => __( 'Product submitted for admin review.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -928,8 +928,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'product_approved'                    => array(
-					'name'                   => 'Product approved',
-					'desc'                   => 'Product approved and published.',
+					'name'                   => __( 'Product approved', 'multivendorx' ),
+					'desc'                   => __( 'Product approved and published.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
@@ -958,8 +958,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'product_rejected'                    => array(
-					'name'                   => 'Product rejected',
-					'desc'                   => 'Product rejected after review.',
+					'name'                   => __( 'Product rejected', 'multivendorx' ),
+					'desc'                   => __( 'Product rejected after review.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
@@ -988,8 +988,8 @@ class Notifications {
 				),
 				// PRO.
 				'product_low_stock'                   => array(
-					'name'                   => 'Product low stock',
-					'desc'                   => 'Product stock running low.',
+					'name'                   => __( 'Product low stock', 'multivendorx' ),
+					'desc'                   => __( 'Product stock running low.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
@@ -1019,8 +1019,8 @@ class Notifications {
 				),
 				// PRO.
 				'product_out_of_stock'                => array(
-					'name'                   => 'Product out of stock',
-					'desc'                   => 'Product is currently unavailable due to no stock.',
+					'name'                   => __( 'Product out of stock', 'multivendorx' ),
+					'desc'                   => __( 'Product is currently unavailable due to no stock.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
@@ -1050,8 +1050,8 @@ class Notifications {
 				),
 				// PRODUCT QUESTIONS (Q&A).
 				'product_question_submitted'          => array(
-					'name'                   => 'Product question submitted',
-					'desc'                   => 'Customer submits a question on a product.',
+					'name'                   => __( 'Product question submitted', 'multivendorx' ),
+					'desc'                   => __( 'Customer submits a question on a product.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
@@ -1080,8 +1080,8 @@ class Notifications {
 					'category'               => 'notification',
 				),
 				'product_question_reply'              => array(
-					'name'                   => 'Store replied to product question',
-					'desc'                   => 'Store owner replies to a product question.',
+					'name'                   => __( 'Store replied to product question', 'multivendorx' ),
+					'desc'                   => __( 'Store owner replies to a product question.', 'multivendorx' ),
 					'customer_enabled'       => true,
 					'store_enabled'          => false,
 					'admin_enabled'          => false,
@@ -1111,8 +1111,8 @@ class Notifications {
 				),
 				// PAYOUT & WITHDRAWAL.
 				'payout_received'                     => array(
-					'name'                   => 'Payout received',
-					'desc'                   => 'A payment is received for an order.',
+					'name'                   => __( 'Payout received', 'multivendorx' ),
+					'desc'                   => __( 'A payment is received for an order.', 'multivendorx' ),
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
 					'email_subject'          => 'Payout received',
@@ -1139,8 +1139,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'payout_failed'                       => array(
-					'name'                   => 'Payout failed',
-					'desc'                   => 'A payout processing attempt has failed.',
+					'name'                   => __( 'Payout failed', 'multivendorx' ),
+					'desc'                   => __( 'A payout processing attempt has failed.', 'multivendorx' ),
 					'admin_enabled'          => true,
 					'email_subject'          => 'Payout failed',
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
@@ -1175,8 +1175,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'withdrawal_requested'                => array(
-					'name'                   => 'Withdrawal requested',
-					'desc'                   => 'A withdrawal request is submitted by a store.',
+					'name'                   => __( 'Withdrawal requested', 'multivendorx' ),
+					'desc'                   => __( 'A withdrawal request is submitted by a store.', 'multivendorx' ),
 					'admin_enabled'          => true,
 					'store_enabled'          => true,
 					'email_subject'          => 'Withdrawal request submitted',
@@ -1213,8 +1213,8 @@ class Notifications {
 					'category'               => 'notification',
 				),
 				'withdrawal_released'                 => array(
-					'name'                   => 'Withdrawal released',
-					'desc'                   => 'A withdrawal is released successfully.',
+					'name'                   => __( 'Withdrawal released', 'multivendorx' ),
+					'desc'                   => __( 'A withdrawal is released successfully.', 'multivendorx' ),
 					'store_enabled'          => true,
 					'email_subject'          => 'Withdrawal released',
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e8fbea;margin-bottom:3;border-radius:0.313'>
@@ -1239,8 +1239,8 @@ class Notifications {
 					'category'               => 'notification',
 				),
 				'withdrawl_rejected'                  => array(
-					'name'                   => 'Withdrawl rejected',
-					'desc'                   => 'A withdrawl request is rejected by the admin.',
+					'name'                   => __( 'Withdrawl rejected', 'multivendorx' ),
+					'desc'                   => __( 'A withdrawl request is rejected by the admin.', 'multivendorx' ),
 					'store_enabled'          => true,
 					'email_subject'          => 'Withdrawl rejected',
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#f2cfcf;margin-bottom:3;border-radius:0.313'>
@@ -1266,8 +1266,8 @@ class Notifications {
 				),
 				// ========== REPORT ABUSE ==========
 				'report_abuse_submitted'              => array(
-					'name'                   => 'Report abuse submitted',
-					'desc'                   => 'A product is reported for abuse by a customer.',
+					'name'                   => __( 'Report abuse submitted', 'multivendorx' ),
+					'desc'                   => __( 'A product is reported for abuse by a customer.', 'multivendorx' ),
 					'admin_enabled'          => true,
 					'store_enabled'          => true,
 					'customer_enabled'       => true,
@@ -1306,8 +1306,8 @@ class Notifications {
 				),
 				// ========== ANNOUNCEMENTS ==========
 				'system_announcement'                 => array(
-					'name'                   => 'System announcement',
-					'desc'                   => 'A system-wide announcement is published by the admin.',
+					'name'                   => __( 'System announcement', 'multivendorx' ),
+					'desc'                   => __( 'A system-wide announcement is published by the admin.', 'multivendorx' ),
 					'store_enabled'          => true,
 					'admin_enabled'          => true,
 					'email_subject'          => 'New announcement',
@@ -1344,8 +1344,8 @@ class Notifications {
 				),
 				// STORE FOLLOWER NOTIFICATIONS.
 				'store_followed'                      => array(
-					'name'                   => 'Store followed',
-					'desc'                   => 'Customer started following the store.',
+					'name'                   => __( 'Store followed', 'multivendorx' ),
+					'desc'                   => __( 'Customer started following the store.', 'multivendorx' ),
 					'customer_enabled'       => false,
 					'store_enabled'          => true,
 					'admin_enabled'          => false,
@@ -1383,8 +1383,8 @@ class Notifications {
 					'category'               => 'activity',
 				),
 				'store_new_product_to_followers'      => array(
-					'name'                   => 'New product from followed store',
-					'desc'                   => 'New product published by a followed store.',
+					'name'                   => __( 'New product from followed store', 'multivendorx' ),
+					'desc'                   => __( 'New product published by a followed store.', 'multivendorx' ),
 					'customer_enabled'       => true,
 					'store_enabled'          => false,
 					'admin_enabled'          => false,
@@ -1424,8 +1424,8 @@ class Notifications {
 					'category'               => 'notification',
 				),
 				'store_new_coupon_to_followers'       => array(
-					'name'                   => 'New coupon from followed store',
-					'desc'                   => 'New coupon created by a followed store.',
+					'name'                   => __( 'New coupon from followed store', 'multivendorx' ),
+					'desc'                   => __( 'New coupon created by a followed store.', 'multivendorx' ),
 					'customer_enabled'       => true,
 					'store_enabled'          => false,
 					'admin_enabled'          => false,
@@ -1466,8 +1466,8 @@ class Notifications {
 				),
 				// Pro.
 				'store_vacation_alert_to_followers'   => array(
-					'name'                   => 'Store vacation alert',
-					'desc'                   => 'Followed store marked as on vacation.',
+					'name'                   => __( 'Store vacation alert', 'multivendorx' ),
+					'desc'                   => __( 'Followed store marked as on vacation.', 'multivendorx' ),
 					'customer_enabled'       => true,
 					'store_enabled'          => false,
 					'admin_enabled'          => false,
@@ -1506,8 +1506,8 @@ class Notifications {
 				),
 				// WHOLESALE BUYER.(PRO).
 				'wholesale_buyer_approved'            => array(
-					'name'                   => 'Wholesale buyer approved',
-					'desc'                   => 'User request for wholesale access has been approved.',
+					'name'                   => __( 'Wholesale buyer approved', 'multivendorx' ),
+					'desc'                   => __( 'User request for wholesale access has been approved.', 'multivendorx' ),
 					'customer_enabled'       => true,
 					'store_enabled'          => false,
 					'admin_enabled'          => false,
@@ -1545,8 +1545,8 @@ class Notifications {
 					'category'               => 'notification',
 				),
 				'wholesale_buyer_rejected'            => array(
-					'name'                   => 'Wholesale buyer rejected',
-					'desc'                   => 'User request for wholesale access has been rejected.',
+					'name'                   => __( 'Wholesale buyer rejected', 'multivendorx' ),
+					'desc'                   => __( 'User request for wholesale access has been rejected.', 'multivendorx' ),
 					'customer_enabled'       => true,
 					'store_enabled'          => false,
 					'admin_enabled'          => false,
@@ -1582,13 +1582,46 @@ class Notifications {
 					'tag'                    => 'Wholesale',
 					'category'               => 'notification',
 				),
+				'store_support_reply'                 => array(
+					'name'                   => __( 'Store replied to support ticket', 'multivendorx' ),
+					'desc'                   => __( 'Store owner replies to a support ticket.', 'multivendorx' ),
+					'customer_enabled'       => true,
+					'store_enabled'          => false,
+					'admin_enabled'          => false,
+					'system_enabled'         => true,
+					'email_subject'          => 'Reply to your support ticket – [subject]',
+					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:1;padding-bottom:1;padding-right:1;padding-left:1;background-color:#e6f4ff;margin-bottom:3;border-radius:0.313'>
+						<tr>
+							<td valign='top' style='padding:10px;'>
+								<h1 style='color:#6e9fd1;background-color:#e6f4ff;font-size:1.313'>Store replied to your support ticket</h1>
+								<div style='color:#555555;font-size:0.95'></div>
+							</td>
+						</tr>
+					</table>
+					<h1 style='font-size:1.25;padding-bottom:1'>Hello [name],</h1>
+					<div style='font-size:1;line-height:1.25;padding-top:1.25'>The store has replied to your support ticket <strong>[subject]</strong>.</div>
+					<div style='background-color:#f7fafc;padding:15px;margin-top:15px;margin-bottom:15px;border-radius:0.313'>
+						<div style='font-size:0.95;font-weight:500;margin-bottom:8px'>Store reply:</div>
+						<div style='font-size:0.95;line-height:1.5'>[reply]</div>
+					</div>
+					<div style='color:#2d3748;font-size:1;margin-top:4;line-height:1.125;margin-bottom:3'>Thank you for contacting the store.</div>",
+					'available_placeholders' => array(
+						'[name]',
+						'[subject]',
+						'[reply]',
+					),
+					'sms_content'            => 'The store has replied to your support ticket: [reply]',
+					'system_message'         => 'Support ticket reply received.',
+					'tag'                    => 'Store Support',
+					'category'               => 'notification',
+				),
 			)
 		);
 
 		if ( ! $is_new ) {
 			$table = $wpdb->prefix . Utill::TABLES['system_events'];
 			$count = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-				"SELECT COUNT(*) FROM {$table}" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table )
 			);
 
 			if ( $count > 0 ) {
@@ -1652,11 +1685,11 @@ class Notifications {
 		$table = $wpdb->prefix . Utill::TABLES['system_events'];
 		$event = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE system_action = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				'SELECT * FROM %i WHERE system_action = %s',
+				$table,
 				$action_name
 			)
 		);
-
 		if ( $event->system_enabled ) {
 			$this->send_notifications( $event, $parameters );
 		}
@@ -1773,12 +1806,13 @@ class Notifications {
 		if ( ! empty( $id ) ) {
 			$events = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 				$wpdb->prepare(
-					"SELECT * FROM $table WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+					'SELECT * FROM %i WHERE id = %d',
+					$table,
 					$id
 				)
 			);
 		} else {
-			$events = $wpdb->get_results( "SELECT * FROM $table" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$events = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i', $table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		}
 
 		return $events;
@@ -1794,7 +1828,7 @@ class Notifications {
 
 		$table = "{$wpdb->prefix}" . Utill::TABLES['system_events'];
 
-		return $wpdb->query( "DELETE FROM $table" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->query( $wpdb->prepare( 'DELETE FROM %i', $table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	/**
@@ -1897,42 +1931,43 @@ class Notifications {
 		global $wpdb;
 		$table = $wpdb->prefix . Utill::TABLES['notifications'];
 
-		$events = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-			$wpdb->prepare(
-				"SELECT * FROM $table WHERE is_dismissed = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				0
-			)
-		);
-
 		if ( ! empty( $args ) ) {
-			$where = array();
+			$where  = array();
+			$params = array();
 
 			if ( isset( $args['ID'] ) ) {
-				$ids     = is_array( $args['ID'] ) ? $args['ID'] : array( $args['ID'] );
-				$ids     = implode( ',', array_map( 'intval', $ids ) );
-				$where[] = "ID IN ($ids)"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$ids          = is_array( $args['ID'] ) ? $args['ID'] : array( $args['ID'] );
+				$ids          = array_map( 'intval', $ids );
+				$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+				$where[]      = "ID IN ($placeholders)";
+				$params       = array_merge( $params, $ids );
 			}
 
 			if ( isset( $args['category'] ) ) {
-				$where[] = "category = '" . esc_sql( $args['category'] ) . "'";
+				$where[]  = 'category = %s';
+				$params[] = $args['category'];
 			}
 
 			if ( isset( $args['store_id'] ) && ! empty( $args['store_id'] ) ) {
-				$where[] = "store_id = '" . esc_sql( $args['store_id'] ) . "'";
+				$where[]  = 'store_id = %d';
+				$params[] = intval( $args['store_id'] );
 			}
 
 			if ( isset( $args['start_date'] ) && isset( $args['end_date'] ) ) {
-				$where[] = "created_at BETWEEN '" . esc_sql( $args['start_date'] ) . "' AND '" . esc_sql( $args['end_date'] ) . "'";
+				$where[]  = 'created_at BETWEEN %s AND %s';
+				$params[] = $args['start_date'];
+				$params[] = $args['end_date'];
 			}
 
-			$table   = $wpdb->prefix . Utill::TABLES['notifications'];
 			$where[] = 'is_dismissed = 0 AND is_read = 0';
 
 			if ( isset( $args['count'] ) ) {
-				$query = "SELECT COUNT(*) FROM {$table}"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$query = 'SELECT COUNT(*) FROM %i';
 			} else {
-				$query = "SELECT * FROM {$table}"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$query = 'SELECT * FROM %i';
 			}
+
+			array_unshift( $params, $table );
 
 			if ( ! empty( $where ) ) {
 				$condition = $args['condition'] ?? ' AND ';
@@ -1941,10 +1976,12 @@ class Notifications {
 
 			// Keep your pagination logic.
 			if ( isset( $args['limit'] ) && isset( $args['offset'] ) && empty( $args['count'] ) ) {
-				$limit  = intval( $args['limit'] );
-				$offset = intval( $args['offset'] );
-				$query .= $wpdb->prepare( ' LIMIT %d OFFSET %d', $limit, $offset );
+				$query   .= ' LIMIT %d OFFSET %d';
+				$params[] = intval( $args['limit'] );
+				$params[] = intval( $args['offset'] );
 			}
+
+			$query = $wpdb->prepare( $query, ...$params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 			if ( isset( $args['count'] ) ) {
 				$results = $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
@@ -1954,6 +1991,15 @@ class Notifications {
 				return $results ?? array();
 			}
 		}
+
+		// No filters requested: fall back to the plain, non-dismissed list.
+		$events = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$wpdb->prepare(
+				'SELECT * FROM %i WHERE is_dismissed = %d',
+				$table,
+				0
+			)
+		);
 
 		return $events;
 	}
@@ -1973,18 +2019,17 @@ class Notifications {
 
 		$current_date = current_time( 'mysql' );
 
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$query = $wpdb->prepare(
-			"
-		DELETE FROM {$table}
+			'
+		DELETE FROM %i
 		WHERE (expires_at IS NOT NULL AND expires_at < %s)
 		OR (created_at < DATE_SUB(%s, INTERVAL %d DAY))
-		",
+		',
+			$table,
 			$current_date,
 			$current_date,
 			$days
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		$wpdb->query( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 	}
@@ -2017,13 +2062,28 @@ class Notifications {
 		return false;
 	}
 
+	/**
+	 * Build the common notification payload and fire the event's trigger hook.
+	 *
+	 * Merges admin/store/customer contact info derived from $store and $order
+	 * with any event-specific $extra data, then fires
+	 * `multivendorx_notify_{$type}` for `register_notification_hooks()` to pick up.
+	 *
+	 * @param string      $type  Event key (system_action), e.g. 'order_processing'.
+	 * @param object|null $store Store object, if the event is store-scoped.
+	 * @param object|null $order WC_Order object, if the event is order-scoped.
+	 * @param array       $extra Additional payload fields merged in (e.g. 'order_id', 'category').
+	 * @return void
+	 */
 	public function send_notification_helper( $type, $store = null, $order = null, $extra = array() ) {
+		$store_name     = '';
 		$store_email    = '';
 		$store_phone    = '';
 		$customer_email = '';
 		$customer_phone = '';
 
 		if ( $store ) {
+			$store_name       = $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
 			$store_email_meta = $store->get_meta( Utill::STORE_SETTINGS_KEYS['store_email'] );
 			$store_email      = $store_email_meta['primary'] ?? '';
 			$store_phone      = $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] );
@@ -2038,6 +2098,7 @@ class Notifications {
 			array(
 				'admin_email'      => MultiVendorX()->setting->get_setting( 'receiver_email_address' ),
 				'admin_phone'      => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+				'store_name'       => $store_name,
 				'store_email'      => $store_email,
 				'store_phone'      => $store_phone,
 				'customer_email'   => $customer_email,

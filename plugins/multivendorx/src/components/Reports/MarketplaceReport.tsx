@@ -10,16 +10,16 @@ import {
 	Cell,
 } from 'recharts';
 import axios from 'axios';
+
 import {
-	Analytics,
-	Card,
-	Column,
-	Container,
-	getApiLink,
-	InfoItem,
-	ComponentStatusView,
-	useModules,
-} from 'zyra';
+	AnalyticsComponent,
+	CardComponent,
+	ColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	ModuleGuardComponent,
+} from '@zyra/components';
+import { getApiLink, useModules } from '@zyra/core';
 import { formatCurrency } from '@/services/commonFunction';
 
 type Stat = {
@@ -390,9 +390,9 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 
 	return (
 		<>
-			<Container>
-				<Column>
-					<Analytics
+			<ContainerComponent>
+				<ColumnComponent>
+					<AnalyticsComponent
 						cols={4}
 						isLoading={isLoading}
 						data={commissionDetails.map((item, idx) => ({
@@ -407,20 +407,20 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 							text: __(item.label, 'multivendorx'),
 						}))}
 					/>
-				</Column>
+				</ColumnComponent>
 
-				<Column fullHeight row>
-					<Card title={__('Revenue breakdown', 'multivendorx')}>
+				<ColumnComponent fullHeight row>
+					<CardComponent title={__('Revenue breakdown', 'multivendorx')}>
 						{earningSummary.map((product) => (
-							<InfoItem
+							<InformationItemComponent
 								key={product.id}
 								title={product.title}
 								amount={product.price}
 								isLoading={isLoading}
 							/>
 						))}
-					</Card>
-					<Card title={__('Revenue breakdown', 'multivendorx')}>
+					</CardComponent>
+					<CardComponent title={__('Revenue breakdown', 'multivendorx')}>
 						<ResponsiveContainer width="100%" height={400}>
 							<PieChart>
 								<Pie
@@ -468,15 +468,15 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 									/>
 								</PieChart>
 							</ResponsiveContainer>
-					</Card>
-				</Column>
+					</CardComponent>
+				</ColumnComponent>
 
 				{/* Keep categories and brands */}
-				<Column fullHeight row>
-					<Card title={__('Top Selling Coupons', 'multivendorx')}>
+				<ColumnComponent fullHeight row>
+					<CardComponent title={__('Top Selling Coupons', 'multivendorx')}>
 						{topCoupons.length > 0 ? (
 							topCoupons.map((coupon: Coupon, index: number) => (
-								<InfoItem
+								<InformationItemComponent
 									key={`store-${index}`}
 									title={coupon.code}
 									isLoading={isLoading}
@@ -504,19 +504,19 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 								/>
 							))
 						) : (
-							<ComponentStatusView
+							<ModuleGuardComponent
 								title={__(
 									'No top coupons found.',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
-					<Card title={__('Top Customers', 'multivendorx')}>
+					</CardComponent>
+					<CardComponent title={__('Top Customers', 'multivendorx')}>
 						{topCustomers.length > 0 ? (
 							topCustomers.map(
 								(customer: Customer, index: number) => (
-									<InfoItem
+									<InformationItemComponent
 										key={`customer-${index}`}
 										title={customer.username}
 										isLoading={isLoading}
@@ -554,19 +554,19 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 								)
 							)
 						) : (
-							<ComponentStatusView
+							<ModuleGuardComponent
 								title={__(
 									'No top customers found.',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
-					<Card title={__('Top Stores', 'multivendorx')}>
+					</CardComponent>
+					<CardComponent title={__('Top Stores', 'multivendorx')}>
 						{topStores.length > 0 ? (
 							topStores.map((store: Store, index: number) => (
 								<>
-									<InfoItem
+									<InformationItemComponent
 										key={`store-${index}`}
 										title={store.store_name || ''}
 										isLoading={isLoading}
@@ -608,16 +608,16 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 								</>
 							))
 						) : (
-							<ComponentStatusView
+							<ModuleGuardComponent
 								title={__(
 									'No top stores found.',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
-				</Column>
-			</Container>
+					</CardComponent>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

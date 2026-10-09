@@ -382,7 +382,7 @@
             justify-content: center;
             align-items: center;
             height: 100%;
-            font-size: 5rem;
+            font-size: 3rem;
             color: #afaeae;
         }
     }
@@ -556,6 +556,11 @@
     &.dynamic-showcase {
         .contact-details {
             flex-direction: column;
+
+            .row{
+                flex-direction: column;
+                gap: 0;
+            }
         }
 
         .store-name,
@@ -566,7 +571,7 @@
         .store-details {
             display: flex;
             gap: 1.5rem;
-            padding: 0 4rem;
+            padding: 0 1rem;
             margin-top: 1rem;
 
             .contact-detail {
@@ -587,9 +592,9 @@
         justify-content: center;
         background: $theme-color;
         align-items: center;
-        font-size: 3rem;
-        width: 5rem;
-        height: 5rem;
+        font-size: 1.625rem;
+        width: 3.5rem;
+        height: 3.5rem;
     }
 
     // end setting banner template

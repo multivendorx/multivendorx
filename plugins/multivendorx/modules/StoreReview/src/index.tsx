@@ -1,7 +1,7 @@
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import StoreReviews from './StoreReviews';
-import { getApiLink } from 'zyra';
+import { getApiLink } from '@zyra/core';
 
 addFilter(
 	'multivendorx_customer_api_configs',
@@ -30,7 +30,7 @@ addFilter(
 			content: {
 				id: 'store-review',
 				headerTitle: __('Store Reviews', 'multivendorx'),
-				headerIcon: 'store-review',
+				headerIcon: 'store-review red',
 				settingTitle: __('Store reviews at a glance', 'multivendorx'),
 				settingSubTitle: __(
 					'Track and manage reviews for all stores.',

@@ -3,19 +3,19 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
+
 import {
-	Analytics,
-	Card,
-	Column,
-	Container,
-	getApiLink,
-	InfoItem,
-	useModules,
-	FormGroupWrapper,
-	FormGroup,
-	SectionUI,
-	ComponentStatusView,
-} from 'zyra';
+	AnalyticsComponent,
+	CardComponent,
+	ColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	SectionComponent,
+	ModuleGuardComponent,
+} from '@zyra/components';
+import { getApiLink, useModules } from '@zyra/core';
 import { formatCurrency } from '../../../services/commonFunction';
 import LatestReview from './LatestReview';
 import LatestRefundRequest from './LatestRefundRequest';
@@ -24,6 +24,7 @@ import { applyFilters } from '@wordpress/hooks';
 interface OverviewProps {
 	id: string | null;
 	storeData?: StoreData;
+	onUpdate: (data: Record<string, string>) => void;
 }
 
 interface Transaction {
@@ -53,21 +54,34 @@ interface StoreData {
 		commission_total?: number;
 	};
 	primary_owner_info?: {
-		data?: {
-			display_name?: string;
-			user_email?: string;
-		};
+		display_name?: string;
+		user_email?: string;
 	};
+	payment_methods?: Record<string, { primary?: boolean }>;
 }
-const formatMethod = (method) => {
-	if (!method) {
+const formatMethod = (method: string): string => {
+	if (!method || typeof method !== 'string') {
 		return '';
 	}
 	return method
 		.replace(/-/g, ' ') // stripe-connect → stripe connect
 		.replace(/\b\w/g, (c) => c.toUpperCase()); // Stripe connect → Stripe Connect
 };
-const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
+
+const getPrimaryPaymentMethodId = (
+	paymentMethods?: StoreData['payment_methods']
+): string | null => {
+	if (!paymentMethods) {
+		return null;
+	}
+	const entries = Object.entries(paymentMethods);
+	const primaryEntry = entries.find(([, value]) => value?.primary === true);
+	if (primaryEntry) {
+		return primaryEntry[0];
+	}
+	return entries.length === 1 ? entries[0][0] : null;
+};
+const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 	const navigate = useNavigate();
 	const { modules } = useModules();
 
@@ -170,9 +184,9 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 
 	return (
 		<>
-			<Container>
-				<Column grid={8}>
-					<Analytics
+			<ContainerComponent>
+				<ColumnComponent grid={8}>
+					<AnalyticsComponent
 						variant="small"
 						data={overviewData.map((item) => ({
 							icon: item.icon,
@@ -180,7 +194,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 							text: item.text,
 						}))}
 					/>
-					<Card
+					<CardComponent
 						title={__('Recent payouts', 'multivendorx')}
 						iconName="external icon"
 						onIconClick={() => {
@@ -191,7 +205,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 					>
 						{recentDebits && recentDebits.length > 0 ? (
 							recentDebits.map((txn) => (
-								<InfoItem
+								<InformationItemComponent
 									key={txn.id}
 									title={__('Bank Transfer', 'multivendorx')}
 									descriptions={[
@@ -209,12 +223,12 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 								/>
 							))
 						) : (
-							<ComponentStatusView
+							<ModuleGuardComponent
 								title={__('No recent payout', 'multivendorx')}
 							/>
 						)}
-					</Card>
-					{/* <Card
+					</CardComponent>
+					{/* <CardComponent
 						title={__('Store availability', 'multivendorx')}
 						iconName="external icon"
 						onIconClick={() => {
@@ -223,7 +237,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 							);
 						}}
 					>
-						<Column row>
+						<ColumnComponent row>
 							<ItemListUI
 								className="mini-card"
 								background
@@ -263,7 +277,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 									},
 								]}
 							/>
-						</Column>
+						</ColumnComponent>
 
 
 						
@@ -272,8 +286,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 							<b>Next opening time </b>is auto-calculated from the working hours in the sidebar.
 						</div></div></div>
 
-					</Card> */}
-					<Card
+					</CardComponent> */}
+					<CardComponent
 						title={__('Latest products', 'multivendorx')}
 						iconName="external icon"
 						onIconClick={() => {
@@ -297,7 +311,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 								}&action=edit`;
 
 								return (
-									<InfoItem
+									<InformationItemComponent
 										key={product.id}
 										title={product.name}
 										titleLink={editUrl}
@@ -321,17 +335,17 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 								);
 							})
 						) : (
-							<ComponentStatusView
+							<ModuleGuardComponent
 								title={__(
 									'No recent products found.',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
+					</CardComponent>
 
 					{modules.includes('store-review') && (
-						<Card
+						<CardComponent
 							title={__('Latest reviews', 'multivendorx')}
 							iconName="external icon"
 							onIconClick={() => {
@@ -341,11 +355,11 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 							}}
 						>
 							<LatestReview store_id={id} />
-						</Card>
+						</CardComponent>
 					)}
 
 					{modules.includes('marketplace-refund') && (
-						<Card
+						<CardComponent
 							title={__('Latest refunds', 'multivendorx')}
 							iconName="external icon"
 							onIconClick={() => {
@@ -357,13 +371,13 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 							<div className="store-owner-details owner">
 								<LatestRefundRequest store_id={id} />
 							</div>
-						</Card>
+						</CardComponent>
 					)}
-				</Column>
-				<Column grid={4}>
-					<Card title={__('Store overview', 'multivendorx')}>
-						<FormGroupWrapper>
-							<FormGroup
+				</ColumnComponent>
+				<ColumnComponent grid={4}>
+					<CardComponent title={__('Store overview', 'multivendorx')}>
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								row
 								label={__(
 									'Compliance & records',
@@ -380,37 +394,44 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 								>
 									{__('View details', 'multivendorx')}
 								</a>
-							</FormGroup>
-							<SectionUI title={__('Settings', 'multivendorx')} />
-							<FormGroup
+							</FormGroupComponent>
+							<SectionComponent title={__('Settings', 'multivendorx')} />
+							<FormGroupComponent
 								row
 								label={__('Payment method', 'multivendorx')}
 							>
-								{storeData?.payment_method ? (
-									<div className="admin-badge purple method">
-										<i className="adminfont-bank"></i>
-										{formatMethod(storeData.payment_method)}
-									</div>
-								) : (
-									<span>
-										{__(
-											'No payment method saved',
-											'multivendorx'
-										)}
-									</span>
-								)}
-							</FormGroup>
-						</FormGroupWrapper>
-					</Card>
+								{(() => {
+									const primaryMethodId =
+										getPrimaryPaymentMethodId(
+											storeData?.payment_methods
+										);
+									return primaryMethodId ? (
+										<div className="admin-badge purple method">
+											<i className="adminfont-bank"></i>
+											{formatMethod(primaryMethodId)}
+										</div>
+									) : (
+										<span>
+											{__(
+												'No payment method saved',
+												'multivendorx'
+											)}
+										</span>
+									);
+								})()}
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
+					</CardComponent>
 					{applyFilters(
 						'multivendorx_store_edit_right_section',
 						null,
 						id,
 						storeData,
-						modules
+						modules,
+						onUpdate
 					)}
-				</Column>
-			</Container>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

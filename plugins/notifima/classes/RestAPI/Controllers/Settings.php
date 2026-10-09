@@ -50,7 +50,7 @@ class Settings extends \WP_REST_Controller {
      * @param \WP_REST_Request $request The REST request object.
      */
     public function update_item_permissions_check( $request ) {
-        return current_user_can( 'manage_options' );
+        return Utill::current_user_has_capability( 'manage_options' );
     }
 
     /**

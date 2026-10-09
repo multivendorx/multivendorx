@@ -9,6 +9,7 @@ namespace MultiVendorX\MarketplaceRefund;
 
 use MultiVendorX\Utill;
 use MultiVendorX\Store\Store;
+use MultiVendorX\Store\StoreUtil;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -37,6 +38,12 @@ class Rest extends \WP_REST_Controller {
         add_filter( 'woocommerce_rest_shop_order_schema', array( $this, 'add_refund_status' ) );
     }
 
+    /**
+     * Add the "refund-requested" status to the order schema.
+     *
+     * @param array $schema Order REST schema.
+     * @return array
+     */
     public function add_refund_status( $schema ) {
         $schema['properties']['status']['enum'][] = 'refund-requested';
         return $schema;
@@ -55,11 +62,7 @@ class Rest extends \WP_REST_Controller {
                     'callback'            => array( $this, 'get_items' ),
                     'permission_callback' => array( $this, 'get_items_permissions_check' ),
                 ),
-                array(
-                    'methods'             => \WP_REST_Server::EDITABLE,
-                    'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
-                ),
+                // No EDITABLE route: update_item() below isn't implemented yet.
             )
         );
     }
@@ -70,18 +73,8 @@ class Rest extends \WP_REST_Controller {
      * @param object $request Full details about the request.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'read_shop_orders' ) || current_user_can( 'edit_shop_orders' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'read_shop_orders', 'edit_shop_orders' ) );
     }
-
-    /**
-     * Update an existing refund.
-     *
-     * @param object $request Full details about the request.
-     */
-    public function update_item_permissions_check( $request ) {
-        return current_user_can( 'edit_shop_orders' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
-    }
-
 
     /**
      * Get all refunds filtered by store, search, and date.
@@ -123,9 +116,21 @@ class Rest extends \WP_REST_Controller {
             // Pagination offset (Woo requires this).
             $offset = ( $page - 1 ) * $limit;
 
-            // Build meta query.
+            if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+                $store_id = (int) MultiVendorX()->active_store;
+
+                if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                    return new \WP_Error(
+                        'forbidden',
+                        __( 'You cannot view refunds for this store.', 'multivendorx' ),
+                        array( 'status' => 403 )
+                    );
+                }
+            }
+
             $meta_query = array();
-            if ( ! empty( $store_id ) ) {
+
+            if ( $store_id ) {
                 $meta_query[] = array(
                     'key'     => Utill::POST_META_SETTINGS['store_id'],
                     'value'   => $store_id,
@@ -274,150 +279,147 @@ class Rest extends \WP_REST_Controller {
             );
         }
     }
+            // /**
+    // * Create a new refund.
+    // *
+    // * @param object $request Full data about the request.
+    // */
+    // public function update_item( $request ) {
+    // $refund_info = $request->get_param( 'payload' );
 
+    // $order_id               = $refund_info['orderId'] ? absint( $refund_info['orderId'] ) : 0;
+    // $refund_amount          = wc_format_decimal( $refund_info['refundAmount'], wc_get_price_decimals() );
+    // $items                  = $refund_info['items'] ?? array();
+    // $refund_reason          = sanitize_text_field( $refund_info['reason'] );
+    // $restock_refunded_items = 'true' === $refund_info['restock'];
+    // $refund                 = false;
+    // $response_data          = array();
 
-    /**
-     * Create a new refund.
-     *
-     * @param object $request Full data about the request.
-     */
-    public function update_item( $request ) {
-        $refund_info = $request->get_param( 'payload' );
+    // try {
+    // $order = wc_get_order( $order_id );
 
-        $order_id               = $refund_info['orderId'] ? absint( $refund_info['orderId'] ) : 0;
-        $refund_amount          = wc_format_decimal( $refund_info['refundAmount'], wc_get_price_decimals() );
-        $items                  = $refund_info['items'] ?? array();
-        $refund_reason          = sanitize_text_field( $refund_info['reason'] );
-        $restock_refunded_items = 'true' === $refund_info['restock'];
-        $refund                 = false;
-        $response_data          = array();
+    // $parent_order_id  = $order->get_parent_id();
+    // $parent_order     = wc_get_order( $parent_order_id );
+    // $parent_items_ids = array_keys( $parent_order->get_items( array( 'line_item', 'fee', 'shipping' ) ) );
 
-        try {
-            $order = wc_get_order( $order_id );
+    // $max_refund = wc_format_decimal( $order->get_total() - $order->get_total_refunded(), wc_get_price_decimals() );
 
-            $parent_order_id  = $order->get_parent_id();
-            $parent_order     = wc_get_order( $parent_order_id );
-            $parent_items_ids = array_keys( $parent_order->get_items( array( 'line_item', 'fee', 'shipping' ) ) );
+    // if ( ! $refund_amount || $max_refund < $refund_amount || $refund_amount < 0 ) {
+    // return new \WP_Error( 'invalid_amount', __( 'Invalid refund amount.', 'multivendorx' ), array( 'status' => 400 ) );
+    // }
 
-            $max_refund = wc_format_decimal( $order->get_total() - $order->get_total_refunded(), wc_get_price_decimals() );
+    // Prepare line items which we are refunding.
+    // $line_items        = array();
+    // $parent_line_items = array();
 
-            if ( ! $refund_amount || $max_refund < $refund_amount || $refund_amount < 0 ) {
-                return new \WP_Error( 'invalid_amount', __( 'Invalid refund amount.', 'multivendorx' ), array( 'status' => 400 ) );
-            }
+    // $item_keys = array_keys( $items );
 
-            // Prepare line items which we are refunding.
-            $line_items        = array();
-            $parent_line_items = array();
+    // foreach ( $item_keys as $item_id ) {
+    // $line_items[ $item_id ] = array(
+    // 'qty'          => 0,
+    // 'refund_total' => 0,
+    // 'refund_tax'   => array(),
+    // );
+    // $parent_item_id         = $this->get_store_parent_order_item_id( $item_id );
+    // if ( $parent_item_id && in_array( $parent_item_id, $parent_items_ids, true ) ) {
+    // $parent_line_items[ $parent_item_id ] = array(
+    // 'qty'          => 0,
+    // 'refund_total' => 0,
+    // 'refund_tax'   => array(),
+    // );
+    // }
+    // }
 
-            $item_keys = array_keys( $items );
+    // foreach ( $items as $item_id => $value ) {
+    // $qty   = isset( $value['qty'] ) ? max( $value['qty'], 0 ) : 0;
+    // $total = isset( $value['total'] ) ? $value['total'] : 0;
+    // $tax   = isset( $value['tax'] ) ? $value['tax'] : 0;
 
-            foreach ( $item_keys as $item_id ) {
-                $line_items[ $item_id ] = array(
-                    'qty'          => 0,
-                    'refund_total' => 0,
-                    'refund_tax'   => array(),
-                );
-                $parent_item_id         = $this->get_store_parent_order_item_id( $item_id );
-                if ( $parent_item_id && in_array( $parent_item_id, $parent_items_ids, true ) ) {
-                    $parent_line_items[ $parent_item_id ] = array(
-                        'qty'          => 0,
-                        'refund_total' => 0,
-                        'refund_tax'   => array(),
-                    );
-                }
-            }
+    // $line_items[ $item_id ]['qty']          = $qty;
+    // $line_items[ $item_id ]['refund_total'] = wc_format_decimal( $total );
+    // $line_items[ $item_id ]['refund_tax']   = wc_format_decimal( $tax );
 
-            foreach ( $items as $item_id => $value ) {
-                $qty   = isset( $value['qty'] ) ? max( $value['qty'], 0 ) : 0;
-                $total = isset( $value['total'] ) ? $value['total'] : 0;
-                $tax   = isset( $value['tax'] ) ? $value['tax'] : 0;
+    // $parent_item_id = $this->get_store_parent_order_item_id( $item_id );
 
-                $line_items[ $item_id ]['qty']          = $qty;
-                $line_items[ $item_id ]['refund_total'] = wc_format_decimal( $total );
-                $line_items[ $item_id ]['refund_tax']   = wc_format_decimal( $tax );
+    // if ( $parent_item_id && in_array( $parent_item_id, $parent_items_ids, true ) ) {
+    // $parent_line_items[ $parent_item_id ]['qty']          = $qty;
+    // $parent_line_items[ $parent_item_id ]['refund_total'] = wc_format_decimal( $total );
+    // $parent_line_items[ $parent_item_id ]['refund_tax']   = wc_format_decimal( $tax );
+    // }
+    // }
 
-                $parent_item_id = $this->get_store_parent_order_item_id( $item_id );
+    // if ( $line_items ) {
+    // Create the refund object.
+    // $refund = wc_create_refund(
+    // array(
+    // 'amount'         => $refund_amount,
+    // 'reason'         => $refund_reason,
+    // 'order_id'       => $order_id,
+    // 'line_items'     => $line_items,
+    // 'refund_payment' => false,
+    // 'restock_items'  => $restock_refunded_items,
+    // )
+    // );
+    // }
 
-                if ( $parent_item_id && in_array( $parent_item_id, $parent_items_ids, true ) ) {
-                    $parent_line_items[ $parent_item_id ]['qty']          = $qty;
-                    $parent_line_items[ $parent_item_id ]['refund_total'] = wc_format_decimal( $total );
-                    $parent_line_items[ $parent_item_id ]['refund_tax']   = wc_format_decimal( $tax );
-                }
-            }
+    // if ( ! empty( $parent_line_items ) ) {
+    // if ( apply_filters( 'multivendorx_allow_refund_parent_order', true ) ) {
+    // $parent_refund = wc_create_refund(
+    // array(
+    // 'amount'         => $refund_amount,
+    // 'reason'         => $refund_reason,
+    // 'order_id'       => $parent_order_id,
+    // 'line_items'     => $parent_line_items,
+    // 'refund_payment' => false,
+    // 'restock_items'  => $restock_refunded_items,
+    // )
+    // );
+    // }
+    // }
 
-            if ( $line_items ) {
-                // Create the refund object.
-                $refund = wc_create_refund(
-                    array(
-                        'amount'         => $refund_amount,
-                        'reason'         => $refund_reason,
-                        'order_id'       => $order_id,
-                        'line_items'     => $line_items,
-                        'refund_payment' => false,
-                        'restock_items'  => $restock_refunded_items,
-                    )
-                );
-            }
+    // if ( is_wp_error( $refund ) ) {
+    // return new \WP_Error( 'refund_failed', $refund->get_error_message(), array( 'status' => 400 ) );
+    // }
+    // if ( is_wp_error( $parent_refund ) ) {
+    // return new \WP_Error( 'refund_failed', $parent_refund->get_error_message(), array( 'status' => 400 ) );
+    // }
 
-            if ( ! empty( $parent_line_items ) ) {
-                if ( apply_filters( 'multivendorx_allow_refund_parent_order', true ) ) {
-                    $parent_refund = wc_create_refund(
-                        array(
-                            'amount'         => $refund_amount,
-                            'reason'         => $refund_reason,
-                            'order_id'       => $parent_order_id,
-                            'line_items'     => $parent_line_items,
-                            'refund_payment' => false,
-                            'restock_items'  => $restock_refunded_items,
-                        )
-                    );
-                }
-            }
+    // do_action( 'multivendorx_sub_order_refunded', $order_id, $refund->get_id() );
 
-            if ( is_wp_error( $refund ) ) {
-                return new \WP_Error( 'refund_failed', $refund->get_error_message(), array( 'status' => 400 ) );
-            }
-            if ( is_wp_error( $parent_refund ) ) {
-                return new \WP_Error( 'refund_failed', $parent_refund->get_error_message(), array( 'status' => 400 ) );
-            }
+    // if ( did_action( 'woocommerce_order_fully_refunded' ) ) {
+    // $response_data['status'] = 'fully_refunded';
+    // }
 
-            do_action( 'multivendorx_sub_order_refunded', $order_id, $refund->get_id() );
+    // return rest_ensure_response(
+    // array(
+    // 'success'       => true,
+    // 'response_data' => $response_data,
+    // )
+    // );
+    // } catch ( Exception $e ) {
+    // return new \WP_Error( 'refund_failed', __( 'Refund Failed', 'multivendorx' ), array( 'status' => 400 ) );
+    // }
+    // }
+	// /**
+	// * Get parent order item id from store order item id
+	// *
+	// * @param int $item_id Store order item id.
+	// * @return int
+	// */
+	// public function get_store_parent_order_item_id( $item_id ) {
+	// global $wpdb;
+	// $store_item_id = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+    // $wpdb->prepare(
+    // "SELECT meta_value FROM {$wpdb->order_itemmeta} WHERE meta_key=%s AND order_item_id=%d",
+    // 'store_order_item_id',
+    // absint( $item_id )
+    // )
+	// );
 
-            if ( did_action( 'woocommerce_order_fully_refunded' ) ) {
-                $response_data['status'] = 'fully_refunded';
-            }
+	// if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
+	// MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
+	// }
 
-            return rest_ensure_response(
-                array(
-                    'success'       => true,
-                    'response_data' => $response_data,
-                )
-            );
-        } catch ( Exception $e ) {
-            return new \WP_Error( 'refund_failed', __( 'Refund Failed', 'multivendorx' ), array( 'status' => 400 ) );
-        }
-    }
-
-	/**
-	 * Get parent order item id from store order item id
-	 *
-	 * @param int $item_id Store order item id.
-	 * @return int
-	 */
-	public function get_store_parent_order_item_id( $item_id ) {
-		global $wpdb;
-		$store_item_id = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            $wpdb->prepare(
-                "SELECT meta_value FROM {$wpdb->order_itemmeta} WHERE meta_key=%s AND order_item_id=%d",
-                'store_order_item_id',
-                absint( $item_id )
-            )
-		);
-
-		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
-			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
-		}
-
-		return $store_item_id;
-	}
+	// return $store_item_id;
+	// }
 }

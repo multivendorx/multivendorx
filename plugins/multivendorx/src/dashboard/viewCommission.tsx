@@ -2,17 +2,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
 import {
-	FormGroup,
-	FormGroupWrapper,
-	getApiLink,
-	InfoItem,
-	Notice,
-	PopupUI,
-	SectionUI,
-	TableCard,
-	TableRow,
-} from 'zyra';
+	FormGroupComponent,
+	FormGroupWrapperComponent,
+	InformationItemComponent,
+	NoticeComponent,
+	PopupComponent,
+	SectionComponent,
+} from '@zyra/components';
+import { TableCard, TableRow } from '@zyra/table';
 import { dashNavigate, formatCurrency } from '@/services/commonFunction';
 import { useNavigate } from 'react-router-dom';
 
@@ -117,7 +116,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 			label: __('Product', 'multivendorx'),
 			render: (row) => {
 				return (
-					<InfoItem
+					<InformationItemComponent
 						title={row.name}
 						onClick={() =>
 							dashNavigate(navigate, [
@@ -172,7 +171,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 	};
 
 	return (
-		<PopupUI
+		<PopupComponent
 			open={open}
 			onClose={onClose}
 			width="40%"
@@ -189,12 +188,12 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 			<div className="content multi">
 				<div className="section right">
 					<div className="order-overview">
-						<FormGroupWrapper>
-							<SectionUI
+						<FormGroupWrapperComponent>
+							<SectionComponent
 								title={__('Order Overview', 'multivendorx')}
 							/>
 
-							<FormGroup
+							<FormGroupComponent
 								row
 								label={__('Associated Order', 'multivendorx')}
 								className="space-between"
@@ -215,9 +214,9 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 								) : (
 									'-'
 								)}
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup
+							<FormGroupComponent
 								row
 								label={__('Order Status', 'multivendorx')}
 								className="space-between"
@@ -232,29 +231,29 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 											) // capitalize first letter of each word
 										: ''}
 								</span>
-							</FormGroup>
+							</FormGroupComponent>
 							{commissionData?.commission_note && (
 								<>
-									<SectionUI
+									<SectionComponent
 										title={__('Commission Notes', 'multivendorx')}
 									/>
-									<Notice
+									<NoticeComponent
 										type="info"
 										displayPosition="inline-notice"
 										message={commissionData?.commission_note}
 									/>
 								</>
 							)}
-						</FormGroupWrapper>
+						</FormGroupWrapperComponent>
 					</div>
 
 					<div className="commission-overview">
-						<FormGroupWrapper>
-							<SectionUI
+						<FormGroupWrapperComponent>
+							<SectionComponent
 								title={__('Commission Overview', 'multivendorx')}
 							/>
 
-							<FormGroup
+							<FormGroupComponent
 								row
 								label={__('Commission Status', 'multivendorx')}
 								className="space-between"
@@ -274,9 +273,9 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 											) // capitalize each word
 										: ''}
 								</span>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup
+							<FormGroupComponent
 								row
 								label={__('Commission Amount', 'multivendorx')}
 								className="space-between"
@@ -284,36 +283,36 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 								<b>{formatCurrency(
 									parseFloat(commissionData?.store_earning ?? 0)
 								)}</b>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup row label={__('Shipping', 'multivendorx')} className="space-between">
+							<FormGroupComponent row label={__('Shipping', 'multivendorx')} className="space-between">
 								<b>{formatCurrency(commissionData?.shipping_amount)}</b>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup row label={__('Tax', 'multivendorx')} className="space-between">
+							<FormGroupComponent row label={__('Tax', 'multivendorx')} className="space-between">
 								<b>{formatCurrency(
 									Number(commissionData?.tax_amount || 0)
 								)}</b>
-							</FormGroup>
+							</FormGroupComponent>
 
 							{commissionData?.store_refunded > 0 && (
-								<FormGroup
+								<FormGroupComponent
 									row
 									label={__('Commission refund', 'multivendorx')}
 									className="space-between"
 								>
 									<b>{formatCurrency(commissionData.store_refunded)}</b>
-								</FormGroup>
+								</FormGroupComponent>
 							)}
 
-							<FormGroup row label={__('Total', 'multivendorx')} className="space-between">
+							<FormGroupComponent row label={__('Total', 'multivendorx')} className="space-between">
 								<b>{formatCurrency(commissionData?.total_order_amount)}</b>
-							</FormGroup>
-						</FormGroupWrapper>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
 					</div>
 				</div>
 				<div className="section left">
-					<SectionUI title={__('Order Details', 'multivendorx')} />
+					<SectionComponent title={__('Order Details', 'multivendorx')} />
 					<TableCard
 						headers={popupColumns}
 						rows={orderItems}
@@ -351,7 +350,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 					)}
 				</div>
 			</div>
-		</PopupUI>
+		</PopupComponent>
 	);
 };
 

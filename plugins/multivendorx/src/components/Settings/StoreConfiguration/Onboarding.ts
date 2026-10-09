@@ -256,7 +256,7 @@ export default {
 			type: 'choice-toggle',
 			label: __('Franchise store assignment method', 'multivendorx'),
 			desc: __(
-				'Define how customer orders are assigned to franchise stores after checkout:<ul><li><strong>Nearest store</strong> - Orders are automatically assigned to the closest eligible franchise store based on the customer’s delivery address and the store’s configured "location restrictions".Best suited for physical or region-based fulfillment.</li><li><strong>Manual assignment</strong> - Orders are created without a store assignment and must be manually assigned by the admin from the backend.</li></ul>',
+				'Define how orders are matched to a franchise store:<ul><li><strong>Nearest store</strong> - Orders are automatically assigned to the closest eligible franchise store based on the customer’s delivery address and the store’s configured "location restrictions". Best suited for physical or region-based fulfillment.</li><li><strong>Manual assignment</strong> - The customer picks their preferred franchise store at checkout from the list of active stores. Any cart item not in stock at the selected store is automatically removed with a notice; the whole order is then assigned to that one store. Best suited when customers have a preferred pickup location or an existing relationship with a specific store.</li></ul>',
 				'multivendorx'
 			),
 			dependent: {
@@ -345,6 +345,10 @@ export default {
 			key: 'store_price_override',
 			type: 'checkbox',
 			label: __('Store price override', 'multivendorx'),
+			desc: __(
+				'Controls whether a franchise store is allowed to set its own Regular/Sale Price for admin-catalog products (a store\'s own products always keep managing price the normal way). When enabled, the customer always sees and pays the assigned store\'s price if that store has set one, otherwise the admin price. When disabled, every store uses the admin price - any price a store had previously set is kept on file but ignored, and reappears if this is turned back on later.',
+				'multivendorx'
+			),
 			options: [
 				{
 					key: 'enabled',
@@ -358,5 +362,54 @@ export default {
 			},
 			look: 'toggle',
 		},
+		{
+            key: 'allow_quantity_split',
+            type: 'checkbox',
+            label: __('Allow quantity splitting', 'multivendorx'),
+            desc: __(
+                'When no single store has enough stock for a line item, split its quantity across multiple stores rather than treating it as unfulfillable.',
+                'multivendorx'
+            ),
+            options: [
+                {
+                    key: 'allow_quantity_split',
+                    value: 'allow_quantity_split',
+                },
+            ],
+			dependent: {
+				key: 'store_selling_mode',
+				set: true,
+				value: 'franchise',
+			},
+            look: 'toggle',
+        },         
+        {
+            key: 'default_low_stock_threshold',
+            type: 'text',
+            label: __('Default low stock threshold', 'multivendorx'),
+            desc: __(
+                'Marketplace-wide fallback applied to a newly tracked product before its store sets its own default under Inventory Settings.',
+                'multivendorx'
+            ),
+			dependent: {
+				key: 'store_selling_mode',
+				set: true,
+				value: 'franchise',
+			},
+        },
+        {
+            key: 'default_out_of_stock_threshold',
+            type: 'text',
+            label: __('Default out of stock threshold', 'multivendorx'),
+            desc: __(
+                'Marketplace-wide fallback applied to a newly tracked product before its store sets its own default under Inventory Settings.',
+                'multivendorx'
+            ),
+			dependent: {
+				key: 'store_selling_mode',
+				set: true,
+				value: 'franchise',
+			},
+        },
 	],
 };

@@ -1,5 +1,5 @@
 /* global appLocalizer */
-import { SettingsNavigator } from 'zyra';
+import { NavigatorComponent } from '@zyra/components';
 import { Link, useLocation } from 'react-router-dom';
 import NotificationTable from './NotificationTable';
 import ActivityTable from './ActivityTable';
@@ -41,7 +41,7 @@ const Notifications = () => {
 	};
 
 	return (
-		<SettingsNavigator
+		<NavigatorComponent
 			settingContent={settingContent}
 			currentSetting={location.get('subtab') as string}
 			getForm={getForm}

@@ -1,19 +1,18 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
 import {
-	FormGroup,
-	FormGroupWrapper,
-	getApiLink,
-	InfoItem,
-	Notice,
-	PopupUI,
-	SectionUI,
-	TableCard,
-	TableRow,
-	Column,
-	Container
-} from 'zyra';
+	FormGroupComponent,
+	FormGroupWrapperComponent,
+	InformationItemComponent,
+	NoticeComponent,
+	PopupComponent,
+	SectionComponent,
+	ColumnComponent,
+	ContainerComponent,
+} from '@zyra/components';
+import { TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
 import { formatCurrency, getUrl } from '../../services/commonFunction';
 
@@ -167,7 +166,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 			width: 14,
 			render: (row) => {
 				return (
-					<InfoItem
+					<InformationItemComponent
 						title={row.name}
 						titleLink={getUrl(row.product_id, 'product') || ''}
 						avatar={{
@@ -216,7 +215,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 	};
 
 	return (
-		<PopupUI
+		<PopupComponent
 			open={open}
 			onClose={onClose}
 			width="40%"
@@ -230,14 +229,14 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 				),
 			}}
 		>
-			<Container className="className">
-				<Column grid={6}>
-					<FormGroupWrapper>
-						<SectionUI
+			<ContainerComponent className="className">
+				<ColumnComponent grid={6}>
+					<FormGroupWrapperComponent>
+						<SectionComponent
 							title={__('Order Overview', 'multivendorx')}
 						/>
 
-						<FormGroup
+						<FormGroupComponent
 							row
 							label={__('Associated Order', 'multivendorx')}
 							className="space-between"
@@ -257,9 +256,9 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 							) : (
 								'-'
 							)}
-						</FormGroup>
+						</FormGroupComponent>
 
-						<FormGroup
+						<FormGroupComponent
 							row
 							label={__('Order Status', 'multivendorx')}
 							className="space-between"
@@ -276,17 +275,17 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 										) // capitalize first letter of each word
 									: ''}
 							</span>
-						</FormGroup>
-					</FormGroupWrapper>
-				</Column>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</ColumnComponent>
 
-				<Column  grid={6}>
-					<FormGroupWrapper>
-						<SectionUI
+				<ColumnComponent  grid={6}>
+					<FormGroupWrapperComponent>
+						<SectionComponent
 							title={__('Commission Overview', 'multivendorx')}
 						/>
 
-						<FormGroup
+						<FormGroupComponent
 							row
 							label={__('Commission Status', 'multivendorx')}
 							className="space-between"
@@ -306,8 +305,8 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 										) // capitalize each word
 									: ''}
 							</span>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							row
 							label={__('Marketplace Commission', 'multivendorx')}
 							className="space-between"
@@ -317,20 +316,20 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 									commissionData?.marketplace_commission ?? 0
 								)
 							)}</b>
-						</FormGroup>
+						</FormGroupComponent>
 
-						<FormGroup row label={__('Shipping', 'multivendorx')} className="space-between">
+						<FormGroupComponent row label={__('Shipping', 'multivendorx')} className="space-between">
 							<b>{formatCurrency(commissionData?.shipping_amount)}</b>
-						</FormGroup>
+						</FormGroupComponent>
 
-						<FormGroup row label={__('Tax', 'multivendorx')} className="space-between">
+						<FormGroupComponent row label={__('Tax', 'multivendorx')} className="space-between">
 							<b>{formatCurrency(
 								Number(commissionData?.tax_amount || 0)
 							)}</b>
-						</FormGroup>
+						</FormGroupComponent>
 
 						{commissionData?.marketplace_refunded > 0 && (
-							<FormGroup
+							<FormGroupComponent
 								row
 								label={__('Commission refund', 'multivendorx')}
 								className="space-between"
@@ -338,16 +337,16 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 								<b>{formatCurrency(
 									commissionData.marketplace_refunded
 								)}</b>
-							</FormGroup>
+							</FormGroupComponent>
 						)}
 
-						<FormGroup row label={__('Total', 'multivendorx')} className="space-between">
+						<FormGroupComponent row label={__('Total', 'multivendorx')} className="space-between">
 							<b>{formatCurrency(commissionData?.total_order_amount)}</b>
-						</FormGroup>
-					</FormGroupWrapper>
-				</Column>
-				</Container>
-			<SectionUI title={__('Order Details', 'multivendorx')} />
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</ColumnComponent>
+				</ContainerComponent>
+			<SectionComponent title={__('Order Details', 'multivendorx')} />
 			{storeData?.email && (
 				<div className="desc">
 					<i className="adminfont-mail"></i>
@@ -387,7 +386,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 						}}
 					/>
 				)}	
-		</PopupUI>
+		</PopupComponent>
 	);
 };
 

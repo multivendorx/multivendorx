@@ -74,7 +74,7 @@ class Admin {
                 ),
                 'settings'          => array(
                     'name'   => __( 'Settings', 'notifima' ),
-                    'subtab' => 'appearance',
+                    'subtab' => 'automation',
                 ),
                 'subscribers-list'  => array(
                     'name'   => __( 'Subscriber List', 'notifima' ),

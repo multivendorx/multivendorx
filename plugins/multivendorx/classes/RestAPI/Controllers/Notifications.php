@@ -9,6 +9,7 @@ namespace MultiVendorX\RestAPI\Controllers;
 
 use MultiVendorX\Utill;
 use MultiVendorx\Store\Store;
+use MultiVendorX\Store\StoreUtil;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -45,7 +46,7 @@ class Notifications extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_items' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
             )
         );
@@ -57,7 +58,7 @@ class Notifications extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                     'args'                => array(
                         'id' => array( 'required' => true ),
                     ),
@@ -65,37 +66,29 @@ class Notifications extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
             )
         );
     }
 
     /**
-     * Check if a given request has access to read notifications.
+     * Get items permissions.
      *
-     * @param object $request WP_REST_Request object.
+     * @param object $request Request data.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );
+        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 
     /**
-     * Check if a given request has access to create a notification.
+     * Check permission for notification REST API requests.
      *
      * @param object $request WP_REST_Request object.
+     * @return true|\WP_Error
      */
-    public function create_item_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );
-    }
-
-    /**
-     * Check if a given request has access to read notifications.
-     *
-     * @param object $request WP_REST_Request object.
-     */
-    public function update_item_permissions_check( $request ) {
-        return true;
+    public function permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 
     /**
@@ -115,24 +108,38 @@ class Notifications extends \WP_REST_Controller {
 
             return $error;
         }
+
         try {
             $header_notifications = $request->get_param( 'header' );
             $events_notifications = $request->get_param( 'events' );
             $type                 = $request->get_param( 'type' );
+            $store_id             = $request->get_param( 'store_id' );
 
             $response = rest_ensure_response( array() );
 
             if ( $header_notifications ) {
-                $store_id = $request->get_param( 'store_id' );
+                if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                    return new \WP_Error(
+                        'rest_forbidden',
+                        __( 'You are not allowed to view this store\'s notifications.', 'multivendorx' ),
+                        array( 'status' => 403 )
+                    );
+                }
 
-                $all_count = MultiVendorX()->notifications->get_all_notifications( array( 'count' => true ) );
+                $all_count = MultiVendorX()->notifications->get_all_notifications(
+                    array(
+                        'count'    => true,
+                        'store_id' => ! empty( $store_id ) ? $store_id : '',
+                    )
+                );
+
                 $response->header( 'X-WP-Total', (int) $all_count );
 
                 $args = array(
                     'limit'    => 10,
                     'offset'   => 0,
                     'category' => $type,
-                    'store_id' => ! empty( $store_id ) ? $store_id : null,
+                    'store_id' => ! empty( $store_id ) ? $store_id : '',
                 );
 
                 $results = MultiVendorX()->notifications->get_all_notifications( $args );
@@ -145,14 +152,24 @@ class Notifications extends \WP_REST_Controller {
                         'icon'    => 'cart admin-color' . ( $index + 1 ),
                         'title'   => $row['title'],
                         'message' => $row['message'],
-                        'time'    => $this->time_ago( $row->created_at ),
+                        'time'    => $this->time_ago( $row['created_at'] ),
                     );
                 }
+
                 $response->set_data( $formated_notifications );
                 return $response;
             }
 
             if ( $events_notifications ) {
+                // Event configuration is marketplace-wide, not a store's own data.
+                if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+                    return new \WP_Error(
+                        'rest_forbidden',
+                        __( 'You are not allowed to view notification event settings.', 'multivendorx' ),
+                        array( 'status' => 403 )
+                    );
+                }
+
                 $results = MultiVendorX()->notifications->get_all_events();
 
                 $formated_notifications = array();
@@ -181,6 +198,16 @@ class Notifications extends \WP_REST_Controller {
                         'enabled'   => (bool) $row->admin_enabled,
                         'canDelete' => false,
                     );
+
+                    if ( $row->customer_enabled ) {
+                        $recipients[] = array(
+                            'id'        => $id++,
+                            'type'      => 'Customer',
+                            'label'     => 'Customer',
+                            'enabled'   => (bool) $row->customer_enabled,
+                            'canDelete' => false,
+                        );
+                    }
 
                     // Add any custom emails.
                     foreach ( $custom_emails as $email ) {
@@ -213,12 +240,20 @@ class Notifications extends \WP_REST_Controller {
 
                 return rest_ensure_response( $formated_notifications );
             }
+            // Store users can only access their own store's notifications.
+            if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to view this store\'s notifications.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
 
             $all_count = MultiVendorX()->notifications->get_all_notifications(
                 array(
                     'count'    => true,
                     'category' => $request->get_param( 'notification' ) ? 'notification' : 'activity',
-                    'store_id' => $request->get_param( 'store_id' ) ? $request->get_param( 'store_id' ) : '',
+                    'store_id' => ! empty( $store_id ) ? $store_id : '',
                 )
             );
 
@@ -232,17 +267,19 @@ class Notifications extends \WP_REST_Controller {
             $start_date = $start_date ? gmdate( 'Y-m-d H:i:s', strtotime( $start_date ) ) : '';
             $end_date   = $end_date ? gmdate( 'Y-m-d H:i:s', strtotime( $end_date ) ) : '';
 
-            $args              = array(
+            $args = array(
                 'limit'      => $limit,
                 'offset'     => $offset,
                 'category'   => $request->get_param( 'notification' ) ? 'notification' : 'activity',
-                'store_id'   => $request->get_param( 'store_id' ) ? $request->get_param( 'store_id' ) : '',
+                'store_id'   => ! empty( $store_id ) ? $store_id : '',
                 'start_date' => $start_date ? $start_date : null,
                 'end_date'   => $end_date ? $end_date : null,
             );
+
             $all_notifications = MultiVendorX()->notifications->get_all_notifications( $args );
 
             $notifications = array();
+
             foreach ( $all_notifications as $notification ) {
                 $store           = new Store( (int) $notification['store_id'] );
                 $notifications[] = apply_filters(
@@ -264,7 +301,11 @@ class Notifications extends \WP_REST_Controller {
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
 
-            return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
+            return new \WP_Error(
+                'server_error',
+                __( 'Unexpected server error', 'multivendorx' ),
+                array( 'status' => 500 )
+            );
         }
     }
     /**

@@ -36,6 +36,9 @@ class FrontendScripts {
     /**
 	 * Get the build path for assets based on environment.
 	 *
+	 * @param string $path_type   Either 'url' or 'file'.
+	 * @param string $plugin_path Optional. Plugin filesystem path override.
+	 * @param string $plugin_url  Optional. Plugin URL override.
 	 * @return string Relative path to the build directory.
 	 */
     public static function get_asset_path( $path_type = 'url', $plugin_path = '', $plugin_url = '' ) {
@@ -218,6 +221,11 @@ class FrontendScripts {
 		}
 	}
 
+    /**
+     * Get the cached settings for every registered admin settings tab.
+     *
+     * @return array
+     */
     public static function get_admin_settings() {
         if ( null !== self::$settings_cache ) {
             return self::$settings_cache;

@@ -50,14 +50,7 @@ class Quotes extends \WP_REST_Controller {
      * @param object $request The request object.
      */
     public function create_item_permissions_check( $request ) {
-        $user_id = CatalogX()->current_user_id;
-        // For non-logged in user.
-        if ( 0 === $user_id ) {
-            return true;
-        }
-
-        // Check if user is admin or customer.
-        return current_user_can( 'read' ) || current_user_can( 'manage_options' );
+        return Utill::current_user_has_capability( array( 'customer', 'wholesale_user', 'manage_options' ), '', 'quote_user_permission' );
     }
 
 
@@ -75,25 +68,16 @@ class Quotes extends \WP_REST_Controller {
         }
 
         try {
-            $form_data    = $request->get_param( 'formData' ) ?? $request->get_param( 'enquiry' ) ?? array();
+            $rejection_response = apply_filters( 'catalogx_quote_rejection_response', null, $request);
 
-            // Handle rejection case.
-            $order_id = $request->get_param( 'orderId' );
-            if ( ! empty( $order_id ) ) {
-                $status = $request->get_param( 'status' );
-                $reason = $request->get_param( 'reason' );
-                if ( ! empty( $order_id ) && ! empty( $status ) && ! empty( $reason ) ) {
-                    $order = wc_get_order( $order_id );
-                    $order->update_status( 'wc-quote-rejected' );
-                    $order->set_customer_note( $reason );
-                    $order->save();
-                    /* translators: %s: reject quotation number. */
-                    return rest_ensure_response( array( 'message' => sprintf( __( 'You have confirmed rejection of the quotation No: %d', 'catalogx' ), $order_id ) ) );
-                }
+            if ( null !== $rejection_response ) {
+                return $rejection_response;
             }
 
+            $form_data = $request->get_param( 'formData' ) ?? $request->get_param( 'enquiry' ) ?? array();
+
             if ( empty( $form_data ) ) {
-                return new WP_Error( 'invalid_data', __( 'Missing form data.', 'catalogx' ), array( 'status' => 400 ) );
+                return new \WP_Error( 'invalid_data', __( 'Missing form data.', 'catalogx' ), array( 'status' => 400 ) );
             }
 
             // Sanitize input fields.
@@ -103,7 +87,7 @@ class Quotes extends \WP_REST_Controller {
             $customer_message = isset( $form_data['message'] ) ? sanitize_textarea_field( $form_data['message'] ) : '';
 
             // Retrieve customer or create guest data.
-            $customer    = empty( $customer_email ) ? get_user_by( 'email', $form_data['email'] ) : get_user_by( 'email', $customer_email );
+            $customer    = ! empty( $customer_email ) ? get_user_by( 'email', $customer_email ) : get_user_by( 'email', $form_data['email'] );
             $customer_id = $customer ? $customer->ID : Util::get_customer_id_by_email( $customer_email );
 
             // Order arguments.

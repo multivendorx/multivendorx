@@ -2,18 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	NavigatorHeader,
-	Container,
-	Column,
-	TableCard,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-	ItemListUI,
-	useModules,
-} from 'zyra';
+
+
+import { getApiLink, useModules } from '@zyra/core';
+import { ContainerComponent, ColumnComponent, ListComponent, NavigatorHeaderComponent } from '@zyra/components';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import ViewCommission from './ViewCommission';
 import {
 	downloadCSV,
@@ -129,6 +122,10 @@ const Commission: React.FC = () => {
 				</a>
 			),
 		},
+		store_name: {
+			label: __('Store Name', 'multivendorx'),
+			tableDisplay: false,
+		},
 		total_order_amount: {
 			label: __('Order Amount', 'multivendorx'),
 			isSortable: true,
@@ -177,7 +174,7 @@ const Commission: React.FC = () => {
 				].filter((item) => item.display !== false);
 
 				return (
-					<ItemListUI className="price-list" items={earningItems} />
+					<ListComponent className="price-list" items={earningItems} />
 				);
 			},
 			csvDisplay: false
@@ -338,7 +335,7 @@ const Commission: React.FC = () => {
 	const filters = [
 		{
 			key: 'store_id',
-			label: __('Stores', 'multivendorx'),
+			label: __('Select Stores', 'multivendorx'),
 			type: 'select',
 			options: store,
 		},
@@ -428,7 +425,7 @@ const Commission: React.FC = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerIcon="commission"
 				headerTitle={__('Commissions', 'multivendorx')}
 				headerDescription={__(
@@ -436,8 +433,8 @@ const Commission: React.FC = () => {
 					'multivendorx'
 				)}
 			/>
-			<Container general>
-				<Column>
+			<ContainerComponent general>
+				<ColumnComponent>
 					<TableCard
 						headers={headers}
 						rows={rows}
@@ -460,8 +457,8 @@ const Commission: React.FC = () => {
 							currencyPosition: appLocalizer.currency_position,
 						}}
 					/>
-				</Column>
-			</Container>
+				</ColumnComponent>
+			</ContainerComponent>
 			<ViewCommission
 				open={viewCommission}
 				onClose={() => setViewCommission(false)}

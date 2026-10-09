@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, QueryProps, TableCard, TableRow } from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { QueryProps, TableCard, TableRow } from '@zyra/table';
 
 const AnnouncementsTable = (React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);

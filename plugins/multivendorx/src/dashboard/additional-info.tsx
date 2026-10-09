@@ -1,17 +1,16 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getApiLink } from '@zyra/core';
 import {
-	getApiLink,
-	TextAreaUI,
-	ChoiceToggleUI,
 	NoticeManager,
-	Container,
-	Column,
-	Card,
-	FormGroupWrapper,
-	FormGroup,
-} from 'zyra';
+	ContainerComponent,
+	ColumnComponent,
+	CardComponent,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+} from '@zyra/components';
+import { TextAreaInput, ToggleInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 
 const AdditionalInformation = () => {
@@ -78,26 +77,26 @@ const AdditionalInformation = () => {
 
 	return (
 		<>
-			<Container general>
-				<Column grid={8}>
+			<ContainerComponent general>
+				<ColumnComponent grid={8}>
 					{/* Message to Buyer */}
-					<Card title={__('Message to Buyer', 'multivendorx')}>
-						<FormGroupWrapper>
-							<TextAreaUI
+					<CardComponent title={__('Message to Buyer', 'multivendorx')}>
+						<FormGroupWrapperComponent>
+							<TextAreaInput
 								name="messageToBuyer"
 								value={formData.messageToBuyer || ''}
 								onChange={handleChange}
 							/>
-						</FormGroupWrapper>
-					</Card>
+						</FormGroupWrapperComponent>
+					</CardComponent>
 
 					{/* Privacy Controls */}
-					<Card title={__('Privacy Controls', 'multivendorx')}>
-						<FormGroupWrapper>
-							<FormGroup
+					<CardComponent title={__('Privacy Controls', 'multivendorx')}>
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__('Hide Address', 'multivendorx')}
 							>
-								<ChoiceToggleUI
+								<ToggleInput
 									options={[
 										{
 											key: 'yes',
@@ -115,10 +114,10 @@ const AdditionalInformation = () => {
 										handleToggleChange('hideAddress', val)
 									}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup label={__('Hide Phone', 'multivendorx')}>
-								<ChoiceToggleUI
+							<FormGroupComponent label={__('Hide Phone', 'multivendorx')}>
+								<ToggleInput
 									options={[
 										{
 											key: 'yes',
@@ -136,10 +135,10 @@ const AdditionalInformation = () => {
 										handleToggleChange('hidePhone', val)
 									}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup label={__('Hide Phone', 'multivendorx')}>
-								<ChoiceToggleUI
+							<FormGroupComponent label={__('Hide Phone', 'multivendorx')}>
+								<ToggleInput
 									options={[
 										{
 											key: 'yes',
@@ -157,11 +156,11 @@ const AdditionalInformation = () => {
 										handleToggleChange('hideEmail', val)
 									}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
-					</Card>
-				</Column>
-			</Container>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
+					</CardComponent>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

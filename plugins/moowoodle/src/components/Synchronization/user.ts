@@ -23,11 +23,6 @@ const nestedFields = [
 				label: 'User name',
 				value: 'username',
 			},
-			{
-				key: 'password',
-				label: 'Password',
-				value: 'password',
-			},
 		],
 		afterElement: {
 			type: 'preposttext',
@@ -55,20 +50,15 @@ const nestedFields = [
 				label: 'User name',
 				value: 'username',
 			},
-			{
-				key: 'password',
-				label: 'Password',
-				value: 'password',
-			},
 		],
 	},
 ];
 export default {
 	id: 'synchronize-user',
 	priority: 20,
-	headerTitle: __('Users Synchronization', 'moowoodle'),
+	headerTitle: __('Users', 'moowoodle'),
 	headerDescription: __(
-		'Synchronization on demand with automatic, real-time updates.',
+		'Manage how accounts and profiles sync between systems.',
 		'moowoodle'
 	),
 	headerIcon: 'supervised-user-circle',

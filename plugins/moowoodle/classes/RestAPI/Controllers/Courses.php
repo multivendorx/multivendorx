@@ -48,7 +48,7 @@ class Courses extends \WP_REST_Controller {
      * @param \WP_REST_Request $request The REST request object.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' );
+        return Util::current_user_has_capability( array( 'manage_options' ) );
     }
 
 

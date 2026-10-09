@@ -5,13 +5,10 @@ import { SettingProvider, useSetting } from '../contexts/SettingContext';
 // Services
 import { getTemplateData } from '../services/templateService';
 // Utils
-import {
-	getAvailableSettings,
-	getSettingById,
-	RenderComponent,
-	useModules,
-	SettingsNavigator,
-} from 'zyra';
+
+import { InputRenderer } from '@zyra/inputs';
+import { getAvailableSettings, getSettingById, useModules } from '@zyra/core';
+import { NavigatorComponent } from '@zyra/components';
 import ShowProPopup from '../components/Popup/Popup';
 import ShippingDelivery from './settings/ShippingDelivery';
 import BusinessAddress from './DashboardSettings/BusinessAddress';
@@ -124,7 +121,7 @@ const settings: React.FC<SettingsProps> = () => {
 		return (
 			<>
 				{settingName === currentTab ? (
-					<RenderComponent
+					<InputRenderer
 						settings={settingModal}
 						proSetting={appLocalizer.pro_settings_list}
 						setting={setting}
@@ -143,7 +140,7 @@ const settings: React.FC<SettingsProps> = () => {
 	return (
 		<>
 			<SettingProvider>
-				<SettingsNavigator
+				<NavigatorComponent
 					settingContent={settingsArray}
 					currentSetting={currentTab}
 					getForm={GetForm}

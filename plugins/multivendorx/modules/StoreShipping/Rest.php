@@ -7,7 +7,9 @@
 
 namespace MultiVendorX\StoreShipping;
 
+use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\StoreShipping\Util;
+use MultiVendorX\Utill;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -50,7 +52,7 @@ class Rest extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'create_item' ),
-					'permission_callback' => array( $this, 'create_item_permissions_check' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
 				),
 			)
         );
@@ -70,12 +72,12 @@ class Rest extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'update_item' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
 				),
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array( $this, 'delete_item' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
 					'args'                => array(
 						'id' => array( 'required' => true ),
 					),
@@ -90,27 +92,18 @@ class Rest extends \WP_REST_Controller {
      * @param object $request Request object.
      */
     public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 
     /**
-     * Create shipping method permissions check
+     * Check permission for shipping method REST API requests.
      *
      * @param object $request Request object.
+     * @return true|\WP_Error
      */
-    public function create_item_permissions_check( $request ) {
-        return current_user_can( 'create_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+    public function permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'edit_stores' ) );
     }
-
-    /**
-     * Update shipping method permissions check
-     *
-     * @param object $request Request object.
-     */
-    public function update_item_permissions_check( $request ) {
-        return current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
-    }
-
 
     /**
      * Get all shipping methods
@@ -130,8 +123,15 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $store_id = $request->get_param( 'store_id' );
-            $zones    = Util::get_zones( $store_id );
+            $store_id = intval( $request->get_param( 'store_id' ) );
+            if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to view this store\'s shipping settings.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
+            $zones = Util::get_zones( $store_id );
             return rest_ensure_response( $zones );
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
@@ -158,7 +158,14 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $store_id  = intval( $request->get_param( 'store_id' ) );
+            $store_id = intval( $request->get_param( 'store_id' ) );
+            if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to manage this store.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
             $zone_id   = intval( $request->get_param( 'zone_id' ) );
             $method_id = sanitize_text_field( $request->get_param( 'method_id' ) );
             $settings  = $request->get_param( 'settings' );
@@ -172,7 +179,7 @@ class Rest extends \WP_REST_Controller {
                 );
             }
 
-            if ( empty( $zone_id ) ) {
+            if ( ! is_numeric( $zone_id ) || $zone_id < 0 ) {
                 return rest_ensure_response(
                     array(
                         'success' => false,
@@ -246,12 +253,11 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $store_id  = $request->get_param( 'store_id' );
-            $method_id = $request->get_param( 'method_id' );
+            $store_id  = intval( $request->get_param( 'store_id' ) );
+            $method_id = sanitize_text_field( $request->get_param( 'method_id' ) );
             $zone_id   = $request->get_param( 'zone_id' );
-
             // Validate required params.
-            if ( empty( $store_id ) || empty( $method_id ) || empty( $zone_id ) ) {
+            if ( empty( $store_id ) || empty( $method_id ) || ! is_numeric( $zone_id ) || $zone_id < 0 ) {
                 return rest_ensure_response(
                     array(
                         'success' => false,
@@ -260,7 +266,15 @@ class Rest extends \WP_REST_Controller {
                 );
             }
 
-            $method = Util::get_shipping_method( $store_id, $method_id, $zone_id );
+            if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to view this store\'s shipping settings.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
+
+            $method = Util::get_shipping_method( $store_id, $method_id, intval( $zone_id ) );
 
             return rest_ensure_response( $method );
         } catch ( \Exception $e ) {
@@ -288,12 +302,19 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $store_id  = intval( $request->get_param( 'store_id' ) );
+            $store_id = intval( $request->get_param( 'store_id' ) );
+            if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to manage this store.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
             $zone_id   = intval( $request->get_param( 'zone_id' ) );
             $method_id = sanitize_text_field( $request->get_param( 'method_id' ) );
             $settings  = $request->get_param( 'settings' );
 
-            if ( ! $method_id || ! $zone_id || ! $store_id || ! $settings ) {
+            if ( ! $method_id || is_numeric( $zone_id ) || $zone_id < 0 || ! $store_id || ! $settings ) {
                 return rest_ensure_response(
                     array(
                         'success' => false,
@@ -363,11 +384,18 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $store_id  = intval( $request->get_param( 'store_id' ) );
+            $store_id = intval( $request->get_param( 'store_id' ) );
+            if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to manage this store.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
             $zone_id   = intval( $request->get_param( 'zone_id' ) );
             $method_id = sanitize_text_field( $request->get_param( 'method_id' ) );
 
-            if ( ! $store_id || ! $zone_id || ! $method_id ) {
+            if ( ! $store_id || is_numeric( $zone_id ) || $zone_id < 0 || ! $method_id ) {
                 return rest_ensure_response(
                     array(
                         'success' => false,

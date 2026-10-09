@@ -477,13 +477,13 @@ class Installer {
 
         $column_exists = $wpdb->get_var(
             $wpdb->prepare(
-                "
+                '
                 SELECT COUNT(*)
                 FROM INFORMATION_SCHEMA.COLUMNS
                 WHERE TABLE_SCHEMA = DATABASE()
                 AND TABLE_NAME = %s
                 AND COLUMN_NAME = %s
-                ",
+                ',
                 $table_name,
                 'expiry_date'
             )

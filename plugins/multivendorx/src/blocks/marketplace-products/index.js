@@ -4,7 +4,7 @@ import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { createRoot, useEffect, useState } from '@wordpress/element';
 import { PanelBody, SelectControl, TextControl } from '@wordpress/components';
 import MarketplaceProductList from './marketplaceProductList';
-import { getApiLink } from 'zyra';
+import { getApiLink } from '@zyra/core';
 import axios from 'axios';
 
 // EditBlock Component

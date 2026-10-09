@@ -1,14 +1,15 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
+
+import { ButtonInput } from '@zyra/inputs';
 import {
-	ButtonInputUI,
-	Card,
-	Column,
-	Modules,
-	ItemListUI,
-	Container,
+	CardComponent,
+	ColumnComponent,
+	ListComponent,
+	ContainerComponent,
 	NoticeManager,
-} from 'zyra';
+	ModuleGridComponent,
+} from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { getModuleData } from '../../services/templateService';
 import axios from 'axios';
@@ -230,9 +231,9 @@ const DashboardTab: React.FC<object> = () => {
 	];
 
 	return (
-		<Container>
-			<Column grid={8}>
-				<Card>
+		<ContainerComponent>
+			<ColumnComponent grid={8}>
+				<CardComponent>
 					<div className="pro-banner-wrapper">
 						<div className="content">
 							<div className="heading">
@@ -267,9 +268,9 @@ const DashboardTab: React.FC<object> = () => {
 							<img src={Mascot} alt="" />
 						</div>
 					</div>
-				</Card>
+				</CardComponent>
 				{!appLocalizer.khali_dabba && (
-					<Card
+					<CardComponent
 						title={__(
 							'Build a professional marketplace',
 							'multivendorx'
@@ -285,7 +286,7 @@ const DashboardTab: React.FC<object> = () => {
 							'multivendorx'
 						)}
 					>
-						<ItemListUI
+						<ListComponent
 							className="feature-list"
 							items={featuresList.map(
 								({ icon, title, desc }) => ({
@@ -320,12 +321,12 @@ const DashboardTab: React.FC<object> = () => {
 								)}
 							</div>
 						</div>
-					</Card>
+					</CardComponent>
 				)}
-				<Card
+				<CardComponent
 					title={__('Modules', 'multivendorx')}
 					action={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'eye',
@@ -341,7 +342,7 @@ const DashboardTab: React.FC<object> = () => {
 						/>
 					}
 				>
-					<Modules
+					<ModuleGridComponent
 						modulesArray={modulesArray}
 						appLocalizer={appLocalizer}
 						apiLink="modules"
@@ -349,15 +350,15 @@ const DashboardTab: React.FC<object> = () => {
 						pluginName="multivendorx"
 						variant="mini-module"
 					/>
-				</Card>
-			</Column>
+				</CardComponent>
+			</ColumnComponent>
 
 			{/* Right Side */}
-			<Column grid={4}>
-				<Card title={__('Extend your website', 'multivendorx')}>
-					<Column row>
+			<ColumnComponent grid={4}>
+				<CardComponent title={__('Extend your website', 'multivendorx')}>
+					<ColumnComponent row>
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								background
 								items={[
@@ -393,7 +394,7 @@ const DashboardTab: React.FC<object> = () => {
 								]}
 							/>
 						) : (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								background
 								items={[
@@ -450,7 +451,7 @@ const DashboardTab: React.FC<object> = () => {
 						)}
 
 						{pluginStatus['woocommerce-product-stock-alert'] ? (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								background
 								items={[
@@ -486,7 +487,7 @@ const DashboardTab: React.FC<object> = () => {
 								]}
 							/>
 						) : (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								background
 								items={[
@@ -541,14 +542,14 @@ const DashboardTab: React.FC<object> = () => {
 								]}
 							/>
 						)}
-					</Column>
-				</Card>
+					</ColumnComponent>
+				</CardComponent>
 
 				{/* Quick Links */}
-				<Card title={__('Need help getting started?', 'multivendorx')}>
+				<CardComponent title={__('Need help getting started?', 'multivendorx')}>
 					<div className="quick-link">
 						{resources.map((res) => (
-							<ItemListUI
+							<ListComponent
 								className="mini-card list"
 								border
 								items={[
@@ -575,9 +576,9 @@ const DashboardTab: React.FC<object> = () => {
 							/>
 						))}
 					</div>
-				</Card>
-			</Column>
-		</Container>
+				</CardComponent>
+			</ColumnComponent>
+		</ContainerComponent>
 	);
 };
 

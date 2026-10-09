@@ -4,7 +4,7 @@ import { QuoteRow } from "./quoteRequests";
 export const dummyQuotes: QuoteRow[] = [
 	{
 		id: 1,
-		order_id: '#1001',
+		order_id: '1001',
 		date: 'May 12, 2026',
 		status: 'expired-quote',
 		total: '$120.00',
@@ -13,7 +13,7 @@ export const dummyQuotes: QuoteRow[] = [
 	},
 	{
 		id: 2,
-		order_id: '#1002',
+		order_id: '1002',
 		date: 'May 12, 2026',
 		status: 'new-quote-request',
 		total: '$89.00',
@@ -22,7 +22,7 @@ export const dummyQuotes: QuoteRow[] = [
 	},
 	{
 		id: 3,
-		order_id: '#1003',
+		order_id: '1003',
 		date: 'May 12, 2026',
 		status: 'pending-quote',
 		total: '$45.00',
@@ -31,7 +31,7 @@ export const dummyQuotes: QuoteRow[] = [
 	},
 	{
 		id: 4,
-		order_id: '#1004',
+		order_id: '1004',
 		date: 'May 12, 2026',
 		status: 'expired-quote',
 		total: '$220.00',
@@ -40,7 +40,7 @@ export const dummyQuotes: QuoteRow[] = [
 	},
 	{
 		id: 5,
-		order_id: '#1005',
+		order_id: '1005',
 		date: 'May 12, 2026',
 		status: 'accepted-quote',
 		total: '$75.00',
@@ -49,7 +49,7 @@ export const dummyQuotes: QuoteRow[] = [
 	},
 	{
 		id: 6,
-		order_id: '#1006',
+		order_id: '1006',
 		date: 'May 12, 2026',
 		status: 'rejected-quote',
 		total: '$60.00',
@@ -58,7 +58,7 @@ export const dummyQuotes: QuoteRow[] = [
 	},
 	{
 		id: 7,
-		order_id: '#1007',
+		order_id: '1007',
 		date: 'May 12, 2026',
 		status: 'rejected-quote',
 		total: '$150.00',
@@ -67,7 +67,7 @@ export const dummyQuotes: QuoteRow[] = [
 	},
 	{
 		id: 8,
-		order_id: '#1008',
+		order_id: '1008',
 		date: 'May 12, 2026',
 		status: 'expired-quote',
 		total: '$310.00',
@@ -76,7 +76,7 @@ export const dummyQuotes: QuoteRow[] = [
 	},
 	{
 		id: 9,
-		order_id: '#1009',
+		order_id: '1009',
 		date: 'May 12, 2026',
 		status: 'new-quote-request',
 		total: '$95.00',
@@ -85,7 +85,7 @@ export const dummyQuotes: QuoteRow[] = [
 	},
 	{
 		id: 10,
-		order_id: '#1010',
+		order_id: '1010',
 		date: 'May 12, 2026',
 		status: 'pending-quote',
 		total: '$40.00',

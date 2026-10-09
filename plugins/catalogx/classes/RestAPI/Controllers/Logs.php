@@ -66,7 +66,7 @@ class Logs extends \WP_REST_Controller {
 	 * @return bool
 	 */
 	public function permissions_check( $request ) {
-		return current_user_can( 'manage_options' );
+		return Utill::current_user_has_capability( 'manage_options' );
 	}
 
 	/**

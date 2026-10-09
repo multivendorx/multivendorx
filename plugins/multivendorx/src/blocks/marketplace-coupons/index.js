@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import StoreCouponList from './StoreCouponList';
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
-import { getApiLink } from 'zyra';
+import { getApiLink } from '@zyra/core';
 
 /* global couponList */
 

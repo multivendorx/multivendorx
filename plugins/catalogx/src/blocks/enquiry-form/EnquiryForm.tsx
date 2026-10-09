@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './EnquiryForm.scss';
-import { FormViewer } from 'zyra';
+import { FormViewer } from '@zyra/builders';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 

@@ -1,6 +1,7 @@
 import { addFilter } from '@wordpress/hooks';
 import { useEffect } from 'react';
-import { TextAreaUI, Card, FormGroup, FormGroupWrapper } from 'zyra';
+import { CardComponent, FormGroupComponent, FormGroupWrapperComponent } from '@zyra/components';
+import { TextAreaInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 
 const Policies = ({ product, setProduct, handleChange }) => {
@@ -30,7 +31,7 @@ const Policies = ({ product, setProduct, handleChange }) => {
 	}, [product?.meta_data]);
 
 	return (
-		<Card
+		<CardComponent
 			title={__(
 				'Policies - What should customers know before they buy?',
 				'multivendorx'
@@ -40,51 +41,51 @@ const Policies = ({ product, setProduct, handleChange }) => {
 				'multivendorx'
 			)}
 		>
-			<FormGroupWrapper>
-				<FormGroup
+			<FormGroupWrapperComponent>
+				<FormGroupComponent
 					label={__(
 						'Shipping policy - How will you ship it and how long will it take?',
 						'multivendorx'
 					)}
 				>
-					<TextAreaUI
+					<TextAreaInput
 						name="shipping_policy"
 						value={product.shipping_policy}
 						onChange={(value) =>
 							handleChange('shipping_policy', value)
 						}
 					/>
-				</FormGroup>
-				<FormGroup
+				</FormGroupComponent>
+				<FormGroupComponent
 					label={__(
 						'Refund policy - Can customers return or exchange it?',
 						'multivendorx'
 					)}
 				>
-					<TextAreaUI
+					<TextAreaInput
 						name="refund_policy"
 						value={product.refund_policy}
 						onChange={(value) =>
 							handleChange('refund_policy', value)
 						}
 					/>
-				</FormGroup>
-				<FormGroup
+				</FormGroupComponent>
+				<FormGroupComponent
 					label={__(
 						'Cancellation policy - Can they cancel their order after placing it?',
 						'multivendorx'
 					)}
 				>
-					<TextAreaUI
+					<TextAreaInput
 						name="cancellation_policy"
 						value={product.cancellation_policy}
 						onChange={(value) =>
 							handleChange('cancellation_policy', value)
 						}
 					/>
-				</FormGroup>
-			</FormGroupWrapper>
-		</Card>
+				</FormGroupComponent>
+			</FormGroupWrapperComponent>
+		</CardComponent>
 	);
 };
 

@@ -1,7 +1,8 @@
 /* global storesList */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { getApiLink, MapProviderUI } from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { MapComponent } from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 
 interface StoreRow {
@@ -119,6 +120,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	useEffect(() => {
 		const params = {
 			per_page: 50,
+			status: 'publish',
 			meta_key: 'multivendorx_store_id',
 		};
 
@@ -144,6 +146,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 					per_page: 3,
 					meta_key: 'multivendorx_store_id',
 					value: storeId,
+					status: 'publish',
 					orderby: 'date',
 					order: 'desc',
 				},
@@ -279,7 +282,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 		};
 
 		return (
-			<MapProviderUI
+			<MapComponent
 				apiKey={mapConfig.apiKey}
 				mapId={settings?.geolocation?.google_map_id || ''}
 				locationAddress={addressData.address}

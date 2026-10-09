@@ -120,7 +120,7 @@ class Course {
 			$where[]        = 'product_id > %d';
 			$query_params[] = 0;
 		}
-		
+
 		if ( ! empty( $where ) ) {
 			$condition = strtoupper( $query_args['condition'] ?? 'AND' );
 			if ( ! in_array( $condition, array( 'AND', 'OR' ), true ) ) {

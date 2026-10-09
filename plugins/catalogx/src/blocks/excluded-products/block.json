@@ -1,0 +1,17 @@
+{
+    "apiVersion": 2,
+    "name": "catalogx/excluded-products",
+    "title": "Excluded Products",
+    "category": "catalogx",
+    "icon": "products",
+    "description": "A block that displays products excluded from the catalog using React.",
+    "supports": {
+        "html": false
+    },
+    "textdomain": "catalogx",
+    "editorScript": "file:./index.js",
+    "viewScript": "file:./view.js",
+    "script": "file:./index.js",
+    "editorStyle": "catalogx-frontend-style",
+    "style": "catalogx-frontend-style"
+}

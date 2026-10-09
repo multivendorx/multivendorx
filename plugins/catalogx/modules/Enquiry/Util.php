@@ -8,7 +8,7 @@
 namespace CatalogX\Enquiry;
 
 use CatalogX\Utill;
-use MultiVendorX\Store\Store as Store;
+use MultiVendorX\Store\Store;
 
 /**
  * CatalogX Enquiry Module Util class
@@ -88,21 +88,21 @@ class Util {
             return false;
         }
 
-        if (Utill::is_active_plugin('multivendorx')) {
+        if ( Utill::is_active_plugin( 'multivendorx' ) ) {
             $product_author = get_post_meta( $product_id, 'multivendorx_store_id', true ) ?? 0;
-            $store = new Store( $product_author );
-            if ($product_author) {
-                $excluded_products = $store->get_meta('woocommerce_product_list') ?? [];
+            $store          = new Store( $product_author );
+            if ( $product_author ) {
+                $excluded_products = $store->get_meta( 'woocommerce_product_list' ) ?? array();
                 if ( ! empty( $excluded_products ) && in_array( (string) $product_id, $excluded_products, true ) ) {
                     return false;
                 }
-            }         
+            }
 
             // Product categories.
             $product_categories = wp_get_post_terms(
                 $product_id,
                 'product_cat',
-                [ 'fields' => 'ids' ]
+                array( 'fields' => 'ids' )
             );
 
             $excluded_categories = array_map(
@@ -110,7 +110,7 @@ class Util {
                 (array) $store->get_meta( 'woocommerce_category_list' )
             );
 
-            if ( ! empty( $excluded_categories ) && ! empty( array_intersect( $product_categories, $excluded_categories ) )) {
+            if ( ! empty( $excluded_categories ) && ! empty( array_intersect( $product_categories, $excluded_categories ) ) ) {
                 return false;
             }
 
@@ -118,7 +118,7 @@ class Util {
             $product_tags = wp_get_post_terms(
                 $product_id,
                 'product_tag',
-                [ 'fields' => 'ids' ]
+                array( 'fields' => 'ids' )
             );
 
             $excluded_tags = array_map(
@@ -126,7 +126,7 @@ class Util {
                 (array) $store->get_meta( 'woocommerce_tag_list' )
             );
 
-            if ( ! empty( $excluded_tags ) && ! empty( array_intersect( $product_tags, $excluded_tags ) )) {
+            if ( ! empty( $excluded_tags ) && ! empty( array_intersect( $product_tags, $excluded_tags ) ) ) {
                 return false;
             }
         }

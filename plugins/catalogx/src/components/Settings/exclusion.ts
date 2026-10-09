@@ -2,12 +2,12 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'enquiry-quote-exclusion',
-    priority: 5,
+    priority: 6,
 
     headerTitle: __('Access Rules', 'catalogx'),
 
     headerDescription: __(
-        'Exclude catalog viewing, enquiries, and quotes by user roles and product attributes.',
+        'Exclude catalog viewing, enquiries, and quotes by role, name, product, category, tag or brand.',
         'catalogx'
     ),
 

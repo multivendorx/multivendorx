@@ -1,21 +1,19 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+
+
+import { EmailInput, TextInput, SelectInput } from '@zyra/inputs';
 import {
-	getApiLink,
-	useModules,
-	EmailsInputUI,
-	MapProviderUI,
-	Container,
-	Column,
-	Card,
-	FormGroupWrapper,
-	FormGroup,
-	BasicInputUI,
-	SelectInputUI,
-	CountryCodes,
+	ContainerComponent,
+	ColumnComponent,
+	CardComponent,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
 	NoticeManager,
-} from 'zyra';
+	MapComponent,
+} from '@zyra/components';
+import { getApiLink, CountryCodes, useModules } from '@zyra/core';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 
@@ -447,7 +445,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 		}
 
 		return (
-			<MapProviderUI
+			<MapComponent
 				apiKey={mapConfig.apiKey}
 				mapId={settings?.geolocation?.google_map_id || ''}
 				locationAddress={addressData.address}
@@ -467,12 +465,12 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 
 	return (
 		<>
-			<Container>
-				<Column grid={8}>
+			<ContainerComponent>
+				<ColumnComponent grid={8}>
 					{/* Contact Information */}
-					<Card title={__('Contact information', 'multivendorx')}>
-						<FormGroupWrapper>
-							<FormGroup
+					<CardComponent title={__('Contact information', 'multivendorx')}>
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__('Store email(s)', 'multivendorx')}
 								desc={
 									<>
@@ -495,7 +493,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 									</>
 								}
 							>
-								<EmailsInputUI
+								<EmailInput
 									value={data?.store_email?.list || []}
 									primary={data?.store_email?.primary || ''}
 									enablePrimary={true}
@@ -503,13 +501,13 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 										saveEmails(list, primary)
 									}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup
+							<FormGroupComponent
 								label={__('Phone', 'multivendorx')}
 								notice={errorMsg.phone}
 							>
-								<SelectInputUI
+								<SelectInput
 									type="single-select"
 									name="country_code"
 									size={10}
@@ -522,7 +520,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 										)
 									}
 								/>
-								<BasicInputUI
+								<TextInput
 									name="phone"
 									type="number"
 									size={12}
@@ -531,7 +529,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 										handleChange('phone', value)
 									}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 							{/* Hidden coordinates */}
 							<input
 								type="hidden"
@@ -543,79 +541,79 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 								name="location_lng"
 								value={addressData.location_lng}
 							/>
-						</FormGroupWrapper>
-					</Card>
+						</FormGroupWrapperComponent>
+					</CardComponent>
 					{/* Communication Address */}
-					<Card title={__('Communication address', 'multivendorx')}>
-						<FormGroupWrapper>
-							<FormGroup
+					<CardComponent title={__('Communication address', 'multivendorx')}>
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__('Address *', 'multivendorx')}
 								htmlFor="address"
 							>
-								<BasicInputUI
+								<TextInput
 									name="address"
 									value={addressData.address}
 									onChange={(value) =>
 										handleAddressChange('address', value)
 									}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup
+							<FormGroupComponent
 								cols={6}
 								label={__('City', 'multivendorx')}
 								htmlFor="City"
 							>
-								<BasicInputUI
+								<TextInput
 									name="city"
 									value={addressData.city}
 									onChange={(value) =>
 										handleAddressChange('city', value)
 									}
 								/>
-							</FormGroup>
-							<FormGroup
+							</FormGroupComponent>
+							<FormGroupComponent
 								cols={6}
 								label={__('Zip code', 'multivendorx')}
 								htmlFor="zip"
 							>
-								<BasicInputUI
+								<TextInput
 									name="zip"
 									value={addressData.zip}
 									onChange={(value) =>
 										handleAddressChange('zip', value)
 									}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
 							{/* Country and State */}
-							<FormGroup
+							<FormGroupComponent
 								cols={6}
 								label={__('Country', 'multivendorx')}
 								htmlFor="country"
 							>
-								<SelectInputUI
+								<SelectInput
 									name="country"
 									value={formData.country || ''}
 									options={appLocalizer.country_list || []}
 									onChange={handleCountryChange}
 								/>
-							</FormGroup>
-							<FormGroup
+							</FormGroupComponent>
+							<FormGroupComponent
 								cols={6}
 								label={__('State', 'multivendorx')}
 								htmlFor="state"
 							>
-								<SelectInputUI
+								<SelectInput
 									name="state"
 									value={formData.state || ''}
 									options={stateOptions}
 									onChange={handleStateChange}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 							{/* Map Component */}
-							<FormGroup>{renderMapComponent()}</FormGroup>
-						</FormGroupWrapper>
+							<FormGroupComponent>{renderMapComponent()}</FormGroupComponent>
+						</FormGroupWrapperComponent>
 						{/* Hidden coordinates */}
 						<input
 							type="hidden"
@@ -627,23 +625,23 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 							name="location_lng"
 							value={addressData.location_lng}
 						/>
-					</Card>
-				</Column>
-				<Column grid={4}>
+					</CardComponent>
+				</ColumnComponent>
+				<ColumnComponent grid={4}>
 					{/* Manage Store Status */}
-					<Card
+					<CardComponent
 						id="store-status"
 						title={__('Manage store status', 'multivendorx')}
 					>
-						<FormGroupWrapper>
-							<FormGroup
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__('Current status', 'multivendorx')}
 								desc={__(
 									'Learn what permissions each status provides, visit Store satus settings',
 									'multivendorx'
 								)}
 							>
-								<SelectInputUI
+								<SelectInput
 									name="status"
 									value={formData.status || ''}
 									options={statusOptions}
@@ -660,23 +658,23 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 										autoSave(updated);
 									}}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
-					</Card>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
+					</CardComponent>
 					{/* Manage Storefront Link */}
-					<Card
+					<CardComponent
 						id="store-slug"
 						title={__('Manage storefront link', 'multivendorx')}
 					>
-						<FormGroupWrapper>
-							<FormGroup
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__(
 									'Current storefront link',
 									'multivendorx'
 								)}
 								notice={errorMsg.slug}
 							>
-								<BasicInputUI
+								<TextInput
 									name="slug"
 									value={formData.slug || ''}
 									onChange={(val) =>
@@ -695,12 +693,12 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 										<i className="adminfont-external"></i>
 									</a>
 								</div>
-							</FormGroup>
-						</FormGroupWrapper>
-					</Card>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
+					</CardComponent>
 
 					{/* Social Information */}
-					<Card title={__('Social information', 'multivendorx')}>
+					<CardComponent title={__('Social information', 'multivendorx')}>
 						{(
 							[
 								'facebook',
@@ -715,8 +713,8 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 							const defaultUrl = `https://${network === 'twitter' ? 'x' : network}.com/`;
 
 							return (
-								<FormGroupWrapper key={network}>
-									<FormGroup
+								<FormGroupWrapperComponent key={network}>
+									<FormGroupComponent
 										icon={iconClass}
 										label={
 											network === 'twitter'
@@ -727,7 +725,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 													network.slice(1)
 										}
 									>
-										<BasicInputUI
+										<TextInput
 											name={network}
 											value={
 												formData[network]?.trim() ||
@@ -737,13 +735,13 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 												handleChange(network, val)
 											}
 										/>
-									</FormGroup>
-								</FormGroupWrapper>
+									</FormGroupComponent>
+								</FormGroupWrapperComponent>
 							);
 						})}
-					</Card>
-				</Column>
-			</Container>
+					</CardComponent>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

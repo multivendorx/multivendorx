@@ -2,16 +2,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	TableCard,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-	Container,
-	Column,
-	InfoItem,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { ContainerComponent, ColumnComponent, InformationItemComponent } from '@zyra/components';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
 	formatCurrency,
 	formatDate,
@@ -114,7 +107,7 @@ const StoreTable: React.FC = () => {
 		store_name: {
 			label: __('Store', 'multivendorx'),
 			render: (row) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.store_name}
 					titleLink={getUrl(row.id, 'store', 'edit')}
 					avatar={{
@@ -140,10 +133,9 @@ const StoreTable: React.FC = () => {
 		primary_owner: {
 			label: __('Primary Owner', 'multivendorx'),
 			render: (row) => {
-				const owner = row.primary_owner?.data;
 				return (
-					<InfoItem
-						title={owner?.display_name}
+					<InformationItemComponent
+						title={row.primary_owner?.display_name}
 						titleLink={getUrl(row.id, 'store', 'edit')}
 						avatar={{
 							image: row.primary_owner_image,
@@ -152,7 +144,7 @@ const StoreTable: React.FC = () => {
 						descriptions={[
 							{
 								label: __('Email', 'multivendorx'),
-								value: owner?.user_email || '—',
+								value: row.primary_owner?.user_email || '—',
 							},
 						]}
 					/>
@@ -220,8 +212,8 @@ const StoreTable: React.FC = () => {
 		{ label: __('Suspended', 'multivendorx'), value: 'suspended' },
 	];
 	return (
-		<Container general>
-			<Column>
+		<ContainerComponent general>
+			<ColumnComponent>
 				<TableCard
 					headers={headers}
 					rows={rows}
@@ -239,8 +231,8 @@ const StoreTable: React.FC = () => {
 					format={appLocalizer.date_format}
 					currencySymbol={appLocalizer.currency_symbol}
 				/>
-			</Column>
-		</Container>
+			</ColumnComponent>
+		</ContainerComponent>
 	);
 };
 

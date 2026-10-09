@@ -1,5 +1,6 @@
 /* global appLocalizer */
-import { NavigatorHeader, Container, Modules } from 'zyra';
+
+import { ContainerComponent, NavigatorHeaderComponent, ModuleGridComponent } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 import { getModuleData } from '../../services/templateService';
 import proPopupContent from '../Popup/Popup';
@@ -9,7 +10,7 @@ const PluginModules = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerIcon="module"
 				headerTitle={__('Modules', 'multivendorx')}
 				headerDescription={__(
@@ -17,15 +18,15 @@ const PluginModules = () => {
 					'multivendorx'
 				)}
 			/>
-			<Container general>
-				<Modules
+			<ContainerComponent general>
+				<ModuleGridComponent
 					modulesArray={modulesArray}
 					appLocalizer={appLocalizer}
 					apiLink="modules"
 					proPopupContent={proPopupContent}
 					pluginName="multivendorx"
 				/>
-			</Container>
+			</ContainerComponent>
 		</>
 	);
 };

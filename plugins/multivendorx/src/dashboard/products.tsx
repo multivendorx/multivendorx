@@ -1,17 +1,11 @@
 /* global appLocalizer */
 import React, { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
-import {
-	useModules,
-	getApiLink,
-	TableCard,
-	NavigatorHeader,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-	InfoItem,
-	Notice
-} from 'zyra';
+
+
+import { getApiLink, useModules } from '@zyra/core';
+import { InformationItemComponent, NoticeComponent, NavigatorHeaderComponent } from '@zyra/components';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toWcIsoDate, dashNavigate } from '../services/commonFunction';
@@ -76,7 +70,7 @@ const AllProduct: React.FC = () => {
 			.post(
 				`${appLocalizer.apiUrl}/wc/v3/products/`,
 				{
-					name: 'Auto Draft',
+					name: __('Auto Draft', 'multivendorx'),
 					status: 'draft',
 					meta_data: [{ key: '_is_auto_draft', value: true },{key: 'multivendorx_store_id',value: appLocalizer.store_id}],
 				},
@@ -333,7 +327,7 @@ const AllProduct: React.FC = () => {
 		{
 			key: 'category',
 			type: 'select',
-			label: __('Category', 'multivendorx'),
+			label: __('Select Category', 'multivendorx'),
 			options: categoriesList.map((cat) => ({
 				value: cat.id,
 				label: cat.name,
@@ -342,7 +336,7 @@ const AllProduct: React.FC = () => {
 		{
 			key: 'productType',
 			type: 'select',
-			label: __('Product Type', 'multivendorx'),
+			label: __('Select Product Type', 'multivendorx'),
 			options: [
 				{
 					value: 'simple',
@@ -365,7 +359,7 @@ const AllProduct: React.FC = () => {
 		{
 			key: 'stockStatus',
 			type: 'select',
-			label: __('Stock Status', 'multivendorx'),
+			label: __('Select Stock Status', 'multivendorx'),
 			options: [
 				{ value: 'instock', label: __('In Stock', 'multivendorx') },
 				{
@@ -396,7 +390,7 @@ const AllProduct: React.FC = () => {
 		row
 	);
 				return (
-					<InfoItem
+					<InformationItemComponent
 						title={<>{row.name} {badge && <span style={{ marginLeft: '8px', display: 'inline-flex', verticalAlign: 'middle' }}>{badge}</span>}</>}
 						onClick={() =>
 							dashNavigate(navigate, [
@@ -507,7 +501,7 @@ const AllProduct: React.FC = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('All Products', 'multivendorx')}
 				headerDescription={__(
 					'Products are created, updated, and managed for your store.',
@@ -544,7 +538,7 @@ const AllProduct: React.FC = () => {
 				modules
 			)}
 			{errorMsg && (
-				<Notice
+				<NoticeComponent
 					type="error"
 					validity={2000}
 					displayPosition="notice"

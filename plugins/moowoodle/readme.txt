@@ -3,9 +3,9 @@ Contributors: dualcube
 Tags: moodle, lms, sell course, moodle wordpress connect, LMS integration
 Donate link: https://dualcube.com/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=moowoodlewporg
 Requires at least: 6.0.0
-Tested up to: 7.0.0
+Tested up to: 7.1.2
 Requires PHP: 8.0
-Stable tag: 3.4.4
+Stable tag: 3.4.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -230,6 +230,46 @@ This project might have bugs and may be lacking certain features. If you'd like 
 11. View the log file to detect any errors related to MooWoodle configuration.
 
 == Changelog ==
+
+= 3.4.11 - 2026-09-29 =
+* Added     - Compatibility with WordPress 7.1.2.
+* Added     - Compatibility of WooCommerce 11.1.2.
+* Fixed     - Addressed UI issues and enhanced the overall user experience.
+* Updated   - Language file.
+
+= 3.4.10 - 2026-09-22 =
+* Added     - Compatibility with WordPress 7.1.1.
+* Added     - Compatibility of WooCommerce 11.1.1.
+* Fixed     - Resolved UI bugs and improved the overall user interface.
+* Updated   - Language file.
+
+= 3.4.9 - 2026-09-08 =
+* Added     - Compatibility of WooCommerce 11.1.0.
+* Added     - Course search when manually assigning courses to a product, making it easier for admins to quickly find and select the required course.
+* Updated   - Language file.
+
+= 3.4.8 - 2026-08-25 =
+* Added     - Compatibility with WordPress 7.1.0.
+* Added     - Compatibility of WooCommerce 11.0.1.
+* Fixed     - Security vulnerabilities and improved validation and access control across plugin functionality.
+* Updated   - Language file.
+
+= 3.4.7 - 2026-08-11 =
+* Added     - Compatibility with WordPress 7.0.3.
+* Added     - Compatibility of WooCommerce 11.0.0.
+* Fixed     - Course table displaying incorrect 0 values while loading; course data is now displayed correctly during the loading process.
+* Updated   - Language file.
+
+= 3.4.6 - 2026-07-28 =
+* Added     - Compatibility with WordPress 7.0.2.
+* Added     - Redesigned the Enrolled Courses list page with an improved UI/UX, making it easier for students to view and access their enrolled courses.
+* Updated   - Language file.
+
+= 3.4.5 - 2026-07-14 =
+* Added     - Compatibility with WordPress 7.0.1.
+* Added     - Compatibility of WooCommerce 10.9.4.
+* Updated   - Language file.
+
 = 3.4.4 - 2026-06-30 =
 * Added     - Compatibility of WooCommerce 10.9.1.
 * Added     - SMTP configuration status in Test Connection to ensure student enrollment emails work properly.

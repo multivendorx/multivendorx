@@ -41,14 +41,14 @@ class Frontend {
      */
     public function woocommerce_my_account_my_orders_query( $query ) {
         $display_type = MultiVendorX()->setting->get_setting( 'display_customer_order', '' );
-        if ( $display_type === 'mainorder' ) {
+        if ( 'mainorder' === $display_type ) {
             $query['meta_query'][] = array(
                 'key'     => 'multivendorx_store_id',
                 'compare' => 'NOT EXISTS',
             );
         }
 
-        if ( $display_type === 'suborders' ) {
+        if ( 'suborders' === $display_type ) {
             $query['meta_query'][] = array(
                 'key'     => 'multivendorx_store_id',
                 'compare' => 'EXISTS',
@@ -57,6 +57,11 @@ class Frontend {
         return $query;
     }
 
+    /**
+     * Add a "sold by" store tag next to a suborder's order number in My Account > Orders.
+     *
+     * @param \WC_Order $order Order object.
+     */
     public function add_suborder_tag( $order ) {
         echo '<a href="' . esc_url( $order->get_view_order_url() ) . '">#' . esc_html( $order->get_order_number() ) . '</a>';
 
@@ -71,7 +76,7 @@ class Frontend {
                 $store_name = $store->get( 'name' );
 
                 echo ' <span class="suborder-label">'
-                    . __( 'Sold by', 'multivendorx' ) . ' '
+                    . esc_html__( 'Sold by', 'multivendorx' ) . ' '
                     . esc_html( $store_name )
                     . '</span>';
             }
@@ -94,19 +99,26 @@ class Frontend {
         return $parent_downloads;
     }
 
+    /**
+     * Restrict which order-status emails send based on the main-order/suborder display setting.
+     *
+     * @param bool      $enabled Whether the email is currently enabled.
+     * @param \WC_Order $order   Order object.
+     * @return bool
+     */
     public function disable_new_order_email_conditionally( $enabled, $order ) {
         if ( ! $order || ! is_a( $order, 'WC_Order' ) ) {
             return $enabled;
         }
 
-        if ( MultiVendorX()->setting->get_setting( 'display_customer_order' ) == 'suborders' ) {
-            return false;
+        $display_customer_order = MultiVendorX()->setting->get_setting( 'display_customer_order', 'mainorder' );
+
+        // Main order.
+        if ( 0 === (int) $order->get_parent_id() ) {
+            return in_array( $display_customer_order, array( 'mainorder', 'main_sub' ), true );
         }
 
-        if ( ( $order->get_parent_id() > 0 ) && MultiVendorX()->setting->get_setting( 'display_customer_order' ) == 'mainorder' ) {
-            return false;
-        }
-
-        return $enabled;
+        // Sub-order.
+        return in_array( $display_customer_order, array( 'suborders', 'main_sub' ), true );
     }
 }

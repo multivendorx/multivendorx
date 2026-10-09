@@ -1,28 +1,37 @@
 import { __, sprintf } from '@wordpress/i18n';
+import { CountryCodes } from '@zyra/core';
+
 export default {
     id: 'customer-engagement',
-    priority: 3,
-    headerTitle: __('Customer Engagement', 'catalogx'),
-    settingTitle: __('Purchase experience','catalogx'),
+    priority: 4,
+    headerTitle: __('Enquiry & Quote', 'catalogx'),
+    settingTitle: __('Purchase experience', 'catalogx'),
     headerDescription: __(
         'Define how customers move from product browsing to purchasing across your store.',
         'catalogx'
     ),
+    groupBySections: true,
+    hideSettingHeader: true,
     headerIcon: 'cart',
     submitUrl: 'settings',
     modal: [
         //shopping
-        
+        {
+            key: 'section',
+            type: 'section',
+            icon: 'question',
+            title: __('Who can enquire', 'catalogx'),
+            desc: __(
+                'Decide who sees the enquiry option and on which products.',
+                'catalogx'
+            ),
+        },
         {
             key: 'enable_cart_checkout',
             type: 'choice-toggle',
             label: __('Store experience', 'catalogx'),
             settingDescription: __(
                 'Choose whether customers can browse products as a catalog or purchase them through your store.',
-                'catalogx'
-            ),
-            desc: __(
-                '<ul><li>Browse products only - Hide the Add to Cart button and disable purchasing across your store.</li><li>Browse & purchase products - Display the Add to Cart button and allow customers to add products to cart and complete purchases.</li></ul>',
                 'catalogx'
             ),
             options: [
@@ -59,7 +68,7 @@ export default {
                 set: true,
                 value: 'catalog_only',
             },
-            desc: sprintf(
+            settingDescription: sprintf(
                 /* translators: %s will be replaced with a link to CatalogX Pro */
                 __(
                     'By default, customers are redirected to the homepage when they access the cart or checkout pages. Select a different page to customize this behavior. An upgrade to %s is required.',
@@ -74,15 +83,6 @@ export default {
             moduleEnabled: 'catalog',
         },
         //enquiry
-         {
-            key: 'section',
-            type: 'section',
-            title: __('Enquiry journey', 'catalogx'),
-            desc: __('Define the customer experience from enquiry initiation to submission.',
-                'catalogx'
-            ),
-        },
-        
         {
             key: 'enquiry_user_permission',
             type: 'choice-toggle',
@@ -91,9 +91,6 @@ export default {
                 'catalogx'
             ),
             settingDescription: __('Control whether enquiries are available to all visitors or only logged-in customers.',
-                'catalogx'
-            ),
-            desc: __('<ul><li>Everyone - Any visitor can submit product enquiries.</li><li>Logged-in Customers - Only authenticated customers can submit enquiries.</li></ul>',
                 'catalogx'
             ),
             options: [
@@ -121,10 +118,6 @@ export default {
                 'Limit enquiries to products currently unavailable for purchase.',
                 'catalogx'
             ),
-            desc: __(
-                '<ul><li>All Products - Display the enquiry button on every product, regardless of stock status.</li><li>Out-of-Stock Products Only - Display the enquiry button only for products that are currently unavailable or out of stock.</li></ul>',
-                'catalogx'
-            ),
             options: [
                 {
                     key: 'all_products',
@@ -139,30 +132,12 @@ export default {
             ],
             moduleEnabled: 'enquiry',
         },
-        // {
-        //     key: 'is_enable_out_of_stock',
-        //     type: 'checkbox',
-        //     label: __('Enquiry for out-of-stock products only', 'catalogx'),
-        //     desc: __(
-        //         'Enquiry button is shown exclusively for products that are out of stock. For items that are in stock, the Add-to-Cart button will be displayed instead.',
-        //         'catalogx'
-        //     ),
-        //     options: [
-        //         {
-        //             key: 'is_enable_out_of_stock',
-        //             value: 'is_enable_out_of_stock',
-        //         },
-        //     ],
-        //     look: 'toggle',
-        //     moduleEnabled: 'enquiry',
-        // },
-        // This settings for notify me it works when only site off buying settings on and stock alert plugin active
         // popup - propopup, modulepopup
         {
             key: 'notify_me_button',
             type: 'checkbox',
             label: __('In-Stock notify me button', 'catalogx'),
-            desc: __(
+            settingDescription: __(
                 'Allow customers to receive notifications when out-of-stock products become available.',
                 'catalogx'
             ),
@@ -178,21 +153,27 @@ export default {
             dependentPlugin: [
                 {
                     plugin: 'woocommerce-product-stock-alert/product_stock_alert.php',
-                    name: 'catalogx',
+                    name: 'Notifima',
                     link: 'https://wordpress.org/plugins/woocommerce-product-stock-alert/',
                 }
             ]
+        },
+        {
+            key: 'section',
+            type: 'section',
+            icon: 'form',
+            title: __('Form behaviour', 'catalogx'),
+            desc: __(
+                `How the enquiry form is presented and what happens after it's sent.`,
+                'catalogx'
+            ),
         },
         {
             key: 'is_disable_popup',
             type: 'choice-toggle',
             label: __('Display enquiry form as', 'catalogx'),
             settingDescription: __(
-                'Choose how the enquiry form is presented to customers.',
-                'catalogx'
-            ),
-            desc: __(
-                '<ul><li>Popup Window - Open the enquiry form in a modal popup.</li><li>Inline on Product Page - Display the enquiry form directly within the product page.</li></ul>',
+                'A popup window, or inline on the product page.',
                 'catalogx'
             ),
             options: [
@@ -213,12 +194,8 @@ export default {
             key: 'is_page_redirect',
             type: 'choice-toggle',
             label: __('What happens after enquiry submission?', 'catalogx'),
-            desc: __(
-                '<ul><li>Stay on Current Page - Customers remain on the same page after submitting their enquiry.</li><li>Redirect to Another Page - Customers are redirected to a page of your choice, such as a thank-you page or contact page, after their enquiry is submitted.</li></ul>',
-                'catalogx'
-            ),
             settingDescription: __(
-                'Choose whether customers remain on the current page or are redirected to another page after submitting an enquiry.',
+                'Keep the shopper on this page, or send them somewhere else.',
                 'catalogx'
             ),
             options: [
@@ -239,7 +216,7 @@ export default {
             key: 'redirect_page_id',
             type: 'select',
             label: __('Post enquiry submission redirect page', 'catalogx'),
-            desc: __('Select page where user will be redirected after successful enquiry.', 'catalogx'),
+            settingDescription: __('Select page where user will be redirected after successful enquiry.', 'catalogx'),
             options: appLocalizer.pages_data,
             dependent: {
                 key: 'is_page_redirect',
@@ -248,15 +225,100 @@ export default {
             },
             moduleEnabled: 'enquiry'
         },
+        {
+            key: 'section',
+            type: 'section',
+            icon: 'enquiry',
+            title: __('Where enquiries are sent', 'catalogx'),
+            desc: __(
+                'Email and WhatsApp routing for incoming enquiries.',
+                'catalogx'
+            ),
+        },
+        {
+            key: 'additional_alert_email',
+            type: 'text',
+            settingDescription: __(
+                "Separate several addresses with commas. Your admin address is included by default.",
+                'catalogx'
+            ),
+            label: __('Recipient email for product enquiries', 'catalogx'),
+            moduleEnabled: 'enquiry',
+        },
+        //whatsapp section
+        {
+            key: 'enable_whatsapp',
+            type: 'checkbox',
+            label: __('Enable WhatsApp enquiries', 'catalogx'),
+            settingDescription: __(
+                'Allow customers to contact you directly through WhatsApp for product enquiries.',
+                'catalogx'
+            ),
+            options: [
+                {
+                    key: 'enable_whatsapp',
+                    label: __('', 'catalogx'),
+                    value: 'enable_whatsapp',
+                },
+            ],
+            look: 'toggle',
+            moduleEnabled: 'enquiry',
+            proSetting: true,
 
+        },
+        {
+            key: 'whatsapp_number',
+            type: 'text',
+            size: 12,
+            label: __('WhatsApp contact number', 'catalogx'),
+            placeholder: __('9000012345', 'catalogx'),
+            settingDescription: __(
+                'The WhatsApp number that will receive product enquiries. Use country code followed by phone number.',
+                'catalogx'
+            ),
+            beforeElement: {
+                type: 'select',
+                key: 'whatsapp_country_code',
+                size: 12,
+                options: CountryCodes,
+            },
+            dependent: {
+                key: 'enable_whatsapp',
+                set: true,
+                value: 'enable_whatsapp',
+            },
+            moduleEnabled: 'enquiry',
+            proSetting: true,
+        },
+        {
+            key: 'whatsapp_message_template',
+            type: 'textarea',
+            label: __('WhatsApp enquiry message template', 'catalogx'),
+            settingDescription: __(
+                'Define the message that will be pre-filled when customers send a product enquiry through WhatsApp.',
+                'catalogx'
+            ),
+            desc: __(
+                'Use {site_name} to display the site name, {product_name} to display the product name, and {product_url} to display the product URL in the pre-filled message. You can edit the message text, but keep the placeholders if you want these details filled in automatically.',
+                'catalogx'
+            ),
+            moduleEnabled: 'enquiry',
+            proSetting: true,
+            dependent: {
+                key: 'enable_whatsapp',
+                set: true,
+                value: 'enable_whatsapp',
+            },
+        },
         //quote
         {
             key: 'section',
             type: 'section',
-            desc: __('Control who can request quotations and how long quotations remain available.',
+            icon: 'quote',
+            desc: __('Who can ask for a quote, and how long it stays valid.',
                 'catalogx'
             ),
-            title: __('Quotation management', 'catalogx'),
+            title: __('Requests', 'catalogx'),
         },
         {
             key: 'quote_user_permission',
@@ -266,11 +328,7 @@ export default {
                 'catalogx'
             ),
             settingDescription: __(
-                'Control whether quotation requests are available to all visitors or only logged-in users.',
-                'catalogx'
-            ),
-            desc: __(
-                '<ul><li>Everyone - Any visitor can submit quotation requests.</li><li>Logged-in users - Only authenticated customers can request quotations.</li></ul>',
+                'Anyone, or logged-in customers only.',
                 'catalogx'
             ),
             options: [
@@ -288,44 +346,75 @@ export default {
             moduleEnabled: 'quote',
             tour: 'quote-permission',
         },
+
+        {
+            key: 'quotation_validity',
+            type: 'choice-toggle',
+            label: __('Quotation validity period', 'catalogx'),
+            settingDescription: __(
+                'Quotes stand forever, or expire after a set number of days.',
+                'catalogx'
+            ),
+            options: [
+                {
+                    key: 'lifetime',
+                    label: __('Lifetime', 'catalogx'),
+                    value: 'lifetime',
+                },
+                {
+                    key: 'fixed_duration',
+                    label: __('Fixed duration', 'catalogx'),
+                    value: 'fixed_duration',
+                },
+            ],
+            proSetting: true,
+            moduleEnabled: 'quote',
+        },
         {
             key: 'set_expiry_time',
-            type: 'text',
-            label: __('Quotation validity period', 'catalogx'),
+            type: 'number',
+            label: __('Duration', 'catalogx'),
             size: 10,
-            desc: __(
-                'Set the period after which a quotation will expire and no longer be valid for purchase.',
+            settingDescription: __(
+                'Specify the number of days a quotation remains valid.',
                 'catalogx'
             ),
             postText: __('days', 'catalogx'),
             proSetting: true,
             moduleEnabled: 'quote',
+            dependent: {
+                key: 'quotation_validity',
+                set: true,
+                value: 'fixed_duration',
+            },
         },
-
-        
         //extra
         {
             key: 'section',
             type: 'section',
-            desc: __('Manage the generation, availability, and delivery of enquiry and quotation documents.',
+            icon: 'customer-support',
+            desc: __('Configure how customers receive PDF documents for enquiries and quotations, including whether they can download them, receive them by email, or both.',
                 'catalogx'
             ),
-            title: __('Make documents available as PDFs', 'catalogx'),
+            title: __('How customers receives PDF documents?', 'catalogx'),
         },
         {
             key: 'display_pdf',
             type: 'multi-checkbox-table',
             storeSetting: true,
-            label: __('Document delivery mode', 'catalogx'),
+            label: __('PDF delivery mode', 'catalogx'),
+            settingDescription: __('Select the preferred delivery method for generated PDF documents.',
+                'catalogx'
+            ),
             classes: 'gridTable',
             rows: [
                 {
                     key: 'allow_download_pdf',
-                    label: __('Download as PDF', 'catalogx'),
+                    label: __('Available as download', 'catalogx'),
                 },
                 {
                     key: 'attach_pdf_to_email',
-                    label: __('Attach with Email', 'catalogx'),
+                    label: __('Attached to customer email', 'catalogx'),
                 },
             ],
             columns: [

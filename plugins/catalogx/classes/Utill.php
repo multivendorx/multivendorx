@@ -43,13 +43,13 @@ class Utill {
     public const CATALOGX_SETTINGS = array(
         'wholesale'                     => 'catalogx_wholesale_settings',
         'wholesale-registration'        => 'catalogx_wholesale_registration_settings',
-        'dashboard'                     => 'catalogx_dashboard_settings',
         'enquiry-quote-exclusion'       => 'catalogx_enquiry_quote_exclusion_settings',
         'enquiry-email-template'        => 'catalogx_enquiry_email_template_settings',
         'tools'                         => 'catalogx_tools_settings',
         'enquiry-form-customization'    => 'catalogx_enquiry_form_customization_settings',
         'enquiry-catalog-customization' => 'catalogx_enquiry_catalog_customization_settings',
-        'customer-engagement'           => 'catalogx_customer_engagement_settings'
+        'customer-engagement'           => 'catalogx_customer_engagement_settings',
+        'pages-shortcodes'              => 'catalogx_pages_shortcodes_settings',
     );
 
     /**
@@ -331,9 +331,9 @@ class Utill {
     public static function get_translated_string( $context, $name, $default_value ) {
         if ( function_exists( 'icl_t' ) ) {
             return icl_t( $context, $name, $default_value );
-        } else {
-            return __( $default_value, 'catalogx' );
         }
+
+        return $default_value;
     }
     /**
      * Validate REST nonce.
@@ -358,7 +358,7 @@ class Utill {
 
         return true;
     }
-    
+
     /**
 	 * Convert WordPress PHP date format to React date picker format
 	 *
@@ -391,17 +391,17 @@ class Utill {
 	}
 
     public static function get_tags_enquiry_form() {
-        $tags = [];
+        $tags = array();
 
-        $form_settings = CatalogX()->setting->get_setting('enquiry_form_tabs', []);
+        $form_settings = CatalogX()->setting->get_setting( 'enquiry_form_tabs', array() );
         if ( empty( $form_settings['enquiry_form_builder']['formfieldlist'] ) ) {
             return $tags;
         }
 
-        $excluded_types = [ 'button', 'title', 'richtext' ];
+        $excluded_types = array( 'button', 'title', 'richtext' );
 
         foreach ( $form_settings['enquiry_form_builder']['formfieldlist'] as $field ) {
-            if ( empty( $field['type'] ) ||  in_array( $field['type'], $excluded_types, true ) ) {
+            if ( empty( $field['type'] ) || in_array( $field['type'], $excluded_types, true ) ) {
                 continue;
             }
 
@@ -440,5 +440,41 @@ class Utill {
                 'status' => 500,
             )
         );
+    }
+
+    /**
+     * Generic REST API capability check, shared by CatalogX controllers/routes
+     * through their `permission_callback`, instead of each controller
+     * re-checking `current_user_can()` and building its own error response.
+     *
+     * Grants access when the current user has at least one of the given
+     * capabilities; otherwise returns a `WP_Error` with the appropriate
+     * 401 (not logged in) or 403 (logged in, but lacking the capability) status.
+     *
+     * @param string|array $capabilities One capability, or an array of
+     *                                   capabilities. Access is granted if the
+     *                                   current user has any one of them.
+     * @param string       $context      Optional context used by the permissions
+     *                                   filter.
+     * @param string       $setting_key  Optional setting key for additional access check.
+     * @return true|\WP_Error
+     */
+    public static function current_user_has_capability( $capabilities, $context = '', $setting_key = '' ) {
+        $user_id = CatalogX()->current_user_id;
+
+        // Allow non-logged-in users when permission is set to everyone.
+        if ( 0 === $user_id && ! empty( $setting_key ) && 'everyone' === CatalogX()->setting->get_setting( $setting_key, 'everyone' ) ) {
+            return true;
+        }
+
+        $capabilities = apply_filters( 'catalogx_permissions_check', $capabilities, $context );
+
+        foreach ( (array) $capabilities as $capability ) {
+            if ( current_user_can( $capability ) ) { // phpcs:ignore WordPress.WP.Capabilities.Unknown
+                return true;
+            }
+        }
+
+        return false;
     }
 }

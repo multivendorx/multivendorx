@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-$store_slug            = get_query_var( 'store' );
+$store_slug            = MultiVendorX()->setting->get_setting( 'store_url', 'store' );
 $elementor_template_id = false;
 
 // Get Elementor template ID for the store page.

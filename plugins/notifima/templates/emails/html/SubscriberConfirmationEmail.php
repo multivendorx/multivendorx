@@ -56,7 +56,6 @@ $is_prices_including_tax = get_option( 'woocommerce_prices_include_tax' );
 	<a target="_blank" href="mailto:<?php echo esc_html( $args['customer_email'] ); ?>"><?php echo ! empty( $args['customer_email'] ) ? esc_html( $args['customer_email'] ) : 'test@example.com'; ?></a>
 </p>
 
-</p>
 <?php
 if ( ! empty( $product ) ) {
 	do_action( 'notifima_subscriber_confirmation_email_footer', $product->get_id(), $args['customer_email'] );

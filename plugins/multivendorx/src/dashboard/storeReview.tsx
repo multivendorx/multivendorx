@@ -2,19 +2,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
+
+import { ButtonInput, TextAreaInput } from '@zyra/inputs';
 import {
-	getApiLink,
-	FormGroupWrapper,
-	FormGroup,
-	ButtonInputUI,
-	PopupUI,
-	TextAreaUI,
-	TableCard,
-	NavigatorHeader,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-} from 'zyra';
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 
 import { formatLocalDate } from '@/services/commonFunction';
 
@@ -151,7 +148,7 @@ const StoreReview: React.FC = () => {
 	const filters = [
 		{
 			key: 'rating',
-			label: __('Status', 'multivendorx'),
+			label: __('Select Rating', 'multivendorx'),
 			type: 'select',
 			options: [
 				{ label: __('All', 'multivendorx'), value: '' },
@@ -245,7 +242,7 @@ const StoreReview: React.FC = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Store Review', 'multivendorx')}
 				headerDescription={__(
 					'See all customer reviews and ratings submitted for your store in one centralized list.',
@@ -266,7 +263,7 @@ const StoreReview: React.FC = () => {
 				format={appLocalizer.date_format}
 			/>
 			{selectedReview && (
-				<PopupUI
+				<PopupComponent
 					open={!!selectedReview}
 					onClose={() => setSelectedReview(null)}
 					width={31.25}
@@ -280,7 +277,7 @@ const StoreReview: React.FC = () => {
 						),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',
@@ -303,57 +300,55 @@ const StoreReview: React.FC = () => {
 								<div className="avatar">
 									<i className="item-icon adminfont-person"></i>
 								</div>
-								{selectedReview && (
-									<div className="name-wrapper">
-										<div
-											className="name"
-											dangerouslySetInnerHTML={{
-												__html: selectedReview.review_title,
-											}}
-										></div>
+								<div className="name-wrapper">
+									<div
+										className="name"
+										dangerouslySetInnerHTML={{
+											__html: selectedReview.review_title,
+										}}
+									></div>
 
-										<div className="rating-wrapper">
-											{[
-												...Array(
+									<div className="rating-wrapper">
+										{[
+											...Array(
+												Math.round(
+													selectedReview.overall_rating ||
+														0
+												)
+											),
+										].map((_, i) => (
+											<i
+												key={`filled-${i}`}
+												className="star-icon adminfont-star"
+											></i>
+										))}
+
+										{[
+											...Array(
+												5 -
 													Math.round(
 														selectedReview.overall_rating ||
 															0
 													)
-												),
-											].map((_, i) => (
-												<i
-													key={`filled-${i}`}
-													className="star-icon adminfont-star"
-												></i>
-											))}
+											),
+										].map((_, i) => (
+											<i
+												key={`empty-${i}`}
+												className="star-icon adminfont-star-o"
+											></i>
+										))}
 
-											{[
-												...Array(
-													5 -
-														Math.round(
-															selectedReview.overall_rating ||
-																0
-														)
-												),
-											].map((_, i) => (
-												<i
-													key={`empty-${i}`}
-													className="star-icon adminfont-star-o"
-												></i>
-											))}
-
-											<div className="date">
-												{new Date(
-													selectedReview.date_created
-												).toLocaleDateString('en-GB', {
-													day: '2-digit',
-													month: 'short',
-													year: 'numeric',
-												})}
-											</div>
+										<div className="date">
+											{new Date(
+												selectedReview.date_created
+											).toLocaleDateString('en-GB', {
+												day: '2-digit',
+												month: 'short',
+												year: 'numeric',
+											})}
 										</div>
 									</div>
-								)}
+								</div>
 							</div>
 
 							<div className="review">
@@ -361,25 +356,25 @@ const StoreReview: React.FC = () => {
 							</div>
 						</div>
 
-						<FormGroupWrapper>
-							<FormGroup
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__(
 									'Respond to customer',
 									'multivendorx'
 								)}
 								htmlFor="reply"
 							>
-								<TextAreaUI
+								<TextAreaInput
 									name="reply"
 									inputClass="input-text"
 									value={replyText}
 									onChange={(value) => setReplyText(value)}
 									usePlainText={true}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
 					</>
-				</PopupUI>
+				</PopupComponent>
 			)}
 		</>
 	);

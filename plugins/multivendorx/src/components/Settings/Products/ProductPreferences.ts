@@ -126,7 +126,7 @@ export default {
 				'multivendorx'
 			),
 			desc: __(
-				'<ul><li><strong>Never (let me set them)</strong> – SKUs will not be generated automatically. Stores must manually enter a SKU.</li><li><strong>Using the product/listing slug (name)</strong> – Automatically generate the SKU from the product or listing slug if none is provided.</li><li><strong>Using the product/listing ID</strong> – Automatically generate the SKU using the product or listing ID if none is provided.</li></ul>',
+				'<ul><li><strong>Hierarchical selection</strong> – Stores select categories through a structured parent-to-child hierarchy.</li><li><strong>Free selection</strong> – Stores can select multiple categories freely without following a hierarchy.</li></ul>',
 				'multivendorx'
 			),
 			options: [

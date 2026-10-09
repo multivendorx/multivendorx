@@ -9,6 +9,8 @@ namespace MultiVendorX\MarketplaceCompliance;
 
 use MultiVendorX\FrontendScripts;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Follow Store Frontend class
  *
@@ -37,7 +39,7 @@ class Frontend {
     public function register_script( $scripts ) {
         $scripts['multivendorx-report-abuse-frontend-script'] = array(
             'src'  => FrontendScripts::get_asset_path() . 'js/modules/MarketplaceCompliance/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
-            'deps' => array( 'jquery','wp-i18n' ),
+            'deps' => array( 'jquery', 'wp-i18n' ),
         );
 
         return $scripts;
@@ -63,7 +65,6 @@ class Frontend {
      */
     public function load_scripts() {
         if ( is_product() ) {
-            FrontendScripts::load_scripts();
             FrontendScripts::enqueue_script( 'multivendorx-report-abuse-frontend-script' );
             FrontendScripts::localize_scripts( 'multivendorx-report-abuse-frontend-script' );
         }
@@ -151,6 +152,12 @@ class Frontend {
         }
     }
 
+    /**
+     * Add report-abuse submissions to the compliance-tab badge count.
+     *
+     * @param int $total Running compliance count total.
+     * @return int Updated compliance count total.
+     */
     public function compliance_count( $total ) {
         $total_count = Util::get_report_abuse_information( array( 'count' => true ) );
         $total      += $total_count;

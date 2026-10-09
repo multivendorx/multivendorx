@@ -4,16 +4,16 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import ShowProPopup from '../Popup/Popup';
 import { applyFilters } from '@wordpress/hooks';
+import { getApiLink } from '@zyra/core';
+
 import {
-	getApiLink,
-	TableCard,
-	NavigatorHeader,
-	QueryProps,
-	InfoItem,
-	PopupUI,
-	Container,
-	Column,
-} from 'zyra';
+	InformationItemComponent,
+	PopupComponent,
+	ContainerComponent,
+	ColumnComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard, QueryProps } from '@zyra/table';
 
 interface CourseRow {
 	id?: number;
@@ -63,25 +63,33 @@ const Course: React.FC = () => {
 	const headers = {
 		course_name: {
 			label: __('Course', 'moowoodle'),
+			width:'50%',
 			render: (row: CourseRow) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.course_name}
 					titleLink={row.moodle_url}
 					avatar={{
 						image: row.product_image,
 						iconClass: 'subscription-courses',
 					}}
+					badges={[
+						{
+							text: row.category_name,
+							className: 'yellow',
+						},
+						{
+							className: 'blue',
+							text: row.date,
+						},
+					]}
+					descriptions={[
+						{
+							label: __('Short name', 'moowoodle'),
+							value: row.course_short_name,
+						},
+					]}
 				/>
 			),
-		},
-		course_short_name: {
-			label: __('Short name', 'moowoodle'),
-		},
-		category_name: {
-			label: __('Category', 'moowoodle'),
-		},
-		date: {
-			label: __('Course duration', 'moowoodle'),
 		},
 		products: {
 			label: __('Product', 'moowoodle'),
@@ -137,9 +145,9 @@ const Course: React.FC = () => {
 					label: (row: CourseRow) => {
 						return row?.product_name
 							? __(
-									'Sync Course Data & Update Product',
-									'moowoodle'
-								)
+								'Sync Course Data & Update Product',
+								'moowoodle'
+							)
 							: __('Create Product', 'moowoodle');
 					},
 					icon: (row: CourseRow) => {
@@ -166,7 +174,7 @@ const Course: React.FC = () => {
 	const filters = [
 		{
 			key: 'category',
-			label: __('Category', 'moowoodle'),
+			label: __('Select Category', 'moowoodle'),
 			type: 'select',
 			options: category,
 		},
@@ -244,7 +252,7 @@ const Course: React.FC = () => {
 	return (
 		<>
 			{openPopup && (
-				<PopupUI
+				<PopupComponent
 					position="lightbox"
 					open={openPopup}
 					onClose={() => setopenPopup(false)}
@@ -252,9 +260,9 @@ const Course: React.FC = () => {
 					height="auto"
 				>
 					<ShowProPopup />
-				</PopupUI>
+				</PopupComponent>
 			)}
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerIcon="subscription-courses"
 				headerDescription={__(
 					'Comprehensive course data is displayed here, including linked products, enrollment numbers, and related details.',
@@ -269,11 +277,11 @@ const Course: React.FC = () => {
 					{error}
 				</div>
 			)}
-			<Container general>
-				<Column>
+			<ContainerComponent general>
+				<ColumnComponent>
 					<TableCard {...tableProps} />
-				</Column>
-			</Container>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

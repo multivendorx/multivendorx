@@ -1,7 +1,7 @@
 /* global StoreInfo */
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { getApiLink } from 'zyra';
+import { getApiLink } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
 
 const StoreQuickInfo: React.FC<object> = () => {
@@ -28,7 +28,7 @@ const StoreQuickInfo: React.FC<object> = () => {
 		const fetchRatingCount = async () => {
 			try {
 				const response = await axios.get(
-					getApiLink(StoreInfo, `review`),
+					getApiLink(StoreInfo, `reviews`),
 					{
 						headers: { 'X-WP-Nonce': StoreInfo.nonce },
 						params: { store_id: storeDetails.storeId },

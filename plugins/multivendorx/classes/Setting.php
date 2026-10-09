@@ -169,12 +169,14 @@ class Setting {
      */
     public function update_option( $key, $value ) {
 
-        // Check key exist in register settings keys.
-        if ( in_array( $key, $this->get_settings_keys(), true ) ) {
-
-            // Update the container.
-            $this->settings[ $key ] = $value;
+        // Refuse to persist a key that isn't a registered setting, so a
+        // caller-supplied setting name can't be used to write an arbitrary option.
+        if ( ! in_array( $key, $this->get_settings_keys(), true ) ) {
+            return;
         }
+
+        // Update the container.
+        $this->settings[ $key ] = $value;
 
         // Update the option.
         update_option( $key, $value );

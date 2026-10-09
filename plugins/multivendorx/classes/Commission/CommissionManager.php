@@ -113,7 +113,7 @@ class CommissionManager {
             }
 
             // Insert | update commission into commission table.
-            $data   = array(
+            $commission_data = array(
                 'order_id'                 => $order->get_id(),
                 'store_id'                 => $store_id,
                 'customer_id'              => $order->get_customer_id(),
@@ -134,12 +134,12 @@ class CommissionManager {
                 'status'                   => $status,
                 'rules_applied'            => maybe_serialize( $rules_array ),
             );
-            $format = array( '%d', '%d', '%d', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%s', '%s', '%s' );
+            $format          = array( '%d', '%d', '%d', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%s', '%s', '%s' );
 
             $filtered = apply_filters(
                 'multivendorx_before_commission_insert',
                 array(
-                    'data'   => $data,
+                    'data'   => $commission_data,
                     'format' => $format,
                 ),
                 $store,
@@ -148,14 +148,14 @@ class CommissionManager {
                 false
             );
 
-            $data   = $filtered['data'];
-            $format = $filtered['format'];
+            $commission_data = $filtered['data'];
+            $format          = $filtered['format'];
 
             if ( ! $commission_id ) {
-                $wpdb->insert( $wpdb->prefix . Utill::TABLES['commission'], $data, $format );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
+                $wpdb->insert( $wpdb->prefix . Utill::TABLES['commission'], $commission_data, $format );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
                 $commission_id = $wpdb->insert_id;
             } else {
-                $wpdb->update( $wpdb->prefix . Utill::TABLES['commission'], $data, array( 'ID' => $commission_id ), $format );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
+                $wpdb->update( $wpdb->prefix . Utill::TABLES['commission'], $commission_data, array( 'ID' => $commission_id ), $format );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
             }
 
             if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
@@ -303,96 +303,127 @@ class CommissionManager {
             $order_total -= (float) $this->get_item_refunded_total( $order );
         }
 
-        foreach ( $commission_per_store_order as $row ) {
-            if ( ! is_array( $row ) || ! array_key_exists( 'rule_type', $row ) ) {
-                continue;
-            }
-
-            switch ( $row['rule_type'] ) {
-                case 'order_value':
-                    $base_val = (float) $row['order_value'];
-                    if ( ( 'less_than' === $row['rule'] && $order_total <= $base_val ) ||
-                        ( 'more_than' === $row['rule'] && $order_total > $base_val ) ) {
-                        $commission_amount = $order_total > 0 ? ( $order_total * ( (float) $row['commission_percentage'] / 100 ) + (float) $row['commission_fixed'] ) : 0;
-
-                        $rules_array['commission_amount']['rules'][] = array(
-                            'rule_type'  => $row['rule_type'],
-                            'rule'       => $row['rule'],
-                            'value'      => $row['order_value'],
-                            'fixed'      => $row['commission_fixed'],
-                            'percentage' => $row['commission_percentage'],
-                        );
-                        return array(
-                            'commission_amount' => (float) $commission_amount,
-                            'rules_array'       => $rules_array,
-                        );
-                    }
-                    break;
-
-                case 'price':
-                case 'quantity':
-                    foreach ( $items as $item_id => $item ) {
-                        $qty        = (float) $item['qty'];
-                        $line_total = (float) $order->get_item_total( $item, false, false ) * $qty;
-
-                        if ( $is_refund ) {
-                            $ref_amt    = $this->get_item_refunded_total( $order, $item_id );
-                            $line_total = max( 0, $line_total - (float) $ref_amt * $qty );
-                        }
-
-                        if ( 'price' === $row['rule_type'] ) {
-                            $compare_value = $line_total;
-                            $base_value    = (float) $row['product_price'];
-                        } else {
-                            $compare_value = $qty;
-                            $base_value    = (float) $row['product_qty'];
-                        }
-
-                        if ( ( 'less_than' === $row['rule'] && $compare_value <= $base_value ) ||
-                            ( 'more_than' === $row['rule'] && $compare_value > $base_value ) ) {
-                            $commission_amount += $line_total > 0 ? ( $line_total * ( (float) $row['commission_percentage'] / 100 ) + (float) $row['commission_fixed'] ) : 0;
-
-                            $rules_array['commission_amount']['rules'][] = array(
-                                $item['product_id'] => array(
-                                    'rule_type'  => $row['rule_type'],
-                                    'rule'       => $row['rule'],
-                                    'value'      => $base_value,
-                                    'fixed'      => $row['commission_fixed'],
-                                    'percentage' => $row['commission_percentage'],
-                                ),
-                            );
-                        } else {
-                            $default            = reset( $commission_per_store_order );
-                            $commission_amount  += $line_total > 0 ? ( $line_total * ( (float) $default['commission_percentage'] / 100 ) + (float) $default['commission_fixed'] ) : 0;
-                            $rules_array['commission_amount']['rules'][] = array(
-                                'rule_type'  => 'global',
-                                'fixed'      => $default['commission_fixed'],
-                                'percentage' => $default['commission_percentage'],
-                            );
-                        }
-                    }
-                    if ( $commission_amount > 0 ) {
-                        return array(
-                            'commission_amount' => (float) $commission_amount,
-                            'rules_array'       => $rules_array,
-                        );
-                    }
-                    break;
-            }
-        }
-
-        $default                                     = reset( $commission_per_store_order );
-        $commission_amount                           = $order_total > 0 ? ( $order_total * ( (float) $default['commission_percentage'] / 100 ) + (float) $default['commission_fixed'] ) : 0;
-        $rules_array['commission_amount']['rules'][] = array(
-            'rule_type'  => 'global',
-            'fixed'      => $default['commission_fixed'],
-            'percentage' => $default['commission_percentage'],
+        $default          = array_shift( $commission_per_store_order );
+        $commission_rules = array(
+            array(
+                'default'  => $default,
+                'priority' => 999,
+            ),
+            array(
+                'advance_rule' => $commission_per_store_order,
+                'priority'     => 10,
+            ),
         );
 
-        return array(
-			'commission_amount' => $commission_amount,
-			'rules_array'       => $rules_array,
-		);
+        $commission_rules = apply_filters( 'multivendorx_commission_rules', $commission_rules, $items );
+
+        usort(
+            $commission_rules,
+            function ( $a, $b ) {
+                return $a['priority'] <=> $b['priority'];
+            }
+        );
+        $result = array();
+
+        foreach ( $commission_rules as $rule ) {
+            unset( $rule['priority'] );
+            $result += $rule;
+        }
+
+        $commission_rules = $result;
+
+        foreach ( $commission_rules as $key => $rules ) {
+            if ( $key == 'advance_rule' ) {
+                foreach ( $rules as $row ) {
+                    if ( ! is_array( $row ) || ! array_key_exists( 'rule_type', $row ) ) {
+                        continue;
+                    }
+
+                    switch ( $row['rule_type'] ) {
+                        case 'order_value':
+                            $base_val = (float) $row['order_value'];
+                            if ( ( 'less_than' === $row['rule'] && $order_total <= $base_val ) ||
+                                ( 'more_than' === $row['rule'] && $order_total > $base_val ) ) {
+                                $commission_amount = $order_total > 0 ? ( $order_total * ( (float) $row['commission_percentage'] / 100 ) + (float) $row['commission_fixed'] ) : 0;
+
+                                $rules_array['commission_amount']['rules'][] = array(
+                                    'rule_type'  => $row['rule_type'],
+                                    'rule'       => $row['rule'],
+                                    'value'      => $row['order_value'],
+                                    'fixed'      => $row['commission_fixed'],
+                                    'percentage' => $row['commission_percentage'],
+                                );
+                                return array(
+                                    'commission_amount' => (float) $commission_amount,
+                                    'rules_array'       => $rules_array,
+                                );
+                            }
+                            break;
+
+                        case 'price':
+                        case 'quantity':
+                            foreach ( $items as $item_id => $item ) {
+                                $qty        = (float) $item['qty'];
+                                $line_total = (float) $order->get_item_total( $item, false, false ) * $qty;
+
+                                if ( $is_refund ) {
+                                    $ref_amt    = $this->get_item_refunded_total( $order, $item_id );
+                                    $line_total = max( 0, $line_total - (float) $ref_amt * $qty );
+                                }
+
+                                if ( 'price' === $row['rule_type'] ) {
+                                    $compare_value = $line_total;
+                                    $base_value    = (float) $row['product_price'];
+                                } else {
+                                    $compare_value = $qty;
+                                    $base_value    = (float) $row['product_qty'];
+                                }
+
+                                if ( ( 'less_than' === $row['rule'] && $compare_value <= $base_value ) ||
+                                    ( 'more_than' === $row['rule'] && $compare_value > $base_value ) ) {
+                                    $commission_amount += $line_total > 0 ? ( $line_total * ( (float) $row['commission_percentage'] / 100 ) + (float) $row['commission_fixed'] ) : 0;
+
+                                    $rules_array['commission_amount']['rules'][] = array(
+                                        $item['product_id'] => array(
+                                            'rule_type'  => $row['rule_type'],
+                                            'rule'       => $row['rule'],
+                                            'value'      => $base_value,
+                                            'fixed'      => $row['commission_fixed'],
+                                            'percentage' => $row['commission_percentage'],
+                                        ),
+                                    );
+                                } else {
+                                    $commission_amount                          += $line_total > 0 ? ( $line_total * ( (float) $default['commission_percentage'] / 100 ) + (float) $default['commission_fixed'] ) : 0;
+                                    $rules_array['commission_amount']['rules'][] = array(
+                                        'rule_type'  => 'global',
+                                        'fixed'      => $default['commission_fixed'],
+                                        'percentage' => $default['commission_percentage'],
+                                    );
+                                }
+                            }
+                            if ( $commission_amount > 0 ) {
+                                return array(
+                                    'commission_amount' => (float) $commission_amount,
+                                    'rules_array'       => $rules_array,
+                                );
+                            }
+                            break;
+                    }
+                }
+            } else {
+                $commission_amount                           = $order_total > 0 ? ( $order_total * ( (float) $rules['commission_percentage'] / 100 ) + (float) $rules['commission_fixed'] ) : 0;
+                $rules_array['commission_amount']['rules'][] = array(
+                    'rule_type'  => 'global',
+                    'fixed'      => $rules['commission_fixed'],
+                    'percentage' => $rules['commission_percentage'],
+                );
+
+                return array(
+                    'commission_amount' => $commission_amount,
+                    'rules_array'       => $rules_array,
+                );
+            }
+        }
     }
 
     /**
@@ -507,6 +538,11 @@ class CommissionManager {
         $product = wc_get_product( $product_id );
 
         if ( $product && $store ) {
+            $commission_values = apply_filters( 'multivendorx_calculate_commission_values_per_item', false, $store );
+
+            if ( $commission_values ) {
+                return $commission_values;
+            }
 
             // Variable Product.
             $data['commission_val']   = $product->get_meta( Utill::POST_META_SETTINGS['variable_product_percentage'], true );
@@ -565,7 +601,7 @@ class CommissionManager {
      */
     public function get_category_wise_commission( $product ) {
 
-        // Get the terms => ['product_cat'] of the prodcut.
+        // Get the terms => ['product_cat'] of the product.
         $terms = get_the_terms( $product->get_id(), 'product_cat' );
         if ( ! $terms || is_wp_error( $terms ) ) {
             return null;
@@ -675,7 +711,7 @@ class CommissionManager {
                                 ( $commission->admin_discount - $admin_coupon_amount )
                             );
 
-            $data = array(
+            $commission_refund_data = array(
                 'order_id'                 => $store_order->get_id(),
                 'store_id'                 => $store_id,
                 'total_order_value'        => $store_order->get_total(),
@@ -702,7 +738,7 @@ class CommissionManager {
             $filtered = apply_filters(
                 'multivendorx_before_commission_insert',
                 array(
-                    'data'   => $data,
+                    'data'   => $commission_refund_data,
                     'format' => $format,
                 ),
                 $store,
@@ -711,10 +747,10 @@ class CommissionManager {
                 true
             );
 
-            $data   = $filtered['data'];
-            $format = $filtered['format'];
+            $commission_refund_data = $filtered['data'];
+            $format                 = $filtered['format'];
 
-            $wpdb->update( $wpdb->prefix . Utill::TABLES['commission'], $data, array( 'ID' => $commission_id ), $format );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
+            $wpdb->update( $wpdb->prefix . Utill::TABLES['commission'], $commission_refund_data, array( 'ID' => $commission_id ), $format );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
 
             do_action( 'multivendorx_after_insert_commission_refunds', $store_order, $commission_id );
 
@@ -727,7 +763,7 @@ class CommissionManager {
 
             $refund_status = MultiVendorX()->setting->get_setting( 'customer_refund_status' );
             if ( ! empty( $refund_status ) && in_array( $store_order->get_status(), $refund_status, true ) ) {
-                $data = array(
+                $transaction_data = array(
                     'store_id'         => (int) $store_id,
                     'order_id'         => (int) $store_order->get_id(),
                     'commission_id'    => $commission_id ? (int) $commission_id : null,
@@ -735,7 +771,7 @@ class CommissionManager {
                     'transaction_type' => 'Refund',
                     'amount'           => abs( (float) $commission->store_payable - $store_payable ),
                     'currency'         => get_woocommerce_currency(),
-                    'payment_method'   => $store->get_meta( 'payment_method' ) ?? '',
+                    'payment_method'   => $store->get_payment_method( 'name' ) ?? '',
                     'narration'        => 'Withdrawal via refund',
                     'status'           => 'Completed',
                 );
@@ -744,7 +780,7 @@ class CommissionManager {
                 /* phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,*/
                 $wpdb->insert(
                     $wpdb->prefix . Utill::TABLES['transaction'],
-                    $data,
+                    $transaction_data,
                     $format
                 );
             }

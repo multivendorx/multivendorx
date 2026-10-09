@@ -1,15 +1,14 @@
 /* global appLocalizer */
 import React, { useState, useEffect } from 'react';
+
 import {
-	CategoryCount,
-	Column,
-	Container,
-	InfoItem,
-	NavigatorHeader,
-	PopupUI,
-	QueryProps,
-	TableCard,
-} from 'zyra';
+	ColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { CategoryCount, QueryProps, TableCard } from '@zyra/table';
 import { __ } from '@wordpress/i18n';
 import ShowProPopup from '../Popup/Popup';
 import { applyFilters } from '@wordpress/hooks';
@@ -44,6 +43,7 @@ const Enrollment: React.FC = () => {
 	const headers = {
 		learning_unit: {
 			label: __('Learning Unit', 'moowoodle'),
+			width: "50%",
 			render: (row: EnrollmentRow) => {
 				let title = '';
 
@@ -56,40 +56,47 @@ const Enrollment: React.FC = () => {
 				}
 
 				return (
-					<InfoItem
-						title={title}
+					<InformationItemComponent
+						title={row.customer_name}
 						avatar={{
-							iconClass: 'document',
+							iconClass: 'person',
 						}}
+						badges={[
+							{
+								text: row.status,
+								className: `badge-${row.status}`,
+							},
+						]}
+						descriptions={[
+							{
+								icon: 'subscription-courses',
+								label: __('Course', 'moowoodle'),
+								value: title,
+							},
+						]}
 					/>
 				);
 			},
 		},
-		student: {
-			label: __('Student', 'moowoodle'),
-			render: (row: EnrollmentRow) => (
-				<InfoItem
-					title={row.customer_name || '-'}
-					avatar={{
-						iconClass: 'person',
-					}}
-				/>
-			),
-		},
 		enrollment_date: {
-			label: __('Enrollment Date', 'moowoodle'),
-			type: 'date',
-		},
-		status: {
-			label: __('Status', 'moowoodle'),
-			type: 'status',
-			statusClass: (row) => `${row.status}`,
+			label: __('Date', 'moowoodle'),
+			render: (row: EnrollmentRow) => {
+				return (
+					<>
+						<div className='table-details'>
+							<span className='label'>{__('Enrollment Date', 'moowoodle')}</span>
+							{row.enrollment_date || '-'}
+						</div>
+					</>
+				);
+			},
 		},
 		action: {
 			type: 'action',
 			label: __('Action', 'moowoodle'),
 			actions: [
 				{
+					type: 'button',
 					label: (row: EnrollmentRow) => {
 						return row.status === 'enrolled'
 							? __('Unenroll Now', 'moowoodle')
@@ -97,6 +104,11 @@ const Enrollment: React.FC = () => {
 					},
 					onClick: (row: EnrollmentRow) => {
 						setOpenPopup(true);
+					},
+					color: (row: EnrollmentRow) => {
+						return row.status === 'enrolled'
+							? __('text-red', 'moowoodle')
+							: __('text-purple', 'moowoodle');
 					},
 					icon: 'classroom-enrollment',
 				},
@@ -106,6 +118,7 @@ const Enrollment: React.FC = () => {
 
 	const defaultTableProps = {
 		headers,
+		hideHeader: true,
 		rows: dummyEnrollments,
 		totalRows: dummyEnrollments.length,
 		search: {
@@ -135,7 +148,7 @@ const Enrollment: React.FC = () => {
 	return (
 		<>
 			{openPopup && (
-				<PopupUI
+				<PopupComponent
 					position="lightbox"
 					open={openPopup}
 					onClose={() => setOpenPopup(false)}
@@ -143,9 +156,9 @@ const Enrollment: React.FC = () => {
 					height="auto"
 				>
 					<ShowProPopup />
-				</PopupUI>
+				</PopupComponent>
 			)}
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerIcon="form"
 				headerTitle={__('All Enrollments', 'moowoodle')}
 				headerDescription={__(
@@ -153,14 +166,17 @@ const Enrollment: React.FC = () => {
 					'moowoodle'
 				)}
 			/>
-			<Container general>
-				<Column>
-					<div onClick={handleTableWrapperClick}>
+			<ContainerComponent general>
+				<ColumnComponent>
+					<div className="demo-wrapper" onClick={handleTableWrapperClick}>
+						{!appLocalizer.khali_dabba && (
+							<div className="watermark">{__('This is sample Data', 'moowoodle')}</div>
+						)}
 						<TableCard {...tableProps} />
 						{tableProps.popup}
 					</div>
-				</Column>
-			</Container>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

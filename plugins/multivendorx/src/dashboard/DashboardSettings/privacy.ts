@@ -57,7 +57,7 @@ export default {
 		// Section UI
 		{
 			type: 'section',
-			title: 'Deactivation',
+			title: __("Deactivation",'multivendorx'),
 		},
 
 		// Enable Deactivation Toggle

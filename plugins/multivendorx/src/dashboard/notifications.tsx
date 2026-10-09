@@ -1,6 +1,7 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
-import { getApiLink, Skeleton } from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { SkeletonComponent } from '@zyra/components';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -62,16 +63,16 @@ const Notifications: React.FC<NotificationsProps> = ({ type }) => {
 				<>
 					<li>
 						<div className="item">
-							<Skeleton width={25} height={4.375} />
+							<SkeletonComponent width={25} height={4.375} />
 						</div>
 						<div className="item">
-							<Skeleton width={25} height={4.375} />
+							<SkeletonComponent width={25} height={4.375} />
 						</div>
 						<div className="item">
-							<Skeleton width={25} height={4.375} />
+							<SkeletonComponent width={25} height={4.375} />
 						</div>
 						<div className="item">
-							<Skeleton width={25} height={4.375} />
+							<SkeletonComponent width={25} height={4.375} />
 						</div>
 					</li>
 				</>

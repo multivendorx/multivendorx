@@ -10,6 +10,7 @@ namespace MultiVendorX\RestAPI\Controllers;
 use MultiVendorX\Commission\CommissionUtil;
 use MultiVendorX\Utill;
 use MultiVendorX\Store\Store;
+use MultiVendorX\Store\StoreUtil;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -42,7 +43,7 @@ class Commissions extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
             )
         );
@@ -54,7 +55,7 @@ class Commissions extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                     'args'                => array(
                         'id' => array( 'required' => true ),
                     ),
@@ -62,30 +63,20 @@ class Commissions extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
             )
         );
     }
 
     /**
-     * GET permission check.
+     * Check permission for REST API requests.
      *
      * @param object $request Request data.
-     * @return bool
+     * @return true|\WP_Error
      */
-    public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' ); // phpcs:ignore WordPress.WP.Capabilities.Unknown
-    }
-
-    /**
-     * PUT permission check.
-     *
-     * @param object $request Request data.
-     * @return bool
-     */
-    public function update_item_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' ); // phpcs:ignore WordPress.WP.Capabilities.Unknown
+    public function permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 
     /**
@@ -112,6 +103,14 @@ class Commissions extends \WP_REST_Controller {
             $store_id = $request->get_param( 'store_id' );
             $format   = $request->get_param( 'format' );
             $order_id = $request->get_param( 'order_id' );
+
+            if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to view this store\'s commissions.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
 
             if ( 'reports' === $format ) {
                 $top_stores = $request->get_param( 'top_stores' );
@@ -204,23 +203,22 @@ class Commissions extends \WP_REST_Controller {
                         break;
                 }
             }
+
+            if ( empty( $ids ) ) {
+                $filter['limit']  = $limit;
+                $filter['offset'] = ( $page - 1 ) * $limit;
+            }
+
             if ( $ids ) {
                 $filter['ID'] = $ids;
             }
+
             // Default: latest first.
             $filter['order_by'] = $order_by ? $order_by : 'created_at';
             $filter['order']    = strtolower( $order ) === 'asc' ? 'ASC' : 'DESC';
 
             // Fetch commissions.
-            $commissions = CommissionUtil::get_commission_information(
-                array_merge(
-                    $filter,
-                    array(
-                        'limit'  => $limit,
-                        'offset' => ( $page - 1 ) * $limit,
-                    )
-                )
-            );
+            $commissions = CommissionUtil::get_commission_information( $filter );
 
             $formatted_commissions = array();
 
@@ -297,7 +295,24 @@ class Commissions extends \WP_REST_Controller {
         try {
             $id         = absint( $request->get_param( 'id' ) );
             $commission = reset( CommissionUtil::get_commission_information( array( 'ID' => $id ) ) );
-            $data       = $this->prepare_item_for_response( $commission, true );
+
+            if ( ! $commission ) {
+                return new \WP_Error(
+                    'rest_not_found',
+                    __( 'Commission not found.', 'multivendorx' ),
+                    array( 'status' => 404 )
+                );
+            }
+
+            if ( ! StoreUtil::current_user_can_manage_store( $commission['store_id'] ?? 0 ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to view this commission.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
+
+            $data = $this->prepare_item_for_response( $commission, true );
 
             return rest_ensure_response( $data );
         } catch ( \Exception $e ) {
@@ -334,6 +349,14 @@ class Commissions extends \WP_REST_Controller {
             $action   = $request->get_param( 'action' );
 
             if ( 'regenerate' === $action ) {
+                if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+                    return new \WP_Error(
+                        'rest_forbidden',
+                        __( 'You are not allowed to regenerate commissions.', 'multivendorx' ),
+                        array( 'status' => 403 )
+                    );
+                }
+
                 $order = wc_get_order( $order_id );
                 if ( $order ) {
                     MultiVendorX()->order->admin->regenerate_order_commissions( $order );

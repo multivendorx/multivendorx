@@ -9,6 +9,8 @@ namespace MultiVendorX;
 
 use MultiVendorX\Utill;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Shortcode class.
  *
@@ -40,7 +42,6 @@ class Shortcode {
      */
     public function frontend_scripts() {
         global $post;
-        FrontendScripts::load_scripts();
         FrontendScripts::enqueue_style( 'multivendorx-store-product-style' );
         $this->load_dashboard_assets();
         $this->load_registration_assets();
@@ -152,11 +153,13 @@ class Shortcode {
             )
         );
 
+        $load_vendor_script = false;
+
         foreach ( $shortcode_assets as $shortcode => $assets ) {
             if ( ! in_array( $shortcode, $detected_shortcodes, true ) ) {
                 continue;
             }
-
+            $load_vendor_script = true;
             foreach ( $assets['scripts'] ?? array() as $script ) {
                 if ( empty( $script['handle'] ) ) {
                     continue;
@@ -171,6 +174,9 @@ class Shortcode {
             foreach ( $assets['styles'] ?? array() as $style_handle ) {
                 FrontendScripts::enqueue_style( $style_handle );
             }
+        }
+        if ( $load_vendor_script ) {
+            FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
         }
     }
 
@@ -209,7 +215,7 @@ class Shortcode {
      * Display store registration form
      */
     public function display_store_registration() {
-        if ( is_user_logged_in() && current_user_can( 'manage_options' ) && Utill::is_store_registration_page() ) {
+        if ( is_user_logged_in() && Utill::current_user_has_capability( array( 'manage_options' ) ) && Utill::is_store_registration_page() ) {
             wp_safe_redirect( admin_url() );
             exit;
         }

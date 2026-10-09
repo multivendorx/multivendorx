@@ -1,13 +1,11 @@
+import { getApiLink } from '@zyra/core';
 import {
-	ChoiceToggleUI,
-	ExpandablePanelUI,
-	FormGroup,
-	FormGroupWrapper,
-	SectionUI,
-	SelectInputUI,
+	FormGroupComponent,
+	FormGroupWrapperComponent,
+	SectionComponent,
 	NoticeManager,
-	getApiLink,
-} from 'zyra';
+} from '@zyra/components';
+import { ToggleInput, ExpandablePanelInput, SelectInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import { useState, useCallback, useMemo } from 'react';
 import axios from 'axios';
@@ -192,9 +190,9 @@ const ProductCompliance: React.FC = () => {
 
 	return (
 		<>
-			<FormGroupWrapper>
-				<FormGroup>
-                    <ExpandablePanelUI
+			<FormGroupWrapperComponent>
+				<FormGroupComponent>
+                    <ExpandablePanelInput
                         name="prohibited_product_categories"
                         methods={ratingsField.modal}
                         value={formData.prohibited_product_categories || {}}
@@ -203,15 +201,15 @@ const ProductCompliance: React.FC = () => {
                         addNewBtn={true}
                         addNewTemplate={ratingsField.addNewTemplate}
                     />
-                </FormGroup>
+                </FormGroupComponent>
 
-                <SectionUI
+                <SectionComponent
                     title={__('Trigger words', 'multivendorx')}
                     desc={__('When a listing contains these words, the system flags it', 'multivendorx')}
                 />
 
-                <FormGroup row label={__('Trigger words', 'multivendorx')}>
-                    <SelectInputUI
+                <FormGroupComponent row label={__('Trigger words', 'multivendorx')}>
+                    <SelectInput
                         type="creatable-multi"
                         options={existingTags.map((tag) => ({
                             value: tag.name,
@@ -224,10 +222,10 @@ const ProductCompliance: React.FC = () => {
                         formatCreateLabel={(val) => `Add "${val}"`}
                         size="15rem"
                     />
-                </FormGroup>
+                </FormGroupComponent>
 
-                <FormGroup row label={__('When triggered:', 'multivendorx')}>
-                    <ChoiceToggleUI
+                <FormGroupComponent row label={__('When triggered:', 'multivendorx')}>
+                    <ToggleInput
                         options={[
                             {
                                 key: 'draft',
@@ -243,15 +241,15 @@ const ProductCompliance: React.FC = () => {
                         value={formData.trigger_action}
                         onChange={(val) => handleChange('trigger_action', val)}
                     />
-                </FormGroup>
+                </FormGroupComponent>
 
-                <SectionUI
+                <SectionComponent
                     title={__('Safety & compliance', 'multivendorx')}
                     desc={__('For each product category, decide whether listings should be held for your review or just notify you. You can also require sellers to upload specific documents.', 'multivendorx')}
                 />
 
-                <FormGroup row label={__('Add Category', 'multivendorx')}>
-                    <SelectInputUI
+                <FormGroupComponent row label={__('Add Category', 'multivendorx')}>
+                    <SelectInput
                         name="product_select"
                         type="single-select"
                         size="15rem"
@@ -262,10 +260,10 @@ const ProductCompliance: React.FC = () => {
                             }
                         }}
                     />
-                </FormGroup>
+                </FormGroupComponent>
 
-                <FormGroup>
-                    <ExpandablePanelUI
+                <FormGroupComponent>
+                    <ExpandablePanelInput
                         key={expandableKey}
                         name="safety_compliance_categories"
                         methods={getAllProductMethods || []}
@@ -274,18 +272,18 @@ const ProductCompliance: React.FC = () => {
                         canAccess={true}
                         addNewBtn={false}
                     />
-                </FormGroup>
+                </FormGroupComponent>
 
-                <SectionUI
+                <SectionComponent
                     title={__('Product Report Abuse', 'multivendorx')}
                     desc={__('Set rules and options for product abuse reporting.', 'multivendorx')}
                 />
 
-                <FormGroup row
+                <FormGroupComponent row
                     label={__('Who can report', 'multivendorx')}
                     labelDes={__('Decide if only logged-in customers can submit abuse reports, or if reporting is open to everyone.', 'multivendorx')}
                     desc={__('<ul><li>logged-in customers - Only registered and logged-in customers can report products.This helps prevent spam and ensures accountability.</li><li>Anyone - Both logged-in customers and guests can report products. This gives the widest access but may increase the risk of spam submissions.</li></ul>', 'multivendorx')}>
-                    <ChoiceToggleUI
+                    <ToggleInput
                         options={[
                             {
                                 key: 'logged_in',
@@ -303,13 +301,13 @@ const ProductCompliance: React.FC = () => {
                             handleChange('status', val)
                         }
                     />
-                </FormGroup>
-                <FormGroup row
+                </FormGroupComponent>
+                <FormGroupComponent row
                     label={__('Reasons for abuse report', 'multivendorx')}
                     labelDes={__('Define one or more preset reasons that stores can choose from when submitting an abuse report.', 'multivendorx')}
                     desc={__('<b>Note</b>: Users can report products for various issues. When enabling logged-in user restriction, anonymous reports will be blocked. Abuse reports are reviewed by administrators who can take appropriate action including product removal or store penalties.', 'multivendorx')}>
 
-                    <ExpandablePanelUI
+                    <ExpandablePanelInput
                         name="abuse_report_reasons"
                         methods={abuseReportReasons.modal || []}
                         value={formData.abuse_report_reasons || []}
@@ -318,8 +316,8 @@ const ProductCompliance: React.FC = () => {
                         addNewBtn={true}
                         addNewTemplate={abuseReportReasons.addNewTemplate}
                     />
-                </FormGroup>
-            </FormGroupWrapper>
+                </FormGroupComponent>
+            </FormGroupWrapperComponent>
         </>
     );
 };

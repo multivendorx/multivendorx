@@ -8,6 +8,7 @@
 namespace MultiVendorX\RestAPI\Controllers;
 
 use MultiVendorX\Store\Store;
+use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\Transaction\Transaction;
 use MultiVendorX\Utill;
 
@@ -41,7 +42,7 @@ class Transactions extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
             )
         );
@@ -53,7 +54,7 @@ class Transactions extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                     'args'                => array(
                         'id' => array( 'required' => true ),
                     ),
@@ -61,28 +62,20 @@ class Transactions extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'permissions_check' ),
                 ),
             )
         );
     }
 
     /**
-     * Get items permissions check.
+     * Check permission for REST API requests.
      *
      * @param object $request Full details about the request.
+     * @return true|\WP_Error
      */
-    public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );
-    }
-
-    /**
-     * Update item endpoint handler.
-     *
-     * @param object $request Full details about the request.
-     */
-    public function update_item_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );
+    public function permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 
 	/**
@@ -121,6 +114,14 @@ class Transactions extends \WP_REST_Controller {
 			$ids            = $request->get_param( 'ids' );
 			$sec_fetch_site = $request->get_header( 'sec_fetch_site' );
 			$referer        = $request->get_header( 'referer' );
+
+			if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+				return new \WP_Error(
+					'rest_forbidden',
+					__( 'You are not allowed to view this store\'s transactions.', 'multivendorx' ),
+					array( 'status' => 403 )
+				);
+			}
 
 			$args = array_filter(
 				array(
@@ -248,6 +249,15 @@ class Transactions extends \WP_REST_Controller {
                 )
             );
         }
+
+        if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+            return new \WP_Error(
+                'rest_forbidden',
+                __( 'You are not allowed to view this store\'s balance.', 'multivendorx' ),
+                array( 'status' => 403 )
+            );
+        }
+
         $last_transaction = Transaction::get_balances_for_store( $store_id );
 
         $balance         = $last_transaction['balance'];
@@ -307,13 +317,33 @@ class Transactions extends \WP_REST_Controller {
         if ( ! $store->exists() ) {
             return;
         }
+
+        // Releasing a payout is an admin decision, not a store's own.
+        if ( ( $disbursement || $withdraw ) && ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+            return new \WP_Error(
+                'rest_forbidden',
+                __( 'You are not allowed to approve or release this store\'s withdrawal.', 'multivendorx' ),
+                array( 'status' => 403 )
+            );
+        }
+
+        if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+            return new \WP_Error(
+                'rest_forbidden',
+                __( 'You are not allowed to manage this store\'s transactions.', 'multivendorx' ),
+                array( 'status' => 403 )
+            );
+        }
+
         $threshold_amount = MultiVendorX()->setting->get_setting( 'payout_threshold_amount', 0 );
+        $transaction      = Transaction::get_balances_for_store( $store_id );
+        $balance          = $transaction['balance'];
 
         if ( $disbursement ) {
             $method = $request->get_param( 'method' );
             $note   = $request->get_param( 'note' );
 
-            if ( $threshold_amount < $amount ) {
+            if ( $threshold_amount < $amount && $balance >= $amount ) {
                 MultiVendorX()->payments->processor->process_payment( $store_id, $amount, null, $method, $note, $disbursement );
                 return rest_ensure_response(
                     array(
@@ -325,7 +355,7 @@ class Transactions extends \WP_REST_Controller {
         }
 
         if ( $withdraw ) {
-            if ( 'approve' === $action && $threshold_amount < $amount ) {
+            if ( 'approve' === $action && $threshold_amount < $amount && $balance >= $amount ) {
                 MultiVendorX()->payments->processor->process_payment( $store_id, $amount, null, null, null, true );
                 MultiVendorX()->notifications->send_notification_helper(
                     'withdrawal_released',
@@ -357,6 +387,16 @@ class Transactions extends \WP_REST_Controller {
             );
         }
 
+        if ( $amount <= 0 || $amount > $balance ) {
+            return rest_ensure_response(
+                array(
+                    'success' => false,
+                    'message' => __( 'Requested amount is invalid or exceeds your available balance.', 'multivendorx' ),
+                    'id'      => $store_id,
+                )
+            );
+        }
+
         // Check if a withdrawal request already exists.
         $existing_request = $store->get_meta( Utill::STORE_SETTINGS_KEYS['request_withdrawal_amount'] );
         if ( $existing_request ) {
@@ -373,8 +413,8 @@ class Transactions extends \WP_REST_Controller {
 
         $should_update_meta = true;
 
-        if ( 'automatic' === $withdraw_type && $threshold_amount < $amount ) {
-            $payment_method = $store->get_meta( 'payment_method' ) ?? '';
+        if ( 'automatic' === $withdraw_type && $threshold_amount < $amount && $balance >= $amount ) {
+            $payment_method = $store->get_payment_method( 'name' ) ?? '';
 
             if ( ! empty( $payment_method ) && ( 'stripe-connect' === $payment_method || 'paypal-payout' === $payment_method ) ) {
                 do_action( "multivendorx_process_{$payment_method}_payment", $store_id, $amount, null, null, null );
@@ -383,7 +423,7 @@ class Transactions extends \WP_REST_Controller {
             }
         }
 
-        if ( $should_update_meta && ! empty( $store->get_meta( 'payment_method' ) ) ) {
+        if ( $should_update_meta && ! empty( $store->get_payment_method( 'name' ) ) ) {
             $store->update_meta( Utill::STORE_SETTINGS_KEYS['request_withdrawal_amount'], $amount );
 
             MultiVendorX()->notifications->send_notification_helper(

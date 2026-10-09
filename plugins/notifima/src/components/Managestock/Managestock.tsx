@@ -1,14 +1,15 @@
 /* global appLocalizer */
 import { useState } from 'react';
+
+import { MultiCheckboxInput } from '@zyra/inputs';
 import {
-    Column,
-    Container,
-    InfoItem,
-    NavigatorHeader,
-    PopupUI,
-    TableCard,
-    MultiCheckBoxUI
-} from 'zyra';
+    ColumnComponent,
+    ContainerComponent,
+    InformationItemComponent,
+    PopupComponent,
+    NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
@@ -16,14 +17,14 @@ import { defaultCategoryCounts, dummyProducts } from './ManagestockUtil';
 
 
 const Managestock = () => {
-    const [openPopup, setopenPopup] = useState(false);
+    const [openPopup, setOpenPopup] = useState(false);
     let tableProps: any = {};
     const headers = {
         product: {
             label: __('Product', 'notifima'),
-            width: '16rem',
+            width: '35%',
             render: (row) => (
-                <InfoItem
+                <InformationItemComponent
                     title={row.name}
                     avatar={{
                         iconClass: 'single-product',
@@ -34,11 +35,19 @@ const Managestock = () => {
                             value: row.sku || '—',
                         },
                     ]}
+                    badges={[
+                        {
+                            text: row.type,
+                            className: `badge-${row.type?.toLowerCase()}`,
+                        },
+                        {
+                            className: 'blue',
+                            text: `${row.subscriber_no || 0} ${row.subscriber_no === 1 ? 'Subscriber' : 'Subscribers'
+                                }`,
+                        },
+                    ]}
                 />
             ),
-        },
-        type: {
-            label: __('Type', 'notifima'),
         },
 
         regular_price: {
@@ -50,7 +59,7 @@ const Managestock = () => {
         manage_stock: {
             label: __('Manage Stock', 'notifima'),
             render: (row) => (
-                <MultiCheckBoxUI
+                <MultiCheckboxInput
                     look="toggle"
                     modules={[]}
                     options={[
@@ -61,7 +70,7 @@ const Managestock = () => {
                     ]}
                     value={row.manage_stock ? ['enabled'] : []}
                     onChange={() => {
-                        setopenPopup(true);
+                        setOpenPopup(true);
                     }}
                 />
             ),
@@ -77,23 +86,20 @@ const Managestock = () => {
         stock_quantity: {
             label: __('Stock', 'notifima'),
         },
-        subscriber_no: {
-            label: __('Subscriber No', 'notifima'),
-        },
     };
 
     const buttonActions = [
         {
             label: __('Download CSV', 'notifima'),
             icon: 'download',
-            onClickWithQuery: () => setopenPopup(true),
+            onClickWithQuery: () => setOpenPopup(true),
         },
     ];
 
     const filters = [
         {
             key: 'product_type',
-            label: __('Product Type', 'notifima'),
+            label: __('Select Product Type', 'notifima'),
             type: 'select',
             options: [
                 {
@@ -114,6 +120,8 @@ const Managestock = () => {
         categoryCounts: defaultCategoryCounts,
         filters,
         expandable: true,
+        expandText: __('View variations', 'notifima'),
+        expandedText: __('Viewing', 'notifima'),
         search: {
             placeholder: __('Search...', 'notifima'),
             size: 8,
@@ -123,11 +131,11 @@ const Managestock = () => {
                     value: '',
                 },
                 {
-                    label: __('product Name', 'notifima'),
+                    label: __('Product Name', 'notifima'),
                     value: 'name',
                 },
                 {
-                    label: __('Email', 'notifima'),
+                    label: __('SKU', 'notifima'),
                     value: 'sku',
                 },
             ],
@@ -145,7 +153,8 @@ const Managestock = () => {
     const renderTableContent = () => {
         if (!appLocalizer.khali_dabba) {
             return (
-                <div onClick={() => setopenPopup(true)}>
+                <div className="demo-wrapper" onClick={() => setOpenPopup(true)}>
+                    <div className="watermark">{__('This is sample Data', 'notifima')}</div>
                     <TableCard {...tableProps} />
                 </div>
             );
@@ -160,17 +169,17 @@ const Managestock = () => {
     return (
         <>
             {openPopup && (
-                <PopupUI
+                <PopupComponent
                     position="lightbox"
                     open={openPopup}
-                    onClose={() => setopenPopup(false)}
+                    onClose={() => setOpenPopup(false)}
                     width={31.25}
                     height="auto"
                 >
                     <ShowProPopup />
-                </PopupUI>
+                </PopupComponent>
             )}
-            <NavigatorHeader
+            <NavigatorHeaderComponent
                 headerIcon="store-analytics"
                 headerDescription={__(
                     'Manage product inventory, monitor stock availability, and update stock settings for simple and variable products.',
@@ -178,11 +187,11 @@ const Managestock = () => {
                 )}
                 headerTitle={__('Manage Stock', 'notifima')}
             />
-            <Container general>
-                <Column>
+            <ContainerComponent general>
+                <ColumnComponent>
                     {renderTableContent()}
-                </Column>
-            </Container>
+                </ColumnComponent>
+            </ContainerComponent>
         </>
     );
 };

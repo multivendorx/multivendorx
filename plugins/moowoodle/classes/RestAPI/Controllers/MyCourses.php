@@ -50,7 +50,7 @@ class MyCourses extends \WP_REST_Controller {
      */
     // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
     public function get_item_permissions_check( $request ) {
-        return current_user_can( 'customer' ) || current_user_can( 'manage_options' );
+        return Util::current_user_has_capability( array( 'customer', 'manage_options' ) );
     }
 
     /**
@@ -69,6 +69,7 @@ class MyCourses extends \WP_REST_Controller {
             $per_page = max( 1, intval( $request->get_param( 'row' ) ?? 10 ) );
             $page     = max( 1, intval( $request->get_param( 'page' ) ?? 1 ) );
             $offset   = ( $page - 1 ) * $per_page;
+            $status   = sanitize_text_field( $request->get_param( 'status' ) );
 
             // Allow pre-filtering by custom filters.
             $user_courses_details = apply_filters( 'moowoodle_user_courses_cohorts_groups_data', null, $request );
@@ -78,8 +79,11 @@ class MyCourses extends \WP_REST_Controller {
 
             $enrollment_query_args = array(
                 'user_id' => MooWoodle()->current_user_id,
-                'status'  => 'enrolled',
             );
+
+            if ( ! empty( $status ) ) {
+                $enrollment_query_args['status'] = $status;
+            }
 
             // Fetch paginated enrollments.
             $user_enrollments = MooWoodle()->enrollment->get_enrollments(
@@ -99,6 +103,29 @@ class MyCourses extends \WP_REST_Controller {
                 )
             );
             $response         = rest_ensure_response( array() );
+
+            $statuses = array( 'enrolled', 'expired', 'unenrolled' );
+
+            $status_counts = array();
+            $total         = 0;
+
+            foreach ( $statuses as $status ) {
+                $status_counts[ $status ] = MooWoodle()->enrollment->get_enrollments(
+                    array(
+                        'user_id' => MooWoodle()->current_user_id,
+                        'status'  => $status,
+                        'count'   => true,
+                    )
+                );
+
+                $total += $status_counts[ $status ];
+            }
+
+            $response->header( 'X-WP-Total', $total );
+            $response->header( 'X-WP-Enrolled', $status_counts['enrolled'] );
+            $response->header( 'X-WP-Expired', $status_counts['expired'] );
+            $response->header( 'X-WP-Unenrolled', $status_counts['unenrolled'] );
+
             if ( empty( $user_enrollments ) ) {
                 return $response;
             }
@@ -118,11 +145,11 @@ class MyCourses extends \WP_REST_Controller {
                 $course = $course[0] ?? array();
 
                 $formatted_enrolled_date = '';
-                if ( ! empty( $enrollment['enrollment_date'] ) ) {
+				if ( ! empty( $enrollment['enrollment_date'] ) ) {
                     $timestamp = strtotime( $enrollment['enrollment_date'] );
                     if ( $timestamp ) {
-                        $formatted_enrolled_date = wp_date( 'M j, Y - H:i', $timestamp );
-                    }
+                        $formatted_enrolled_date = wp_date( 'M j, Y', $timestamp );
+					}
                 }
 
                 $courses[] = array(
@@ -131,6 +158,7 @@ class MyCourses extends \WP_REST_Controller {
                     'enrollment_date' => $formatted_enrolled_date,
                     'status'          => $enrollment['status'],
                     'product_url'     => get_permalink( $course['product_id'] ),
+                    'product_image'   => get_the_post_thumbnail_url( $course['product_id'], 'full' ) ?: '',
                     'moodle_url'      => ! empty( $course['moodle_course_id'] )
                         ? apply_filters(
                             'moodle_course_view_url',
@@ -141,18 +169,7 @@ class MyCourses extends \WP_REST_Controller {
                 );
             }
 
-            $total_user_enrollments = MooWoodle()->enrollment->get_enrollments(
-                array_merge(
-                    $enrollment_query_args,
-                    array(
-                        'count' => true,
-                    )
-                )
-            );
-
             $response->set_data( $courses );
-            $response->header( 'X-WP-Total', $total_user_enrollments );
-
             return $response;
         } catch ( \Exception $e ) {
             return Util::server_error( $e );

@@ -44,7 +44,7 @@ class Stores extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => '__return_true',
                 ),
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
@@ -80,7 +80,7 @@ class Stores extends \WP_REST_Controller {
             array(
                 'methods'             => \WP_REST_Server::READABLE,
                 'callback'            => array( $this, 'get_states_by_country' ),
-                'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                'permission_callback' => '__return_true',
             )
         );
     }
@@ -91,25 +91,27 @@ class Stores extends \WP_REST_Controller {
      * @param object $request Request data.
      */
     public function get_items_permissions_check( $request ) {
-        return true;
+        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 
     /**
-     * Create a new store.
+     * Check permission for store REST API requests.
      *
      * @param object $request Request data.
+     * @return true|\WP_Error
      */
     public function create_item_permissions_check( $request ) {
-        return current_user_can( 'create_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'create_stores' ) );
     }
 
     /**
-     * Update an existing store.
+     * Check permission for store REST API requests.
      *
      * @param object $request Request data.
+     * @return true|\WP_Error
      */
     public function update_item_permissions_check( $request ) {
-        return current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+        return Utill::current_user_has_capability( array( 'edit_stores' ) );
     }
 
     /**
@@ -131,199 +133,36 @@ class Stores extends \WP_REST_Controller {
         }
 
         try {
-            if ( $request->get_param( 'visitorMap' ) ) {
-                $store_id  = (int) $request->get_param( 'id' );
-                $cache_key = 'multivendorx_visitor_stats_data_' . $store_id;
-
-                $cached = get_transient( $cache_key );
-
-                if ( false !== $cached ) {
-                    return $cached;
-                }
-
-                $dates = Utill::normalize_date_range(
-                    $request->get_param( 'start_date' ),
-                    $request->get_param( 'end_date' )
-                );
-
-                $start = $dates['start_date'];
-                $end   = $dates['end_date'];
-                global $wpdb;
-                $table_name = $wpdb->prefix . Utill::TABLES['visitors_stats'];
-
-                // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                $rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-                    $wpdb->prepare(
-                        "SELECT country
-                        FROM {$table_name}
-                        WHERE store_id = %d
-                        AND created >= %s
-                        AND created <= %s",
-                        $store_id,
-                        $start,
-                        $end
-                    )
-                );
-                // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-
-                $map_stats = array();
-
-                foreach ( $rows as $row ) {
-                    $code               = strtolower( ! empty( $row->country ) ? $row->country : '' );
-                    $map_stats[ $code ] = ( $map_stats[ $code ] ?? 0 ) + 1;
-                }
-
-                arsort( $map_stats );
-
-                $colors = array();
-                $scale  = array( '#316fa8', '#3f7fb5', '#4c8fc1', '#5b9fcd', '#6bb0d9' );
-                $i      = 0;
-
-                foreach ( array_slice( $map_stats, 0, 5, true ) as $code => $count ) {
-                    $colors[ $code ] = $scale[ $i ] ?? '#316fa8';
-                    ++$i;
-                }
-
-                $data = array(
-                    'map_stats' => array_map(
-                        fn( $count ) => array( 'hits_count' => $count ),
-                        $map_stats
-                    ),
-                    'colors'    => $colors,
-                );
-
-                set_transient( $cache_key, $data, DAY_IN_SECONDS );
-
-                return rest_ensure_response( $data );
-            }
-
-            // Store registration (rejected stores).
-            if ( $request->get_param( 'store_registration' ) ) {
-                $rejected_stores = Store::get_store( 'rejected', 'primary_owner' );
-
-                $all_stores = array();
-                $response   = array();
-                $store_data = array();
-
-                foreach ( $rejected_stores as $store ) {
-                    $store_id     = (int) $store['ID'];
-                    $store_object = new Store( $store_id );
-                    if ( ! $store->exists() ) {
+            $permission = Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
+            $flag_map   = array(
+                'visitorMap'         => 'get_visitor_map_data',
+                'store_registration' => 'get_store_registration_data',
+                'slug'               => 'check_store_slug',
+                'pending_withdraw'   => 'get_stores_with_pending_withdraw',
+                'deactivate'         => 'get_stores_with_deactivate_requests',
+                'options'            => 'get_stores_dropdown',
+                'status'             => 'get_pending_stores',
+            );
+            $flag_map   = apply_filters( 'multivendorx_rest_store_handlers', $flag_map );
+            if ( $permission ) {
+                foreach ( $flag_map as $param => $method ) {
+                    if ( ! $request->get_param( $param ) ) {
                         continue;
                     }
-                    $all_stores[] = array(
-                        'key'   => $store_id,
-                        'value' => $store_id,
-                        'label' => $store['name'],
-                    );
 
-                    $form_data  = StoreUtil::get_store_registration_form( $store_id );
-                    $response[] = $form_data['all_registration_data'] ?? array();
-
-                    $store_data[] = array(
-                        'id'   => $store_id,
-                        'note' => maybe_unserialize(
-                            $store_object->get_meta(
-                                Utill::STORE_SETTINGS_KEYS['store_reject_note']
-                            )
-                        ),
-                    );
-                }
-
-                return rest_ensure_response(
-                    compact( 'all_stores', 'response', 'store_data' )
-                );
-            }
-
-            // Slug existence check.
-            $slug = $request->get_param( 'slug' );
-            if ( ! empty( $slug ) ) {
-                $id     = (int) $request->get_param( 'id' );
-                $exists = Store::store_slug_exists( $slug, $id );
-                return rest_ensure_response( array( 'exists' => $exists > 0 ) );
-            }
-
-            // Early-return flags.
-            $flag_map = array(
-                'pending_withdraw' => 'get_stores_with_pending_withdraw',
-                'deactivate'       => 'get_stores_with_deactivate_requests',
-                'options'          => 'get_stores_dropdown',
-                'status'           => 'get_pending_stores',
-            );
-            $flag_map = apply_filters( 'multivendorx_rest_store_handlers', $flag_map );
-            foreach ( $flag_map as $param => $method ) {
-                if ( $request->get_param( $param ) ) {
                     if ( method_exists( $this, $method ) ) {
                         return rest_ensure_response( $this->$method( $request ) );
                     }
+
                     return apply_filters( $method, rest_ensure_response( array() ), $request );
                 }
             }
 
-            // Pagination & filters.
-            $limit  = $request->get_param( 'row' );
-            $page   = $request->get_param( 'page' );
-            $offset = ( $page - 1 ) * $limit;
-            $args   = array();
+            $args = $this->get_store_query_args( $request );
 
-            if ( ! empty( $limit ) ) {
-                $args['limit'] = $limit;
-            }
-            if ( ! empty( $offset ) ) {
-                $args['offset'] = $offset;
-            }
+            $store_ids = $args['nearest_store_ids'] ?? array();
+            unset( $args['nearest_store_ids'] );
 
-            $search = sanitize_text_field( $request->get_param( 'search_value' ) );
-            if ( ! empty( $search ) ) {
-                $args['searchField'] = $search;
-            } else {
-                $dates = Utill::normalize_date_range(
-                    $request->get_param( 'start_date' ),
-                    $request->get_param( 'end_date' )
-                );
-
-                if ( ! empty( $dates['start_date'] ) ) {
-                    $args['start_date'] = $dates['start_date'];
-                }
-
-                if ( ! empty( $dates['end_date'] ) ) {
-                    $args['end_date'] = $dates['end_date'];
-                }
-            }
-
-            $status = $request->get_param( 'filter_status' );
-            if ( ! empty( $status ) ) {
-                $args['status'] = $status;
-            }
-
-            $exclude_ids = $request->get_param( 'exclude_ids' );
-            if ( ! empty( $exclude_ids ) ) {
-                $args['exclude_ids'] = $exclude_ids;
-            }
-            $order_by = $request->get_param( 'order_by' );
-            if ( ! empty( $order_by ) ) {
-                $args['order_by'] = sanitize_text_field( $order_by );
-                $args['order']    = sanitize_text_field( $request->get_param( 'order' ) );
-            }
-            $lat    = $request->get_param( 'location_lat' );
-            $lng    = $request->get_param( 'location_lng' );
-            $radius = $request->get_param( 'radius_max' );
-            $unit   = $request->get_param( 'radius_unit' );
-            if ( ! empty( $lat ) && ! empty( $lng ) && ! empty( $radius ) ) {
-                $store_ids = StoreUtil::get_stores_by_radius(
-                    floatval( $lat ),
-                    floatval( $lng ),
-                    floatval( $radius ),
-                    $unit
-                );
-
-                if ( ! empty( $store_ids ) ) {
-                    $args['ID'] = $store_ids;
-                    // Keep nearest-first order from radius query.
-                    unset( $args['order_by'], $args['order'] );
-                }
-            }
-            
             // Fetch & format stores.
             $stores = StoreUtil::get_store_information( $args );
 
@@ -345,33 +184,9 @@ class Stores extends \WP_REST_Controller {
             }
 
             $formatted_stores = array();
+
             foreach ( $stores as $store ) {
-                $store_id           = (int) $store['ID'];
-                $store_meta         = Store::get_store( $store_id );
-                $owner_id           = StoreUtil::get_primary_owner( $store_id );
-                $owner              = get_userdata( $owner_id );
-                $formatted_stores[] = apply_filters(
-                    'multivendorx_stores_details',
-                    array(
-                        'id'                  => $store_id,
-                        'store_name'          => $store['name'],
-                        'store_slug'          => $store['slug'],
-                        'status'              => $store['status'],
-                        'email'               => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['store_email'] ]['primary'] ?? '',
-                        'phone'               => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['phone'] ] ?? '',
-                        'primary_owner'       => $owner,
-                        'primary_owner_image' => get_avatar_url( $owner_id, 48 ),
-                        'create_time'         => Utill::multivendorx_rest_prepare_date_response( $store['create_time'] ),
-                        'create_time_gmt'     => Utill::multivendorx_rest_prepare_date_response( $store['create_time'], true ),
-                        'store_image'         => $store_meta->meta_data['image'] ?? '',
-                        'store_banner'        => $store_meta->meta_data['banner'] ?? '',
-                        'address'             => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['address'] ] ?? '',
-                        'location_lat'        => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lat'] ] ?? '',
-                        'location_lng'        => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lng'] ] ?? '',
-                        'commission'          => CommissionUtil::get_commission_summary_for_store( $store_id ),
-                    ),
-                    $store_id
-                );
+                $formatted_stores[] = $this->prepare_store_response( $store, $permission );
             }
 
             // Prepare status filters.
@@ -529,10 +344,34 @@ class Stores extends \WP_REST_Controller {
                 Utill::STORE_SETTINGS_KEYS['status'],
             );
 
+            $is_admin = Utill::current_user_has_capability( array( 'manage_options' ) );
+
+            // `create_stores` is granted to every logged-in user, so block a
+            // direct, ownerless store create outside registration/self-edit.
+            if ( ! $registrations && empty( $store_data['id'] ) && ! $is_admin ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to create stores this way.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
+
+            if ( ! $is_admin ) {
+                unset( $store_data['store_owners'] );
+            }
+
             $store_data['who_created'] = $current_user->ID;
             $store_data['status']      = 'active';
 
             if ( ! empty( $store_data['id'] ) ) {
+                if ( ! StoreUtil::current_user_can_manage_store( (int) $store_data['id'] ) ) {
+                    return new \WP_Error(
+                        'rest_forbidden',
+                        __( 'You are not allowed to update this store.', 'multivendorx' ),
+                        array( 'status' => 403 )
+                    );
+                }
+
                 $store = new Store( (int) $store_data['id'] );
                 unset( $store_data['id'], $store_data['status'] );
 
@@ -541,7 +380,7 @@ class Stores extends \WP_REST_Controller {
                 $store = new Store();
 
                 if (
-                    ! current_user_can( 'manage_options' ) &&
+                    ! Utill::current_user_has_capability( array( 'manage_options' ) ) &&
                     'manually' === MultiVendorX()->setting->get_setting( 'approve_store' )
                 ) {
                     $store_data['status'] = 'pending';
@@ -579,16 +418,21 @@ class Stores extends \WP_REST_Controller {
             $non_core_fields           = array();
 
             foreach ( $file_data as $file ) {
-                $field_key                = array_key_first( $file['name'] );
-                $normalized_file          = array(
-                    'name'     => $file['name'][ $field_key ],
-                    'type'     => $file['type'][ $field_key ],
-                    'tmp_name' => $file['tmp_name'][ $field_key ],
-                    'error'    => $file['error'][ $field_key ],
-                    'size'     => $file['size'][ $field_key ],
+                if ( empty( $file['name'] ) || ! is_array( $file['name'] ) ) {
+                    continue;
+                }
+
+                $upload_key      = array_key_first( $file['name'] );
+                $normalized_file = array(
+                    'name'     => $file['name'][ $upload_key ] ?? '',
+                    'type'     => $file['type'][ $upload_key ] ?? '',
+                    'tmp_name' => $file['tmp_name'][ $upload_key ] ?? '',
+                    'error'    => $file['error'][ $upload_key ] ?? UPLOAD_ERR_NO_FILE,
+                    'size'     => $file['size'][ $upload_key ] ?? 0,
                 );
-                $attachment_id            = StoreUtil::create_attachment_from_files_array( $normalized_file );
-                $store_data[ $field_key ] = $attachment_id;
+                $attachment_id   = StoreUtil::create_attachment_from_files_array( $normalized_file );
+
+                $store_data[ sanitize_text_field( (string) $upload_key ) ] = $attachment_id;
             }
 
             $registration_meta_map = array(
@@ -755,6 +599,14 @@ class Stores extends \WP_REST_Controller {
             $start_date    = $request->get_param( 'start_date' );
             $end_date      = $request->get_param( 'end_date' );
 
+            if ( $id && ! StoreUtil::current_user_can_manage_store( $id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to access this store.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
+
             if ( $id && 'switch' === $action ) {
                 update_user_meta(
                     MultiVendorX()->current_user_id,
@@ -778,9 +630,12 @@ class Stores extends \WP_REST_Controller {
             }
 
             $primary_owner_id   = StoreUtil::get_primary_owner( $id );
-            $primary_owner_info = $primary_owner_id
-                ? get_userdata( $primary_owner_id )
-                : null;
+            $owner              = get_userdata( $primary_owner_id );
+            $primary_owner_info = array(
+                'id'           => $owner->ID,
+                'display_name' => $owner->display_name,
+                'user_email'   => $owner->user_email,
+            );
 
             if ( $fetch_user ) {
                 $users = StoreUtil::get_store_users( $id );
@@ -801,9 +656,10 @@ class Stores extends \WP_REST_Controller {
             }
 
             if ( $registrations ) {
-                return rest_ensure_response( array(
-                        'registration' => StoreUtil::get_store_registration_form( $store->get_id() ),
-                        'activities' => MultiVendorX()->util->get_activity_logs( $store->get_id() )
+                return rest_ensure_response(
+                    array(
+						'registration' => StoreUtil::get_store_registration_form( $store->get_id() ),
+						'activities'   => MultiVendorX()->util->get_activity_logs( $store->get_id() ),
                     )
                 );
             }
@@ -861,6 +717,7 @@ class Stores extends \WP_REST_Controller {
                 'primary_owner_info' => $primary_owner_info,
                 'overall_reviews'    => $overall_reviews,
                 'total_reviews'      => is_array( $reviews ) ? count( $reviews ) : 0,
+                'payment_method'     => $store->get_payment_method( 'name' ) ?: '',
             );
 
             foreach ( (array) $store->meta_data as $key => $values ) {
@@ -877,6 +734,32 @@ class Stores extends \WP_REST_Controller {
                 array( 'status' => 500 )
             );
         }
+    }
+
+    /**
+     * Drop store fields that only a marketplace admin may change.
+     *
+     * @param array $store_fields Submitted store fields (core fields and meta).
+     * @return array Fields the store member is allowed to save.
+     */
+    private function remove_admin_only_store_fields( $store_fields ) {
+        $admin_only_fields = apply_filters(
+            'multivendorx_admin_only_store_fields',
+            array(
+                Utill::STORE_SETTINGS_KEYS['status'],
+                Utill::STORE_SETTINGS_KEYS['create_time'],
+                Utill::STORE_SETTINGS_KEYS['who_created'],
+                Utill::STORE_SETTINGS_KEYS['withdrawals_count'],
+                Utill::STORE_SETTINGS_KEYS['followers'],
+                Utill::STORE_SETTINGS_KEYS['store_reject_note'],
+                Utill::STORE_SETTINGS_KEYS['registration_data'],
+                Utill::STORE_SETTINGS_KEYS['deactivation_request_date'],
+                'commission_percentage',
+                'commission_fixed',
+            )
+        );
+
+        return array_diff_key( (array) $store_fields, array_flip( $admin_only_fields ) );
     }
 
     /**
@@ -904,6 +787,14 @@ class Stores extends \WP_REST_Controller {
             $status = $request->get_param( 'action' );
 
             if ( ! empty( $ids ) && ! empty( $status ) ) {
+                if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+                    return new \WP_Error(
+                        'rest_forbidden',
+                        __( 'You are not allowed to change the status of these stores.', 'multivendorx' ),
+                        array( 'status' => 403 )
+                    );
+                }
+
                 foreach ( (array) $ids as $store_id ) {
                     $store = new Store( absint( $store_id ) );
                     if ( ! $store->exists() ) {
@@ -922,12 +813,32 @@ class Stores extends \WP_REST_Controller {
             $id   = absint( $request->get_param( 'id' ) );
             $data = (array) $request->get_json_params();
 
+            if ( ! StoreUtil::current_user_can_manage_store( $id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to update this store.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
+
             $store = new Store( $id );
             if ( ! $store->exists() ) {
                 return;
             }
 
             $data = apply_filters( 'multivendorx_before_store_update', $data, $store, $request );
+
+            $is_admin = Utill::current_user_has_capability( array( 'manage_options' ) );
+
+            // These are marketplace-admin decisions, not self-service.
+            $admin_only_actions = array( 'deactivate', 'delete', 'registration_data', 'core_data', 'approval_queue', 'store_owners', 'primary_owner' );
+            if ( ! $is_admin && array_filter( array_intersect_key( $data, array_flip( $admin_only_actions ) ) ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to perform this action on the store.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
 
             // Deactivation handling.
             if ( ! empty( $data['deactivate'] ) ) {
@@ -1040,7 +951,7 @@ class Stores extends \WP_REST_Controller {
             }
 
             // Registration approval / rejection.
-            if ( ! empty( $data['registration_data'] ) || ! empty( $data['core_data'] ) || $data['approval_queue'] ) {
+            if ( ! empty( $data['registration_data'] ) || ! empty( $data['core_data'] ) || ! empty( $data['approval_queue'] ) ) {
                 if ( 'approve' === ( $data['status'] ?? '' ) ) {
                     $users = StoreUtil::get_store_users( $id );
                     $user  = get_userdata(
@@ -1079,11 +990,12 @@ class Stores extends \WP_REST_Controller {
                     $store->set( Utill::STORE_SETTINGS_KEYS['status'], $status );
 
                     if ( ! empty( $data['store_permanent_reject'] ) ) {
+                        // Only clear the active store for users of this store.
                         delete_metadata(
                             'user',
                             0,
                             Utill::USER_SETTINGS_KEYS['active_store'],
-                            '',
+                            $id,
                             true
                         );
                     }
@@ -1173,8 +1085,12 @@ class Stores extends \WP_REST_Controller {
             );
 
             if ( ! empty( $data['setting'] ) ) {
-                $data = $data['setting'];
+                $data = (array) $data['setting'];
                 unset( $data['setting'], $data['settingName'] );
+            }
+
+            if ( ! $is_admin ) {
+                $data = $this->remove_admin_only_store_fields( $data );
             }
 
             // Core fields update.
@@ -1196,7 +1112,7 @@ class Stores extends \WP_REST_Controller {
             $store->set( Utill::STORE_SETTINGS_KEYS['who_created'], 'admin' );
 
             foreach ( $data as $key => $value ) {
-                if ( Utill::STORE_SETTINGS_KEYS['id'] === $key ) {
+                if ( 'id' === $key ) {
                     continue;
                 }
 
@@ -1283,11 +1199,12 @@ class Stores extends \WP_REST_Controller {
             }
 
             if ( 'deactivated' === ( $data['status'] ?? '' ) ) {
+                // Only clear the active store for users of this store.
                 delete_metadata(
                     'user',
                     0,
                     Utill::USER_SETTINGS_KEYS['active_store'],
-                    '',
+                    $id,
                     true
                 );
 
@@ -1307,7 +1224,7 @@ class Stores extends \WP_REST_Controller {
                 array(
                     'success' => true,
                     'id'      => $store->get_id(),
-                    'error'   => __( 'Settings Saved', 'multivendorx' ),
+                    'message' => __( 'Settings Saved', 'multivendorx' ),
                 )
             );
         } catch ( \Exception $e ) {
@@ -1491,5 +1408,285 @@ class Stores extends \WP_REST_Controller {
         }
 
         return rest_ensure_response( $state_list );
+    }
+
+    /**
+     * Get visitor map statistics for a store.
+     *
+     * @param object $request Request data.
+     * @return \WP_REST_Response
+     */
+    private function get_visitor_map_data( $request ) {
+        $store_id  = (int) $request->get_param( 'id' );
+        $cache_key = 'multivendorx_visitor_stats_data_' . $store_id;
+
+        $cached = get_transient( $cache_key );
+
+        if ( false !== $cached ) {
+            return rest_ensure_response( $cached );
+        }
+
+        $dates = Utill::normalize_date_range(
+            $request->get_param( 'start_date' ),
+            $request->get_param( 'end_date' )
+        );
+
+        $start = $dates['start_date'];
+        $end   = $dates['end_date'];
+
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . Utill::TABLES['visitors_stats'];
+
+        $rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            $wpdb->prepare(
+                'SELECT country
+                FROM %i
+                WHERE store_id = %d
+                AND created >= %s
+                AND created <= %s',
+                $table_name,
+                $store_id,
+                $start,
+                $end
+            )
+        );
+
+        $map_stats = array();
+
+        foreach ( $rows as $row ) {
+            $code               = strtolower( ! empty( $row->country ) ? $row->country : '' );
+            $map_stats[ $code ] = ( $map_stats[ $code ] ?? 0 ) + 1;
+        }
+
+        arsort( $map_stats );
+
+        $colors = array();
+        $scale  = array(
+            '#316fa8',
+            '#3f7fb5',
+            '#4c8fc1',
+            '#5b9fcd',
+            '#6bb0d9',
+        );
+
+        $i = 0;
+
+        foreach ( array_slice( $map_stats, 0, 5, true ) as $code => $count ) {
+            $colors[ $code ] = $scale[ $i ] ?? '#316fa8';
+            ++$i;
+        }
+
+        $data = array(
+            'map_stats' => array_map(
+                fn( $count ) => array( 'hits_count' => $count ),
+                $map_stats
+            ),
+            'colors'    => $colors,
+        );
+
+        set_transient( $cache_key, $data, DAY_IN_SECONDS );
+
+        return rest_ensure_response( $data );
+    }
+
+    /**
+     * Get rejected store registration data.
+     *
+     * @param object $request Request data.
+     * @return \WP_REST_Response
+     */
+    private function get_store_registration_data( $request ) {
+        $rejected_stores = Store::get_store( 'rejected', 'primary_owner' );
+
+        $all_stores = array();
+        $response   = array();
+        $store_data = array();
+
+        foreach ( $rejected_stores as $store ) {
+            $store_id     = (int) $store['ID'];
+            $store_object = new Store( $store_id );
+
+            if ( ! $store_object->exists() ) {
+                continue;
+            }
+
+            $all_stores[] = array(
+                'key'   => $store_id,
+                'value' => $store_id,
+                'label' => $store['name'],
+            );
+
+            $form_data  = StoreUtil::get_store_registration_form( $store_id );
+            $response[] = $form_data['all_registration_data'] ?? array();
+
+            $store_data[] = array(
+                'id'   => $store_id,
+                'note' => maybe_unserialize(
+                    $store_object->get_meta(
+                        Utill::STORE_SETTINGS_KEYS['store_reject_note']
+                    )
+                ),
+            );
+        }
+
+        return rest_ensure_response(
+            compact( 'all_stores', 'response', 'store_data' )
+        );
+    }
+
+    /**
+     * Check whether a store slug already exists.
+     *
+     * @param object $request Request data.
+     * @return \WP_REST_Response
+     */
+    private function check_store_slug( $request ) {
+        $slug = $request->get_param( 'slug' );
+        $id   = (int) $request->get_param( 'id' );
+
+        $exists = Store::store_slug_exists( $slug, $id );
+
+        return rest_ensure_response(
+            array(
+                'exists' => $exists > 0,
+            )
+        );
+    }
+
+    /**
+     * Get store query arguments.
+     *
+     * @param object $request Request data.
+     * @return array
+     */
+    private function get_store_query_args( $request ) {
+        $limit = $request->get_param( 'row' );
+        $page  = $request->get_param( 'page' );
+        $args  = array();
+
+        // Pagination.
+        if ( $limit > 0 ) {
+            $args['limit']  = $limit;
+            $args['offset'] = ( $page - 1 ) * $limit;
+        }
+
+        // Search or date filter.
+        $search = sanitize_text_field( $request->get_param( 'search_value' ) );
+
+        if ( ! empty( $search ) ) {
+            $args['searchField'] = $search;
+        } else {
+            $dates = Utill::normalize_date_range(
+                $request->get_param( 'start_date' ),
+                $request->get_param( 'end_date' )
+            );
+
+            if ( ! empty( $dates['start_date'] ) ) {
+                $args['start_date'] = $dates['start_date'];
+            }
+
+            if ( ! empty( $dates['end_date'] ) ) {
+                $args['end_date'] = $dates['end_date'];
+            }
+        }
+
+        // Status.
+        $status = $request->get_param( 'filter_status' );
+
+        if ( ! empty( $status ) ) {
+            $args['status'] = $status;
+        }
+
+        // Exclude stores.
+        $exclude_ids = $request->get_param( 'exclude_ids' );
+
+        if ( ! empty( $exclude_ids ) ) {
+            $args['exclude_ids'] = $exclude_ids;
+        }
+
+        // Sorting.
+        $order_by = $request->get_param( 'order_by' );
+
+        if ( ! empty( $order_by ) ) {
+            $args['order_by'] = sanitize_text_field( $order_by );
+            $args['order']    = sanitize_text_field(
+                $request->get_param( 'order' )
+            );
+        }
+
+        // Radius filter.
+        $lat    = $request->get_param( 'location_lat' );
+        $lng    = $request->get_param( 'location_lng' );
+        $radius = $request->get_param( 'radius_max' );
+        $unit   = $request->get_param( 'radius_unit' );
+
+        if ( ! empty( $lat ) && ! empty( $lng ) && ! empty( $radius ) ) {
+            $store_ids = StoreUtil::get_stores_by_radius(
+                floatval( $lat ),
+                floatval( $lng ),
+                floatval( $radius ),
+                $unit
+            );
+
+            if ( ! empty( $store_ids ) ) {
+                $args['ID']                = $store_ids;
+                $args['nearest_store_ids'] = $store_ids;
+                // Keep nearest-first order from radius query.
+                unset( $args['order_by'], $args['order'] );
+            }
+        }
+
+        return $args;
+    }
+
+    /**
+     * Prepare store response.
+     *
+     * @param array $store    Store data.
+     * @param bool  $permission Whether to include admin-only fields.
+     * @return array Prepared store response.
+     */
+    private function prepare_store_response( $store, $permission = false ) {
+        $store_id   = (int) $store['ID'];
+        $store_meta = Store::get_store( $store_id );
+        $meta       = $store_meta->meta_data;
+        $keys       = Utill::STORE_SETTINGS_KEYS;
+
+        $response = array(
+            'id'           => $store_id,
+            'store_name'   => $store['name'],
+            'store_slug'   => $store['slug'],
+            'store_image'  => $meta['image'] ?? '',
+            'store_banner' => $meta['banner'] ?? '',
+            'address'      => $meta[ $keys['address'] ] ?? '',
+            'location_lat' => $meta[ $keys['location_lat'] ] ?? '',
+            'location_lng' => $meta[ $keys['location_lng'] ] ?? '',
+        );
+
+        if ( $permission ) {
+            $owner_id = StoreUtil::get_primary_owner( $store_id );
+            $owner    = get_userdata( $owner_id );
+
+            $response = array_merge(
+                $response,
+                array(
+                    'status'              => $store['status'],
+                    'email'               => $meta[ $keys['store_email'] ]['primary'] ?? '',
+                    'phone'               => $meta[ $keys['phone'] ] ?? '',
+                    'primary_owner'       => $owner ? array(
+                        'id'           => $owner->ID,
+                        'display_name' => $owner->display_name,
+                        'user_email'   => $owner->user_email,
+                    ) : null,
+                    'primary_owner_image' => $owner ? get_avatar_url( $owner_id, 48 ) : '',
+                    'create_time'         => Utill::multivendorx_rest_prepare_date_response( $store['create_time'] ),
+                    'create_time_gmt'     => Utill::multivendorx_rest_prepare_date_response( $store['create_time'], true ),
+                    'commission'          => CommissionUtil::get_commission_summary_for_store( $store_id ),
+                )
+            );
+        }
+
+        return apply_filters( 'multivendorx_stores_details', $response, $store_id );
     }
 }
