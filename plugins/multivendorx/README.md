@@ -5,7 +5,7 @@
 **Requires at least:** 6.4.0  
 **Tested up to:** 7.1.2  
 **Requires PHP:** 8.0  
-**Stable tag:** 5.0.19  
+**Stable tag:** 5.0.18  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -245,10 +245,6 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 15. Store-admin-list.
 
 ## Changelog ##
-
-### 5.0.19 - 2026-09-30 ###
-* Fixed     - Security issues identified in MultiVendorX 5.0.18 to improve overall plugin security.
-* Updated   - Language file.
 
 ### 5.0.18 - 2026-09-29 ###
 * Added     - Compatibility with WordPress 7.1.2

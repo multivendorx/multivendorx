@@ -253,6 +253,8 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 * Fixed     - An issue where incorrect zone data was loaded in the Store Dashboard when editing zone-wise shipping methods. #2335
 * Fixed     - A security issue that could allow unauthorized Store Owners to access global Settings and Modules REST API endpoints. #2375
 * Fixed     - An issue where certain Elementor widgets failed to render when a custom store_url was configured. #2298
+* Fixed     - The customer-side report abuse submission process issue.
+* Fixed     - An issue where store names were missing for pending products in the Approval Queue.
 * Updated   - Language file.
 
 = 5.0.19 - 2026-09-30 =
