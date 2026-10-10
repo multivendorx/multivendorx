@@ -46,6 +46,10 @@ class Endpoint {
 	 * @return array Modified menu items with My Courses.
 	 */
 	public function add_account_menu_item( $menu_items ) {
+		if ( ! Util::current_user_has_capability( array( 'customer', 'manage_options' ) ) ) {
+			return $menu_items;
+		}
+
 		$position = (int) MooWoodle()->setting->get_setting( 'my_courses_priority', 0 );
 
 		return array_merge(
@@ -64,6 +68,10 @@ class Endpoint {
 	 * @return void
 	 */
 	public function render_my_courses_content() {
+		if ( ! Util::current_user_has_capability( array( 'customer', 'manage_options' ) ) ) {
+			return;
+		}
+
 		echo '<div id="moowoodle-my-course"></div>';
 	}
 
@@ -73,7 +81,7 @@ class Endpoint {
      * @return void
      */
 	public function enqueue_assets() {
-		if ( is_account_page() ) {
+		if ( is_account_page() && Util::current_user_has_capability( array( 'customer', 'manage_options' ) ) ) {
 			FrontendScripts::enqueue_script( 'moowoodle-vendor' );
 			FrontendScripts::enqueue_script( 'moowoodle-my-courses' );
 			FrontendScripts::localize_scripts( 'moowoodle-my-courses' );
