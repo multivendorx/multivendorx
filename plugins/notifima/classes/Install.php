@@ -262,27 +262,27 @@ class Install {
                 ARRAY_A
             );
 
-            // Prepare insert value.
-            $values = '';
+            // Prepare insert values and placeholders.
+            $value_rows   = array();
+            $placeholders = array();
 
             foreach ( $subscribe_datas as $subscribe_data ) {
-                $product_id = $subscribe_data['product_id'];
-                $user_id    = $subscribe_data['user_id'];
-                $email      = $subscribe_data['email'];
-                $status     = self::STATUS_MAP[ $subscribe_data['status'] ];
-                $date       = $subscribe_data['date'];
-
-                $values .= "( {$product_id}, {$user_id},  '{$email}', '{$status}', '{$date}' ),";
+                $value_rows[]   = (int) $subscribe_data['product_id'];
+                $value_rows[]   = (int) $subscribe_data['user_id'];
+                $value_rows[]   = $subscribe_data['email'];
+                $value_rows[]   = self::STATUS_MAP[ $subscribe_data['status'] ];
+                $value_rows[]   = $subscribe_data['date'];
+                $placeholders[] = '( %d, %d, %s, %s, %s )';
             }
 
             // If result exist then insert those result into custom table.
-            if ( $values ) {
-                // Remove last ','.
-                $values = substr( $values, 0, -1 );
-
+            if ( $value_rows ) {
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->query(
-                    "INSERT IGNORE INTO {$wpdb->prefix}notifima_subscribers (product_id, user_id, email, status, create_time ) VALUES {$values} "
+                    $wpdb->prepare(
+                        "INSERT IGNORE INTO {$wpdb->prefix}notifima_subscribers (product_id, user_id, email, status, create_time ) VALUES " . implode( ', ', $placeholders ),
+                        $value_rows
+                    )
                 );
             }
 
