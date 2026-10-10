@@ -31,6 +31,16 @@ class Utill {
     );
 
     /**
+     * Custom $wpdb table names (unprefixed), keyed by logical name.
+     * Always reference via `$wpdb->prefix . Utill::TABLES['subscribers']`, never a hardcoded string.
+     *
+     * @var array
+     */
+    public const TABLES = array(
+        'subscribers' => 'notifima_subscribers',
+    );
+
+    /**
      * Function to console and debug errors.
      *
      * @param mixed $data The data to log. Can be a string, array, or object.
@@ -192,11 +202,13 @@ class Utill {
     public static function get_subscribers( $args ) {
         global $wpdb;
 
-        $table = $wpdb->prefix . 'notifima_subscribers';
+        $table = $wpdb->prefix . self::TABLES['subscribers'];
         $where = array();
 
         if ( isset( $args['product_ids'] ) ) {
-            $where[] = 'product_id IN (' . implode( ',', array_map( 'absint', $args['product_ids'] ) ) . ')';
+            $product_ids  = array_map( 'absint', $args['product_ids'] );
+            $placeholders = implode( ',', array_fill( 0, count( $product_ids ), '%d' ) );
+            $where[]      = $wpdb->prepare( "product_id IN ({$placeholders})", $product_ids ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         }
 
         if ( ! empty( $args['email'] ) ) {
@@ -221,7 +233,7 @@ class Utill {
         $where_sql = ! empty( $where ) ? 'WHERE ' . implode( ' AND ', $where ) : '';
 
         if ( ! empty( $args['count'] ) ) {
-            $query = "SELECT COUNT(*) FROM {$table} {$where_sql}";
+            $query = $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) . " {$where_sql}";
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
             return (int) $wpdb->get_var( $query );
@@ -231,7 +243,7 @@ class Utill {
             ? $wpdb->prepare( 'LIMIT %d OFFSET %d', $args['limit'], $args['offset'] )
             : '';
 
-        $query = "SELECT * FROM {$table} {$where_sql} {$limit_clause}";
+        $query = $wpdb->prepare( 'SELECT * FROM %i', $table ) . " {$where_sql} {$limit_clause}";
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
         return $wpdb->get_results( $query );

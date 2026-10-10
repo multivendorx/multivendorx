@@ -75,7 +75,10 @@ class Install {
         if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->prefix . 'stockalert_subscribers' ) ) ) {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
             $wpdb->query(
-                "ALTER TABLE `{$wpdb->prefix}stockalert_subscribers` RENAME TO `{$wpdb->prefix}notifima_subscribers`"
+                $wpdb->prepare(
+                    'ALTER TABLE `' . $wpdb->prefix . 'stockalert_subscribers` RENAME TO %i',
+                    $wpdb->prefix . Utill::TABLES['subscribers']
+                )
             );
         } else {
             self::create_database_table();
@@ -178,20 +181,24 @@ class Install {
 
             update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
 
-            $table_name = $wpdb->prefix . 'notifima_subscribers';
+            $table_name = $wpdb->prefix . Utill::TABLES['subscribers'];
 
             // Add phone column.
             $wpdb->query(
-                "ALTER TABLE `{$table_name}`
-                ADD COLUMN `phone` varchar(30) DEFAULT NULL AFTER `email`"
+                $wpdb->prepare(
+                    'ALTER TABLE %i
+                    ADD COLUMN `phone` varchar(30) DEFAULT NULL AFTER `email`',
+                    $table_name
+                )
             );
 
             // Rename mailsent status to notification_sent.
             $wpdb->query(
                 $wpdb->prepare(
-                    "UPDATE `{$table_name}`
+                    'UPDATE %i
                     SET `status` = %s
-                    WHERE `status` = %s",
+                    WHERE `status` = %s',
+                    $table_name,
                     'notification_sent',
                     'mailsent'
                 )
@@ -201,16 +208,22 @@ class Install {
         if ( version_compare( $previous_version, '3.1.7', '<' ) ) {
             global $wpdb;
 
-            $table_name = $wpdb->prefix . 'notifima_subscribers';
+            $table_name = $wpdb->prefix . Utill::TABLES['subscribers'];
 
             $column = $wpdb->get_results(
-                "SHOW COLUMNS FROM `{$table_name}` LIKE 'retry_count'"
+                $wpdb->prepare(
+                    "SHOW COLUMNS FROM %i LIKE 'retry_count'",
+                    $table_name
+                )
             );
 
             if ( empty( $column ) ) {
                 $wpdb->query(
-                    "ALTER TABLE `{$table_name}`
-                    ADD `retry_count` int(11) NOT NULL DEFAULT 0 AFTER `status`"
+                    $wpdb->prepare(
+                        'ALTER TABLE %i
+                        ADD `retry_count` int(11) NOT NULL DEFAULT 0 AFTER `status`',
+                        $table_name
+                    )
                 );
             }
             $automation_settings = get_option( Utill::NOTIFIMA_SETTINGS['automation'], array() );
@@ -243,6 +256,8 @@ class Install {
      */
     public static function subscriber_migration() {
         global $wpdb;
+
+        $table = $wpdb->prefix . Utill::TABLES['subscribers'];
 
         try {
             // Get woosubscribe post and post meta.
@@ -280,8 +295,8 @@ class Install {
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->query(
                     $wpdb->prepare(
-                        "INSERT IGNORE INTO {$wpdb->prefix}notifima_subscribers (product_id, user_id, email, status, create_time ) VALUES " . implode( ', ', $placeholders ),
-                        $value_rows
+                        'INSERT IGNORE INTO %i (product_id, user_id, email, status, create_time ) VALUES ' . implode( ', ', $placeholders ),
+                        array_merge( array( $table ), $value_rows )
                     )
                 );
             }
@@ -295,10 +310,10 @@ class Install {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $subscriber_counts = $wpdb->get_results(
                 $wpdb->prepare(
-                    "SELECT product_id, COUNT(*) as count from {$wpdb->prefix}notifima_subscribers
+                    'SELECT product_id, COUNT(*) as count from %i
                     WHERE status = %s
-                    GROUP BY product_id",
-                    array( 'subscribed' )
+                    GROUP BY product_id',
+                    array( $table, 'subscribed' )
                 )
             );
 
@@ -328,7 +343,8 @@ class Install {
             $collate = $wpdb->get_charset_collate();
         }
 
-        $sql_subscribers = 'CREATE TABLE IF NOT EXISTS `' . $wpdb->prefix . "notifima_subscribers` (
+        $table            = $wpdb->prefix . Utill::TABLES['subscribers'];
+        $sql_subscribers  = "CREATE TABLE IF NOT EXISTS `{$table}` (
                 `id` bigint(20) NOT NULL AUTO_INCREMENT,
                 `product_id` bigint(20) NOT NULL,
                 `user_id` bigint(20) NOT NULL DEFAULT 0,
