@@ -89,10 +89,13 @@ class Subscriber {
     public function send_retry_notification_cron() {
         global $wpdb;
 
+        $table = $wpdb->prefix . Utill::TABLES['subscribers'];
+
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $product_ids = $wpdb->get_col(
             $wpdb->prepare(
-                "SELECT DISTINCT product_id FROM {$wpdb->prefix}notifima_subscribers WHERE status = %s",
+                'SELECT DISTINCT product_id FROM %i WHERE status = %s',
+                $table,
                 'notification_failed'
             )
         );
@@ -184,6 +187,8 @@ class Subscriber {
     public static function insert_subscriber( $subscriber_email, $product_id ) {
         global $wpdb;
 
+        $table = $wpdb->prefix . Utill::TABLES['subscribers'];
+
         // Get current user id.
         $user_id = Notifima()->current_user_id;
 
@@ -191,10 +196,10 @@ class Subscriber {
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $subscriber = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}notifima_subscribers
+                'SELECT * FROM %i
                 WHERE product_id = %d
-                AND email = %s",
-                array( $product_id, $subscriber_email )
+                AND email = %s',
+                array( $table, $product_id, $subscriber_email )
             )
         );
 
@@ -202,7 +207,7 @@ class Subscriber {
         if ( $subscriber ) {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $response = $wpdb->update(
-                "{$wpdb->prefix}notifima_subscribers",
+                $table,
                 array(
                     'status'      => 'subscribed',
                     'create_time' => current_time( 'mysql' ),
@@ -217,12 +222,12 @@ class Subscriber {
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $response = $wpdb->query(
             $wpdb->prepare(
-                "INSERT INTO {$wpdb->prefix}notifima_subscribers
+                'INSERT INTO %i
                 ( product_id, user_id, email, status )
                 VALUES ( %d, %d, %s, %s )
                 ON DUPLICATE KEY UPDATE
-                status = %s",
-                array( $product_id, $user_id, $subscriber_email, 'subscribed', 'subscribed' )
+                status = %s',
+                array( $table, $product_id, $user_id, $subscriber_email, 'subscribed', 'subscribed' )
             )
         );
 
@@ -275,7 +280,7 @@ class Subscriber {
 
         // Delete subscriber of deleted product.
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $wpdb->delete( $wpdb->prefix . 'notifima_subscribers', array( 'product_id' => $post_id ) );
+        $wpdb->delete( $wpdb->prefix . Utill::TABLES['subscribers'], array( 'product_id' => $post_id ) );
         delete_post_meta( $post_id, 'no_of_subscribers' );
     }
 
@@ -292,7 +297,7 @@ class Subscriber {
         // Delete subscriber of deleted product.
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->delete(
-            $wpdb->prefix . 'notifima_subscribers',
+            $wpdb->prefix . Utill::TABLES['subscribers'],
             array(
 				'product_id' => $product_id,
 				'email'      => $email,
@@ -313,15 +318,17 @@ class Subscriber {
     public static function is_already_subscribed( $subscriber_email, $product_id ) {
         global $wpdb;
 
+        $table = $wpdb->prefix . Utill::TABLES['subscribers'];
+
         // Get the result from custom subscribers table.
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_var(
             $wpdb->prepare(
-                "SELECT id FROM {$wpdb->prefix}notifima_subscribers
+                'SELECT id FROM %i
                 WHERE product_id = %d
                 AND email = %s
-                AND status = %s",
-                array( $product_id, $subscriber_email, 'subscribed' )
+                AND status = %s',
+                array( $table, $product_id, $subscriber_email, 'subscribed' )
             )
         );
     }
@@ -335,13 +342,16 @@ class Subscriber {
     public static function update_product_subscriber_count( $product_id ) {
         global $wpdb;
 
+        $table = $wpdb->prefix . Utill::TABLES['subscribers'];
+
         // Get subscriber count.
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $subscriber_count = $wpdb->get_var(
             $wpdb->prepare(
-                "SELECT COUNT(*) FROM {$wpdb->prefix}notifima_subscribers
+                'SELECT COUNT(*) FROM %i
                 WHERE product_id = %d
-                AND status = %s",
+                AND status = %s',
+                $table,
                 $product_id,
                 'subscribed'
             )
@@ -364,15 +374,18 @@ class Subscriber {
     public static function update_subscriber( $notifima_id, $status ) {
         global $wpdb;
 
+        $table = $wpdb->prefix . Utill::TABLES['subscribers'];
+
         // 1 = failed (increment retry_count), 0 = any other status (reset it).
         $is_failed = (int) ( 'notification_failed' === $status );
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->query(
             $wpdb->prepare(
-                "UPDATE {$wpdb->prefix}notifima_subscribers
+                'UPDATE %i
                 SET status = %s, retry_count = IF( %d = 1, retry_count + 1, 0 )
-                WHERE id = %d",
+                WHERE id = %d',
+                $table,
                 $status,
                 $is_failed,
                 $notifima_id
@@ -435,8 +448,9 @@ class Subscriber {
             return array();
         }
 
-        $query = "SELECT id, email FROM {$wpdb->prefix}notifima_subscribers WHERE product_id = %d AND status = %s";
-        $args  = array( $product_id, $status );
+        $table = $wpdb->prefix . Utill::TABLES['subscribers'];
+        $query = 'SELECT id, email FROM %i WHERE product_id = %d AND status = %s';
+        $args  = array( $table, $product_id, $status );
 
         // Failed notifications: skip subscribers who reached the max retry attempts.
         if ( 'notification_failed' === $status ) {
