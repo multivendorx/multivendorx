@@ -3,9 +3,9 @@ Contributors: wcmp, purnendu
 Tags: marketplace, WooCommerce marketplace, multi vendor, multivendor, multivendor marketplace
 Donate link: http://multivendorx.com/donate/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=multivendorxwporg
 Requires at least: 6.4.0
-Tested up to: 7.1.2
+Tested up to: 7.1.3
 Requires PHP: 8.0
-Stable tag: 5.0.19
+Stable tag: 5.0.20
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -245,6 +245,15 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 15. Store-admin-list.
 
 == Changelog ==
+
+= 5.0.20 - 2026-10-13 =
+* Added     - Compatibility with WordPress 7.1.3
+* Added     - Compatibility with WooCommerce 11.2.1
+* Fixed     - An issue preventing shipping methods from being deleted in zone-wise shipping settings. #2376
+* Fixed     - An issue where incorrect zone data was loaded in the Store Dashboard when editing zone-wise shipping methods. #2335
+* Fixed     - A security issue that could allow unauthorized Store Owners to access global Settings and Modules REST API endpoints. #2375
+* Fixed     - An issue where certain Elementor widgets failed to render when a custom store_url was configured. #2298
+* Updated   - Language file.
 
 = 5.0.19 - 2026-09-30 =
 * Fixed     - Security issues identified in MultiVendorX 5.0.18 to improve overall plugin security.
