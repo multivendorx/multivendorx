@@ -63,15 +63,17 @@ class FrontendScripts {
     /**
 	 * Register and store a script for later use.
 	 *
-	 * @param string $handle       Unique script handle.
-	 * @param string $path         URL to the script file.
-	 * @param array  $deps         Optional. Script dependencies. Default empty array.
-	 * @param string $version      Optional. Script version. Default empty string.
+	 * @param string            $handle       Unique script handle.
+	 * @param string            $path         URL to the script file.
+	 * @param array             $deps         Optional. Script dependencies. Default empty array.
+	 * @param string            $version      Optional. Script version. Default empty string.
+	 * @param bool|array|string $args         Optional. Whether to load in the footer, or an args array (e.g. 'strategy'). Default true.
 	 */
     public static function register_script( $handle, $path, $deps = array(), $version = '', $args = true ) {
-		wp_register_script( $handle, $path, $deps, $version, $args );
-		wp_set_script_translations( $handle, 'multivendorx' );
-	}
+        wp_register_script( $handle, $path, $deps, $version, $args );
+        wp_set_script_translations( $handle, 'multivendorx' );
+    }
+
     /**
 	 * Register and store a style for later use.
 	 *
