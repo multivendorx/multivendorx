@@ -1,21 +1,21 @@
 # Copyright (c) 2026 Notifima Inc. All Rights Reserved.
 msgid ""
 msgstr ""
-"Project-Id-Version: Notifima 3.1.1\n"
+"Project-Id-Version: Notifima 3.1.7\n"
 "Report-Msgid-Bugs-To: https://notifima.com/contact/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-07T13:20:18+00:00\n"
+"POT-Creation-Date: 2026-10-10T08:04:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: notifima\n"
 
 #. Plugin Name of the plugin
 #: product_stock_alert.php
-#: classes/FrontendScripts.php:269
+#: classes/FrontendScripts.php:277
 msgid "Notifima"
 msgstr ""
 
@@ -46,7 +46,7 @@ msgid "Dashboard"
 msgstr ""
 
 #: classes/Admin.php:76
-#: classes/Notifima.php:296
+#: classes/Notifima.php:294
 msgid "Settings"
 msgstr ""
 
@@ -61,7 +61,7 @@ msgstr ""
 #: classes/Admin.php:107
 #: classes/Admin.php:115
 #: classes/Notifima.php:119
-#: classes/Notifima.php:300
+#: classes/Notifima.php:298
 msgid "Upgrade to Pro"
 msgstr ""
 
@@ -118,7 +118,7 @@ msgid "A Customer has subscribed to a product on {site_title} "
 msgstr ""
 
 #: classes/Emails/AdminNewSubscriberEmail.php:100
-#: classes/Emails/ProductBackInStockEmail.php:116
+#: classes/Emails/ProductBackInStockEmail.php:118
 #: classes/Emails/SubscriberConfirmationEmail.php:93
 msgid "Welcome to {site_title} "
 msgstr ""
@@ -131,7 +131,7 @@ msgstr ""
 msgid "Alert customer when their subscribed product becomes in stock"
 msgstr ""
 
-#: classes/Emails/ProductBackInStockEmail.php:106
+#: classes/Emails/ProductBackInStockEmail.php:108
 msgid "Your Subscribed product on {site_title} is available now"
 msgstr ""
 
@@ -145,10 +145,6 @@ msgstr ""
 
 #: classes/Emails/SubscriberConfirmationEmail.php:83
 msgid "You have subscribed to a product on {site_title} "
-msgstr ""
-
-#: classes/Install.php:628
-msgid "Every 10 Minutes"
 msgstr ""
 
 #: classes/Notifima.php:85
@@ -219,11 +215,11 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-#: classes/Notifima.php:276
+#: classes/Notifima.php:274
 msgid "Notifima is currently updating the database in the background. Please be patient while the process completes."
 msgstr ""
 
-#: classes/Notifima.php:282
+#: classes/Notifima.php:280
 msgid "The Notifima is experiencing configuration issues. To ensure proper functioning, kindly deactivate and then activate the plugin."
 msgstr ""
 
@@ -232,90 +228,112 @@ msgid "Settings Saved"
 msgstr ""
 
 #: classes/RestAPI/Controllers/Settings.php:85
-#: classes/RestAPI/Controllers/Subscribers.php:158
-#: classes/RestAPI/Controllers/Subscribers.php:189
+#: classes/RestAPI/Controllers/Subscribers.php:184
+#: classes/RestAPI/Controllers/Subscribers.php:215
 #: classes/RestAPI/Rest.php:103
 msgid "Unexpected server error"
 msgstr ""
 
-#: classes/RestAPI/Controllers/Subscribers.php:128
-#: assets/js/index.js:1
-msgid "Mail Sent"
+#: classes/RestAPI/Controllers/Subscribers.php:94
+msgid "You must be logged in to manage stock alert subscriptions."
 msgstr ""
 
 #: classes/RestAPI/Controllers/Subscribers.php:129
-#: assets/js/index.js:1
-msgid "Subscribed"
+msgid "You are not allowed to modify this subscription."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Subscribers.php:130
-#: assets/js/index.js:1
-msgid "Unsubscribed"
-msgstr ""
-
-#: classes/RestAPI/Controllers/Subscribers.php:144
-msgid "Yes"
-msgstr ""
-
-#: classes/RestAPI/Controllers/Subscribers.php:144
-msgid "No"
-msgstr ""
-
-#: classes/RestAPI/Controllers/Subscribers.php:224
-#: classes/RestAPI/Controllers/Subscribers.php:319
+#: classes/RestAPI/Controllers/Subscribers.php:250
+#: classes/RestAPI/Controllers/Subscribers.php:346
 msgid "Invalid product."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Subscribers.php:310
+#: classes/RestAPI/Controllers/Subscribers.php:337
 msgid "Customer email is required."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Subscribers.php:336
+#: classes/RestAPI/Controllers/Subscribers.php:363
 #: assets/js/block/subscribe-form/index.js:1
 msgid "Something went wrong. Please try again."
 msgstr ""
 
-#: classes/Subscriber.php:44
+#: classes/Subscriber.php:47
 msgctxt "woostockalert"
 msgid "Mail Sent"
 msgstr ""
 
 #. translators: %s: count
-#: classes/Subscriber.php:49
+#: classes/Subscriber.php:52
 #, php-format
 msgid "Mail Sent <span class=\"count\">( %s )</span>"
 msgid_plural "Mail Sent <span class=\"count\">( %s )</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: classes/Subscriber.php:56
+#: classes/Subscriber.php:59
 msgctxt "woostockalert"
 msgid "Subscribed"
 msgstr ""
 
 #. translators: %s: count
-#: classes/Subscriber.php:61
+#: classes/Subscriber.php:64
 #, php-format
 msgid "Subscribed <span class=\"count\">( %s )</span>"
 msgid_plural "Subscribed <span class=\"count\">( %s )</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: classes/Subscriber.php:68
+#: classes/Subscriber.php:71
 msgctxt "woostockalert"
 msgid "Unsubscribed"
 msgstr ""
 
 #. translators: %s: count
-#: classes/Subscriber.php:73
+#: classes/Subscriber.php:76
 #, php-format
 msgid "Unsubscribed <span class=\"count\">( %s )</span>"
 msgid_plural "Unsubscribed <span class=\"count\">( %s )</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: classes/Utill.php:144
+#: classes/Subscriber.php:576
+msgid "Notifima Retry Interval"
+msgstr ""
+
+#: classes/Utill.php:167
+msgid "You are not allowed to perform this action."
+msgstr ""
+
+#: classes/Utill.php:184
 msgid "Invalid nonce."
+msgstr ""
+
+#: classes/Utill.php:319
+#: assets/js/index.js:1
+msgid "Notification Sent"
+msgstr ""
+
+#: classes/Utill.php:320
+msgid "Notification Failed"
+msgstr ""
+
+#: classes/Utill.php:321
+#: assets/js/index.js:1
+msgid "Subscribed"
+msgstr ""
+
+#: classes/Utill.php:322
+#: assets/js/index.js:1
+msgid "Unsubscribed"
+msgstr ""
+
+#: classes/Utill.php:350
+#: assets/js/index.js:1
+msgid "Yes"
+msgstr ""
+
+#: classes/Utill.php:350
+#: assets/js/index.js:1
+msgid "No"
 msgstr ""
 
 #: templates/emails/html/AdminNewSubscriberEmail.php:20
@@ -563,15 +581,15 @@ msgid "Set the automation rules that control customer subscriptions, restock not
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Control who can subscribe to restock alerts and when the subscription form is displayed."
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Subscription access"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Choose which customers are allowed to subscribe for restock notifications."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "<ul><li>Everyone - Both guest visitors and logged-in customers can subscribe.</li><li>Logged-in customers only - Only authenticated customers can subscribe for restock notifications.</li></ul>"
+msgid "Choose who is allowed to sign up for restock alerts."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -587,39 +605,7 @@ msgid "Show subscription form for"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Choose when the restock subscription form should be displayed."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "<ul><li>Out of stock products - Display the subscription form only for products that are out of stock.</li><li>Out of stock &amp; backorder products - Display the subscription form for products that are out of stock or available on backorder.</li></ul>"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Out of stock products"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Out of stock & backorder products"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Restock Timing (Lead Time)"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "When and how lead time is shown."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Stock Status for Lead Time"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Choose which stock statuses should display the product lead time."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "<ul><li>Out of stock - Display the lead time only for out-of-stock products.</li><li>On backorder - Display the lead time for products available on backorder.</li></ul>"
+msgid "Choose when the \"notify me\" form appears on a product page."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -631,15 +617,27 @@ msgid "On backorder"
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Restock Timing (Lead Time)"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Control when and how the expected restock time is shown to shoppers."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Stock Status for Lead Time"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Choose which products show an expected restock time."
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Lead Format"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Choose how lead time should be displayed on product pages."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "<ul><li>Static - Use the same lead time message for all applicable products.</li><li>Dynamic - Use a product-specific lead time message for each product.</li></ul>"
+msgid "Choose how the restock time message appears on product pages."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -655,11 +653,7 @@ msgid "Lead time default message"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Enter the default lead time message displayed for products using the static lead time format."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "This message is shown unless a product-specific lead time is available."
+msgid "The message shoppers see when a product has no restock time of its own."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -667,7 +661,7 @@ msgid "Subscription Experience"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Customize how customers interact with stock alert subscriptions across your store."
+msgid "Customize how customers sign up for and manage restock alerts."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -675,11 +669,7 @@ msgid "Display subscription form as"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Choose how the subscription form is presented to customers."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "<ul><li>Popup Window - Open the subscription form in a modal popup.</li><li>Inline on Product Page - Display the subscription form directly within the product page.</li></ul>"
+msgid "Choose how the sign-up form is shown to customers."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -695,11 +685,7 @@ msgid "Subscriber visibility"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Choose whether the subscriber count should be displayed on product pages."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "<ul><li>Hide subscriber count - Customers will not see how many users have subscribed.</li><li>Show subscriber count - Display the current subscriber count on the product page.</li></ul>"
+msgid "Choose whether customers can see how many people have subscribed to a product."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -715,11 +701,7 @@ msgid "Subscriber count notification message"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Customize the message displayed alongside the subscriber count on product pages."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Use <code>%no_of_subscribed%</code> to display the current number of subscribers. Example: \"<code>%no_of_subscribed% customers are waiting for this product.</code>\""
+msgid "Customize the message shown with the subscriber count on product pages. Use <code>%no_of_subscribed%</code> to display the current subscriber count."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -727,11 +709,7 @@ msgid "Subscription confirmation"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Choose how customer subscriptions are confirmed."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "<ul><li>Subscribe immediately - Customers are subscribed as soon as they submit the form.</li><li>Confirm via email - Customers must verify their subscription through a confirmation email before it becomes active.</li></ul>"
+msgid "Choose how customer sign-ups are confirmed."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -747,11 +725,7 @@ msgid "Subscription confirmation message"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Customize the message displayed after a customer submits a subscription request."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Used when email confirmation is enabled. Default: \"Kindly check your inbox to confirm the subscription.\""
+msgid "Customize the message shown after a customer submits a subscription request."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -759,11 +733,7 @@ msgid "'Unsubscribe' Button Caption"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Customize the text displayed on the unsubscribe button for subscribed users."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Default: \"Unsubscribe\". Shown when a subscribed user revisits an out-of-stock product."
+msgid "The text on the button subscribed customers click to stop alerts. If left blank, \"Unsubscribe\" is used."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -771,7 +741,7 @@ msgid "Audience Synchronization"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Choose where subscriber data is stored and automatically synchronize it with connected platforms."
+msgid "Choose where subscriber details are saved and whether they're sent to your marketing tools."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -780,10 +750,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Choose whether to store subscribers locally or automatically sync them with your Mailchimp audience."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "<ul><li>Store only - Save subscriber information only within your website.</li><li>Mailchimp - Automatically add new subscribers to your Mailchimp audience. Enter your Mailchimp API key below to connect your account.</li></ul>"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -799,11 +765,7 @@ msgid "Mailchimp API key"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Enter your Mailchimp API key to connect your Mailchimp account."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Generate an API key from your Mailchimp account and paste it here to enable audience synchronization."
+msgid "Generate an API key from your Mailchimp account and paste it here to enable audience synchronization. <a href=\"https://admin.mailchimp.com/account/api/\" target=\"_blank\" rel=\"noopener noreferrer\">Get your API key</a>."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -815,7 +777,207 @@ msgid "Connect your Mailchimp account and select the audience for new subscriber
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Start the connection process after entering a valid Mailchimp API key."
+msgid "SMS & WhatsApp Notifications"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Set up text and WhatsApp messages to notify customers when a product is back in stock."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Notification Channel"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Choose how product restock notifications should be sent to subscribers."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "SMS"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "WhatsApp"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "SMS & WhatsApp"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Service Provider"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Choose the service provider you want to use for sending restock notifications."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Twilio"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Vonage"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Account SID"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Your Twilio Account SID. Find it in your Twilio Console → Account Info. <a href=\"https://console.twilio.com/\" target=\"_blank\" rel=\"noopener noreferrer\">Get it here</a>."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Auth Token"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Private token used to authenticate API requests to your Twilio account. Find it in your Twilio Console → Account Info. <a href=\"https://console.twilio.com/\" target=\"_blank\" rel=\"noopener noreferrer\">Get it here</a>."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "SMS Sender Number"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Twilio phone number used to send SMS restock notifications."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "WhatsApp Sender Number"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "WhatsApp-enabled Twilio number used to send restock notifications."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "API Key"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Vonage API key used to authenticate SMS API requests. <a href=\"https://dashboard.nexmo.com/\" target=\"_blank\" rel=\"noopener noreferrer\">Get it here</a>."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "API Secret"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Vonage API secret used to authenticate SMS API requests. <a href=\"https://dashboard.nexmo.com/\" target=\"_blank\" rel=\"noopener noreferrer\">Get it here</a>."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "SMS Sender"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Sender name or number used to send SMS restock notifications."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Application ID"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Vonage Application ID used to authenticate WhatsApp Messages API requests. <a href=\"https://dashboard.nexmo.com/\" target=\"_blank\" rel=\"noopener noreferrer\">Get it here</a>."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Private Key"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Private key for your Vonage Application, used to authenticate WhatsApp Messages API requests. <a href=\"https://dashboard.nexmo.com/\" target=\"_blank\" rel=\"noopener noreferrer\">Get it here</a>."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "WhatsApp-enabled Vonage number used to send restock notifications."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "SMS Message"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Customize the back-in-stock message sent to subscribers. Available placeholders: {product_name}, {product_url}."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "WhatsApp Message"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Customize the WhatsApp back-in-stock message sent to subscribers. Available placeholders: {product_name}, {product_url}."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Notification Delivery"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Control how back-in-stock notifications are delivered to subscribers."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Notification delivery"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Choose how back-in-stock notifications are sent to subscribers."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Send all at once"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Send in batches"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Batch size per minute"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Choose how many subscriber notifications are sent each minute when batch delivery is enabled."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Retry Failed Notifications"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Choose whether failed notification emails should be retried automatically."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Retry Interval"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Choose how often failed notification emails are retried."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Every Hour"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Every 6 Hours"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Once a Day"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Maximum Retry Attempts"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Choose how many times a failed notification email should be retried."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -900,15 +1062,15 @@ msgid "Control subscriber notifications, manage blocked email lists, and connect
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Manage email restrictions and control which customers can subscribe to restock alerts."
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Block email domains"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Specify email domains that are not allowed to subscribe for stock notifications."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Enter one or more email domains separated by commas. Customers using these domains will be prevented from subscribing."
+msgid "Specify email domains that are not allowed to subscribe for stock notifications. Enter multiple domains separated by commas."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -916,11 +1078,7 @@ msgid "Blocked domain alert message"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Customize the message displayed when a customer uses a blocked email domain."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "This message is shown when a subscription request is rejected because the email domain is blocked."
+msgid "Customize the message shown when a subscription is rejected due to a blocked email domain."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -928,11 +1086,7 @@ msgid "Blocked email addresses"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Specify individual email addresses that are not allowed to subscribe for stock notifications."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Enter one or more email addresses separated by commas. Subscription requests from these email addresses will be rejected."
+msgid "Specify email addresses that are not allowed to subscribe for stock notifications. Enter multiple addresses separated by commas."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -940,11 +1094,7 @@ msgid "Blocked email alert message"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Customize the message displayed when a blocked email address attempts to subscribe."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "This message is shown when a subscription request is rejected because the email address is blocked."
+msgid "Customize the message shown when a subscription is rejected due to a blocked email address."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -952,7 +1102,7 @@ msgid "Admin Notifications"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Who on your team gets alerted"
+msgid "Choose who on your team gets notified about new restock subscriptions."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -960,11 +1110,7 @@ msgid "Recipient email for new subscriber"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Choose who should receive email notifications when customers subscribe for restock alerts."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "<ul><li>Separate multiple email addresses with commas.</li><li>By default, the site administrator receives these notifications.</li><li>Remove the administrator's email address from the list if you do not want the administrator to receive notifications.</li></ul>"
+msgid "Set the email addresses that receive notifications when customers subscribe for restock alerts. Separate multiple email addresses with commas."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -980,11 +1126,15 @@ msgid "SKU"
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Phone"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Date"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Status"
+msgid "Date:"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -1028,10 +1178,6 @@ msgid "Out of Stock"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Type"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Regular Price"
 msgstr ""
 
@@ -1056,11 +1202,7 @@ msgid "Stock"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Subscriber No"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Product Type"
+msgid "Select Product Type"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -1072,7 +1214,11 @@ msgid "Variable"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "product Name"
+msgid "View variations"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Viewing"
 msgstr ""
 
 #: assets/js/index.js:1
