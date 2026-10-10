@@ -38,8 +38,9 @@
         "fix:css": "stylelint \"**/*.{css,scss}\" --fix",
         "lint:php": "composer run-script phpcs",
         "fix:php": "composer run-script phpfix",
-        "test": "pnpm run test:php",
+        "test": "pnpm run test:php && pnpm run test:js",
         "test:php": "./vendor/bin/phpunit -c phpunit.xml.dist",
+        "test:js": "jest -c jest.config.js",
         "env:create": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start && pnpm run env:start:database",
         "env:start": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start && pnpm run env:start:database",
         "env:start:database": "node ../../tools/scripts/docker-compose.mjs && docker compose up -d",
@@ -96,6 +97,7 @@
         }
     },
     "dependencies": {
+        "@multivendorx/zyra": "1.0.56",
         "@wordpress/data": "wp-6.6",
         "@wordpress/element": "wp-6.6",
         "@wordpress/hooks": "^4.46.0",
@@ -105,10 +107,19 @@
         "body-scroll-lock": "4.0.0-beta.0",
         "react": "19.2.6",
         "react-dom": "19.2.6",
-        "react-router-dom": "^7.15.1",
-        "@multivendorx/zyra": "1.0.56"
+        "react-router-dom": "^7.15.1"
     },
     "devDependencies": {
+        "@babel/preset-env": "^7.29.7",
+        "@babel/preset-react": "^7.29.7",
+        "@babel/preset-typescript": "^7.29.7",
+        "@testing-library/jest-dom": "^7.0.1",
+        "@testing-library/react": "^16.3.3",
+        "@types/jest": "^30.0.0",
+        "babel-jest": "^30.5.2",
+        "identity-obj-proxy": "^3.0.0",
+        "jest": "^30.5.2",
+        "jest-environment-jsdom": "^30.5.2",
         "wireit": "^0.14.12"
     }
 }
