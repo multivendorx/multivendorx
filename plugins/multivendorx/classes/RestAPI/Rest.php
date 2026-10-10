@@ -53,6 +53,7 @@ class Rest {
         add_filter( 'woocommerce_rest_product_object_query', array( $this, 'query_product_modify' ), 10, 2 );
         add_filter( 'woocommerce_rest_shop_coupon_object_query', array( $this, 'query_shop_coupon_filter_meta' ), 10, 2 );
         add_filter( 'woocommerce_rest_prepare_shop_order_object', array( $this, 'prepare_shop_order_filter_meta' ), 10, 3 );
+        add_filter( 'woocommerce_rest_prepare_product_object', array( $this, 'prepare_product_response' ), 10, 3 );
         add_filter( 'woocommerce_rest_prepare_shop_coupon_object', array( $this, 'prepare_shop_coupon_filter_meta' ), 10, 3 );
         add_filter( 'woocommerce_rest_pre_insert_shop_coupon_object', array( $this, 'pre_insert_shop_coupon_fix_status' ), 10, 3 );
         add_filter( 'woocommerce_analytics_products_query_args', array( $this, 'analytics_products_filter_low_stock_meta' ), 10, 1 );
@@ -750,6 +751,35 @@ class Rest {
 
         return $response;
     }
+
+    /**
+     * Filter WooCommerce products by meta key existence.
+     *
+     * @param WP_REST_Response $response REST API response.
+     * @param WC_Product        $product   Product object.
+     * @param WP_REST_Request  $request  Request object.
+     * @return WP_REST_Response
+     */
+    public function prepare_product_response( $response, $product, $request ) {
+        unset( $request );
+
+        $store_id = $product->get_meta( Utill::POST_META_SETTINGS['store_id'] );
+
+        if ( $store_id ) {
+            // Get store information.
+            $store = new Store( $store_id );
+            if ( ! $store->exists() ) {
+                return $response;
+            }
+            $store_name = $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
+
+            // Add store data to API response.
+            $response->data['store_name'] = $store_name ? $store_name : '';
+        }
+
+        return $response;
+    }
+
 
     /**
      * Filter WooCommerce coupons by meta key existence.

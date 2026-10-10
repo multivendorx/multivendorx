@@ -59,7 +59,7 @@ class Util {
 	public static function upload_review_images( $review_images ) {
 		$review_images = (array) $review_images;
 		$file_names    = array_map( 'sanitize_file_name', (array) ( $review_images['name'] ?? array() ) );
-		$file_tmp      = array_map( 'sanitize_text_field', (array) ( $review_images['tmp_name'] ?? array() ) );
+		$file_tmp      = array_map( 'strval', (array) ( $review_images['tmp_name'] ?? array() ) );
 		$file_errors   = array_map( 'absint', (array) ( $review_images['error'] ?? array() ) );
 		$file_sizes    = array_map( 'absint', (array) ( $review_images['size'] ?? array() ) );
 
@@ -96,18 +96,20 @@ class Util {
 				continue;
 			}
 
+			$file = array(
+				'name'     => $file_type['proper_filename'] ? $file_type['proper_filename'] : $file_name,
+				'type'     => $file_type['type'],
+				'tmp_name' => $tmp_path,
+				'error'    => UPLOAD_ERR_OK,
+				'size'     => $size,
+			);
+
 			$upload = wp_handle_upload(
-				array(
-					'name'     => $file_type['proper_filename'] ? $file_type['proper_filename'] : $file_name,
-					'type'     => $file_type['type'],
-					'tmp_name' => $tmp_path,
-					'error'    => UPLOAD_ERR_OK,
-					'size'     => $size,
-				),
-				array(
+                $file,
+                array(
 					'test_form' => false,
 					'mimes'     => $allowed_image_mimes,
-				)
+                )
 			);
 
 			if ( empty( $upload['error'] ) && ! empty( $upload['url'] ) ) {
@@ -377,11 +379,11 @@ class Util {
 
 		$result = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT status FROM %i
+                'SELECT status FROM %i
         WHERE store_id = %d
         AND customer_id = %d
         ORDER BY date_created DESC
-        LIMIT 1",
+        LIMIT 1',
                 $table_review,
                 $store_id,
                 $user_id

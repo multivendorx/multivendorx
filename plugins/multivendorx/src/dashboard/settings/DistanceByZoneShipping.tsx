@@ -104,34 +104,25 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 		});
 	};
 
-	const handleEdit = async (method: ShippingMethod) => {
+	const handleEdit = async (method: ShippingMethod, zone: Zone) => {
 		setIsEditing(true);
 		setEditingMethod(method);
 
-		const zoneWithMethod = data.find((zone) => {
-			const methods = Object.values(zone.shipping_methods || {});
-			return methods.some((m: ShippingMethod) => m.id === method.id);
-		});
-
-		setSelectedZone(zoneWithMethod || null);
+		setSelectedZone(zone);
 		setIsLoadingShipping(true);
-
-		if (!zoneWithMethod) {
-			return;
-		}
 
 		try {
 			const response = await axios({
 				method: 'GET',
 				url: getApiLink(
 					appLocalizer,
-					`zone-shipping/${zoneWithMethod.zone_id}`
+					`zone-shipping/${zone.zone_id}`
 				),
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: {
 					store_id: store_id,
 					method_id: method.id,
-					zone_id: zoneWithMethod.zone_id,
+					zone_id: zone.zone_id,
 				},
 			});
 			if (response.data && response.data.settings) {
@@ -350,7 +341,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 									{method.title}
 								</div>
 								<i
-									onClick={() => handleEdit(method)}
+									onClick={() => handleEdit(method, zone)}
 									className="admin-badge blue adminfont-edit"
 								></i>
 								<i

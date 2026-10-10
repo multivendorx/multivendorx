@@ -395,7 +395,7 @@ class Rest extends \WP_REST_Controller {
             $zone_id   = intval( $request->get_param( 'zone_id' ) );
             $method_id = sanitize_text_field( $request->get_param( 'method_id' ) );
 
-            if ( ! $store_id || is_numeric( $zone_id ) || $zone_id < 0 || ! $method_id ) {
+            if ( ! $store_id || ! is_numeric( $zone_id ) || $zone_id < 0 || ! $method_id ) {
                 return rest_ensure_response(
                     array(
                         'success' => false,

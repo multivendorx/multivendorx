@@ -77,6 +77,11 @@ class Util {
 			$where[] = $wpdb->prepare( 'email = %s', sanitize_email( $args['email'] ) );
 		}
 
+		// Product ID filter.
+		if ( isset( $args['product_id'] ) && ! empty( $args['product_id'] ) ) {
+			$where[] = $wpdb->prepare( 'product_id = %d', absint( $args['product_id'] ) );
+		}
+
 		// Date range filter.
 		if ( isset( $args['date_range'] ) ) {
 			$start   = esc_sql( $args['date_range']['start'] );
