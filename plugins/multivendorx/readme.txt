@@ -249,6 +249,8 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 = 5.0.20 - 2026-10-13 =
 * Added     - Compatibility with WordPress 7.1.3
 * Added     - Compatibility with WooCommerce 11.2.1
+* Added     - Support for GTIN, UPC, EAN, and ISBN fields on the product edit page. #2386
+* Fixed     - Unintended email notifications sent to sellers when an admin edits their profile. #2385
 * Fixed     - An issue preventing shipping methods from being deleted in zone-wise shipping settings. #2376
 * Fixed     - An issue where incorrect zone data was loaded in the Store Dashboard when editing zone-wise shipping methods. #2335
 * Fixed     - A security issue that could allow unauthorized Store Owners to access global Settings and Modules REST API endpoints. #2375

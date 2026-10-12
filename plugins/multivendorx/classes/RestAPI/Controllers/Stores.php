@@ -826,6 +826,8 @@ class Stores extends \WP_REST_Controller {
                 return;
             }
 
+            $previous_status = $store->get( Utill::STORE_SETTINGS_KEYS['status'] );
+
             $data = apply_filters( 'multivendorx_before_store_update', $data, $store, $request );
 
             $is_admin = Utill::current_user_has_capability( array( 'manage_options' ) );
@@ -1145,7 +1147,7 @@ class Stores extends \WP_REST_Controller {
 
             $store->save();
 
-            if ( 'active' === $store->get( Utill::STORE_SETTINGS_KEYS['status'] ) ) {
+            if ( 'active' !== $previous_status && 'active' === $store->get( Utill::STORE_SETTINGS_KEYS['status'] ) ) {
                 do_action( 'multivendorx_after_store_active', $id );
                 MultiVendorX()->notifications->send_notification_helper(
                     'store_activated',
