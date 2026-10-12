@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
+import { LabeledCellComponent } from '@zyra/components';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
 import {
@@ -49,6 +50,27 @@ const RefundedOrderReport: React.FC = () => {
 			titleLinkKey: 'info_link',
 			descriptionKey: 'info_descriptions',
 			badgesKey: 'info_badges',
+			width: '50%',
+		},
+		amount: {
+			label: __('Refund Amount', 'multivendorx'),
+			render: (row) => (
+				<LabeledCellComponent
+					label={__('Refund Amount', 'multivendorx')}
+				>
+					{formatCurrency(row.amount)}
+				</LabeledCellComponent>
+			),
+		},
+		customer_reason: {
+			label: __('Refund Reason', 'multivendorx'),
+			render: (row) => (
+				<LabeledCellComponent
+					label={__('Refund Reason', 'multivendorx')}
+				>
+					{row.customer_reason || '—'}
+				</LabeledCellComponent>
+			),
 		},
 	};
 
@@ -71,11 +93,6 @@ const RefundedOrderReport: React.FC = () => {
 		info_link: getUrl(row.order_id, 'order'),
 		info_descriptions: [
 			{
-				label: __('Customer', 'multivendorx'),
-				icon: 'person',
-				value: row.customer_name || '—',
-			},
-			{
 				label: __('Store', 'multivendorx'),
 				icon: 'storefront',
 				value: (
@@ -88,14 +105,9 @@ const RefundedOrderReport: React.FC = () => {
 				),
 			},
 			{
-				label: __('Refund Amount', 'multivendorx'),
-				icon: 'dollar',
-				value: formatCurrency(row.amount),
-			},
-			{
-				label: __('Refund Reason', 'multivendorx'),
-				icon: 'question',
-				value: row.customer_reason || '—',
+				label: __('Customer', 'multivendorx'),
+				icon: 'person',
+				value: row.customer_name || '—',
 			},
 		],
 		info_badges: [
@@ -205,11 +217,13 @@ const RefundedOrderReport: React.FC = () => {
 
 		return params;
 	};
+
 	return (
 		<>
 			<TableCard
 				headers={headers}
 				variant="transparent"
+				hideHeader
 				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}

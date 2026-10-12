@@ -21,11 +21,11 @@ const OrderReport: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [store, setStore] = useState([]);
+
 	/**
 	 * Fetch store list on mount
 	 */
 	useEffect(() => {
-		// Fetch store list
 		axios
 			.get(getApiLink(appLocalizer, 'stores'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
@@ -54,6 +54,16 @@ const OrderReport: React.FC = () => {
 			titleLinkKey: 'info_link',
 			descriptionKey: 'info_descriptions',
 			badgesKey: 'info_badges',
+		},
+		commission_total: {
+			label: __('Commission', 'multivendorx'),
+			render: (row) => (
+				<span>{formatCurrency(row.commission_total)}</span>
+			),
+		},
+		total: {
+			label: __('Amount', 'multivendorx'),
+			render: (row) => <span>{formatCurrency(row.total)}</span>,
 		},
 	};
 
@@ -87,14 +97,9 @@ const OrderReport: React.FC = () => {
 				),
 			},
 			{
-				label: __('Amount', 'multivendorx'),
-				icon: 'dollar',
-				value: formatCurrency(row.total),
-			},
-			{
-				label: __('Commission', 'multivendorx'),
-				icon: 'commission',
-				value: formatCurrency(row.commission_total),
+				label: __('Date', 'multivendorx'),
+				icon: 'calendar',
+				value: formatDate(row.date_created) || '—',
 			},
 		],
 		info_badges: [
@@ -102,7 +107,6 @@ const OrderReport: React.FC = () => {
 				text: formatStatusLabel(row.status),
 				color: `badge-${row.status}`,
 			},
-			{ text: formatDate(row.date_created), color: 'blue' },
 		],
 	}));
 

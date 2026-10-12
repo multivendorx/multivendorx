@@ -11,7 +11,6 @@ import axios from 'axios';
 import {
 	toWcIsoDate,
 	dashNavigate,
-	formatCurrency,
 	formatDate,
 	formatStatusLabel,
 } from '../services/commonFunction';
@@ -392,6 +391,11 @@ const AllProduct: React.FC = () => {
 			iconKey: 'info_icon',
 			descriptionKey: 'info_descriptions',
 			badgesKey: 'info_badges',
+			width: '50%',
+		},
+		price: {
+			label: __('Price', 'multivendorx'),
+			type: 'currency',
 		},
 		action: {
 			type: 'action',
@@ -445,11 +449,6 @@ const AllProduct: React.FC = () => {
 					label: __('SKU', 'multivendorx'),
 					icon: 'single-product',
 					value: row.sku || '—',
-				},
-				{
-					label: __('Price', 'multivendorx'),
-					icon: 'dollar',
-					value: formatCurrency(row.price),
 				},
 				{
 					label: __('Categories', 'multivendorx'),
@@ -546,6 +545,8 @@ const AllProduct: React.FC = () => {
 			<TableCard
 				headers={headers}
 				variant="transparent"
+				hideHeader
+				cardColumns={3}
 				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}

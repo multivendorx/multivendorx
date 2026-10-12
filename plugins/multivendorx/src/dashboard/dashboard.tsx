@@ -603,7 +603,11 @@ const Dashboard: React.FC = () => {
 				</ColumnComponent>
 
 				<ColumnComponent fullHeight grid={8}>
-					<CardComponent title={__('Sales Overview', 'multivendorx')}>
+					<CardComponent
+						title={__('Sales Overview', 'multivendorx')}
+						titleIcon="dollar"
+						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+					>
 						{revenueData && revenueData.length > 0 ? (
 							<ResponsiveContainer height={250}>
 								<BarChart
@@ -664,7 +668,11 @@ const Dashboard: React.FC = () => {
 				</ColumnComponent>
 
 				<ColumnComponent fullHeight grid={4}>
-					<CardComponent title={__('Last Withdrawal', 'multivendorx')}>
+					<CardComponent
+						title={__('Last Withdrawal', 'multivendorx')}
+						titleIcon="wallet"
+						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+					>
 						<div className="top-customer-wrapper">
 							{lastWithdraws && lastWithdraws.length > 0 ? (
 								lastWithdraws.map((item) => (
@@ -723,7 +731,11 @@ const Dashboard: React.FC = () => {
 				</ColumnComponent>
 
 				<ColumnComponent fullHeight grid={4}>
-					<CardComponent title={__('Visitors Map', 'multivendorx')}>
+					<CardComponent
+						title={__('Visitors Map', 'multivendorx')}
+						titleIcon="global-community"
+						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+					>
 						<VisitorsMap dateRange={dateRange} />
 					</CardComponent>
 				</ColumnComponent>
@@ -731,6 +743,8 @@ const Dashboard: React.FC = () => {
 				<ColumnComponent fullHeight grid={8}>
 					<CardComponent
 						title={__('Recent Orders', 'multivendorx')}
+						titleIcon="order"
+						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 						iconName="external icon"
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
@@ -776,6 +790,8 @@ const Dashboard: React.FC = () => {
 				<ColumnComponent fullHeight grid={6}>
 					<CardComponent
 						title={__('Best-Selling Products', 'multivendorx')}
+						titleIcon="single-product"
+						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 						iconName="external icon"
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
@@ -809,6 +825,8 @@ const Dashboard: React.FC = () => {
 				<ColumnComponent fullHeight grid={6}>
 					<CardComponent
 						title={__('Commission Overview', 'multivendorx')}
+						titleIcon="commission"
+						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 						iconName="external icon"
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
@@ -865,6 +883,8 @@ const Dashboard: React.FC = () => {
 					<ColumnComponent fullHeight grid={4}>
 						<CardComponent
 							title={__('Admin Announcements', 'multivendorx')}
+							titleIcon="announcement"
+							desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 							iconName="external icon"
 							onIconClick={() => {
 								const url = appLocalizer.permalink_structure
@@ -876,12 +896,12 @@ const Dashboard: React.FC = () => {
 							{Array.isArray(announcement) &&
 							announcement.length > 0 ? (
 								<ListComponent
-									className="notification-wrapper"
+									className="notification"
 									items={announcement.map((item, index) => ({
 										id: item.id || index,
 										title: item.title,
-										desc: item.content,
-										icon: `form-paypal-email admin-badge admin-color${index + 2}`,
+										desc: truncateText(item.content, 20),
+										icon: `announcement admin-badge admin-color${index + 2}`,
 										value: formatTimeAgo(item.date_created),
 									}))}
 								/>
@@ -900,6 +920,8 @@ const Dashboard: React.FC = () => {
 					<ColumnComponent fullHeight grid={4}>
 						<CardComponent
 							title={__('Pending Refunds', 'multivendorx')}
+							titleIcon="marketplace-refund"
+							desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 							iconName="external icon"
 							onIconClick={() => {
 								const url = appLocalizer.permalink_structure
@@ -946,7 +968,11 @@ const Dashboard: React.FC = () => {
 					Array.isArray(access) &&
 					access.includes('name') && (
 						<ColumnComponent fullHeight grid={4}>
-							<CardComponent title={__('Top Customers', 'multivendorx')}>
+							<CardComponent
+								title={__('Top Customers', 'multivendorx')}
+								titleIcon="person"
+								desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+							>
 								{customers && customers.length > 0 ? (
 									customers.map((order, index) => {
 										const name =
@@ -983,7 +1009,11 @@ const Dashboard: React.FC = () => {
 						</ColumnComponent>
 					)}
 				<ColumnComponent fullHeight grid={4}>
-					<CardComponent title={__('Store Activity', 'multivendorx')}>
+					<CardComponent
+						title={__('Store Activity', 'multivendorx')}
+						titleIcon="notification"
+						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+					>
 						<div className="activity-log">
 							{Array.isArray(activities) &&
 							activities.length > 0 ? (
@@ -1009,6 +1039,8 @@ const Dashboard: React.FC = () => {
 					<ColumnComponent fullHeight grid={4}>
 						<CardComponent
 							title={__('Latest Reviews', 'multivendorx')}
+							titleIcon="store-review"
+							desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 							iconName="external icon"
 							onIconClick={() => {
 								const url = appLocalizer.permalink_structure

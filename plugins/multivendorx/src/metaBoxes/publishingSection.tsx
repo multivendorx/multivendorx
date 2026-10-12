@@ -41,6 +41,8 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 	return (
 		<CardComponent
 			title={__('Publishing', 'multivendorx')}
+			titleIcon="calendar"
+			desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 			action={
 				<>
 					<label

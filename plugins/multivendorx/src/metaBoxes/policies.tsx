@@ -36,6 +36,7 @@ const Policies = ({ product, setProduct, handleChange }) => {
 				'Policies - What should customers know before they buy?',
 				'multivendorx'
 			)}
+			titleIcon="store-policy"
 			desc={__(
 				'Being upfront about shipping, returns, and cancellations builds trust and reduces disputes later.',
 				'multivendorx'

@@ -19,7 +19,11 @@ const ProductTag = ({ product, setProduct }) => {
 	}, []);
 
 	return (
-		<CardComponent title={__('Product tag', 'multivendorx')}>
+		<CardComponent
+			title={__('Product tag', 'multivendorx')}
+			titleIcon="coupon"
+			desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+		>
 			<FormGroupWrapperComponent>
 				<SelectInput
 					type="creatable-multi"

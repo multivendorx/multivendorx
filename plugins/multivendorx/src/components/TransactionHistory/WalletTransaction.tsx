@@ -14,6 +14,7 @@ import {
 	PopupComponent,
 	ListComponent,
 	NoticeComponent,
+	InformationItemComponent,
 } from '@zyra/components';
 import {
 	TextInput,
@@ -197,13 +198,70 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	// fee calculation
 	const fee = amount * (percentage / 100) + fixed;
 
+	// Explicit palette colors per status, rather than relying on the
+	// semantic `badge-${status}` classes (those statuses aren't all
+	// covered by that convention, e.g. `upcoming`/`processed`).
+	const transactionStatusColors: Record<string, string> = {
+		completed: 'green',
+		processed: 'blue',
+		upcoming: 'yellow',
+		failed: 'red',
+	};
+
 	const headers = {
 		transaction_title: {
 			label: __('Transaction', 'multivendorx'),
-			type: 'info',
-			iconKey: 'info_icon',
-			descriptionKey: 'info_descriptions',
-			badgesKey: 'info_badges',
+			width: 60,
+			render: (row: any) => {
+				const isCommissionLink =
+					row.transaction_type?.toLowerCase() === 'commission' &&
+					row.commission_id;
+
+				return (
+					<InformationItemComponent
+						title={
+							isCommissionLink
+								? `Commission #${row.commission_id}`
+								: normalizeText(row.narration)
+						}
+						avatar={{ iconClass: 'wallet' }}
+						onClick={
+							isCommissionLink
+								? () => {
+										setSelectedCommissionId(
+											row.commission_id
+										);
+										setViewCommission(true);
+									}
+								: undefined
+						}
+						badges={[
+							{
+								text: formatStatusLabel(row.status),
+								color:
+									transactionStatusColors[
+										row.status?.toLowerCase()
+									] ?? 'gray',
+							},
+						]}
+					/>
+				);
+			},
+		},
+		credit: {
+			label: __('Credit', 'multivendorx'),
+			isSortable: true,
+			type: 'currency',
+		},
+		debit: {
+			label: __('Debit', 'multivendorx'),
+			isSortable: true,
+			type: 'currency',
+		},
+		balance: {
+			label: __('Balance', 'multivendorx'),
+			isSortable: true,
+			type: 'currency',
 		},
 	};
 
@@ -218,55 +276,6 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 		debit: { label: __('Debit', 'multivendorx') },
 		balance: { label: __('Balance', 'multivendorx') },
 	};
-
-	const infoRows = rows.map((row: any) => ({
-		...row,
-		transaction_title: `#${row.id}`,
-		info_icon: 'wallet',
-		info_descriptions: [
-			{
-				label: __('Transaction Type', 'multivendorx'),
-				icon: 'commission',
-				value:
-					row.transaction_type?.toLowerCase() === 'commission' &&
-						row.commission_id ? (
-						<span
-							className="link-item"
-							onClick={() => {
-								setSelectedCommissionId(row.commission_id);
-								setViewCommission(true);
-							}}
-						>
-							{`Commission #${row.commission_id}`}
-						</span>
-					) : (
-						normalizeText(row.narration)
-					),
-			},
-			{
-				label: __('Credit', 'multivendorx'),
-				icon: 'wallet-in',
-				value: formatCurrency(row.credit),
-			},
-			{
-				label: __('Debit', 'multivendorx'),
-				icon: 'withdraw',
-				value: formatCurrency(row.debit),
-			},
-			{
-				label: __('Balance', 'multivendorx'),
-				icon: 'dollar',
-				value: formatCurrency(row.balance),
-			},
-		],
-		info_badges: [
-			{
-				text: formatStatusLabel(row.status),
-				color: `badge-${row.status}`,
-			},
-			{ text: formatDate(row.created_at), color: 'blue' },
-		],
-	}));
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -833,7 +842,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					<TableCard
 						headers={headers}
 						variant="transparent"
-						rows={infoRows}
+						rows={rows}
 						totalRows={totalRows}
 						isLoading={isLoading}
 						onQueryUpdate={doRefreshTableData}

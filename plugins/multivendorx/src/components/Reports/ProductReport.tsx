@@ -24,8 +24,6 @@ import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import axios from 'axios';
 import {
 	downloadCSV,
-	formatCurrency,
-	formatDate,
 	formatLocalDate,
 	getUrl,
 	toWcIsoDate,
@@ -45,6 +43,8 @@ interface Product {
 	description?: string;
 	stock_status?: string;
 	store_name?: string;
+	store_id?: number;
+	sku?: string;
 	date_created?: string;
 }
 interface ChartDataItem {
@@ -260,63 +260,44 @@ const ProductReport: React.FC = () => {
 			label: __('Product', 'multivendorx'),
 			type: 'info',
 			iconKey: 'info_icon',
-			titleLinkKey: 'info_link',
 			descriptionKey: 'info_descriptions',
 			badgesKey: 'info_badges',
+			width: '40%',
+		},
+		store_name: {
+			label: __('Store', 'multivendorx'),
+			width: '25%',
+			render: (row) => {
+				if (!row.store_name) {
+					return <span>—</span>;
+				}
+
+				return (
+					<InformationItemComponent
+						title={row.store_name}
+						titleLink={
+							row.store_id
+								? getUrl(row.store_id, 'store', 'edit')
+								: undefined
+						}
+						avatar={{
+							iconClass: 'store-inventory',
+						}}
+						isLoading={isTableLoading}
+					/>
+				);
+			},
+		},
+		price: {
+			label: __('Net sales', 'multivendorx'),
+			type: 'currency',
+		},
+		date_created: {
+			label: __('Date Created', 'multivendorx'),
+			isSortable: true,
+			type: 'date',
 		},
 	};
-
-	// The table folds these fields into one info column, so the CSV
-	// export lists its columns explicitly instead of reusing `headers`.
-	const csvHeaders = {
-		name: { label: __('Product', 'multivendorx') },
-		store_name: { label: __('Store', 'multivendorx') },
-		total_sales: { label: __('Items sold', 'multivendorx') },
-		price: { label: __('Net sales', 'multivendorx') },
-		date_created: { label: __('Date Created', 'multivendorx') },
-	};
-
-	const infoRows = rows.map((row: any) => ({
-		...row,
-		info_icon: 'single-product',
-		info_link: getUrl(row.id, 'product') || '',
-		info_descriptions: [
-			{
-				label: __('SKU', 'multivendorx'),
-				icon: 'single-product',
-				value: row.sku || '—',
-			},
-			{
-				label: __('Store', 'multivendorx'),
-				icon: 'storefront',
-				value: (
-					<a
-						href={getUrl(row.store_id, 'store', 'edit')}
-						className="link-item"
-					>
-						{row.store_name || '—'}
-					</a>
-				),
-			},
-			{
-				label: __('Items sold', 'multivendorx'),
-				icon: 'cart',
-				value: row.total_sales ?? '—',
-			},
-			{
-				label: __('Net sales', 'multivendorx'),
-				icon: 'dollar',
-				value: formatCurrency(row.price),
-			},
-			{
-				label: __('Category', 'multivendorx'),
-				icon: 'category',
-				value:
-					row.categories?.map((cat) => cat.name).join(', ') || '—',
-			},
-		],
-		info_badges: [{ text: formatDate(row.date_created), color: 'blue' }],
-	}));
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsTableLoading(true);
@@ -373,7 +354,7 @@ const ProductReport: React.FC = () => {
 				const rows = response.data || [];
 
 				downloadCSV(
-					csvHeaders,
+					headers,
 					rows,
 					`product-${formatLocalDate(new Date())}.csv`
 				);
@@ -415,11 +396,52 @@ const ProductReport: React.FC = () => {
 
 		return params;
 	};
+
+	// Build info rows for the info-type first column
+	const infoRows = rows.map((row: any) => {
+		const soldCount = Number(row.total_sales) || 0;
+
+		const soldBadge = {
+			text: `${soldCount} ${__('item sold', 'multivendorx')}`,
+			color: soldCount === 0 ? 'red' : 'blue',
+		};
+
+		const categories = row.categories || [];
+
+		// If no categories → single "Uncategorized" badge with its own color
+		// Otherwise → all real category badges share the same color
+		const categoryBadges =
+			categories.length > 0
+				? categories.map((cat: { id: number; name: string }) => ({
+						text: cat.name,
+						color: 'green',
+					}))
+				: [
+						{
+							text: __('Uncategorized', 'multivendorx'),
+							color: 'grey',
+						},
+					];
+
+		return {
+			...row,
+			info_icon: 'single-product',
+			info_descriptions: [
+				{
+					label: __('SKU', 'multivendorx'),
+					icon: 'info',
+					value: row.sku || '—',
+				},
+			],
+			info_badges: [soldBadge, ...categoryBadges],
+		};
+	});
+
 	return (
 		<>
 			<ContainerComponent>
 				{/* Keep entire top dashboard layout */}
-				<ColumnComponent row>
+				<ColumnComponent grid={5}>
 					<AnalyticsComponent
 						cols={2}
 						data={overview.map((item, idx) => ({
@@ -430,7 +452,8 @@ const ProductReport: React.FC = () => {
 						}))}
 						isLoading={isDashboardLoading}
 					/>
-
+				</ColumnComponent>
+				<ColumnComponent grid={7}>
 					<CardComponent
 						title={__('Revenue & Sales Comparison', 'multivendorx')}
 					>
@@ -542,29 +565,31 @@ const ProductReport: React.FC = () => {
 						)}
 					</CardComponent>
 				</ColumnComponent>
-			</ContainerComponent>
 
-			<TableCard
-				headers={headers}
-				variant="transparent"
-				rows={infoRows}
-				title={__('Revenue Distribution', 'multivendorx')}
-				totalRows={totalRows}
-				isLoading={isTableLoading}
-				onQueryUpdate={doRefreshTableData}
-				search={{ placeholder: 'Search Products...' }}
-				filters={filters}
-				buttonActions={buttonActions}
-				rowIds={rowIds}
-				format={appLocalizer.date_format}
-				currency={{
-					currencySymbol: appLocalizer.currency_symbol,
-					priceDecimals: appLocalizer.price_decimals,
-					decimalSeparator: appLocalizer.decimal_separator,
-					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition: appLocalizer.currency_position,
-				}}
-			/>
+				<CardComponent
+					title={__('Revenue Distribution', 'multivendorx')}
+				>
+					<TableCard
+						headers={headers}
+						rows={infoRows}
+						totalRows={totalRows}
+						isLoading={isTableLoading}
+						onQueryUpdate={doRefreshTableData}
+						search={{ placeholder: 'Search Products...' }}
+						filters={filters}
+						buttonActions={buttonActions}
+						rowIds={rowIds}
+						format={appLocalizer.date_format}
+						currency={{
+							currencySymbol: appLocalizer.currency_symbol,
+							priceDecimals: appLocalizer.price_decimals,
+							decimalSeparator: appLocalizer.decimal_separator,
+							thousandSeparator: appLocalizer.thousand_separator,
+							currencyPosition: appLocalizer.currency_position,
+						}}
+					/>
+				</CardComponent>
+			</ContainerComponent>
 		</>
 	);
 };
