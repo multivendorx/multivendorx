@@ -107,19 +107,6 @@ const Commission: React.FC = () => {
 			titleLinkKey: 'order_link',
 			descriptionKey: 'order_descriptions',
 			badgesKey: 'order_badges',
-			csvDisplay: false,
-		},
-		id: {
-			label: __('ID', 'multivendorx'),
-			tableDisplay: false,
-		},
-		order_id: {
-			label: __('Order', 'multivendorx'),
-			tableDisplay: false,
-		},
-		store_name: {
-			label: __('Store Name', 'multivendorx'),
-			tableDisplay: false,
 		},
 		commission_summary: {
 			label: __('Commission Summary', 'multivendorx'),
@@ -174,7 +161,6 @@ const Commission: React.FC = () => {
 					</LabeledCellComponent>
 				);
 			},
-			csvDisplay: false
 		},
 		total_order_amount: {
 			label: __('Order Amount', 'multivendorx'),
@@ -186,52 +172,6 @@ const Commission: React.FC = () => {
 					{formatCurrency(row.total_order_amount)}
 				</LabeledCellComponent>
 			),
-		},
-		store_payable: {
-			label: __('Store Earning', 'multivendorx'),
-			tableDisplay: false,
-		},
-		marketplace_payable: {
-			label: __('Marketplace Earning', 'multivendorx'),
-			tableDisplay: false,
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			tableDisplay: false,
-		},
-		tax_amount: {
-			label: __('Tax Amount', 'multivendorx'),
-			tableDisplay: false,
-			condition: appLocalizer.taxes_enabled === 'yes',
-		},
-		shipping_tax_amount: {
-			label: __('Shipping Tax', 'multivendorx'),
-			tableDisplay: false,
-			condition: modules.includes('store-shipping'),
-		},
-		shipping_amount: {
-			label: __('Shipping Amount', 'multivendorx'),
-			tableDisplay: false,
-			condition: modules.includes('store-shipping'),
-		},
-		platform_fee: {
-			label: __('Platform Fee', 'multivendorx'),
-			tableDisplay: false,
-			condition: modules.includes('marketplace-fee'),
-		},
-		facilitator_fee: {
-			label: __('Facilitator Fee', 'multivendorx'),
-			tableDisplay: false,
-			condition: modules.includes('facilitator'),
-		},
-		gateway_fee: {
-			label: __('Gateway Fee', 'multivendorx'),
-			tableDisplay: false,
-			condition: modules.includes('payment-gateway-charge'),
-		},
-		created_at: {
-			label: __('Date', 'multivendorx'),
-			tableDisplay: false,
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
@@ -253,12 +193,59 @@ const Commission: React.FC = () => {
 					},
 				},
 			],
-			csvDisplay: false
 		}
 	};
 
 	const headers = Object.fromEntries(
 		Object.entries(rawHeaders).filter(
+			([_, config]) => config.condition !== false
+		)
+	);
+
+	// The table folds most fields into the `order_info`/`commission_summary`
+	// info columns, so CSV export lists its columns explicitly instead of
+	// reusing `headers` — anything with `tableDisplay: false` here would
+	// still render an (unfiltered) extra <td> in every table row, since
+	// zyra's Table only applies that flag to the <thead>, not the body.
+	const rawCsvHeaders = {
+		id: { label: __('ID', 'multivendorx') },
+		order_id: { label: __('Order', 'multivendorx') },
+		store_name: { label: __('Store Name', 'multivendorx') },
+		total_order_amount: { label: __('Order Amount', 'multivendorx') },
+		store_payable: { label: __('Store Earning', 'multivendorx') },
+		marketplace_payable: {
+			label: __('Marketplace Earning', 'multivendorx'),
+		},
+		status: { label: __('Status', 'multivendorx') },
+		tax_amount: {
+			label: __('Tax Amount', 'multivendorx'),
+			condition: appLocalizer.taxes_enabled === 'yes',
+		},
+		shipping_tax_amount: {
+			label: __('Shipping Tax', 'multivendorx'),
+			condition: modules.includes('store-shipping'),
+		},
+		shipping_amount: {
+			label: __('Shipping Amount', 'multivendorx'),
+			condition: modules.includes('store-shipping'),
+		},
+		platform_fee: {
+			label: __('Platform Fee', 'multivendorx'),
+			condition: modules.includes('marketplace-fee'),
+		},
+		facilitator_fee: {
+			label: __('Facilitator Fee', 'multivendorx'),
+			condition: modules.includes('facilitator'),
+		},
+		gateway_fee: {
+			label: __('Gateway Fee', 'multivendorx'),
+			condition: modules.includes('payment-gateway-charge'),
+		},
+		created_at: { label: __('Date', 'multivendorx') },
+	};
+
+	const csvHeaders = Object.fromEntries(
+		Object.entries(rawCsvHeaders).filter(
 			([_, config]) => config.condition !== false
 		)
 	);
@@ -364,7 +351,7 @@ const Commission: React.FC = () => {
 			.then((response) => {
 				const rows = response.data || [];
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`selected-commissions-${formatLocalDate(new Date())}.csv`
 				);
@@ -384,7 +371,7 @@ const Commission: React.FC = () => {
 				const rows = response.data || [];
 
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`commissions-${formatLocalDate(new Date())}.csv`
 				);

@@ -1,7 +1,6 @@
 /* global appLocalizer */
 import React, { useEffect, JSX } from 'react';
 import { __ } from '@wordpress/i18n';
-import { applyFilters } from '@wordpress/hooks';
 import { SettingProvider, useSetting } from '../../contexts/SettingContext';
 import { getTemplateData } from '../../services/templateService';
 
@@ -101,16 +100,10 @@ const Settings: React.FC<SettingsProps> = () => {
 			return <PluginModules />;
 		}
 
-		// Let Pro (or any other plugin) supply the component for a subtab
-		// it contributed via the `multivendorx_settings_context` filter,
-		// e.g. Pro's License tab.
-		const extensionComponent = applyFilters(
-			'multivendorx_settings_component',
-			null,
-			currentTab
-		);
-		if (extensionComponent) {
-			return extensionComponent as JSX.Element;
+		// A subtab id with no matching settings file (stale bookmark, a
+		// renamed setting id) has nothing to render.
+		if (!settingModal) {
+			return <>{__('Settings not found.', 'multivendorx')}</>;
 		}
 
 		return (
