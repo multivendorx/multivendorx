@@ -827,6 +827,7 @@ class Stores extends \WP_REST_Controller {
             }
 
             $previous_status = $store->get( Utill::STORE_SETTINGS_KEYS['status'] );
+            $current_status  = $data['status'] ?? '';
 
             $data = apply_filters( 'multivendorx_before_store_update', $data, $store, $request );
 
@@ -1147,7 +1148,7 @@ class Stores extends \WP_REST_Controller {
 
             $store->save();
 
-            if ( 'active' !== $previous_status && 'active' === $store->get( Utill::STORE_SETTINGS_KEYS['status'] ) ) {
+            if ( 'active' !== $previous_status && 'active' === $current_status ) {
                 do_action( 'multivendorx_after_store_active', $id );
                 MultiVendorX()->notifications->send_notification_helper(
                     'store_activated',
@@ -1161,7 +1162,7 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
-            if ( 'rejected' === ( $data['status'] ?? '' ) ) {
+            if ( 'rejected' !== $previous_status && 'rejected' === $current_status ) {
                 MultiVendorX()->notifications->send_notification_helper(
                     'store_rejected',
                     $store,
@@ -1174,7 +1175,7 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
-            if ( 'under_review' === ( $data['status'] ?? '' ) ) {
+            if ( 'under_review' !== $previous_status && 'under_review' === $current_status ) {
                 MultiVendorX()->notifications->send_notification_helper(
                     'store_under_review',
                     $store,
@@ -1187,7 +1188,7 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
-            if ( 'suspended' === ( $data['status'] ?? '' ) ) {
+            if ( 'suspended' !== $previous_status && 'suspended' === $current_status ) {
                 MultiVendorX()->notifications->send_notification_helper(
                     'store_suspended',
                     $store,
@@ -1200,7 +1201,7 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
-            if ( 'deactivated' === ( $data['status'] ?? '' ) ) {
+            if ( 'deactivated' !== $previous_status && 'deactivated' === $current_status ) {
                 // Only clear the active store for users of this store.
                 delete_metadata(
                     'user',
