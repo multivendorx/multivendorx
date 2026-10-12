@@ -108,7 +108,7 @@ const WholesaleUser = () => {
 					text: formatStatusLabel(row.status),
 					color: `badge-${row.status?.toLowerCase()}`,
 				},
-				{ text: formatDate(row.date), color: 'gray' },
+				{ text: formatDate(row.date), color: 'blue' },
 			],
 		})),
 	};

@@ -252,7 +252,7 @@ const StoreReport: React.FC = () => {
 				text: formatStatusLabel(row.status),
 				color: `badge-${row.status}`,
 			},
-			...(row.date ? [{ text: row.date, color: 'gray' }] : []),
+			...(row.date ? [{ text: row.date, color: 'blue' }] : []),
 		],
 	}));
 

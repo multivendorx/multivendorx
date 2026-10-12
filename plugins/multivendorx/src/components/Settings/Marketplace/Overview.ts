@@ -78,12 +78,11 @@ export default {
 			type: 'choice-toggle',
 			label: __('', 'multivendorx'),
 			custom: true,
-			
+			classes: 'full-width',
 			desc: __(
 				'In a multivendor setup, a <b>Main Order</b> is the parent order placed by the customer, while <b>Sub-orders</b> are created for each store.<br/><b>Enabling the Main Order is recommended</b>, as it allows you to send a single email that includes the Main Order and all related Sub-orders. Alternatively, you can send separate emails for the Main Order and each Sub-order.',
 				'multivendorx'
 			),
-			width: '80%',
 			options: [
 				{
 					key: 'mainorder',
@@ -153,6 +152,7 @@ export default {
 		{
 			key: 'available_shortcodes',
 			type: 'shortcode-table',
+			classes: 'full-width',
 			label: __('', 'multivendorx'),
 			optionLabel: [
 				__('Shortcodes and block', 'multivendorx'),

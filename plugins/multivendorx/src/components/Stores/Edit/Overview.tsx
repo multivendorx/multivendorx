@@ -317,7 +317,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 										titleLink={editUrl}
 										avatar={{
 											image: productImage,
-											iconClass: `item-icon adminfont-single-product admin-color${idx + 2}`,
+											iconClass: "item-icon adminfont-single-product admin-color-2",
 										}}
 										descriptions={[
 											{

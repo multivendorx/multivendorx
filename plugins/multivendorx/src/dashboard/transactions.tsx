@@ -121,7 +121,7 @@ const Transactions: React.FC = () => {
 				text: formatStatusLabel(row.status),
 				color: `badge-${row.status}`,
 			},
-			{ text: formatDate(row.created_at), color: 'gray' },
+			{ text: formatDate(row.created_at), color: 'blue' },
 		],
 	}));
 

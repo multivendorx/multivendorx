@@ -195,7 +195,7 @@ const StoreTable: React.FC = () => {
 				text: formatStatusLabel(row.status),
 				color: `badge-${row.status}`,
 			},
-			{ text: formatDate(row.create_time), color: 'gray' },
+			{ text: formatDate(row.create_time), color: 'blue' },
 		],
 	}));
 
@@ -205,6 +205,7 @@ const StoreTable: React.FC = () => {
 				<TableCard
 					headers={headers}
 					variant="transparent"
+					hideHeader={true}
 					rows={infoRows}
 					totalRows={totalRows}
 					isLoading={isLoading}

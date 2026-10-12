@@ -113,7 +113,7 @@ const PendingDeactivateRequests: React.FC<object> = () => {
 				value: row.reason || '—',
 			},
 		],
-		info_badges: [{ text: formatDate(row.date), color: 'gray' }],
+		info_badges: [{ text: formatDate(row.date), color: 'blue' }],
 	}));
 
 	return (

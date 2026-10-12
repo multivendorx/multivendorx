@@ -136,7 +136,7 @@ const PendingReportAbuse: React.FC<object> = () => {
 				value: row.reason || '—',
 			},
 		],
-		info_badges: [{ text: formatDate(row.created_at), color: 'gray' }],
+		info_badges: [{ text: formatDate(row.created_at), color: 'blue' }],
 	}));
 
 	const filters = [

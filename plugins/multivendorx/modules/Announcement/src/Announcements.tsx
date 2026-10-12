@@ -324,7 +324,7 @@ export const Announcements: React.FC = () => {
 		],
 		info_badges: [
 			{ text: row.status_label, color: `badge-${row.status}` },
-			{ text: formatDate(row.date_created), color: 'gray' },
+			{ text: formatDate(row.date_created), color: 'blue' },
 		],
 	}));
 
@@ -622,6 +622,7 @@ export const Announcements: React.FC = () => {
 					<TableCard
 						headers={headers}
 						variant="transparent"
+						hideHeader={true}
 						rows={infoRows}
 						totalRows={totalRows}
 						isLoading={isLoading}

@@ -89,7 +89,7 @@ const Refund: React.FC = () => {
 				text: formatStatusLabel(row.status),
 				color: `badge-${row.status}`,
 			},
-			{ text: formatDate(row.date_created), color: 'gray' },
+			{ text: formatDate(row.date_created), color: 'blue' },
 		],
 	}));
 	const filters = [

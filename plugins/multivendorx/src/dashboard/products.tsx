@@ -473,7 +473,7 @@ const AllProduct: React.FC = () => {
 							},
 						]
 					: []),
-				{ text: formatDate(row.date_created), color: 'gray' },
+				{ text: formatDate(row.date_created), color: 'blue' },
 			],
 		};
 	});

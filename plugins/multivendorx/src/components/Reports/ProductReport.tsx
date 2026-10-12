@@ -315,7 +315,7 @@ const ProductReport: React.FC = () => {
 					row.categories?.map((cat) => cat.name).join(', ') || '—',
 			},
 		],
-		info_badges: [{ text: formatDate(row.date_created), color: 'gray' }],
+		info_badges: [{ text: formatDate(row.date_created), color: 'blue' }],
 	}));
 
 	const doRefreshTableData = (query: QueryProps) => {

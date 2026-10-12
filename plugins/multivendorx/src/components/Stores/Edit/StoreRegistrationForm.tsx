@@ -454,7 +454,9 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 						{Array.isArray(activities) && activities.length > 0 ? (
 							activities.slice(0, 5).map((a, i) => (
 								<div key={i} className="activity">
-									<div className="title">{a.title}</div>
+									{a.title && (
+										<div className="title">{a.title}</div>
+									)}
 									<div className="des">{a.message}</div>
 									<span>{formatDate(a.date)}</span>
 								</div>

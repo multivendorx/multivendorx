@@ -162,7 +162,7 @@ const PendingStores: React.FC<object> = () => {
 		...row,
 		info_icon: 'store-inventory',
 		info_link: getUrl(row.id, 'store', 'edit'),
-		info_badges: [{ text: formatDate(row.applied_on), color: 'gray' }],
+		info_badges: [{ text: formatDate(row.applied_on), color: 'blue' }],
 	}));
 
 	return (

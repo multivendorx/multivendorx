@@ -229,7 +229,7 @@ const PendingProducts: React.FC<object> = () => {
 				value: formatCurrency(row.price),
 			},
 		],
-		info_badges: [{ text: formatDate(row.date_created), color: 'gray' }],
+		info_badges: [{ text: formatDate(row.date_created), color: 'blue' }],
 	}));
 
 	return (

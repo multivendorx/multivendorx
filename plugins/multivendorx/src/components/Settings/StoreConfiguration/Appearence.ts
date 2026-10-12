@@ -16,8 +16,16 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'appearance',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'appearance',
+			title: __('Marketplace Branding', 'multivendorx'),
+		},
 		{
 			key: 'store_dashboard_site_logo',
 			type: 'attachment',
@@ -31,6 +39,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'paint-brush',
 			title: __('Store Customizer', 'multivendorx'),
 			desc: __(
 				'Control how your store looks and feels. Set the banner style, logo placement, and customize the dashboard color scheme to match your brand identity.',

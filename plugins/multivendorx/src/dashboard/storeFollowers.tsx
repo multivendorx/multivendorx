@@ -33,7 +33,7 @@ const StoreFollower: React.FC = () => {
 			},
 		],
 		info_badges: [
-			{ text: formatDate(row.date_followed), color: 'gray' },
+			{ text: formatDate(row.date_followed), color: 'blue' },
 		],
 	}));
 

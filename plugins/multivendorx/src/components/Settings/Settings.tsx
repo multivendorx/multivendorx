@@ -1,6 +1,7 @@
 /* global appLocalizer */
 import React, { useEffect, JSX } from 'react';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { SettingProvider, useSetting } from '../../contexts/SettingContext';
 import { getTemplateData } from '../../services/templateService';
 
@@ -13,6 +14,7 @@ import EventRules from './Notification/EventRules.tsx';
 import StoreStatus from './StoreConfiguration/StoreStatus.tsx';
 import Invoice from './StoreConfiguration/Invoice';
 import ProductCompliance from './Privacy & Compliance/ProductCompliance.tsx';
+import PluginModules from '../Modules/Modules.tsx';
 
 interface SettingsProps {
 	id: string;
@@ -94,6 +96,21 @@ const Settings: React.FC<SettingsProps> = () => {
 		}
 		if (currentTab === 'invoices') {
 			return <Invoice />;
+		}
+		if (currentTab === 'modules') {
+			return <PluginModules />;
+		}
+
+		// Let Pro (or any other plugin) supply the component for a subtab
+		// it contributed via the `multivendorx_settings_context` filter,
+		// e.g. Pro's License tab.
+		const extensionComponent = applyFilters(
+			'multivendorx_settings_component',
+			null,
+			currentTab
+		);
+		if (extensionComponent) {
+			return extensionComponent as JSX.Element;
 		}
 
 		return (

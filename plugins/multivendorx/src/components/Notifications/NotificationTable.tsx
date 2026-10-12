@@ -76,7 +76,7 @@ const NotificationTable = (React.FC = () => {
 				text: formatStatusLabel(row.type),
 				color: `badge-${row.status}`,
 			},
-			{ text: formatDate(row.created_at), color: 'gray' },
+			{ text: formatDate(row.created_at), color: 'blue' },
 		],
 	}));
 

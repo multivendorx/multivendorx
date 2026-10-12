@@ -223,7 +223,7 @@ const Queries: React.FC = () => {
 				text: formatStatusLabel(row.question_visibility),
 				color: `badge-${row.status}`,
 			},
-			{ text: formatDate(row.question_date), color: 'gray' },
+			{ text: formatDate(row.question_date), color: 'blue' },
 		],
 	}));
 

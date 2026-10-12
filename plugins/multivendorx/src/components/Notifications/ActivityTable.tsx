@@ -67,7 +67,7 @@ const ActivityTable = (React.FC = () => {
 				value: row.title || '—',
 			},
 		],
-		info_badges: [{ text: formatDate(row.created_at), color: 'gray' }],
+		info_badges: [{ text: formatDate(row.created_at), color: 'blue' }],
 	}));
 
 	return (

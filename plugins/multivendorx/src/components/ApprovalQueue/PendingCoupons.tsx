@@ -224,7 +224,7 @@ const PendingCoupons: React.FC<object> = () => {
 				text: formatStatusLabel(row.discount_type),
 				color: `badge-${row.status}`,
 			},
-			{ text: formatDate(row.date_created), color: 'gray' },
+			{ text: formatDate(row.date_created), color: 'blue' },
 		],
 	}));
 

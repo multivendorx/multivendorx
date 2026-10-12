@@ -238,7 +238,7 @@ export const KnowledgeBase: React.FC = () => {
 		],
 		info_badges: [
 			{ text: row.status_label, color: `badge-${row.status}` },
-			{ text: formatDate(row.date_created), color: 'gray' },
+			{ text: formatDate(row.date_created), color: 'blue' },
 		],
 	}));
 
@@ -498,6 +498,7 @@ export const KnowledgeBase: React.FC = () => {
 						rows={infoRows}
 						totalRows={totalRows}
 						isLoading={isLoading}
+						hideHeader={true}
 						onQueryUpdate={doRefreshTableData}
 						ids={rowIds}
 						categoryCounts={categoryCounts}

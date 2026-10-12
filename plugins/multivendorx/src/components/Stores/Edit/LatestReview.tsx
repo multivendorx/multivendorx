@@ -68,7 +68,7 @@ const LatestReview: React.FC<LatestReviewProps> = ({ store_id }) => {
 				value: row.review_content || '—',
 			},
 		],
-		info_badges: [{ text: formatDate(row.date_created), color: 'gray' }],
+		info_badges: [{ text: formatDate(row.date_created), color: 'blue' }],
 	}));
 
 	return (

@@ -264,7 +264,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 				text: formatStatusLabel(row.status),
 				color: `badge-${row.status}`,
 			},
-			{ text: formatDate(row.created_at), color: 'gray' },
+			{ text: formatDate(row.created_at), color: 'blue' },
 		],
 	}));
 

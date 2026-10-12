@@ -23,7 +23,7 @@ const ActivitiesTable = (React.FC = () => {
 	const infoRows = rows.map((row: any) => ({
 		...row,
 		info_icon: 'notification',
-		info_badges: [{ text: formatDate(row.date), color: 'gray' }],
+		info_badges: [{ text: formatDate(row.date), color: 'blue' }],
 	}));
 
 	const doRefreshTableData = (query: QueryProps) => {
