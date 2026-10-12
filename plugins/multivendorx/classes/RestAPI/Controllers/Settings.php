@@ -75,10 +75,6 @@ class Settings extends \WP_REST_Controller {
      * @param object $request The REST request object.
      */
     public function update_item_permissions_check( $request ) {
-        // Every settings group here is marketplace-wide config (commissions, payouts,
-        // role permissions, etc.) - the dashboard's per-store settings go through the
-        // Stores controller instead, which already checks store ownership. edit_stores
-        // is held by every store_owner by default, so it isn't sufficient here.
         return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 
