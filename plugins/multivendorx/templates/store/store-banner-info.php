@@ -13,6 +13,10 @@ use MultiVendorX\store\store;
 use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\StoreReview\Util;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $store_id = $args['store_id'];
 
 $store = Store::get_store( $store_id );

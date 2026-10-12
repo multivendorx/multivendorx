@@ -12,6 +12,8 @@ use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\Utill;
 use MultiVendorX\StoreReview\Util as Rating;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Store Privacy Util class
  *

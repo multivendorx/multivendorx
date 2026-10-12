@@ -12,6 +12,8 @@ namespace MultiVendorX\Elementor\Tags;
 use Elementor\Core\DynamicTags\Tag;
 use Elementor\Modules\DynamicTags\Module;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * StoreDummyProducts Dynamic Tag.
  *

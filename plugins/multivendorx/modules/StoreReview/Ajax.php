@@ -43,27 +43,19 @@ class Ajax {
 	public function submit_review() {
 		check_ajax_referer( 'multivendorx-review-frontend-script', 'nonce' );
 
-		$data = filter_input_array(
-            INPUT_POST,
-            array(
-				'store_id'       => FILTER_SANITIZE_NUMBER_INT,
-				'review_title'   => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-				'review_content' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-				'rating'         => array(
-					'filter' => FILTER_DEFAULT,
-					'flags'  => FILTER_REQUIRE_ARRAY,
-				),
-            )
-		);
-
-		$store_id       = intval( $data['store_id'] ?? 0 );
+		$store_id       = absint( filter_input( INPUT_POST, 'store_id', FILTER_SANITIZE_NUMBER_INT ) );
 		$user_id        = MultiVendorX()->current_user_id;
-		$review_title   = $data['review_title'] ?? '';
-		$review_content = $data['review_content'] ?? '';
-		$ratings        = $data['rating'] ?? array();
+		$review_title   = sanitize_text_field( wp_unslash( filter_input( INPUT_POST, 'review_title' ) ?? '' ) );
+		$review_content = sanitize_textarea_field( wp_unslash( filter_input( INPUT_POST, 'review_content' ) ?? '' ) );
+		$ratings        = Util::sanitize_rating_values( filter_input( INPUT_POST, 'rating', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY ) );
 
 		if ( ! $user_id || ! $store_id || empty( $ratings ) ) {
 			wp_send_json_error( array( 'message' => __( 'Missing required fields.', 'multivendorx' ) ) );
+		}
+
+		$store = new Store( $store_id );
+		if ( ! $store->exists() ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid store.', 'multivendorx' ) ) );
 		}
 
 		if ( Util::has_reviewed( $store_id, $user_id ) ) {
@@ -73,69 +65,27 @@ class Ajax {
 		$order_id = Util::is_verified_buyer( $store_id, $user_id );
 		$overall  = array_sum( $ratings ) / count( $ratings );
 
-		// Handle image uploads.
-		$uploaded_images = array();
-		$files           = $_FILES['review_images'] ?? null;
-
-		if ( ! empty( $files ) && is_array( $files ) ) {
-			require_once ABSPATH . 'wp-admin/includes/file.php';
-			// Validate required file structure.
-			$required_keys = array( 'name', 'type', 'tmp_name', 'error', 'size' );
-			foreach ( $required_keys as $key ) {
-				if ( ! is_array( $files[ $key ] ) ) {
-					wp_send_json_error(
-                        array(
-							'message' => __( 'Invalid file upload data.', 'multivendorx' ),
-                        )
-                    );
-				}
-			}
-
-			// Normalize safely.
-			$file_names  = array_map( 'sanitize_file_name', (array) ( $files['name'] ?? array() ) );
-			$file_types  = (array) ( $files['type'] ?? array() );
-			$file_tmp    = (array) ( $files['tmp_name'] ?? array() );
-			$file_errors = array_map( 'intval', (array) ( $files['error'] ?? array() ) );
-			$file_sizes  = array_map( 'intval', (array) ( $files['size'] ?? array() ) );
-
-			foreach ( $file_names as $index => $name ) {
-				$tmp   = $file_tmp[ $index ] ?? '';
-				$type  = $file_types[ $index ] ?? '';
-				$error = $file_errors[ $index ] ?? UPLOAD_ERR_NO_FILE;
-				$size  = $file_sizes[ $index ] ?? 0;
-				// Basic validation.
-				if ( $name === '' || $tmp === '' || $error !== UPLOAD_ERR_OK ) {
-					continue;
-				}
-				$file   = array(
-					'name'     => $name,
-					'type'     => sanitize_mime_type( $type ),
-					'tmp_name' => $tmp,
-					'error'    => $error,
-					'size'     => $size,
-				);
-				$upload = wp_handle_upload( $file, array( 'test_form' => false ) );
-				if ( ! empty( $upload['error'] ) || empty( $upload['url'] ) ) {
-					continue;
-				}
-				$uploaded_images[] = esc_url_raw( $upload['url'] );
-			}
-		}
+		// Handle image uploads. The nonce was verified above.
+		$uploaded_images = Util::upload_review_images(
+			array(
+				'name'     => isset( $_FILES['review_images']['name'] ) ? array_map( 'sanitize_file_name', (array) $_FILES['review_images']['name'] ) : array(),
+				'tmp_name' => isset( $_FILES['review_images']['tmp_name'] ) ? array_map( 'sanitize_text_field', (array) $_FILES['review_images']['tmp_name'] ) : array(),
+				'error'    => isset( $_FILES['review_images']['error'] ) ? array_map( 'absint', (array) $_FILES['review_images']['error'] ) : array(),
+				'size'     => isset( $_FILES['review_images']['size'] ) ? array_map( 'absint', (array) $_FILES['review_images']['size'] ) : array(),
+			)
+		);
 
 		// Insert review with image data.
 		$review_id = Util::insert_review( $store_id, $user_id, $review_title, $review_content, $overall, $order_id, $uploaded_images );
 		Util::insert_ratings( $review_id, $ratings );
-		$store = new Store( $store_id );
-		if ( $store->exists() ) {
-			MultiVendorX()->notifications->send_notification_helper(
-				'new_store_review',
-				$store,
-				null,
-				array(
-					'category' => 'activity',
-				)
-			);
-		}
+		MultiVendorX()->notifications->send_notification_helper(
+			'new_store_review',
+			$store,
+			null,
+			array(
+				'category' => 'activity',
+			)
+		);
 		wp_send_json_success( array( 'message' => __( 'Review submitted successfully!', 'multivendorx' ) ) );
 	}
 
@@ -143,7 +93,9 @@ class Ajax {
 	 * Get reviews for a store.
 	 */
 	public function get_reviews() {
-		$store_id = filter_input( INPUT_POST, 'store_id', FILTER_SANITIZE_NUMBER_INT );
+		check_ajax_referer( 'multivendorx-review-frontend-script', 'nonce' );
+
+		$store_id = absint( filter_input( INPUT_POST, 'store_id', FILTER_SANITIZE_NUMBER_INT ) );
 		$reviews  = Util::get_reviews_by_store( $store_id );
 		ob_start();
 		if ( $reviews ) {
@@ -163,11 +115,7 @@ class Ajax {
             <li class="review byuser comment-author-admin bypostauthor">
                 <div class="comment_container">
                             <?php
-                            if ( $user_info ) {
-                                echo get_avatar( $review->customer_id, 60 );
-							} else {
-                                echo get_avatar( 0, 60 );
-							}
+                            echo wp_kses_post( get_avatar( $user_info ? $review->customer_id : 0, 60 ) );
 							?>
                     <div class="comment-text">
                         <div class="star-rating" role="img" aria-label="
@@ -244,7 +192,9 @@ class Ajax {
      * Get average ratings for a store.
      */
     public function get_avg_ratings() {
-        $store_id   = filter_input( INPUT_POST, 'store_id', FILTER_SANITIZE_NUMBER_INT );
+        check_ajax_referer( 'multivendorx-review-frontend-script', 'nonce' );
+
+        $store_id   = absint( filter_input( INPUT_POST, 'store_id', FILTER_SANITIZE_NUMBER_INT ) );
         $parameters = MultiVendorX()->setting->get_setting( 'ratings_parameters', array() );
 
         $averages = Util::get_avg_ratings( $store_id, $parameters );

@@ -133,6 +133,13 @@ class Rest extends \WP_REST_Controller {
             $store_id       = (int) $request->get_param( 'store_id' );
             $sec_fetch_site = $request->get_header( 'sec_fetch_site' );
             $referer        = $request->get_header( 'referer' );
+            $is_admin       = Utill::current_user_has_capability( array( 'manage_options' ) );
+
+            // Non-admins only browse their own store's published announcements.
+            if ( ! $is_admin ) {
+                $store_id     = (int) MultiVendorX()->active_store;
+                $status_param = 'publish';
+            }
 
             $dates = Utill::normalize_date_range(
                 $request->get_param( 'start_date' ),
@@ -281,6 +288,14 @@ class Rest extends \WP_REST_Controller {
                 );
             }
 
+            if ( ! $this->current_user_can_view_announcement( $post ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to view this announcement.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
+
             return rest_ensure_response( $this->prepare_item_for_response( $post, $request ) );
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
@@ -315,15 +330,15 @@ class Rest extends \WP_REST_Controller {
         }
 
         try {
-            $data = $request->get_params();
+            $bulk_data = $request->get_params();
             /**
              * ----------------------------------------------------------
              *  BULK UPDATE
              * ----------------------------------------------------------
              */
-            if ( isset( $data['bulk'] ) && ! empty( $data['ids'] ) && ! empty( $data['action'] ) ) {
-                $action = sanitize_key( $data['action'] );
-                $ids    = array_map( 'absint', $data['ids'] );
+            if ( isset( $bulk_data['bulk'] ) && ! empty( $bulk_data['ids'] ) && ! empty( $bulk_data['action'] ) ) {
+                $action = sanitize_key( $bulk_data['action'] );
+                $ids    = array_map( 'absint', $bulk_data['ids'] );
 
                 foreach ( $ids as $id ) {
                     switch ( $action ) {
@@ -459,9 +474,9 @@ class Rest extends \WP_REST_Controller {
         }
 
         try {
-            $data   = $request->get_params();
-            $stores = $request->get_param( 'stores' );
-            $stores = is_array( $stores ) ? $stores : array();
+            $announcement_data = $request->get_params();
+            $stores            = $request->get_param( 'stores' );
+            $stores            = is_array( $stores ) ? $stores : array();
 
             /**
              * ----------------------------------------------------------
@@ -484,12 +499,12 @@ class Rest extends \WP_REST_Controller {
             $updated_id = wp_update_post(
                 array(
                     'ID'           => $post_id,
-                    'post_title'   => sanitize_text_field( $data['title'] ?? '' ),
-                    'post_content' => sanitize_textarea_field( $data['content'] ?? '' ),
-                    'post_status'  => ( isset( $data['status'] ) &&
-                        in_array( $data['status'], array( 'publish', 'pending', 'draft' ), true )
+                    'post_title'   => sanitize_text_field( $announcement_data['title'] ?? '' ),
+                    'post_content' => sanitize_textarea_field( $announcement_data['content'] ?? '' ),
+                    'post_status'  => ( isset( $announcement_data['status'] ) &&
+                        in_array( $announcement_data['status'], array( 'publish', 'pending', 'draft' ), true )
                     )
-                        ? $data['status']
+                        ? $announcement_data['status']
                         : 'draft',
                 ),
                 true
@@ -515,8 +530,8 @@ class Rest extends \WP_REST_Controller {
                 array(
                     'success' => true,
                     'id'      => $post_id,
-                    'title'   => $data['title'] ?? '',
-                    'content' => $data['content'] ?? '',
+                    'title'   => $announcement_data['title'] ?? '',
+                    'content' => $announcement_data['content'] ?? '',
                     'status'  => get_post_status( $post_id ),
                     'stores'  => $stores,
                 )
@@ -617,6 +632,30 @@ class Rest extends \WP_REST_Controller {
             );
         }
     }
+	/**
+	 * Check whether the current user may view a single announcement.
+	 *
+	 * @param \WP_Post $post Announcement post.
+	 * @return bool
+	 */
+	private function current_user_can_view_announcement( $post ) {
+		if ( Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+			return true;
+		}
+
+		if ( 'publish' !== $post->post_status ) {
+			return false;
+		}
+
+		$target_stores = (array) get_post_meta( $post->ID, Utill::POST_META_SETTINGS['announcement_stores'], true );
+
+		if ( empty( $target_stores ) || in_array( 0, array_map( 'intval', $target_stores ), true ) ) {
+			return true;
+		}
+
+		return in_array( (int) MultiVendorX()->active_store, array_map( 'intval', $target_stores ), true );
+	}
+
 	/**
 	 * Prepare announcement object for REST response.
 	 *

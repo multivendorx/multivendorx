@@ -15,10 +15,16 @@ class Rest extends \WP_REST_Controller {
 
     protected $rest_base = 'intelligence';
 
+    /**
+     * Constructor.
+     */
     public function __construct() {
         add_action( 'rest_api_init', array( $this, 'register_routes' ), 10 );
     }
 
+    /**
+     * Register the routes for AI-assisted product content generation.
+     */
     public function register_routes() {
         register_rest_route(
             MultiVendorX()->rest_namespace,
@@ -33,6 +39,12 @@ class Rest extends \WP_REST_Controller {
         );
     }
 
+    /**
+     * Check permission for the AI Intelligence REST API request.
+     *
+     * @param object $request WP_REST_Request object.
+     * @return bool|\WP_Error
+     */
     public function get_items_permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'edit_products' ) );
     }
@@ -90,14 +102,14 @@ class Rest extends \WP_REST_Controller {
             return $this->error_response( $response['error']['code'], $response['error']['message'], $response['error']['status'] );
         }
 
-        $data = json_decode( $response, true );
+        $ai_response = json_decode( $response, true );
 
         return rest_ensure_response(
             array(
 				'success'            => true,
-				'productName'        => array_slice( (array) ( $data['productName'] ?? array() ), 0, 3 ),
-				'shortDescription'   => array_slice( (array) ( $data['shortDescription'] ?? array() ), 0, 3 ),
-				'productDescription' => array_slice( (array) ( $data['productDescription'] ?? array() ), 0, 3 ),
+				'productName'        => array_slice( (array) ( $ai_response['productName'] ?? array() ), 0, 3 ),
+				'shortDescription'   => array_slice( (array) ( $ai_response['shortDescription'] ?? array() ), 0, 3 ),
+				'productDescription' => array_slice( (array) ( $ai_response['productDescription'] ?? array() ), 0, 3 ),
             )
         );
     }

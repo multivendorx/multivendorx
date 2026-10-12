@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\MinMax;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX MinMax Frontend class
  *
@@ -317,26 +319,26 @@ class Frontend {
     /**
      * Add minimum and maximum quantity rules to available variation data.
      *
-     * @param array      $data      Variation data.
+     * @param array      $variation_data Variation data.
      * @param WC_Product $product   Parent product object.
      * @param WC_Product $variation Variation product object.
      *
      * @return array Modified variation data with min/max quantity included.
      */
-    public function available_variation_min_max( $data, $product, $variation ) {
+    public function available_variation_min_max( $variation_data, $product, $variation ) {
 
         $rules = $this->get_rules( $variation->get_id(), 'quantity' );
 
         if ( $rules['min'] ) {
-            $data['min_qty']     = $rules['min'];
-            $data['input_value'] = $rules['min'];
+            $variation_data['min_qty']     = $rules['min'];
+            $variation_data['input_value'] = $rules['min'];
         }
 
         if ( $rules['max'] ) {
-            $data['max_qty'] = $rules['max'];
+            $variation_data['max_qty'] = $rules['max'];
         }
 
-        return $data;
+        return $variation_data;
     }
     /**
      * Update quantity input arguments for a product based on min/max rules.
@@ -435,6 +437,13 @@ class Frontend {
         return $min ? str_replace( '<a ', '<a data-quantity="' . $min . '" ', $html ) : $html;
     }
 
+    /**
+     * Bump the requested add-to-cart quantity up to the product's minimum quantity rule.
+     *
+     * @param int $quantity   Requested quantity.
+     * @param int $product_id Product ID.
+     * @return int Adjusted quantity.
+     */
     public function add_to_cart_min_qty( $quantity, $product_id ) {
         $min = $this->get_rules( $product_id, 'quantity' )['min'];
         if ( $min && $quantity < $min ) {

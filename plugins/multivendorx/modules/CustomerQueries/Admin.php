@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\CustomerQueries;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Customer Queries Admin class
  *

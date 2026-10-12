@@ -14,6 +14,8 @@ use Elementor\Modules\DynamicTags\Module;
 use Elementor\Controls_Manager;
 use MultiVendorX\Elementor\StoreHelper;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * StoreLogo Dynamic Tag.
  */

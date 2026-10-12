@@ -13,6 +13,10 @@ use MultiVendorX\Store\Store;
 use MultiVendorX\Privacy\Util;
 use MultiVendorX\Store\StoreUtil;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 global $product;
 $html  = '';
 $store = Store::get_store( $product->get_id(), 'product' );

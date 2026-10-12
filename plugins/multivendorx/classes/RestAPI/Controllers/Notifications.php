@@ -161,6 +161,15 @@ class Notifications extends \WP_REST_Controller {
             }
 
             if ( $events_notifications ) {
+                // Event configuration is marketplace-wide, not a store's own data.
+                if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+                    return new \WP_Error(
+                        'rest_forbidden',
+                        __( 'You are not allowed to view notification event settings.', 'multivendorx' ),
+                        array( 'status' => 403 )
+                    );
+                }
+
                 $results = MultiVendorX()->notifications->get_all_events();
 
                 $formated_notifications = array();

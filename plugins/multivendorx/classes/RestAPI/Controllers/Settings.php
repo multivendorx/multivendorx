@@ -58,7 +58,7 @@ class Settings extends \WP_REST_Controller {
                 array(
                     'methods'             => 'POST',
                     'callback'            => array( $this, 'set_modules' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'set_modules_permissions_check' ),
                 ),
                 array(
                     'methods'             => 'GET',
@@ -75,9 +75,24 @@ class Settings extends \WP_REST_Controller {
      * @param object $request The REST request object.
      */
     public function update_item_permissions_check( $request ) {
+        // Store owners save their own settings from the store dashboard, so edit_stores must be allowed.
         return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 
+    /**
+     * Check if a given request has access to activate/deactivate marketplace modules.
+     *
+     * @param object $request The REST request object.
+     */
+    public function set_modules_permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
+    }
+
+    /**
+     * Check if a given request has access to read the active modules list.
+     *
+     * @param object $request The REST request object.
+     */
     public function get_item_permissions_check( $request ) {
         return is_user_logged_in() && ! empty(
             array_intersect(
@@ -138,7 +153,7 @@ class Settings extends \WP_REST_Controller {
                 return;
             }
             $get_settings_data = $request->get_param( 'setting' );
-            $settingsname      = $request->get_param( 'settingName' );
+            $settingsname      = sanitize_key( (string) $request->get_param( 'settingName' ) );
             $settingsname      = str_replace( '-', '_', $settingsname );
             $optionname        = 'multivendorx_' . $settingsname . '_settings';
 
@@ -238,11 +253,11 @@ class Settings extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $module_id = $request->get_param( 'id' );
-            $action    = $request->get_param( 'action' );
+            $module_id = sanitize_key( (string) $request->get_param( 'id' ) );
+            $action    = sanitize_key( (string) $request->get_param( 'action' ) );
 
             // Setup wizard module.
-            $modules  = $request->get_param( 'modules' ) ?? array();
+            $modules  = array_filter( array_map( 'sanitize_key', (array) ( $request->get_param( 'modules' ) ?? array() ) ) );
             $response = rest_ensure_response( array() );
             $result   = MultiVendorX()->modules->activate_modules( $modules );
             $response->set_data( $result );

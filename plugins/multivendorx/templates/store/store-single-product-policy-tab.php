@@ -11,6 +11,10 @@
 
 use MultiVendorX\StorePolicy\Util;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 global $product;
 $policies = Util::get_store_policies( 0, $product->get_id() );
 ?>

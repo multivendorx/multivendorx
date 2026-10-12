@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\Announcement;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Announcement module.
  *

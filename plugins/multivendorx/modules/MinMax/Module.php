@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\MinMax;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX MinMax Module class
  *

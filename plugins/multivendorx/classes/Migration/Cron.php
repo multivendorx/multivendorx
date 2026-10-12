@@ -19,6 +19,9 @@ defined( 'ABSPATH' ) || exit;
  * @author      MultiVendorX
  */
 class Cron {
+    /**
+     * Constructor. Schedules the migration cron events and hooks their callbacks.
+     */
     public function __construct() {
         add_filter( 'cron_schedules', array( $this, 'custom_schedules_for_migration' ) );
 
@@ -36,6 +39,12 @@ class Cron {
         }
     }
 
+    /**
+     * Register the custom cron intervals used by the migration schedule.
+     *
+     * @param array $schedules Existing cron schedules.
+     * @return array
+     */
     public function custom_schedules_for_migration( $schedules ) {
         $schedules['every_5_minutes'] = array(
             'interval' => 5 * 60,
@@ -48,6 +57,11 @@ class Cron {
         return $schedules;
     }
 
+    /**
+     * Cron callback: migrate orders and commissions from the active legacy plugin.
+     *
+     * @return void
+     */
     public function order_migration() {
         $active_plugin = Utill::get_active_multivendor();
         if ( empty( $active_plugin ) ) {
@@ -59,6 +73,11 @@ class Cron {
         $migrator->migrate_orders_and_commissions();
     }
 
+    /**
+     * Cron callback: run the next batch of the MVX table migration.
+     *
+     * @return void
+     */
     public function run_table_migration_cron() {
         $migrator = new MVX();
         $migrator->run_migration_cron();

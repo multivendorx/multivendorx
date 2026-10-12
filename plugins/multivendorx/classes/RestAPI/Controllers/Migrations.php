@@ -53,10 +53,19 @@ class Migrations extends \WP_REST_Controller {
     }
 
     /**
+     * Allowlist of migration methods this endpoint may dispatch to.
+     *
+     * @var string[]
+     */
+    private $allowed_actions = array(
+        'import_stores',
+        'import_products',
+    );
+
+    /**
      * Process a specific REST API action request.
      *
-     * Verifies the nonce, checks the requested action, and delegates to the
-     * corresponding method if it exists.
+     * Verifies the nonce and delegates to the first requested action that's allowed.
      *
      * @param \WP_REST_Request $request The REST request object containing the action and any parameters.
      *
@@ -76,14 +85,19 @@ class Migrations extends \WP_REST_Controller {
         }
 
         $action = $request->get_param( 'action' );
+
         if ( is_array( $action ) ) {
             foreach ( $action as $act ) {
-                if ( method_exists( $this, $act ) ) {
+                $act = sanitize_key( (string) $act );
+                if ( in_array( $act, $this->allowed_actions, true ) ) {
                     return $this->$act( $request );
                 }
             }
-        } elseif ( method_exists( $this, $action ) ) {
+        } else {
+            $action = sanitize_key( (string) $action );
+            if ( in_array( $action, $this->allowed_actions, true ) ) {
                 return $this->$action( $request );
+            }
         }
 
         return array(
@@ -92,6 +106,12 @@ class Migrations extends \WP_REST_Controller {
         );
     }
 
+    /**
+     * Migrate vendors/stores from whichever legacy multivendor plugin is active.
+     *
+     * @param \WP_REST_Request $request The REST request object (unused; migrator is resolved from the active legacy plugin).
+     * @return \WP_REST_Response
+     */
     public function import_stores( $request ) {
         $active_plugin = Utill::get_active_multivendor();
         if ( empty( $active_plugin ) ) {
@@ -120,6 +140,12 @@ class Migrations extends \WP_REST_Controller {
         return $response;
     }
 
+    /**
+     * Migrate product-vendor associations from whichever legacy multivendor plugin is active.
+     *
+     * @param \WP_REST_Request $request The REST request object (unused; migrator is resolved from the active legacy plugin).
+     * @return \WP_REST_Response
+     */
     public function import_products( $request ) {
         $active_plugin = Utill::get_active_multivendor();
         if ( empty( $active_plugin ) ) {

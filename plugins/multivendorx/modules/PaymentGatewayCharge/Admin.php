@@ -12,6 +12,8 @@ namespace MultiVendorX\PaymentGatewayCharge;
 use MultiVendorX\Commission\CommissionUtil;
 use MultiVendorX\Utill;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Gateway Fee Admin class.
  *

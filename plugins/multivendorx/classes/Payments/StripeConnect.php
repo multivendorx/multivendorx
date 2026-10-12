@@ -183,8 +183,10 @@ class StripeConnect {
                         'text'         => __( 'Disconnect', 'multivendorx' ),
                         'redirect_url' => apply_filters(
                             'multivendorx_stripe_disconnect_url',
-                            admin_url(
-                                'admin-post.php?action=multivendorx_disconnect_stripe'
+                            add_query_arg(
+                                '_wpnonce',
+                                wp_create_nonce( 'multivendorx_disconnect_stripe' ),
+                                admin_url( 'admin-post.php?action=multivendorx_disconnect_stripe' )
                             )
                         ),
                         'class'        => 'multivendorx-stripe-disconnect-btn',
@@ -197,8 +199,10 @@ class StripeConnect {
                         'text'         => __( 'Connect', 'multivendorx' ),
                         'redirect_url' => apply_filters(
                             'multivendorx_stripe_connect_url',
-                            admin_url(
-                                'admin-post.php?action=multivendorx_connect_stripe'
+                            add_query_arg(
+                                '_wpnonce',
+                                wp_create_nonce( 'multivendorx_connect_stripe' ),
+                                admin_url( 'admin-post.php?action=multivendorx_connect_stripe' )
                             )
                         ),
                         'class'        => 'multivendorx-stripe-connect-btn',
@@ -280,6 +284,8 @@ class StripeConnect {
         if ( ! is_user_logged_in() ) {
             return false;
         }
+
+        check_admin_referer( 'multivendorx_connect_stripe' );
 
         $store_id = MultiVendorX()->active_store;
         if ( empty( $store_id ) ) {
@@ -385,6 +391,8 @@ class StripeConnect {
         if ( ! is_user_logged_in() ) {
             return;
         }
+
+        check_admin_referer( 'multivendorx_disconnect_stripe' );
 
         $store_id = MultiVendorX()->active_store;
         if ( empty( $store_id ) ) {

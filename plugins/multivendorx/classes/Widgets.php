@@ -90,7 +90,7 @@ class Widgets {
      * @param array $editor_context  Editor context.
      * @return array Filtered array of allowed block names.
      */
-    public function restrict_store_blocks( $allowed_blocks, $editor_context ) {
+    public function restrict_store_blocks( $allowed_blocks, $editor_context ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
         if ( Utill::is_store_page() ) {
             return $allowed_blocks;

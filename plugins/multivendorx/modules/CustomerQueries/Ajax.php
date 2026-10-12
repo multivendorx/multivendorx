@@ -9,6 +9,9 @@ namespace MultiVendorX\CustomerQueries;
 
 use MultiVendorX\Store\Store;
 use MultiVendorX\Utill;
+
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Questions Answers Ajax class
  *
@@ -22,13 +25,13 @@ class Ajax {
      * Constructor. Registers AJAX actions and enqueues dashicons.
      */
     public function __construct() {
-        add_action( 'wp_ajax_customer_queries_submit', array( $this, 'submit_question' ) );
-        add_action( 'wp_ajax_nopriv_customer_queries_submit', array( $this, 'submit_question' ) );
+        add_action( 'wp_ajax_multivendorx_customer_queries_submit', array( $this, 'submit_question' ) );
+        add_action( 'wp_ajax_nopriv_multivendorx_customer_queries_submit', array( $this, 'submit_question' ) );
 
-        add_action( 'wp_ajax_customer_queries_search', array( $this, 'search_questions' ) );
-        add_action( 'wp_ajax_nopriv_customer_queries_search', array( $this, 'search_questions' ) );
+        add_action( 'wp_ajax_multivendorx_customer_queries_search', array( $this, 'search_questions' ) );
+        add_action( 'wp_ajax_nopriv_multivendorx_customer_queries_search', array( $this, 'search_questions' ) );
 
-        add_action( 'wp_ajax_customer_queries_vote', array( $this, 'vote_question' ) );
+        add_action( 'wp_ajax_multivendorx_customer_queries_vote', array( $this, 'vote_question' ) );
 
         // Load dashicons on frontend so vote icons are visible.
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_dashicons' ) );
@@ -61,7 +64,7 @@ class Ajax {
 
         $store_id = intval( get_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], true ) ?? 0 );
 
-        $data = array(
+        $question_data = array(
             'product_id'    => $product_id,
             'store_id'      => $store_id,
             'question_text' => $question,
@@ -71,7 +74,7 @@ class Ajax {
             'answer_text'   => '',
         );
         // Insert question using Util class.
-        $inserted = Util::insert_question( $data );
+        $inserted = Util::insert_question( $question_data );
         if ( $inserted ) {
             $store   = new Store( $store_id );
             $product = wc_get_product( $product_id );
@@ -106,7 +109,7 @@ class Ajax {
             wp_send_json_error( array( 'html' => '<li>Invalid product ID.</li>' ) );
         }
 
-        $questions = Util::get_question_information(
+        $questions = Util::query_questions(
             array(
 				'product_ids'         => array( $product_id ),
 				'has_answer'          => true,
@@ -170,7 +173,7 @@ class Ajax {
             wp_send_json_error( array( 'message' => 'Invalid question ID.' ) );
         }
 
-        $row = Util::get_question_information( array( 'id' => $queries_id ) )[0] ?? null;
+        $row = Util::query_questions( array( 'id' => $queries_id ) )[0] ?? null;
 
         if ( ! $row ) {
             wp_send_json_error( array( 'message' => 'Question not found.' ) );

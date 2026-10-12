@@ -4,6 +4,7 @@ import { QueryProps } from '@zyra/table';
 import axios from 'axios';
 import QuoteThankYou from './QuoteThankYou';
 import { formatLocalDate } from '../../services/commonFunction';
+import { applyFilters } from '@wordpress/hooks';
 
 type QuoteRow = {
     id: string | number;
@@ -23,7 +24,6 @@ const QuoteList = () => {
     >('');
 
     const [showThankYou, setShowThankYou] = useState<string | null>(null);
-    const [status, setStatus] = useState<string>('');
 
     const [productQuantity, setProductQuantity] = useState<
         Record<
@@ -43,10 +43,6 @@ const QuoteList = () => {
     });
 
     useEffect(() => {
-        const params = new URLSearchParams(location.search);
-
-        setShowThankYou(params.get('order_id'));
-        setStatus(params.get('status') || '');
         fetchTableData({
             paged: 1,
             per_page: 10,
@@ -298,12 +294,18 @@ const QuoteList = () => {
         </table>
     );
 
-    if (showThankYou || status) {
+    const filteredComponent = applyFilters(
+        'catalogx_quote_thank_you_component',
+        null
+    ) as React.ReactElement | null;
+
+    if (filteredComponent) {
+        return filteredComponent;
+    }
+
+    if (showThankYou) {
         return (
-            <QuoteThankYou
-                orderId={showThankYou}
-                status={status}
-            />
+            <QuoteThankYou orderId={showThankYou} />
         );
     }
 

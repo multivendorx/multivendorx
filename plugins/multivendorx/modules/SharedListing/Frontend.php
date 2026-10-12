@@ -90,13 +90,13 @@ class Frontend {
             return;
         }
 
-        $data = $this->get_excluded_product();
+        $listing_exclusions = $this->get_excluded_product();
 
-        if ( empty( $data['exclude'] ) ) {
+        if ( empty( $listing_exclusions['exclude'] ) ) {
             return;
         }
 
-        $query->set( 'post__not_in', $data['exclude'] );
+        $query->set( 'post__not_in', $listing_exclusions['exclude'] );
     }
     /**
      * Get primary and excluded products based on MultiVendorX mapping.
@@ -116,8 +116,7 @@ class Frontend {
 
         $table = $wpdb->prefix . Utill::TABLES['shared_listing'];
         $limit = apply_filters( 'multivendorx_shared_listing_products_query_limit', 100 );
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-        $query = $wpdb->prepare( "SELECT listing_products FROM {$table} LIMIT %d", $limit );
+        $query = $wpdb->prepare( 'SELECT listing_products FROM %i LIMIT %d', $table, $limit );
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
         $maps = $wpdb->get_results( $query );
         foreach ( $maps as $map ) {
@@ -249,6 +248,15 @@ class Frontend {
         return $selected_id;
     }
 
+    /**
+     * Calculate great-circle distance between two lat/lng points (Haversine formula).
+     *
+     * @param float $ulat User latitude.
+     * @param float $ulng User longitude.
+     * @param float $slat Store latitude.
+     * @param float $slng Store longitude.
+     * @return float Distance in kilometers.
+     */
     public function calculate_distance( $ulat, $ulng, $slat, $slng ) {
         $earth_radius = 6371; // in KM
 
@@ -296,10 +304,11 @@ class Frontend {
 		// Search serialized data.
 		$like = '%' . $wpdb->esc_like( 'i:' . $product_id . ';' ) . '%';
 
-        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $row = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT listing_products FROM {$table} WHERE listing_products LIKE %s",
+                'SELECT listing_products FROM %i WHERE listing_products LIKE %s',
+                $table,
                 $like
             )
         );
@@ -351,7 +360,6 @@ class Frontend {
      */
     public function load_scripts() {
         if ( is_product() ) {
-            FrontendScripts::load_scripts();
             FrontendScripts::enqueue_script( 'multivendorx-sharedlisting-frontend-script' );
             FrontendScripts::localize_scripts( 'multivendorx-sharedlisting-frontend-script' );
         }

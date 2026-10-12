@@ -12,6 +12,8 @@ namespace MultiVendorX\Notifications\Gateways;
 
 use WP_Error;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Plivo SMS Gateway Class.
  */
@@ -58,7 +60,12 @@ class Plivo {
 
         $endpoint = str_replace( '{auth_id}', $auth_id, self::ENDPOINT );
         $response = wp_remote_post( $endpoint, $args );
-        $body     = json_decode( wp_remote_retrieve_body( $response ) );
+
+        if ( is_wp_error( $response ) ) {
+            return $response;
+        }
+
+        $body = json_decode( wp_remote_retrieve_body( $response ) );
 
         if ( 202 !== $response['response']['code'] ) {
             return new WP_Error( $body->code, $body->message );

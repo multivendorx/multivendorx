@@ -22,6 +22,11 @@ defined( 'ABSPATH' ) || exit;
  */
 class WCFMMarketplace {
 
+    /**
+     * Migrate all WCFM vendors into MultiVendorX stores.
+     *
+     * @return int Number of stores created.
+     */
     public function migrate_vendors() {
         $vendors           = get_users(
             array(
@@ -124,6 +129,11 @@ class WCFMMarketplace {
         return count( $created_store_ids );
     }
 
+    /**
+     * Assign every product owned by a WCFM vendor to its migrated store.
+     *
+     * @return int Number of products updated.
+     */
     public function migrate_products() {
         $products      = wc_get_products(
             array(
@@ -147,6 +157,11 @@ class WCFMMarketplace {
         return $updated_count;
     }
 
+    /**
+     * Migrate WCFM marketplace orders into MultiVendorX suborders, commissions, and transactions.
+     *
+     * @return void
+     */
     public function migrate_orders_and_commissions() {
         global $wpdb;
         $wcfm_orders_table = $wpdb->prefix . 'wcfm_marketplace_orders';
@@ -277,7 +292,7 @@ class WCFMMarketplace {
                 $amount           = $row->debit;
             }
 
-            $data = array(
+            $transaction_data = array(
                 'store_id'         => (int) $store_id,
                 'order_id'         => (int) $matched_suborder->get_id(),
                 'commission_id'    => (int) $matched_suborder->get_meta( 'multivendorx_commission_id', true ),
@@ -293,13 +308,17 @@ class WCFMMarketplace {
             $format = array( '%d', '%d', '%d', '%s', '%s', '%f', '%s', '%s', '%s', '%s' );
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-            $wpdb->insert( $wpdb->prefix . Utill::TABLES['transaction'], $data, $format );
+            $wpdb->insert( $wpdb->prefix . Utill::TABLES['transaction'], $transaction_data, $format );
         }
         $this->deactive_previous_multivendor();
         wp_clear_scheduled_hook( 'multivendorx_order_migration' );
     }
 
-    // Deactive WCFM multivendor
+    /**
+     * Deactivate the WCFM multivendor/frontend-manager/membership plugins after migration.
+     *
+     * @return void
+     */
 	public function deactive_previous_multivendor() {
 		// WCFM free deactive
 		require_once ABSPATH . '/wp-admin/includes/plugin.php';

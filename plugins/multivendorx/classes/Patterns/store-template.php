@@ -7,6 +7,8 @@
  * @package MultiVendorX
  */
 
+defined( 'ABSPATH' ) || exit;
+
 return array(
     'name'        => 'basic-store-template',
     'title'       => __( 'Basic Store Template', 'multivendorx' ),
@@ -24,8 +26,8 @@ return array(
 
 <!-- wp:columns -->
 <div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:image {"id":111,"width":"90px","height":"90px","scale":"cover","sizeSlug":"large","linkDestination":"none","align":"center"} -->
-<figure class="wp-block-image aligncenter size-large is-resized"><img src="http://localhost:8889/wp-content/uploads/2026/01/divi-Simplified-croptop-yellow-1024x673.jpg" alt="" class="wp-image-111" style="object-fit:cover;width:90px;height:90px"/></figure>
+<div class="wp-block-column"><!-- wp:image {"width":"90px","height":"90px","scale":"cover","sizeSlug":"large","linkDestination":"none","align":"center"} -->
+<figure class="wp-block-image aligncenter size-large is-resized"><img alt="" style="object-fit:cover;width:90px;height:90px"/></figure>
 <!-- /wp:image -->
 
 <!-- wp:heading {"textAlign":"center"} -->

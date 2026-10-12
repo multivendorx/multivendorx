@@ -113,7 +113,7 @@ class CommissionManager {
             }
 
             // Insert | update commission into commission table.
-            $data   = array(
+            $commission_data = array(
                 'order_id'                 => $order->get_id(),
                 'store_id'                 => $store_id,
                 'customer_id'              => $order->get_customer_id(),
@@ -134,12 +134,12 @@ class CommissionManager {
                 'status'                   => $status,
                 'rules_applied'            => maybe_serialize( $rules_array ),
             );
-            $format = array( '%d', '%d', '%d', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%s', '%s', '%s' );
+            $format          = array( '%d', '%d', '%d', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%s', '%s', '%s' );
 
             $filtered = apply_filters(
                 'multivendorx_before_commission_insert',
                 array(
-                    'data'   => $data,
+                    'data'   => $commission_data,
                     'format' => $format,
                 ),
                 $store,
@@ -148,14 +148,14 @@ class CommissionManager {
                 false
             );
 
-            $data   = $filtered['data'];
-            $format = $filtered['format'];
+            $commission_data = $filtered['data'];
+            $format          = $filtered['format'];
 
             if ( ! $commission_id ) {
-                $wpdb->insert( $wpdb->prefix . Utill::TABLES['commission'], $data, $format );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
+                $wpdb->insert( $wpdb->prefix . Utill::TABLES['commission'], $commission_data, $format );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
                 $commission_id = $wpdb->insert_id;
             } else {
-                $wpdb->update( $wpdb->prefix . Utill::TABLES['commission'], $data, array( 'ID' => $commission_id ), $format );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
+                $wpdb->update( $wpdb->prefix . Utill::TABLES['commission'], $commission_data, array( 'ID' => $commission_id ), $format );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
             }
 
             if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
@@ -711,7 +711,7 @@ class CommissionManager {
                                 ( $commission->admin_discount - $admin_coupon_amount )
                             );
 
-            $data = array(
+            $commission_refund_data = array(
                 'order_id'                 => $store_order->get_id(),
                 'store_id'                 => $store_id,
                 'total_order_value'        => $store_order->get_total(),
@@ -738,7 +738,7 @@ class CommissionManager {
             $filtered = apply_filters(
                 'multivendorx_before_commission_insert',
                 array(
-                    'data'   => $data,
+                    'data'   => $commission_refund_data,
                     'format' => $format,
                 ),
                 $store,
@@ -747,10 +747,10 @@ class CommissionManager {
                 true
             );
 
-            $data   = $filtered['data'];
-            $format = $filtered['format'];
+            $commission_refund_data = $filtered['data'];
+            $format                 = $filtered['format'];
 
-            $wpdb->update( $wpdb->prefix . Utill::TABLES['commission'], $data, array( 'ID' => $commission_id ), $format );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
+            $wpdb->update( $wpdb->prefix . Utill::TABLES['commission'], $commission_refund_data, array( 'ID' => $commission_id ), $format );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
 
             do_action( 'multivendorx_after_insert_commission_refunds', $store_order, $commission_id );
 
@@ -763,7 +763,7 @@ class CommissionManager {
 
             $refund_status = MultiVendorX()->setting->get_setting( 'customer_refund_status' );
             if ( ! empty( $refund_status ) && in_array( $store_order->get_status(), $refund_status, true ) ) {
-                $data = array(
+                $transaction_data = array(
                     'store_id'         => (int) $store_id,
                     'order_id'         => (int) $store_order->get_id(),
                     'commission_id'    => $commission_id ? (int) $commission_id : null,
@@ -780,7 +780,7 @@ class CommissionManager {
                 /* phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,*/
                 $wpdb->insert(
                     $wpdb->prefix . Utill::TABLES['transaction'],
-                    $data,
+                    $transaction_data,
                     $format
                 );
             }

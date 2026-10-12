@@ -68,22 +68,13 @@ class Quotes extends \WP_REST_Controller {
         }
 
         try {
-            $form_data = $request->get_param( 'formData' ) ?? $request->get_param( 'enquiry' ) ?? array();
+            $rejection_response = apply_filters( 'catalogx_quote_rejection_response', null, $request);
 
-            // Handle rejection case.
-            $order_id = $request->get_param( 'orderId' );
-            if ( ! empty( $order_id ) ) {
-                $status = $request->get_param( 'status' );
-                $reason = $request->get_param( 'reason' );
-                if ( ! empty( $order_id ) && ! empty( $status ) && ! empty( $reason ) ) {
-                    $order = wc_get_order( $order_id );
-                    $order->update_status( 'wc-quote-rejected' );
-                    $order->set_customer_note( $reason );
-                    $order->save();
-                    /* translators: %s: reject quotation number. */
-                    return rest_ensure_response( array( 'message' => sprintf( __( 'You have confirmed rejection of the quotation No: %d', 'catalogx' ), $order_id ) ) );
-                }
+            if ( null !== $rejection_response ) {
+                return $rejection_response;
             }
+
+            $form_data = $request->get_param( 'formData' ) ?? $request->get_param( 'enquiry' ) ?? array();
 
             if ( empty( $form_data ) ) {
                 return new \WP_Error( 'invalid_data', __( 'Missing form data.', 'catalogx' ), array( 'status' => 400 ) );

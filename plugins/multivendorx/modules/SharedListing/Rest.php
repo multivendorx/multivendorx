@@ -85,12 +85,12 @@ class Rest {
             $table = $wpdb->prefix . Utill::TABLES['shared_listing'];
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            $sql = "SELECT * FROM {$table} WHERE ID = %d";
+            $sql = 'SELECT * FROM %i WHERE ID = %d';
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $row = $wpdb->get_row(
                 // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-                $wpdb->prepare( $sql, $existing_map_id )
+                $wpdb->prepare( $sql, $table, $existing_map_id )
             );
 
             if ( $row ) {

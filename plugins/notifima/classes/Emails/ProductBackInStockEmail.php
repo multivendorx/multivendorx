@@ -65,9 +65,9 @@ if ( ! class_exists( 'ProductBackInStockEmail' ) ) :
         /**
          * Trigger function.
          *
-         * @param string     $recipient      The recipient's email address.
-         * @param WC_Product $product        The WooCommerce product object.
-         * @return void
+         * @param string     $recipient The recipient's email address.
+         * @param WC_Product $product   The WooCommerce product object.
+         * @return bool
          */
         public function trigger( $recipient, $product ) {
 
@@ -88,12 +88,14 @@ if ( ! class_exists( 'ProductBackInStockEmail' ) ) :
             }
 
             if ( ! $this->is_enabled() || ! $this->get_recipient() ) {
-                return;
+                return false;
             }
 
-            $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+            $sent = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 
             restore_previous_locale();
+
+            return $sent;
         }
 
         /**

@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\StoreShipping;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Store Shipping Admin Class
  *

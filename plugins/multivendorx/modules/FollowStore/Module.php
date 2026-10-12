@@ -9,6 +9,8 @@ namespace MultiVendorX\FollowStore;
 
 use MultiVendorX\Utill;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Store Policy Module class
  *

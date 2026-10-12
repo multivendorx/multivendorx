@@ -31,6 +31,8 @@ class Admin {
         add_action( 'admin_menu', array( $this, 'add_menus' ), 10 );
         // admin script and style.
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ), 20 );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_upgrade_menu_style' ) );
+        add_filter( 'admin_multivendorx_register_styles', array( $this, 'register_upgrade_menu_style' ) );
 
         // Allow URL.
         add_filter( 'allowed_redirect_hosts', array( $this, 'allow_multivendorx_redirect_host' ) );
@@ -41,7 +43,7 @@ class Admin {
         add_filter( 'woocommerce_product_data_tabs', array( $this, 'add_store_tab_in_product' ) );
         add_action( 'woocommerce_product_data_panels', array( $this, 'add_store_tab_content_in_product' ) );
         add_action( 'woocommerce_process_product_meta', array( $this, 'save_store_in_product' ) );
-        add_action( 'wp_ajax_search_stores', array( $this, 'multivendorx_get_stores' ) );
+        add_action( 'wp_ajax_multivendorx_search_stores', array( $this, 'multivendorx_get_stores' ) );
         // For Variation Product.
         add_action( 'woocommerce_product_after_variable_attributes', array( $this, 'add_variation_settings' ), 10, 3 );
         add_action( 'woocommerce_save_product_variation', array( $this, 'save_commission_field_variations' ), 10, 2 );
@@ -162,7 +164,7 @@ class Admin {
 
                 $allowed_tabs = array( 'commissions', 'approval-queue', 'customers', 'compliance' );
 
-                if ( in_array( $slug, $allowed_tabs ) ) {
+                if ( in_array( $slug, $allowed_tabs, true ) ) {
                     $count = $this->multivendorx_get_menu_count( $slug );
                     if ( $count > 0 ) {
                         $menu_name .= sprintf(
@@ -188,14 +190,7 @@ class Admin {
                 add_submenu_page(
                     'multivendorx',
                     __( 'Upgrade to Pro', 'multivendorx' ),
-                    '<style>
-                        a:has(.upgrade-to-pro){
-                            background: linear-gradient(-28deg, #c4a9e8, #7848b9, #852aff) !important;
-                            color: white !important;
-                            padding: 5px 0;
-                        }
-                    </style>
-                    <div style="margin-left: -0.75rem;" class="upgrade-to-pro"><i class="dashicons dashicons-awards"></i>' . esc_html__( 'Upgrade to Pro', 'multivendorx' ) . '</div> ',
+                    '<div style="margin-left: -0.75rem;" class="upgrade-to-pro"><i class="dashicons dashicons-awards"></i>' . esc_html__( 'Upgrade to Pro', 'multivendorx' ) . '</div> ',
                     'manage_options',
                     'multivendorx-upgrade',
                     array( self::class, 'handle_external_redirects' )
@@ -205,6 +200,32 @@ class Admin {
             remove_submenu_page( 'multivendorx', 'multivendorx' );
             remove_submenu_page( 'multivendorx', 'multivendorx#&tab=notifications' );
         }
+    }
+
+    /**
+     * Register the "Upgrade to Pro" admin menu item's stylesheet.
+     *
+     * @param array $styles Existing admin styles.
+     * @return array
+     */
+    public function register_upgrade_menu_style( $styles ) {
+        $styles['multivendorx-upgrade-menu'] = array(
+            'src' => FrontendScripts::get_asset_path() . 'styles/public/' . MULTIVENDORX_PLUGIN_SLUG . '-upgrade-menu.min.css',
+        );
+        return $styles;
+    }
+
+    /**
+     * Enqueue the "Upgrade to Pro" admin menu item's styling.
+     *
+     * @return void
+     */
+    public function enqueue_upgrade_menu_style() {
+        if ( Utill::is_khali_dabba() ) {
+            return;
+        }
+
+        FrontendScripts::enqueue_style( 'multivendorx-upgrade-menu' );
     }
 
     /**
@@ -328,7 +349,7 @@ class Admin {
                     id="linked_store"
                     name="linked_store"
                     data-placeholder="<?php esc_attr_e( 'Search for a store…', 'multivendorx' ); ?>"
-                    data-action="search_stores">
+                    data-action="multivendorx_search_stores">
 
                     <?php
                     if ( $linked_store ) {
@@ -508,7 +529,13 @@ class Admin {
      * Get stores for select2
      */
     public function multivendorx_get_stores() {
-        $term   = sanitize_text_field( filter_input( INPUT_GET, 'term', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ?? '' );
+        check_ajax_referer( 'multivendorx-product-tab-script', 'nonce' );
+
+        if ( ! Utill::current_user_has_capability( array( 'manage_woocommerce', 'edit_products' ) ) ) {
+            wp_send_json_error( __( 'You are not allowed to search stores.', 'multivendorx' ), 403 );
+        }
+
+        $term   = sanitize_text_field( wp_unslash( filter_input( INPUT_GET, 'term' ) ?? '' ) );
         $stores = Store::get_store( $term, 'name' );
 
         $results = array();
@@ -552,7 +579,7 @@ class Admin {
                     id="linked_store"
                     name="coupon_linked_store"
                     data-placeholder="<?php esc_attr_e( 'Search for a store…', 'multivendorx' ); ?>"
-                    data-action="search_stores">
+                    data-action="multivendorx_search_stores">
 
                     <?php
                     if ( $linked_store ) {
@@ -643,6 +670,12 @@ class Admin {
         }
     }
 
+    /**
+     * Get the notification-badge count for a given admin submenu tab.
+     *
+     * @param string $tab Submenu tab slug.
+     * @return int
+     */
     public function multivendorx_get_menu_count( $tab ) {
         switch ( $tab ) {
             case 'commissions':

@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\MarketplaceCompliance;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Report Abuse Module class
  *

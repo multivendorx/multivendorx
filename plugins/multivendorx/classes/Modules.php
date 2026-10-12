@@ -164,7 +164,7 @@ class Modules {
         $validated_active = array();
         foreach ( $active_modules as $module_id ) {
             foreach ( $all_modules as $key => $module ) {
-                // Match same module id (free + pro both)
+                // Match same module id (free + pro both).
                 if ( empty( $module['id'] ) || $module['id'] !== $module_id ) {
                     continue;
                 }
@@ -221,15 +221,6 @@ class Modules {
         }
 
         return true;
-    }
-
-    /**
-     * Get list of all module's id
-     *
-     * @return array
-     */
-    public function get_all_modules_ids() {
-        return array_keys( $this->get_all_modules() );
     }
 
     /**

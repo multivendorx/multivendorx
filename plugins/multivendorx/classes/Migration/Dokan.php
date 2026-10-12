@@ -188,7 +188,7 @@ class Dokan {
         $table      = $wpdb->prefix . 'dokan_orders';
         $table_name = $wpdb->prefix . Utill::TABLES['commission'];
 
-        $dokan_orders = $wpdb->get_results( "SELECT * FROM {$table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $dokan_orders = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i', $table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
         foreach ( $dokan_orders as $row ) {
             $order_id = $row->order_id;
@@ -262,7 +262,7 @@ class Dokan {
 				$amount           = $row->credit;
 			}
 
-            $data = array(
+            $transaction_data = array(
                 'store_id'         => (int) $store_id,
                 'order_id'         => (int) $order_id,
                 'commission_id'    => (int) $order->get_meta( 'multivendorx_commission_id', true ),
@@ -278,13 +278,18 @@ class Dokan {
             $format = array( '%d', '%d', '%d', '%s', '%s', '%f', '%s', '%s', '%s', '%s' );
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-            $wpdb->insert( $wpdb->prefix . Utill::TABLES['transaction'], $data, $format );
+            $wpdb->insert( $wpdb->prefix . Utill::TABLES['transaction'], $transaction_data, $format );
         }
         $this->deactive_previous_multivendor();
 
 		wp_clear_scheduled_hook( 'multivendorx_order_migration' );
     }
 
+    /**
+     * Deactivate the Dokan free/pro plugins after migration.
+     *
+     * @return void
+     */
     public function deactive_previous_multivendor() {
 		require_once ABSPATH . '/wp-admin/includes/plugin.php';
 		// dokan free deactive

@@ -9,6 +9,8 @@ namespace MultiVendorX\MinMax;
 
 use MultiVendorX\Utill;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX MinMax Admin class
  *

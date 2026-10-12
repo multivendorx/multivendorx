@@ -7,6 +7,10 @@
  * @author      MultiVendorX
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $product_id    = $args['product_id'];
 $current_url   = get_permalink( $product_id );
 $myaccount_url = wc_get_page_permalink( 'myaccount' );

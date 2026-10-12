@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\Elementor;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Elementor Admin class.
  *
@@ -210,7 +212,7 @@ class Admin {
      */
     private function get_default_store_elementor_data() {
 
-        $data = array(
+        $elementor_structure = array(
             // Store banner start.
             array(
                 'id'       => 'main-store-container-' . uniqid(),
@@ -347,6 +349,6 @@ class Admin {
             ),
         );
 
-        return wp_json_encode( $data );
+        return wp_json_encode( $elementor_structure );
     }
 }

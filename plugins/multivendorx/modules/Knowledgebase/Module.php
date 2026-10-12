@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\Knowledgebase;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Store Policy Module class
  *

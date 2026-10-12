@@ -344,6 +344,22 @@ class Stores extends \WP_REST_Controller {
                 Utill::STORE_SETTINGS_KEYS['status'],
             );
 
+            $is_admin = Utill::current_user_has_capability( array( 'manage_options' ) );
+
+            // `create_stores` is granted to every logged-in user, so block a
+            // direct, ownerless store create outside registration/self-edit.
+            if ( ! $registrations && empty( $store_data['id'] ) && ! $is_admin ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to create stores this way.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
+
+            if ( ! $is_admin ) {
+                unset( $store_data['store_owners'] );
+            }
+
             $store_data['who_created'] = $current_user->ID;
             $store_data['status']      = 'active';
 
@@ -402,16 +418,21 @@ class Stores extends \WP_REST_Controller {
             $non_core_fields           = array();
 
             foreach ( $file_data as $file ) {
-                $field_key                = array_key_first( $file['name'] );
-                $normalized_file          = array(
-                    'name'     => $file['name'][ $field_key ],
-                    'type'     => $file['type'][ $field_key ],
-                    'tmp_name' => $file['tmp_name'][ $field_key ],
-                    'error'    => $file['error'][ $field_key ],
-                    'size'     => $file['size'][ $field_key ],
+                if ( empty( $file['name'] ) || ! is_array( $file['name'] ) ) {
+                    continue;
+                }
+
+                $upload_key      = array_key_first( $file['name'] );
+                $normalized_file = array(
+                    'name'     => $file['name'][ $upload_key ] ?? '',
+                    'type'     => $file['type'][ $upload_key ] ?? '',
+                    'tmp_name' => $file['tmp_name'][ $upload_key ] ?? '',
+                    'error'    => $file['error'][ $upload_key ] ?? UPLOAD_ERR_NO_FILE,
+                    'size'     => $file['size'][ $upload_key ] ?? 0,
                 );
-                $attachment_id            = StoreUtil::create_attachment_from_files_array( $normalized_file );
-                $store_data[ $field_key ] = $attachment_id;
+                $attachment_id   = StoreUtil::create_attachment_from_files_array( $normalized_file );
+
+                $store_data[ sanitize_text_field( (string) $upload_key ) ] = $attachment_id;
             }
 
             $registration_meta_map = array(
@@ -716,6 +737,32 @@ class Stores extends \WP_REST_Controller {
     }
 
     /**
+     * Drop store fields that only a marketplace admin may change.
+     *
+     * @param array $store_fields Submitted store fields (core fields and meta).
+     * @return array Fields the store member is allowed to save.
+     */
+    private function remove_admin_only_store_fields( $store_fields ) {
+        $admin_only_fields = apply_filters(
+            'multivendorx_admin_only_store_fields',
+            array(
+                Utill::STORE_SETTINGS_KEYS['status'],
+                Utill::STORE_SETTINGS_KEYS['create_time'],
+                Utill::STORE_SETTINGS_KEYS['who_created'],
+                Utill::STORE_SETTINGS_KEYS['withdrawals_count'],
+                Utill::STORE_SETTINGS_KEYS['followers'],
+                Utill::STORE_SETTINGS_KEYS['store_reject_note'],
+                Utill::STORE_SETTINGS_KEYS['registration_data'],
+                Utill::STORE_SETTINGS_KEYS['deactivation_request_date'],
+                'commission_percentage',
+                'commission_fixed',
+            )
+        );
+
+        return array_diff_key( (array) $store_fields, array_flip( $admin_only_fields ) );
+    }
+
+    /**
      * Update store
      *
      * @param  object $request Full details about the request.
@@ -780,6 +827,18 @@ class Stores extends \WP_REST_Controller {
             }
 
             $data = apply_filters( 'multivendorx_before_store_update', $data, $store, $request );
+
+            $is_admin = Utill::current_user_has_capability( array( 'manage_options' ) );
+
+            // These are marketplace-admin decisions, not self-service.
+            $admin_only_actions = array( 'deactivate', 'delete', 'registration_data', 'core_data', 'approval_queue', 'store_owners', 'primary_owner' );
+            if ( ! $is_admin && array_filter( array_intersect_key( $data, array_flip( $admin_only_actions ) ) ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to perform this action on the store.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
 
             // Deactivation handling.
             if ( ! empty( $data['deactivate'] ) ) {
@@ -892,7 +951,7 @@ class Stores extends \WP_REST_Controller {
             }
 
             // Registration approval / rejection.
-            if ( ! empty( $data['registration_data'] ) || ! empty( $data['core_data'] ) || $data['approval_queue'] ) {
+            if ( ! empty( $data['registration_data'] ) || ! empty( $data['core_data'] ) || ! empty( $data['approval_queue'] ) ) {
                 if ( 'approve' === ( $data['status'] ?? '' ) ) {
                     $users = StoreUtil::get_store_users( $id );
                     $user  = get_userdata(
@@ -931,11 +990,12 @@ class Stores extends \WP_REST_Controller {
                     $store->set( Utill::STORE_SETTINGS_KEYS['status'], $status );
 
                     if ( ! empty( $data['store_permanent_reject'] ) ) {
+                        // Only clear the active store for users of this store.
                         delete_metadata(
                             'user',
                             0,
                             Utill::USER_SETTINGS_KEYS['active_store'],
-                            '',
+                            $id,
                             true
                         );
                     }
@@ -1025,8 +1085,12 @@ class Stores extends \WP_REST_Controller {
             );
 
             if ( ! empty( $data['setting'] ) ) {
-                $data = $data['setting'];
+                $data = (array) $data['setting'];
                 unset( $data['setting'], $data['settingName'] );
+            }
+
+            if ( ! $is_admin ) {
+                $data = $this->remove_admin_only_store_fields( $data );
             }
 
             // Core fields update.
@@ -1048,7 +1112,7 @@ class Stores extends \WP_REST_Controller {
             $store->set( Utill::STORE_SETTINGS_KEYS['who_created'], 'admin' );
 
             foreach ( $data as $key => $value ) {
-                if ( Utill::STORE_SETTINGS_KEYS['id'] === $key ) {
+                if ( 'id' === $key ) {
                     continue;
                 }
 
@@ -1135,11 +1199,12 @@ class Stores extends \WP_REST_Controller {
             }
 
             if ( 'deactivated' === ( $data['status'] ?? '' ) ) {
+                // Only clear the active store for users of this store.
                 delete_metadata(
                     'user',
                     0,
                     Utill::USER_SETTINGS_KEYS['active_store'],
-                    '',
+                    $id,
                     true
                 );
 
@@ -1373,20 +1438,19 @@ class Stores extends \WP_REST_Controller {
 
         $table_name = $wpdb->prefix . Utill::TABLES['visitors_stats'];
 
-        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         $rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT country
-                FROM {$table_name}
+                'SELECT country
+                FROM %i
                 WHERE store_id = %d
                 AND created >= %s
-                AND created <= %s",
+                AND created <= %s',
+                $table_name,
                 $store_id,
                 $start,
                 $end
             )
         );
-        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
         $map_stats = array();
 

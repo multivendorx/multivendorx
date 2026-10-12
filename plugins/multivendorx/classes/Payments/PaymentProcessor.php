@@ -69,7 +69,7 @@ class PaymentProcessor {
 				$deduct_amount = (float) $amount * ( (float) $withdrawals_fees['withdrawal_percentage'] / 100 ) + (float) $withdrawals_fees['withdrawal_fixed'];
 				$amount        = $amount - $deduct_amount;
 
-				$data = array(
+				$transaction_data = array(
 					'store_id'         => (int) $store_id,
 					'entry_type'       => 'Dr',
 					'transaction_type' => 'Withdrawal',
@@ -83,7 +83,7 @@ class PaymentProcessor {
 
 				$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
                     $wpdb->prefix . Utill::TABLES['transaction'],
-                    $data,
+                    $transaction_data,
                     $format
 				);
 
@@ -96,7 +96,7 @@ class PaymentProcessor {
 		}
 
 		if ( empty( $payment_method ) ) {
-			$data = array(
+			$transaction_data = array(
 				'store_id'         => (int) $store_id,
 				'order_id'         => $order_id,
 				'entry_type'       => 'Dr',
@@ -112,7 +112,7 @@ class PaymentProcessor {
 
 			$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
                 $wpdb->prefix . Utill::TABLES['transaction'],
-                $data,
+                $transaction_data,
                 $format
 			);
 
@@ -164,7 +164,7 @@ class PaymentProcessor {
 
 		$amount = $amount ? $amount : ( $commission ? (float) $commission->store_payable : 0.00 );
 
-		$data = array(
+		$transaction_data = array(
 			'store_id'         => (int) $store_id,
 			'order_id'         => $order_id > 0 ? (int) $order_id : null,
 			'commission_id'    => $commission_id ? (int) $commission_id : null,
@@ -183,7 +183,7 @@ class PaymentProcessor {
 
 		$result = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
             $wpdb->prefix . Utill::TABLES['transaction'],
-            $data,
+            $transaction_data,
             $format
 		);
 
@@ -276,7 +276,7 @@ class PaymentProcessor {
 			$amount = $commission ? (float) $commission->total_order_value : 0.00;
 			$store  = new Store( (int) $commission->store_id );
 
-            $data = array(
+            $transaction_data = array(
                 'store_id'         => (int) $commission->store_id,
                 'order_id'         => (int) $order_id,
                 'commission_id'    => (int) $commission_id,
@@ -298,7 +298,7 @@ class PaymentProcessor {
 			} elseif ( 'store' === $payment ) {
                 $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
                     $wpdb->prefix . Utill::TABLES['transaction'],
-                    $data,
+                    $transaction_data,
                     $format
                 );
                 if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {

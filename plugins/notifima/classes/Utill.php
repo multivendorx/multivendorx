@@ -304,13 +304,13 @@ class Utill {
         $subscriber_items = array();
 
         $statuses = array(
-            'notification_sent' => __( 'Notification Sent', 'notifima' ),
-            'subscribed'        => __( 'Subscribed', 'notifima' ),
-            'unsubscribed'      => __( 'Unsubscribed', 'notifima' ),
+            'notification_sent'   => __( 'Notification Sent', 'notifima' ),
+            'notification_failed' => __( 'Notification Failed', 'notifima' ),
+            'subscribed'          => __( 'Subscribed', 'notifima' ),
+            'unsubscribed'        => __( 'Unsubscribed', 'notifima' ),
         );
 
         foreach ( $subscriber_records as $subscriber ) {
-
             $product = wc_get_product( $subscriber->product_id );
             $image   = get_the_post_thumbnail_url(
                 $subscriber->product_id,
@@ -350,5 +350,4 @@ class Utill {
             'product_ids' => $product_ids,
         );
     }
-
 }

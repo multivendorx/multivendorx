@@ -177,6 +177,12 @@ class MVX {
         update_option( 'mvx_migration_status', $migration_status );
     }
 
+    /**
+     * Migrate the remaining legacy MVX tables in batches: shipping zone methods,
+     * announcements, knowledgebase posts, visitor stats, Q&A, and SPMV product mappings.
+     *
+     * @return void
+     */
     public function migrate_other_tables() {
         global $wpdb;
 
@@ -595,6 +601,11 @@ class MVX {
         }
     }
 
+    /**
+     * Migrate a batch of legacy MVX vendors into MultiVendorX stores.
+     *
+     * @return void
+     */
     public function migrate_vendors() {
         global $wpdb;
         $offset = (int) get_option( 'mvx_vendor_offset', 0 );
@@ -870,6 +881,11 @@ class MVX {
         }
     }
 
+    /**
+     * Migrate a batch of legacy vendor-follow relationships into `multivendorx_following_stores` user meta.
+     *
+     * @return void
+     */
     public function migrate_followers() {
         $offset = (int) get_option( 'mvx_follow_offset', 0 );
 
@@ -909,6 +925,12 @@ class MVX {
         }
     }
 
+    /**
+     * Migrate a batch of legacy `dc_commission` posts into the commission table,
+     * plus a matching transaction row for already-paid orders.
+     *
+     * @return void
+     */
     public function migrate_commissions() {
         global $wpdb;
 
@@ -1036,6 +1058,11 @@ class MVX {
         }
     }
 
+    /**
+     * Migrate a batch of legacy order refunds, copying the store id from the parent order.
+     *
+     * @return void
+     */
     public function migrate_refunds() {
         $offset     = (int) get_option( 'mvx_refund_offset', 0 );
         $refund_ids = wc_get_orders(
@@ -1064,6 +1091,11 @@ class MVX {
         }
     }
 
+    /**
+     * Migrate a batch of legacy vendor ledger rows into the transaction table.
+     *
+     * @return void
+     */
     public function migrate_ledger() {
         global $wpdb;
         $offset = (int) get_option( 'mvx_ledger_offset', 0 );
@@ -1137,6 +1169,11 @@ class MVX {
         }
     }
 
+    /**
+     * Migrate a batch of products' and coupons' store ownership from post_author to store meta.
+     *
+     * @return void
+     */
     public function migrate_product_coupon_vendor() {
         $offset = (int) get_option( 'mvx_product_migration_offset', 0 );
 
@@ -1204,6 +1241,11 @@ class MVX {
         }
     }
 
+    /**
+     * Migrate a batch of legacy vendor-rating comments into the store review table.
+     *
+     * @return void
+     */
     public function migrate_reviews() {
         global $wpdb;
 

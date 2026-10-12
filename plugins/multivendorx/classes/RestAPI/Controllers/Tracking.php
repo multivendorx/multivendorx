@@ -63,11 +63,28 @@ class Tracking extends \WP_REST_Controller {
 	 */
     public function create_item( $request ) {
         $data     = $request->get_param( 'formData' );
-        $order_id = $request->get_param( 'order_id' );
-        $store_id = MultiVendorX()->active_store;
+        $order_id = absint( $request->get_param( 'order_id' ) );
+        $store_id = absint( MultiVendorX()->active_store );
         $store    = new Store( $store_id );
 
-        $order = wc_get_order( $order_id );
+        $order = $order_id ? wc_get_order( $order_id ) : false;
+
+        if ( ! $order ) {
+            return new \WP_Error(
+                'invalid_order',
+                __( 'Invalid order.', 'multivendorx' ),
+                array( 'status' => 400 )
+            );
+        }
+
+        // Confirm the order belongs to the caller's own store.
+        if ( ! $store_id || $store_id !== absint( $order->get_meta( Utill::POST_META_SETTINGS['store_id'] ) ) ) {
+            return new \WP_Error(
+                'rest_forbidden',
+                __( 'You are not allowed to add tracking to this order.', 'multivendorx' ),
+                array( 'status' => 403 )
+            );
+        }
 
         $provider        = sanitize_text_field( $data['provider'] ?? '' );
         $date            = sanitize_text_field( $data['date'] ?? '' );
