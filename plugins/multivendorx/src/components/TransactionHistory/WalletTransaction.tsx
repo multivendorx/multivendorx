@@ -238,10 +238,10 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 						badges={[
 							{
 								text: formatStatusLabel(row.status),
-								color:
+								className:
 									transactionStatusColors[
 										row.status?.toLowerCase()
-									] ?? 'gray',
+									] ?? 'blue',
 							},
 						]}
 					/>

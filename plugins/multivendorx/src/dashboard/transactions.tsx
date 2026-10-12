@@ -68,6 +68,13 @@ const Transactions: React.FC = () => {
 								: normalizeText(row.narration)
 						}
 						avatar={{ iconClass: 'wallet' }}
+						descriptions={[
+							{
+								label: __('ID', 'multivendorx'),
+								icon: 'wallet',
+								value: `#${row.id}`,
+							},
+						]}
 						onClick={
 							isCommissionLink
 								? () => setModalCommission(row)
@@ -76,10 +83,10 @@ const Transactions: React.FC = () => {
 						badges={[
 							{
 								text: formatStatusLabel(row.status),
-								color:
+								className:
 									transactionStatusColors[
 										row.status?.toLowerCase()
-									] ?? 'gray',
+									] ?? 'blue',
 							},
 						]}
 					/>
