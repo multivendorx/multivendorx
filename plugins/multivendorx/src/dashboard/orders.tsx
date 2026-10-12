@@ -309,6 +309,23 @@ const Orders: React.FC = () => {
 
 	const filters = [
 		{
+			key: 'status',
+			type: 'select',
+			label: __('Select Status', 'multivendorx'),
+			options: [
+				'pending',
+				'processing',
+				'on-hold',
+				'completed',
+				'cancelled',
+				'refunded',
+				'failed',
+			].map((orderStatus) => ({
+				value: orderStatus,
+				label: formatStatusLabel(orderStatus),
+			})),
+		},
+		{
 			key: 'created_at',
 			label: 'Created Date',
 			type: 'date',
@@ -374,7 +391,9 @@ const Orders: React.FC = () => {
 	) => {
 		const params = {
 			search: query.searchValue,
-			status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+			status:
+				query.filter?.status ||
+				(query.categoryFilter === 'all' ? '' : query.categoryFilter),
 			orderby: query.orderby || 'date',
 			order: query.order || 'desc',
 			meta_key: 'multivendorx_store_id',
