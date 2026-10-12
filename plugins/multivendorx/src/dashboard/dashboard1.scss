@@ -6,6 +6,11 @@ ul {
     padding: 0;
 }
 
+// remove code
+#store-dashboard .table-wrapper {
+    overflow-x: auto;
+}
+// remove code end
 
 // input[type="checkbox"]:checked {
 //     width: 0 !important;

@@ -75,8 +75,7 @@ class Settings extends \WP_REST_Controller {
      * @param object $request The REST request object.
      */
     public function update_item_permissions_check( $request ) {
-        // Store owners save their own settings from the store dashboard, so edit_stores must be allowed.
-        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 
     /**
