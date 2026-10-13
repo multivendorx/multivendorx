@@ -498,7 +498,6 @@ export const KnowledgeBase: React.FC = () => {
 						rows={infoRows}
 						totalRows={totalRows}
 						isLoading={isLoading}
-						hideHeader={true}
 						onQueryUpdate={doRefreshTableData}
 						ids={rowIds}
 						categoryCounts={categoryCounts}

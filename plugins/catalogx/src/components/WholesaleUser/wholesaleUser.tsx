@@ -74,7 +74,6 @@ const WholesaleUser = () => {
 	const defaultTableProps = {
 		headers,
 		variant: 'transparent',
-		hideHeader: true,
 		format: appLocalizer.date_format,
 		filters,
 		search: {

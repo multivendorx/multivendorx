@@ -622,7 +622,6 @@ export const Announcements: React.FC = () => {
 					<TableCard
 						headers={headers}
 						variant="transparent"
-						hideHeader={true}
 						rows={infoRows}
 						totalRows={totalRows}
 						isLoading={isLoading}

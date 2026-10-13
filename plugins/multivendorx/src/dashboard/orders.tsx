@@ -16,7 +16,6 @@ import {
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
 	downloadCSV,
-	formatCurrency,
 	formatDate,
 	formatLocalDate,
 	formatStatusLabel,
@@ -225,6 +224,11 @@ const Orders: React.FC = () => {
 			descriptionKey: 'info_descriptions',
 			badgesKey: 'info_badges',
 		},
+		total: {
+			label: __('Total', 'multivendorx'),
+			type: 'labeled',
+			valueType: 'currency',
+		},
 
 		action: {
 			type: 'action',
@@ -291,11 +295,6 @@ const Orders: React.FC = () => {
 							},
 						]
 					: []),
-				{
-					label: __('Total', 'multivendorx'),
-					icon: 'dollar',
-					value: formatCurrency(row.total),
-				},
 			],
 			info_badges: [
 				{

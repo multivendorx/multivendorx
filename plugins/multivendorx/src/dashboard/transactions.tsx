@@ -96,17 +96,20 @@ const Transactions: React.FC = () => {
 		credit: {
 			label: __('Credit', 'multivendorx'),
 			isSortable: true,
-			type: 'currency',
+			type: 'labeled',
+			valueType: 'currency',
 		},
 		debit: {
 			label: __('Debit', 'multivendorx'),
 			isSortable: true,
-			type: 'currency',
+			type: 'labeled',
+			valueType: 'currency',
 		},
 		balance: {
 			label: __('Balance', 'multivendorx'),
 			isSortable: true,
-			type: 'currency',
+			type: 'labeled',
+			valueType: 'currency',
 		},
 		action: {
 			type: 'action',

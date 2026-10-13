@@ -544,8 +544,7 @@ const AllProduct: React.FC = () => {
 			)}
 			<TableCard
 				headers={headers}
-				variant="transparent"
-				hideHeader
+				variant="transparent"				
 				cardColumns={3}
 				rows={infoRows}
 				totalRows={totalRows}

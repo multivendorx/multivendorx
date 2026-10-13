@@ -223,7 +223,6 @@ const RefundedOrderReport: React.FC = () => {
 			<TableCard
 				headers={headers}
 				variant="transparent"
-				hideHeader
 				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}

@@ -307,60 +307,39 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 			iconKey: 'info_icon',
 			descriptionKey: 'info_descriptions',
 		},
-		formatted_zone_location: {
-			label: __('Region(s)', 'multivendorx'),
-			render: (row: TableRow) => row.formatted_zone_location || '—',
-		},
-		shipping_methods: {
-			label: __('Shipping Method(s)', 'multivendorx'),
-			render: (row: TableRow) => {
-				const zone = row as Zone;
-				const methodsObj = zone.shipping_methods || {};
-				const methodsArray = Object.values(methodsObj);
+	};
 
-				if (methodsArray.length === 0) {
-					return (
-						<div>
-							<div>No shipping methods</div>
-							<button
-								className="admin-btn btn-purple"
-								onClick={() => handleAdd(zone)}
-							>
-								<i className="adminfont-plus"></i>{' '}
-								{__('Add Shipping Method', 'multivendorx')}
-							</button>
-						</div>
-					);
-				}
-				return (
-					<div className="shipping-method-wrapper">
-						{methodsArray.map((method: ShippingMethod) => (
-							<div
-								key={method.instance_id}
-								className="shipping-method"
-							>
-								<div className="admin-badge yellow">
-									{method.title}
-								</div>
-								<i
-									onClick={() => handleEdit(method, zone)}
-									className="admin-badge blue adminfont-edit"
-								></i>
-								<i
-									onClick={() => handleDelete(method, zone)}
-									className="admin-badge red adminfont-delete"
-								></i>
-							</div>
-						))}
+	const renderShippingMethods = (zone: Zone) => {
+		const methodsArray = Object.values(zone.shipping_methods || {});
 
-						<button
-							className="admin-btn btn-purple"
-							onClick={() => handleAdd(zone)}
-							style={{ marginTop: '10px' }}
-						>
-							<i className="adminfont-plus"></i>{' '}
-							{__('Add New Method', 'multivendorx')}
-						</button>
+		if (methodsArray.length === 0) {
+			return (
+				<div>
+					<div>No shipping methods</div>
+					<button
+						className="admin-btn btn-purple"
+						onClick={() => handleAdd(zone)}
+					>
+						<i className="adminfont-plus"></i>{' '}
+						{__('Add Shipping Method', 'multivendorx')}
+					</button>
+				</div>
+			);
+		}
+
+		return (
+			<div className="shipping-method-wrapper">
+				{methodsArray.map((method: ShippingMethod) => (
+					<div key={method.instance_id} className="shipping-method">
+						<div className="admin-badge yellow">{method.title}</div>
+						<i
+							onClick={() => handleEdit(method, zone)}
+							className="admin-badge blue adminfont-edit"
+						></i>
+						<i
+							onClick={() => handleDelete(method, zone)}
+							className="admin-badge red adminfont-delete"
+						></i>
 					</div>
 				))}
 
