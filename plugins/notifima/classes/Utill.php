@@ -31,6 +31,16 @@ class Utill {
     );
 
     /**
+     * Custom $wpdb table names (unprefixed), keyed by logical name.
+     * Always reference via `$wpdb->prefix . Utill::TABLES['subscribers']`, never a hardcoded string.
+     *
+     * @var array
+     */
+    public const TABLES = array(
+        'subscribers' => 'notifima_subscribers',
+    );
+
+    /**
      * Function to console and debug errors.
      *
      * @param mixed $data The data to log. Can be a string, array, or object.
@@ -192,11 +202,14 @@ class Utill {
     public static function get_subscribers( $args ) {
         global $wpdb;
 
-        $table = $wpdb->prefix . 'notifima_subscribers';
+        $table = $wpdb->prefix . self::TABLES['subscribers'];
         $where = array();
 
         if ( isset( $args['product_ids'] ) ) {
-            $where[] = 'product_id IN (' . implode( ',', array_map( 'absint', $args['product_ids'] ) ) . ')';
+            $product_ids  = array_map( 'absint', $args['product_ids'] );
+            $placeholders = implode( ',', array_fill( 0, count( $product_ids ), '%d' ) );
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- placeholder count is dynamic (one %d per id), the sniff can't verify it statically.
+            $where[]      = $wpdb->prepare( "product_id IN ({$placeholders})", $product_ids );
         }
 
         if ( ! empty( $args['email'] ) ) {
@@ -221,7 +234,7 @@ class Utill {
         $where_sql = ! empty( $where ) ? 'WHERE ' . implode( ' AND ', $where ) : '';
 
         if ( ! empty( $args['count'] ) ) {
-            $query = "SELECT COUNT(*) FROM {$table} {$where_sql}";
+            $query = $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) . " {$where_sql}";
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
             return (int) $wpdb->get_var( $query );
@@ -231,7 +244,7 @@ class Utill {
             ? $wpdb->prepare( 'LIMIT %d OFFSET %d', $args['limit'], $args['offset'] )
             : '';
 
-        $query = "SELECT * FROM {$table} {$where_sql} {$limit_clause}";
+        $query = $wpdb->prepare( 'SELECT * FROM %i', $table ) . " {$where_sql} {$limit_clause}";
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
         return $wpdb->get_results( $query );
@@ -301,6 +314,28 @@ class Utill {
 
         $subscriber_records = self::get_subscribers( $subscriber_args );
 
+        // Batch-load products and prime the post meta cache (thumbnails) for every
+        // distinct product on this page, instead of a separate product lookup and
+        // thumbnail meta query per subscriber row (see .claude/rules/performance.md).
+        $page_product_ids = array_unique( array_map( 'absint', wp_list_pluck( $subscriber_records, 'product_id' ) ) );
+
+        $products_by_id = array();
+
+        if ( ! empty( $page_product_ids ) ) {
+            $page_products = wc_get_products(
+                array(
+                    'include' => $page_product_ids,
+                    'limit'   => count( $page_product_ids ),
+                )
+            );
+
+            foreach ( $page_products as $page_product ) {
+                $products_by_id[ $page_product->get_id() ] = $page_product;
+            }
+
+            update_meta_cache( 'post', $page_product_ids );
+        }
+
         $subscriber_items = array();
 
         $statuses = array(
@@ -311,7 +346,7 @@ class Utill {
         );
 
         foreach ( $subscriber_records as $subscriber ) {
-            $product = wc_get_product( $subscriber->product_id );
+            $product = $products_by_id[ $subscriber->product_id ] ?? null;
             $image   = get_the_post_thumbnail_url(
                 $subscriber->product_id,
                 'full'

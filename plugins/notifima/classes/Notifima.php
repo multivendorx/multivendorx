@@ -50,7 +50,7 @@ class Notifima {
         require_once trailingslashit( dirname( $file ) ) . '/config.php';
 
         $this->file                     = $file;
-        $this->container['plugin_url']  = trailingslashit( plugins_url( '', $plugin = $file ) );
+        $this->container['plugin_url']  = trailingslashit( plugins_url( '', $file ) );
         $this->container['plugin_path'] = trailingslashit( dirname( $file ) );
         $this->container['plugin_base'] = plugin_basename( $file );
 

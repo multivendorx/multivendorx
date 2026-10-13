@@ -85,13 +85,13 @@ class FrontEnd {
     /**
      * Display Request Stock Form for grouped product.
      *
-     * @param string $value default html.
+     * @param string $column_price_html Existing grouped product column price HTML.
      * @param object $child individual child of grouped product.
      */
-    public function append_grouped_product_subscription_form( $value, $child ) {
-        $value = $value . $this->get_subscription_form( $child );
+    public function append_grouped_product_subscription_form( $column_price_html, $child ) {
+        $column_price_html = $column_price_html . $this->get_subscription_form( $child );
 
-        return $value;
+        return $column_price_html;
     }
 
     /**
