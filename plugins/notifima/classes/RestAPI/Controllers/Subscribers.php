@@ -320,7 +320,7 @@ class Subscribers extends \WP_REST_Controller {
      * @return WP_REST_Response
      */
     public function unsubscribe_user( $request ) {
-        $customer_email = sanitize_email( $request->get_param( 'customer_email' ) );
+        $customer_email = sanitize_email( (string) $request->get_param( 'customer_email' ) );
         $product_id     = absint( $request->get_param( 'product_id' ) );
         $variation_id   = absint( $request->get_param( 'variation_id' ) );
 

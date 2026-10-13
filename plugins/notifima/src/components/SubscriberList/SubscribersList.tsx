@@ -44,7 +44,7 @@ export const downloadCSV = (
 
     // Exclude columns explicitly hidden from CSV.
     const csvColumns = Object.entries(headers)
-        .filter(([_, h]) => h.csvDisplay !== false)
+        .filter(([, h]) => h.csvDisplay !== false)
         .map(([key, h]) => ({ key, label: h.label }));
 
     const escapeCSV = (value: unknown) =>
