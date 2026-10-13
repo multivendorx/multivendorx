@@ -49,7 +49,7 @@ class Settings extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'update_item' ),
-					'permission_callback' => array( $this, 'catalogx_permissions_check' ),
+					'permission_callback' => array( $this, 'check_manage_options_permission' ),
 				),
 			)
 		);
@@ -62,12 +62,12 @@ class Settings extends \WP_REST_Controller {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( $this, 'update_modules' ),
-					'permission_callback' => array( $this, 'catalogx_permissions_check' ),
+					'permission_callback' => array( $this, 'check_manage_options_permission' ),
 				),
 				array(
 					'methods'             => 'GET',
 					'callback'            => array( $this, 'get_active_modules' ),
-					'permission_callback' => array( $this, 'catalogx_permissions_check' ),
+					'permission_callback' => array( $this, 'check_manage_options_permission' ),
 				),
 			)
 		);
@@ -80,7 +80,7 @@ class Settings extends \WP_REST_Controller {
 	 *
 	 * @return bool
 	 */
-	public function catalogx_permissions_check( $request ) {
+	public function check_manage_options_permission( $request ) {
 		return Utill::current_user_has_capability( 'manage_options' );
 	}
 	/**

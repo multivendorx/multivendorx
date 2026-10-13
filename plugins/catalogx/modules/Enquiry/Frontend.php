@@ -324,7 +324,7 @@ class Frontend {
             return;
         }
 
-        $button_text = Utill::get_translated_string( 'catalogx', 'send_an_enquiry', __('Send an enquiry','catalogx') );
+        $button_text = Utill::get_translated_string( 'catalogx', 'send_an_enquiry', __( 'Send an enquiry', 'catalogx' ) );
         if ( is_shop() ) {
             $product_link = get_permalink( $product->get_id() );
             echo '<div class="catalogx-enquiry">';

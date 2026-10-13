@@ -53,7 +53,7 @@ class QuoteCart {
      * Starts the php session data for the cart.
      */
     public function quote_session_start() {
-        if ( ! isset( $_COOKIE['woocommerce_items_in_cart'] ) ) {
+        if ( null === filter_input( INPUT_COOKIE, 'woocommerce_items_in_cart' ) ) {
             do_action( 'woocommerce_set_cart_cookies', true );
         }
         $this->session = new Session();
@@ -101,10 +101,8 @@ class QuoteCart {
     public function clean_session() {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'options';
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $wpdb->query( 'DELETE FROM ' . $table_name . "  WHERE option_name LIKE '_catalogx_session_%'" );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- no variables to prepare, the LIKE pattern is a hardcoded literal.
+        $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '_catalogx_session_%'" );
     }
 
 
@@ -148,7 +146,7 @@ class QuoteCart {
 		if ( ! empty( $this->quote_cart_content ) ) {
 			$this->set_cart_cookies( true );
 			$set = true;
-		} elseif ( isset( $_COOKIE['quote_items_in_cart'] ) ) {
+		} elseif ( null !== filter_input( INPUT_COOKIE, 'quote_items_in_cart' ) ) {
 			$this->set_cart_cookies( false );
 			$set = false;
 		}
@@ -166,7 +164,7 @@ class QuoteCart {
         if ( $set ) {
             wc_setcookie( 'quote_items_in_cart', 1 );
             wc_setcookie( 'quote_hash', md5( json_encode( $this->quote_cart_content ) ) );
-        } elseif ( isset( $_COOKIE['quote_items_in_cart'] ) ) {
+        } elseif ( null !== filter_input( INPUT_COOKIE, 'quote_items_in_cart' ) ) {
             wc_setcookie( 'quote_items_in_cart', 0, time() - HOUR_IN_SECONDS );
             wc_setcookie( 'quote_hash', '', time() - HOUR_IN_SECONDS );
         }
@@ -187,7 +185,8 @@ class QuoteCart {
         }
 
         $product_id   = absint( $add_to_quote );
-        $variation_id = filter_input( INPUT_GET, 'variation_id', FILTER_SANITIZE_NUMBER_INT ) ?: '';
+        $variation_id = filter_input( INPUT_GET, 'variation_id', FILTER_SANITIZE_NUMBER_INT );
+        $variation_id = $variation_id ? $variation_id : '';
         $quantity     = filter_input( INPUT_GET, 'quantity', FILTER_SANITIZE_NUMBER_INT );
         $quantity     = empty( $quantity ) ? 1 : wc_stock_amount( intval( $quantity ) );
 

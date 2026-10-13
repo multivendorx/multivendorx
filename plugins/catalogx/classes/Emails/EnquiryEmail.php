@@ -32,12 +32,12 @@ class EnquiryEmail extends \WC_Email {
 
         $base_template_path = apply_filters( 'catalogx_email_template_base_path', CatalogX()->plugin_path . 'templates/' );
 
-        // Set the appropriate template paths
+        // Set the appropriate template paths.
         $this->template_html  = 'emails/enquiry-email.php';
         $this->template_plain = 'emails/plain/enquiry-email.php';
         $this->template_base  = $base_template_path;
 
-        // Call parent constructor
+        // Call parent constructor.
         parent::__construct();
     }
 

@@ -111,7 +111,7 @@ if ( false !== $_phpunit_polyfills_path ) {
 }
 
 if ( ! file_exists( "{$_tests_dir}/includes/functions.php" ) ) {
-	error_log( "Could not find {$_tests_dir}/includes/functions.php, have you run bin/install-wp-tests.sh ?" );
+	error_log( "Could not find {$_tests_dir}/includes/functions.php, have you run tools/bin/install-wp-tests.sh from the monorepo root?" );
 	exit( 1 );
 }
 

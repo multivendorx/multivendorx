@@ -68,7 +68,7 @@ class Quotes extends \WP_REST_Controller {
         }
 
         try {
-            $rejection_response = apply_filters( 'catalogx_quote_rejection_response', null, $request);
+            $rejection_response = apply_filters( 'catalogx_quote_rejection_response', null, $request );
 
             if ( null !== $rejection_response ) {
                 return $rejection_response;

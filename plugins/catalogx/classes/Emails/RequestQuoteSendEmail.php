@@ -18,7 +18,6 @@ defined( 'ABSPATH' ) || exit;
 if ( ! class_exists( 'RequestQuoteSendEmail' ) ) {
 
     class RequestQuoteSendEmail extends \WC_Email {
-        // public $object;
         public $products;
         public $object;
         public $customer_data;
@@ -37,7 +36,7 @@ if ( ! class_exists( 'RequestQuoteSendEmail' ) ) {
             $this->template_plain = 'emails/plain/request-quote.php';
             $this->template_base  = CatalogX()->plugin_path . 'templates/';
 
-            // Call parent constuctor
+            // Call parent constuctor.
             parent::__construct();
         }
 		/**
@@ -56,10 +55,10 @@ if ( ! class_exists( 'RequestQuoteSendEmail' ) ) {
 			$this->replace[]     = $customer_data['name'];
 
 			$admin_email = CatalogX()->admin_email;
-			// Get the user by email
+			// Get the user by email.
 			$admin_user = get_user_by( 'email', $admin_email );
 			if ( $admin_user ) {
-				// Return the display name of the admin user
+				// Return the display name of the admin user.
 				$this->admin = $admin_user->display_name;
 			}
 

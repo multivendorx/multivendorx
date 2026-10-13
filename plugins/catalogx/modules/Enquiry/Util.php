@@ -79,7 +79,7 @@ class Util {
             ? $settings['exclusion']
             : array();
 
-        // Product exclusion
+        // Product exclusion.
         $excluded_products = isset( $settings['enquiry_exclusion_value_product_list'] )
             ? array_map( 'intval', $settings['enquiry_exclusion_value_product_list'] )
             : array();
@@ -131,7 +131,7 @@ class Util {
             }
         }
 
-        // Category exclusion
+        // Category exclusion.
         $excluded_categories = isset( $settings['enquiry_exclusion_value_category_list'] )
             ? array_map( 'intval', $settings['enquiry_exclusion_value_category_list'] )
             : array();
@@ -146,7 +146,7 @@ class Util {
             return false;
         }
 
-        // Tag exclusion
+        // Tag exclusion.
         $excluded_tags = isset( $settings['enquiry_exclusion_value_tag_list'] )
             ? array_map( 'intval', $settings['enquiry_exclusion_value_tag_list'] )
             : array();
@@ -161,7 +161,7 @@ class Util {
             return false;
         }
 
-        // Brand exclusion
+        // Brand exclusion.
         $excluded_brands = isset( $settings['enquiry_exclusion_value_brand_list'] )
             ? array_map( 'intval', $settings['enquiry_exclusion_value_brand_list'] )
             : array();
