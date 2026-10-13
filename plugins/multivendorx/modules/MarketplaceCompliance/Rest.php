@@ -173,8 +173,8 @@ class Rest extends \WP_REST_Controller {
                 $reports
             );
 
-            $response    = rest_ensure_response( $formatted );
-            $count_args  = array( 'count' => true );
+            $response   = rest_ensure_response( $formatted );
+            $count_args = array( 'count' => true );
             if ( ! empty( $args['store_ids'] ) ) {
                 $count_args['store_ids'] = $args['store_ids'];
             }
