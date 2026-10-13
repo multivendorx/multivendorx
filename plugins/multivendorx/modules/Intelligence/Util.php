@@ -118,7 +118,7 @@ class Util {
 				'timeout' => 30,
             )
         );
-        $text = $api_response['choices'][0]['message']['content'] ?? '';
+        $text         = $api_response['choices'][0]['message']['content'] ?? '';
         return $text ? self::clean( $text ) : $api_response;
     }
 }

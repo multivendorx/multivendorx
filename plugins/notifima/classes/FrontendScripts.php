@@ -303,23 +303,23 @@ class FrontendScripts {
         $localize_scripts = apply_filters( 'notifima_localize_scripts', $localize_scripts );
         $config           = $localize_scripts[ $handle ] ?? array();
 
-        $data = array();
+        $localized_data = array();
 
         if ( ! empty( $config['use_rest'] ) ) {
-            $data = array_merge( $data, $base_rest );
+            $localized_data = array_merge( $localized_data, $base_rest );
         }
 
         if ( ! empty( $config['use_settings'] ) ) {
-            $data = array_merge( $data, $settings_data );
+            $localized_data = array_merge( $localized_data, $settings_data );
         }
 
         if ( ! empty( $config['data'] ) ) {
-            $data = array_merge( $data, $config['data'] );
+            $localized_data = array_merge( $localized_data, $config['data'] );
         }
 
         if ( isset( $localize_scripts[ $handle ] ) ) {
             $props = $localize_scripts[ $handle ];
-            self::localize_script( $handle, $props['object_name'], $data );
+            self::localize_script( $handle, $props['object_name'], $localized_data );
         }
     }
 

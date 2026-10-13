@@ -104,34 +104,25 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 		});
 	};
 
-	const handleEdit = async (method: ShippingMethod) => {
+	const handleEdit = async (method: ShippingMethod, zone: Zone) => {
 		setIsEditing(true);
 		setEditingMethod(method);
 
-		const zoneWithMethod = data.find((zone) => {
-			const methods = Object.values(zone.shipping_methods || {});
-			return methods.some((m: ShippingMethod) => m.id === method.id);
-		});
-
-		setSelectedZone(zoneWithMethod || null);
+		setSelectedZone(zone);
 		setIsLoadingShipping(true);
-
-		if (!zoneWithMethod) {
-			return;
-		}
 
 		try {
 			const response = await axios({
 				method: 'GET',
 				url: getApiLink(
 					appLocalizer,
-					`zone-shipping/${zoneWithMethod.zone_id}`
+					`zone-shipping/${zone.zone_id}`
 				),
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: {
 					store_id: store_id,
 					method_id: method.id,
-					zone_id: zoneWithMethod.zone_id,
+					zone_id: zone.zone_id,
 				},
 			});
 			if (response.data && response.data.settings) {
@@ -316,38 +307,60 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 			iconKey: 'info_icon',
 			descriptionKey: 'info_descriptions',
 		},
-	};
+		formatted_zone_location: {
+			label: __('Region(s)', 'multivendorx'),
+			render: (row: TableRow) => row.formatted_zone_location || '—',
+		},
+		shipping_methods: {
+			label: __('Shipping Method(s)', 'multivendorx'),
+			render: (row: TableRow) => {
+				const zone = row as Zone;
+				const methodsObj = zone.shipping_methods || {};
+				const methodsArray = Object.values(methodsObj);
 
-	const renderShippingMethods = (zone: Zone) => {
-		const methodsArray = Object.values(zone.shipping_methods || {});
+				if (methodsArray.length === 0) {
+					return (
+						<div>
+							<div>No shipping methods</div>
+							<button
+								className="admin-btn btn-purple"
+								onClick={() => handleAdd(zone)}
+							>
+								<i className="adminfont-plus"></i>{' '}
+								{__('Add Shipping Method', 'multivendorx')}
+							</button>
+						</div>
+					);
+				}
+				return (
+					<div className="shipping-method-wrapper">
+						{methodsArray.map((method: ShippingMethod) => (
+							<div
+								key={method.instance_id}
+								className="shipping-method"
+							>
+								<div className="admin-badge yellow">
+									{method.title}
+								</div>
+								<i
+									onClick={() => handleEdit(method, zone)}
+									className="admin-badge blue adminfont-edit"
+								></i>
+								<i
+									onClick={() => handleDelete(method, zone)}
+									className="admin-badge red adminfont-delete"
+								></i>
+							</div>
+						))}
 
-		if (methodsArray.length === 0) {
-			return (
-				<div>
-					<div>No shipping methods</div>
-					<button
-						className="admin-btn btn-purple"
-						onClick={() => handleAdd(zone)}
-					>
-						<i className="adminfont-plus"></i>{' '}
-						{__('Add Shipping Method', 'multivendorx')}
-					</button>
-				</div>
-			);
-		}
-		return (
-			<div className="shipping-method-wrapper">
-				{methodsArray.map((method: ShippingMethod) => (
-					<div key={method.instance_id} className="shipping-method">
-						<div className="admin-badge yellow">{method.title}</div>
-						<i
-							onClick={() => handleEdit(method)}
-							className="admin-badge blue adminfont-edit"
-						></i>
-						<i
-							onClick={() => handleDelete(method, zone)}
-							className="admin-badge red adminfont-delete"
-						></i>
+						<button
+							className="admin-btn btn-purple"
+							onClick={() => handleAdd(zone)}
+							style={{ marginTop: '10px' }}
+						>
+							<i className="adminfont-plus"></i>{' '}
+							{__('Add New Method', 'multivendorx')}
+						</button>
 					</div>
 				))}
 
