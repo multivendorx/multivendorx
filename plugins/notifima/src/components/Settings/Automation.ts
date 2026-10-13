@@ -720,6 +720,7 @@ export default {
                     value: 'no',
                 },
             ],
+            proSetting: true,
         },
         {
             key: 'auto_delete_subscriber_statuses',
@@ -751,6 +752,7 @@ export default {
                     label: __('Notification Failed', 'notifima'),
                 },
             ],
+            proSetting: true,
             selectDeselect: true,
             dependent: {
                 key: 'is_auto_delete_enable',
@@ -767,6 +769,7 @@ export default {
                 'Specify how long to keep subscriber records before automatically deleting records that match the selected statuses.',
                 'notifima'
             ),
+            proSetting: true,
             dependent: {
                 key: 'is_auto_delete_enable',
                 set: true,
@@ -793,6 +796,7 @@ export default {
                     value: 'weekly',
                 }
             ],
+            proSetting: true,
             dependent: {
                 key: 'is_auto_delete_enable',
                 set: true,
