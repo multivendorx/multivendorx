@@ -395,7 +395,8 @@ const AllProduct: React.FC = () => {
 		},
 		price: {
 			label: __('Price', 'multivendorx'),
-			type: 'currency',
+			type: 'labeled',
+			valueType: 'currency',
 		},
 		action: {
 			type: 'action',

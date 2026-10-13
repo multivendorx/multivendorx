@@ -647,6 +647,18 @@ const AllCoupon: React.FC = () => {
 			iconKey: 'info_icon',
 			descriptionKey: 'info_descriptions',
 			badgesKey: 'info_badges',
+			width: '45%'
+		},
+		amount_display: {
+			label: __('Amount', 'multivendorx'),
+			labelKey: 'amount_label',
+			type: 'labeled',
+			valueType: 'text',
+		},
+		created_expiry: {
+			label: __('Created / Expiry', 'multivendorx'),
+			type: 'labeled',
+			valueType: 'text',
 		},
 		action: {
 			type: 'action',
@@ -670,6 +682,18 @@ const AllCoupon: React.FC = () => {
 		},
 	};
 
+	const discountTypeLabels: Record<string, string> = {
+		percent: __('Percentage Discount', 'multivendorx'),
+		fixed_cart: __('Fixed Cart Discount', 'multivendorx'),
+		fixed_product: __('Fixed Product Discount', 'multivendorx'),
+	};
+
+	const discountTypeColors: Record<string, string> = {
+		percent: 'purple',
+		fixed_cart: 'blue',
+		fixed_product: 'yellow',
+	};
+
 	const infoRows = rows.map((row: any) => ({
 		...row,
 		info_icon: 'coupon',
@@ -678,21 +702,6 @@ const AllCoupon: React.FC = () => {
 				label: __('By', 'multivendorx'),
 				icon: 'storefront',
 				value: row.store_name || '—',
-			},
-			{
-				label: __('Discount Type', 'multivendorx'),
-				icon: 'coupon',
-				value: row.discount_type || '—',
-			},
-			{
-				label: __('Amount', 'multivendorx'),
-				icon: 'dollar',
-				value: formatCurrency(row.amount),
-			},
-			{
-				label: __('Usage / Limit', 'multivendorx'),
-				icon: 'cart',
-				value: row.usage_limit ?? '—',
 			},
 			...(row.description
 				? [
@@ -703,19 +712,30 @@ const AllCoupon: React.FC = () => {
 						},
 					]
 				: []),
-			{
-				label: __('Expiry Date', 'multivendorx'),
-				icon: 'calendar',
-				value: formatDate(row.date_expires),
-			},
 		],
 		info_badges: [
 			{
 				text: formatStatusLabel(row.status),
 				color: `badge-${row.status}`,
 			},
-			{ text: formatDate(row.date_created), color: 'blue' },
+			{
+				text:
+					discountTypeLabels[row.discount_type] ||
+					formatStatusLabel(row.discount_type || ''),
+				color: discountTypeColors[row.discount_type] || 'teal',
+			},
 		],
+		amount_label:
+			row.discount_type === 'percent'
+				? __('Percentage', 'multivendorx')
+				: __('Amount', 'multivendorx'),
+		amount_display:
+			row.discount_type === 'percent'
+				? `${row.amount}%`
+				: formatCurrency(row.amount),
+		created_expiry: `${formatDate(row.date_created)} / ${
+			row.date_expires ? formatDate(row.date_expires) : '—'
+		}`,
 	}));
 
 	const doRefreshTableData = (query: QueryProps) => {
@@ -767,7 +787,7 @@ const AllCoupon: React.FC = () => {
 			key: 'couponType',
 			label: __('Select Coupon Type', 'multivendorx'),
 			type: 'select',
-			size: 12,
+			size: 18,
 			options: [
 				{
 					label: __('Percentage Discount', 'multivendorx'),

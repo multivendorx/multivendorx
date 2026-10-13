@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 
 
 import { getApiLink, useModules } from '@zyra/core';
-import { NavigatorHeaderComponent } from '@zyra/components';
+import { ListComponent, NavigatorHeaderComponent } from '@zyra/components';
 import { CategoryCount, QueryProps, TableCard, TableRow } from '@zyra/table';
 
 import ViewCommission from './viewCommission';
@@ -53,6 +53,27 @@ const StoreCommission: React.FC = () => {
 			descriptionKey: 'info_descriptions',
 			badgesKey: 'info_badges',
 			csvDisplay: false,
+		},
+		commission_amounts: {
+			label: __('Amounts', 'multivendorx'),
+			csvDisplay: false,
+			render: (row: any) => (
+				<ListComponent
+					className="price-list"
+					items={[
+						{
+							id: 'order-amount',
+							title: __('Order Amount', 'multivendorx'),
+							value: formatCurrency(row.total_order_amount),
+						},
+						{
+							id: 'total-earned',
+							title: __('Total Earned', 'multivendorx'),
+							value: formatCurrency(row.store_payable),
+						},
+					]}
+				/>
+			),
 		},
 		id: {
 			label: __('ID', 'multivendorx'),
@@ -309,16 +330,6 @@ const StoreCommission: React.FC = () => {
 						#{row.order_id}
 					</span>
 				),
-			},
-			{
-				label: __('Order Amount', 'multivendorx'),
-				icon: 'cart',
-				value: formatCurrency(row.total_order_amount),
-			},
-			{
-				label: __('Total Earned', 'multivendorx'),
-				icon: 'wallet',
-				value: formatCurrency(row.store_payable),
 			},
 		],
 		info_badges: [
