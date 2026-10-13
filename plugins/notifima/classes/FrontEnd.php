@@ -79,7 +79,7 @@ class FrontEnd {
             return;
         }
 
-        echo $this->get_subscription_form( $product_obj );
+        echo wp_kses_post( $this->get_subscription_form( $product_obj ) );
     }
 
     /**
