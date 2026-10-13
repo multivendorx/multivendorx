@@ -468,7 +468,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 			<ContainerComponent>
 				<ColumnComponent grid={8}>
 					{/* Contact Information */}
-					<CardComponent title={__('Contact information', 'multivendorx')}>
+					<CardComponent title={__('Contact information', 'multivendorx')} titleIcon="mail" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
 								label={__('Store email(s)', 'multivendorx')}
@@ -544,7 +544,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 						</FormGroupWrapperComponent>
 					</CardComponent>
 					{/* Communication Address */}
-					<CardComponent title={__('Communication address', 'multivendorx')}>
+					<CardComponent title={__('Communication address', 'multivendorx')} titleIcon="location" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
 								label={__('Address *', 'multivendorx')}
@@ -632,6 +632,8 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 					<CardComponent
 						id="store-status"
 						title={__('Manage store status', 'multivendorx')}
+						titleIcon="storefront"
+						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 					>
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
@@ -665,6 +667,8 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 					<CardComponent
 						id="store-slug"
 						title={__('Manage storefront link', 'multivendorx')}
+						titleIcon="storefront"
+						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 					>
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
@@ -698,7 +702,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 					</CardComponent>
 
 					{/* Social Information */}
-					<CardComponent title={__('Social information', 'multivendorx')}>
+					<CardComponent title={__('Social information', 'multivendorx')} titleIcon="social-share" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						{(
 							[
 								'facebook',

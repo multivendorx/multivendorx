@@ -3,10 +3,18 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { NavigatorHeaderComponent } from '@zyra/components';
+import {
+	InformationItemComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import TransactionDetailsModal from './TransactionDetailsModal';
-import { downloadCSV, formatLocalDate, normalizeText } from '../services/commonFunction';
+import {
+	downloadCSV,
+	formatLocalDate,
+	formatStatusLabel,
+	normalizeText,
+} from '../services/commonFunction';
 import ViewCommission from './viewCommission';
 import { applyFilters } from '@wordpress/hooks';
 
@@ -36,34 +44,72 @@ const Transactions: React.FC = () => {
 		useState<TransactionRow | null>(null);
 	const [modalCommission, setModalCommission] =
 		useState<TransactionRow | null>(null);
+	const transactionStatusColors: Record<string, string> = {
+		completed: 'green',
+		processed: 'blue',
+		upcoming: 'yellow',
+		failed: 'red',
+	};
+
 	const headers = {
-		id: { label: __('ID', 'multivendorx'), type: 'id' },
-		status: { label: __('Status', 'multivendorx'), type: 'status', statusClass: (row) => `${row.status}` },
-		created_at: { label: __('Date', 'multivendorx'), type: 'date' },
-		transaction_type: {
-			label: __('Transaction Type', 'multivendorx'),
-			render: (row) =>
-				row.transaction_type?.toLowerCase() === 'commission' &&
-					row.commission_id ? (
-					<span
-						className="link-item"
-						onClick={() => setModalCommission(row)}
-						style={{ cursor: 'pointer' }}
-					>
-						{`Commission #${row.commission_id}`}
-					</span>
-				) : (
-					<span>
-						{normalizeText(row.narration)}
-					</span>
-				),
+		transaction_title: {
+			label: __('Transaction', 'multivendorx'),
+			width: 60,
+			render: (row: any) => {
+				const isCommissionLink =
+					row.transaction_type?.toLowerCase() === 'commission' &&
+					row.commission_id;
+
+				return (
+					<InformationItemComponent
+						title={
+							isCommissionLink
+								? `Commission #${row.commission_id}`
+								: normalizeText(row.narration)
+						}
+						avatar={{ iconClass: 'wallet' }}
+						descriptions={[
+							{
+								label: __('ID', 'multivendorx'),
+								icon: 'wallet',
+								value: `#${row.id}`,
+							},
+						]}
+						onClick={
+							isCommissionLink
+								? () => setModalCommission(row)
+								: undefined
+						}
+						badges={[
+							{
+								text: formatStatusLabel(row.status),
+								className:
+									transactionStatusColors[
+										row.status?.toLowerCase()
+									] ?? 'blue',
+							},
+						]}
+					/>
+				);
+			},
 		},
-		credit: { label: __('Credit', 'multivendorx'), type: 'currency' },
-		debit: { label: __('Debit', 'multivendorx'), type: 'currency' },
+		credit: {
+			label: __('Credit', 'multivendorx'),
+			isSortable: true,
+			type: 'labeled',
+			valueType: 'currency',
+		},
+		debit: {
+			label: __('Debit', 'multivendorx'),
+			isSortable: true,
+			type: 'labeled',
+			valueType: 'currency',
+		},
 		balance: {
 			label: __('Balance', 'multivendorx'),
 			isSortable: true,
-			type: 'currency',
+			type: 'labeled',
+			valueType: 'currency',
 		},
 		action: {
 			type: 'action',
@@ -79,6 +125,19 @@ const Transactions: React.FC = () => {
 			],
 		},
 	};
+
+	// The table folds these fields into one info column, so the CSV
+	// export lists its columns explicitly instead of reusing `headers`.
+	const csvHeaders = {
+		id: { label: __('ID', 'multivendorx') },
+		status: { label: __('Status', 'multivendorx') },
+		created_at: { label: __('Date', 'multivendorx') },
+		transaction_type: { label: __('Transaction Type', 'multivendorx') },
+		credit: { label: __('Credit', 'multivendorx') },
+		debit: { label: __('Debit', 'multivendorx') },
+		balance: { label: __('Balance', 'multivendorx') },
+	};
+
 	const filters = [
 		{
 			key: 'transactionType',
@@ -199,7 +258,7 @@ const Transactions: React.FC = () => {
 			.then((response) => {
 				const rows = response.data || [];
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`selected-commissions-${formatLocalDate(new Date())}.csv`
 				);
@@ -220,7 +279,7 @@ const Transactions: React.FC = () => {
 				const rows = response.data || [];
 
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`transaction-${formatLocalDate(new Date())}.csv`
 				);
@@ -276,6 +335,7 @@ const Transactions: React.FC = () => {
 
 			<TableCard
 				headers={headers}
+				variant="transparent"
 				rows={rows}
 				totalRows={totalRows}
 				isLoading={isLoading}

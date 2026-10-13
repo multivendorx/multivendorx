@@ -20,6 +20,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 	return (
 		<CardComponent
 			title={__('Stock & inventory', 'multivendorx')}
+			titleIcon="out-of-stock"
 			desc={__(
 				"Track your available quantity and let customers know what's in stock.",
 				'multivendorx'

@@ -25,7 +25,7 @@ export default {
 			key: 'is_store_review_verified',
 			type: 'checkbox',
 			label: __('Verified buyer reviews only', 'multivendorx'),
-			desc: __(
+			settingDescription: __(
 				'Accept reviews only from verified buyers who purchased a product/listing.',
 				'multivendorx'
 			),

@@ -10,5 +10,6 @@ export default {
 	),
 	headerIcon: 'shipping',
 	module: 'store-shipping',
+	hideSettingHeader: true,
 	modal: [],
 };

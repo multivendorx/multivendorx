@@ -254,6 +254,7 @@ const DashboardTab: React.FC<object> = () => {
 							'Build a smarter eLearning platform',
 							'moowoodle'
 						)}
+						titleIcon="form"
 						badge={[
 							{
 								text: 'Starting at $299/year',
@@ -303,7 +304,7 @@ const DashboardTab: React.FC<object> = () => {
 
 			{/* Right Side */}
 			<ColumnComponent grid={4}>
-				<CardComponent title={__('Extend your website', 'moowoodle')}>
+				<CardComponent title={__('Extend your website', 'moowoodle')} titleIcon="section" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 					<ColumnComponent row>
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
 							<ListComponent
@@ -482,7 +483,7 @@ const DashboardTab: React.FC<object> = () => {
 				</CardComponent>
 
 				{/* Quick Links */}
-				<CardComponent title={__('Need help getting started?', 'moowoodle')}>
+				<CardComponent title={__('Need help getting started?', 'moowoodle')} titleIcon="help" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 					<div className="quick-link">
 						{resources.map((res) => (
 							<ListComponent
