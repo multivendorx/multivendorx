@@ -209,7 +209,7 @@ class Utill {
             $product_ids  = array_map( 'absint', $args['product_ids'] );
             $placeholders = implode( ',', array_fill( 0, count( $product_ids ), '%d' ) );
             // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- placeholder count is dynamic (one %d per id), the sniff can't verify it statically.
-            $where[]      = $wpdb->prepare( "product_id IN ({$placeholders})", $product_ids );
+            $where[] = $wpdb->prepare( "product_id IN ({$placeholders})", $product_ids );
         }
 
         if ( ! empty( $args['email'] ) ) {
@@ -374,7 +374,7 @@ class Utill {
                     'user_link'  => $user ? get_edit_user_link( $user->ID ) : '',
                     'product'    => $product ? $product->get_name() : '',
                     'product_id' => $product ? $product->get_id() : '',
-                    'image'      => $image ?: wc_placeholder_img_src(),
+                    'image'      => ! empty( $image ) ? $image : wc_placeholder_img_src(),
                 ),
                 $subscriber
             );

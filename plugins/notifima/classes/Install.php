@@ -73,9 +73,10 @@ class Install {
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
         if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->prefix . 'stockalert_subscribers' ) ) ) {
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->query(
                 $wpdb->prepare(
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
                     'ALTER TABLE `' . $wpdb->prefix . 'stockalert_subscribers` RENAME TO %i',
                     $wpdb->prefix . Utill::TABLES['subscribers']
                 )
@@ -184,8 +185,10 @@ class Install {
             $table_name = $wpdb->prefix . Utill::TABLES['subscribers'];
 
             // Add phone column.
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->query(
                 $wpdb->prepare(
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
                     'ALTER TABLE %i
                     ADD COLUMN `phone` varchar(30) DEFAULT NULL AFTER `email`',
                     $table_name
@@ -193,6 +196,7 @@ class Install {
             );
 
             // Rename mailsent status to notification_sent.
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->query(
                 $wpdb->prepare(
                     'UPDATE %i
@@ -210,16 +214,20 @@ class Install {
 
             $table_name = $wpdb->prefix . Utill::TABLES['subscribers'];
 
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $column = $wpdb->get_results(
                 $wpdb->prepare(
-                    "SHOW COLUMNS FROM %i LIKE 'retry_count'",
-                    $table_name
+                    'SHOW COLUMNS FROM %i LIKE %s',
+                    $table_name,
+                    'retry_count'
                 )
             );
 
             if ( empty( $column ) ) {
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->query(
                     $wpdb->prepare(
+                        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
                         'ALTER TABLE %i
                         ADD `retry_count` int(11) NOT NULL DEFAULT 0 AFTER `status`',
                         $table_name
@@ -262,7 +270,7 @@ class Install {
         try {
             // Get woosubscribe post and post meta.
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-            $subscribe_datas = $wpdb->get_results(
+            $legacy_subscriber_rows = $wpdb->get_results(
                 "SELECT posts.ID as id,
                     posts.post_date as date,
                     posts.post_title as email,
@@ -278,32 +286,33 @@ class Install {
             );
 
             // Prepare insert values and placeholders.
-            $value_rows   = array();
-            $placeholders = array();
+            $insert_bind_values = array();
+            $placeholders       = array();
 
-            foreach ( $subscribe_datas as $subscribe_data ) {
-                $value_rows[]   = (int) $subscribe_data['product_id'];
-                $value_rows[]   = (int) $subscribe_data['user_id'];
-                $value_rows[]   = $subscribe_data['email'];
-                $value_rows[]   = self::STATUS_MAP[ $subscribe_data['status'] ];
-                $value_rows[]   = $subscribe_data['date'];
-                $placeholders[] = '( %d, %d, %s, %s, %s )';
+            foreach ( $legacy_subscriber_rows as $legacy_subscriber_row ) {
+                $insert_bind_values[] = (int) $legacy_subscriber_row['product_id'];
+                $insert_bind_values[] = (int) $legacy_subscriber_row['user_id'];
+                $insert_bind_values[] = $legacy_subscriber_row['email'];
+                $insert_bind_values[] = self::STATUS_MAP[ $legacy_subscriber_row['status'] ];
+                $insert_bind_values[] = $legacy_subscriber_row['date'];
+                $placeholders[]       = '( %d, %d, %s, %s, %s )';
             }
 
             // If result exist then insert those result into custom table.
-            if ( $value_rows ) {
+            if ( $insert_bind_values ) {
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->query(
                     $wpdb->prepare(
+                        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- placeholder count is dynamic (one row-tuple per migrated subscriber), the sniff can't verify it statically.
                         'INSERT IGNORE INTO %i (product_id, user_id, email, status, create_time ) VALUES ' . implode( ', ', $placeholders ),
-                        array_merge( array( $table ), $value_rows )
+                        array_merge( array( $table ), $insert_bind_values )
                     )
                 );
             }
 
             // Delete the post seperatly, If there is problem in migration post will not delete permanently.
-            foreach ( $subscribe_datas as $subscribe_data ) {
-                wp_delete_post( $subscribe_data['id'] );
+            foreach ( $legacy_subscriber_rows as $legacy_subscriber_row ) {
+                wp_delete_post( $legacy_subscriber_row['id'] );
             }
 
             // Get subscriber count.
@@ -343,8 +352,8 @@ class Install {
             $collate = $wpdb->get_charset_collate();
         }
 
-        $table            = $wpdb->prefix . Utill::TABLES['subscribers'];
-        $sql_subscribers  = "CREATE TABLE IF NOT EXISTS `{$table}` (
+        $table           = $wpdb->prefix . Utill::TABLES['subscribers'];
+        $sql_subscribers = "CREATE TABLE IF NOT EXISTS `{$table}` (
                 `id` bigint(20) NOT NULL AUTO_INCREMENT,
                 `product_id` bigint(20) NOT NULL,
                 `user_id` bigint(20) NOT NULL DEFAULT 0,

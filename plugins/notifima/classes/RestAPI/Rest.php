@@ -69,10 +69,8 @@ class Rest {
 
     /**
      * Check if a given request has access to get items.
-     *
-     * @param object $request The REST request object.
      */
-    public function notifima_permission( $request ) {
+    public function notifima_permission() {
         return Utill::current_user_has_capability( 'manage_options' );
     }
 

@@ -1,4 +1,9 @@
 <?php
+/**
+ * WordPress test-suite config, loaded by the PHPUnit WP test bootstrap.
+ *
+ * @package Notifima
+ */
 
 $wordpress_dir = dirname( __DIR__, 2 ) . '/wordpress/';
 if ( ! is_dir( $wordpress_dir ) ) {
@@ -18,11 +23,11 @@ define( 'WP_DEFAULT_THEME', 'default' );
 
 // Test with multisite enabled.
 // Alternatively, use the tests/phpunit/multisite.xml configuration file.
-// define( 'WP_TESTS_MULTISITE', true );
+// define( 'WP_TESTS_MULTISITE', true ).
 
 // Force known bugs to be run.
 // Tests with an associated Trac ticket that is still open are normally skipped.
-// define( 'WP_TESTS_FORCE_KNOWN_BUGS', true );
+// define( 'WP_TESTS_FORCE_KNOWN_BUGS', true ).
 
 // Test with WordPress debug mode (default).
 define( 'WP_DEBUG', true );
@@ -37,14 +42,14 @@ define( 'WP_DEBUG_LOG', true );
 // These tests will DROP ALL TABLES in the database with the prefix named below.
 // DO NOT use a production database or one that is shared with something else.
 
-define( 'DB_NAME', getenv( 'WP_DB_NAME' ) ?: 'wordpress_test' );
-define( 'DB_USER', getenv( 'WP_DB_USER' ) ?: 'root' );
-define( 'DB_PASSWORD', getenv( 'WP_DB_PASS' ) ?: '' );
+define( 'DB_NAME', getenv( 'WP_DB_NAME' ) ? getenv( 'WP_DB_NAME' ) : 'wordpress_test' );
+define( 'DB_USER', getenv( 'WP_DB_USER' ) ? getenv( 'WP_DB_USER' ) : 'root' );
+define( 'DB_PASSWORD', getenv( 'WP_DB_PASS' ) ? getenv( 'WP_DB_PASS' ) : '' );
 define( 'DB_HOST', 'localhost' );
 define( 'DB_CHARSET', 'utf8' );
 define( 'DB_COLLATE', '' );
 
-$table_prefix = 'unit_';   // Only numbers, letters, and underscores please!
+$table_prefix = 'unit_';   // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- required WP test-suite config variable, not a stray global write.
 
 define( 'WP_TESTS_DOMAIN', 'example.org' );
 define( 'WP_TESTS_EMAIL', 'admin@example.org' );
