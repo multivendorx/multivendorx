@@ -176,7 +176,7 @@ class Admin {
      * @return void
      */
     public function subscribers_bulk_action_admin_notice() {
-        $bulk_remove_count = filter_input( INPUT_POST, 'bulk_remove_subscribers', FILTER_SANITIZE_NUMBER_INT );
+        $bulk_remove_count = filter_input( INPUT_GET, 'bulk_remove_subscribers', FILTER_SANITIZE_NUMBER_INT );
 
         if ( ! empty( $bulk_remove_count ) ) {
             // Translators: This message is to display removed subscribers count for the product.
