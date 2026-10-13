@@ -52,10 +52,12 @@ const StoreCommission: React.FC = () => {
 			iconKey: 'info_icon',
 			descriptionKey: 'info_descriptions',
 			badgesKey: 'info_badges',
+			width: '50%',
 			csvDisplay: false,
 		},
 		commission_amounts: {
 			label: __('Amounts', 'multivendorx'),
+			width: '20%',
 			csvDisplay: false,
 			render: (row: any) => (
 				<ListComponent

@@ -902,7 +902,11 @@ const Dashboard: React.FC = () => {
 										title: item.title,
 										desc: truncateText(item.content, 20),
 										icon: `announcement admin-badge admin-color${index + 2}`,
-										value: formatTimeAgo(item.date_created),
+										tags: (
+											<span className="admin-badge blue">
+												{formatTimeAgo(item.date_created)}
+											</span>
+										),
 									}))}
 								/>
 							) : (

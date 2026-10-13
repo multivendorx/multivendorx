@@ -456,6 +456,8 @@ const ProductReport: React.FC = () => {
 				<ColumnComponent grid={7}>
 					<CardComponent
 						title={__('Revenue & Sales Comparison', 'multivendorx')}
+						titleIcon="sales"
+						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 					>
 						{error ? (
 							<p>{error}</p>
@@ -493,7 +495,7 @@ const ProductReport: React.FC = () => {
 				{/* Categories and brands */}
 				<ColumnComponent row>
 					{/* Top Reviewed Products Section */}
-					<CardComponent title="Top Reviewed Products">
+					<CardComponent title="Top Reviewed Products" titleIcon="review" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						{toReviewedProduct.length > 0 ? (
 							toReviewedProduct.map(
 								(product: Product, index: number) => (
@@ -529,7 +531,7 @@ const ProductReport: React.FC = () => {
 							/>
 						)}
 					</CardComponent>
-					<CardComponent title="Top Selling Products">
+					<CardComponent title="Top Selling Products" titleIcon="product" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						{toSellingProduct.length > 0 ? (
 							toSellingProduct.map(
 								(product: Product, index: number) => (
@@ -568,6 +570,8 @@ const ProductReport: React.FC = () => {
 
 				<CardComponent
 					title={__('Revenue Distribution', 'multivendorx')}
+					titleIcon="revenue"
+					desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 				>
 					<TableCard
 						headers={headers}

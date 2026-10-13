@@ -9,7 +9,6 @@ import {
 	ContainerComponent,
 	ColumnComponent,
 	ListComponent,
-	LabeledCellComponent,
 	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
@@ -151,27 +150,25 @@ const Commission: React.FC = () => {
 				].filter((item) => item.display !== false);
 
 				return (
-					<LabeledCellComponent
-						label={__('Commission Summary', 'multivendorx')}
-					>
+					// Same markup zyra's `type: 'labeled'` cell renders, for a
+					// value that needs a custom component.
+					<div className="admin-labeled-cell">
+						<span className="admin-labeled-cell-label">
+							{__('Commission Summary', 'multivendorx')}
+						</span>
 						<ListComponent
 							className="price-list"
 							items={earningItems}
 						/>
-					</LabeledCellComponent>
+					</div>
 				);
 			},
 		},
 		total_order_amount: {
 			label: __('Order Amount', 'multivendorx'),
 			isSortable: true,
-			render: (row) => (
-				<LabeledCellComponent
-					label={__('Order Amount', 'multivendorx')}
-				>
-					{formatCurrency(row.total_order_amount)}
-				</LabeledCellComponent>
-			),
+			type: 'labeled',
+			valueType: 'currency',
 		},
 		action: {
 			label: __('Action', 'multivendorx'),

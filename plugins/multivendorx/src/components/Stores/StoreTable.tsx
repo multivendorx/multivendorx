@@ -6,7 +6,6 @@ import { getApiLink } from '@zyra/core';
 import { ContainerComponent, ColumnComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
-	formatCurrency,
 	formatDate,
 	formatLocalDate,
 	formatStatusLabel,
@@ -113,6 +112,11 @@ const StoreTable: React.FC = () => {
 			descriptionKey: 'info_descriptions',
 			badgesKey: 'info_badges',
 		},
+		lifetime_earning: {
+			label: __('Lifetime Earning', 'multivendorx'),
+			type: 'labeled',
+			valueType: 'currency',
+		},
 		action: {
 			key: 'action',
 			type: 'action',
@@ -171,6 +175,7 @@ const StoreTable: React.FC = () => {
 	];
 	const infoRows = rows.map((row: any) => ({
 		...row,
+		lifetime_earning: row.commission?.commission_total,
 		info_icon: 'store-inventory',
 		info_link: getUrl(row.id, 'store', 'edit'),
 		info_descriptions: [
@@ -183,11 +188,6 @@ const StoreTable: React.FC = () => {
 				label: __('Primary Owner', 'multivendorx'),
 				icon: 'person',
 				value: row.primary_owner?.display_name || '—',
-			},
-			{
-				label: __('Lifetime Earning', 'multivendorx'),
-				icon: 'wallet',
-				value: formatCurrency(row.commission?.commission_total),
 			},
 		],
 		info_badges: [
@@ -218,7 +218,13 @@ const StoreTable: React.FC = () => {
 					search={{}}
 					filters={filters}
 					format={appLocalizer.date_format}
-					currencySymbol={appLocalizer.currency_symbol}
+					currency={{
+						currencySymbol: appLocalizer.currency_symbol,
+						priceDecimals: appLocalizer.price_decimals,
+						decimalSeparator: appLocalizer.decimal_separator,
+						thousandSeparator: appLocalizer.thousand_separator,
+						currencyPosition: appLocalizer.currency_position,
+					}}
 				/>
 			</ColumnComponent>
 		</ContainerComponent>

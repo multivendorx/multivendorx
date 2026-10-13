@@ -83,7 +83,7 @@ const HelpSupport: React.FC = () => {
 
 			<ContainerComponent general>
 				<ColumnComponent row>
-					<CardComponent title={__('Community & forums', 'moowoodle')}>
+					<CardComponent title={__('Community & forums', 'moowoodle')} titleIcon="section" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						<div className="support-wrapper">
 							{supportItems.map((item, index) => (
 								<div className="support-item" key={index}>
@@ -111,7 +111,7 @@ const HelpSupport: React.FC = () => {
 							))}
 						</div>
 					</CardComponent>
-					<CardComponent title={__('Documentation & Learning', 'moowoodle')}>
+					<CardComponent title={__('Documentation & Learning', 'moowoodle')} titleIcon="document" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						<div className="support-wrapper">
 							{DocumentationItems.map((item, index) => (
 								<div className="support-item" key={index}>

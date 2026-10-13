@@ -319,6 +319,8 @@ const StoreReport: React.FC = () => {
 				<ColumnComponent grid={7}>
 					<CardComponent
 						title={__('Top revenue generating stores', 'multivendorx')}
+						titleIcon="star"
+						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 					>
 						<ResponsiveContainer width="100%" height={300}>
 							<PieChart>
@@ -352,6 +354,8 @@ const StoreReport: React.FC = () => {
 
 				<CardComponent
 					title={__('Account Overview', 'multivendorx')}
+					titleIcon="analytics"
+					desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 				>
 					<TableCard
 						headers={headers}

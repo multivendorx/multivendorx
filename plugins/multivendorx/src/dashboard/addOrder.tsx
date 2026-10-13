@@ -635,6 +635,8 @@ const AddOrder = () => {
 		return (
 			<CardComponent
 				title={__(title, 'multivendorx')}
+				titleIcon="section"
+				desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 				iconName={hasCustomer && !isEditMode ? 'edit' : ''}
 				onIconClick={() => setIsEditMode(true)}
 			>
@@ -1009,7 +1011,7 @@ const AddOrder = () => {
 					</CardComponent>
 				</ColumnComponent>
 				<ColumnComponent grid={4}>
-					<CardComponent title={__('Payment Method', 'multivendorx')}>
+					<CardComponent title={__('Payment Method', 'multivendorx')} titleIcon="payment" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
 								row
@@ -1032,7 +1034,7 @@ const AddOrder = () => {
 						</FormGroupWrapperComponent>
 					</CardComponent>
 
-					<CardComponent title={__('Customer details', 'multivendorx')}>
+					<CardComponent title={__('Customer details', 'multivendorx')} titleIcon="customer-support" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						{!selectedCustomer && (
 							<>
 								<FormGroupWrapperComponent>
@@ -1142,7 +1144,7 @@ const AddOrder = () => {
 					</CardComponent>
 
 					{showCreateCustomer && !selectedCustomer && (
-						<CardComponent title={__('Create customer', 'multivendorx')}>
+						<CardComponent title={__('Create customer', 'multivendorx')} titleIcon="customer-support" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 							<FormGroupWrapperComponent>
 								<FormGroupComponent
 									cols={6}
@@ -1248,7 +1250,7 @@ const AddOrder = () => {
 						'billing'
 					)}
 
-					<CardComponent title={__('Order note', 'multivendorx')}>
+					<CardComponent title={__('Order note', 'multivendorx')} titleIcon="order" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						<FormGroupComponent>
 							<TextAreaInput
 								name="order_note"

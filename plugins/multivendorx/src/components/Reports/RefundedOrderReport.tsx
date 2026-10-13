@@ -2,12 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { LabeledCellComponent } from '@zyra/components';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
 import {
 	downloadCSV,
-	formatCurrency,
 	formatDate,
 	formatLocalDate,
 	formatStatusLabel,
@@ -54,23 +52,13 @@ const RefundedOrderReport: React.FC = () => {
 		},
 		amount: {
 			label: __('Refund Amount', 'multivendorx'),
-			render: (row) => (
-				<LabeledCellComponent
-					label={__('Refund Amount', 'multivendorx')}
-				>
-					{formatCurrency(row.amount)}
-				</LabeledCellComponent>
-			),
+			type: 'labeled',
+			valueType: 'currency',
 		},
 		customer_reason: {
 			label: __('Refund Reason', 'multivendorx'),
-			render: (row) => (
-				<LabeledCellComponent
-					label={__('Refund Reason', 'multivendorx')}
-				>
-					{row.customer_reason || '—'}
-				</LabeledCellComponent>
-			),
+			type: 'labeled',
+			valueType: 'text',
 		},
 	};
 

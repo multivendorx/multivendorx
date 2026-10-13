@@ -300,6 +300,7 @@ const AddProduct = () => {
 							'What kind of product is this?',
 							'multivendorx'
 						)}
+						titleIcon="product"
 						desc={__(
 							'Choose the type that best describes what you are selling.',
 							'multivendorx'
@@ -322,6 +323,8 @@ const AddProduct = () => {
 					<div className='sticky-card-wrapper'>
 						<CardComponent
 							title={__('Recommended', 'multivendorx')}
+							titleIcon="section"
+							desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 							toggle={true}
 							action={
 								<div className="admin-badge blue">

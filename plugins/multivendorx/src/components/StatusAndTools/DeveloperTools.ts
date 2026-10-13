@@ -128,7 +128,7 @@ export default {
 			key: 'separator_content',
 			type: 'section',
 			icon: 'notification',
-			wrapperClass: 'red',
+			wrapperClass: 'danger',
 			title: __('Notification Events Handling', 'multivendorx'),
 			desc: __('', 'multivendorx'),
 		},

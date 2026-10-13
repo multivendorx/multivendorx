@@ -923,6 +923,8 @@ const OrderDetails: React.FC = () => {
 											'Refund Request - Action Required',
 											'multivendorx'
 										)}
+										titleIcon="refund"
+										desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 										action={
 											<>
 												<ButtonInput
@@ -1180,6 +1182,8 @@ const OrderDetails: React.FC = () => {
 												'Customer details',
 												'multivendorx'
 											)}
+											titleIcon="customer-support"
+											desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 										>
 											<InformationItemComponent
 												title={
@@ -1278,6 +1282,8 @@ const OrderDetails: React.FC = () => {
 												'Billing address',
 												'multivendorx'
 											)}
+											titleIcon="location"
+											desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 										>
 											<FormGroupWrapperComponent>
 												<FormGroupComponent
@@ -1436,6 +1442,8 @@ const OrderDetails: React.FC = () => {
 											'Shipping address',
 											'multivendorx'
 										)}
+										titleIcon="shipping"
+										desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 									>
 										<div>
 											{orderData?.shipping.address_1}
@@ -1458,6 +1466,8 @@ const OrderDetails: React.FC = () => {
 
 							<CardComponent
 								title={__('Shipping Tracking', 'multivendorx')}
+								titleIcon="shipping"
+								desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 							>
 								<FormGroupWrapperComponent>
 									<FormGroupComponent
@@ -1572,6 +1582,8 @@ const OrderDetails: React.FC = () => {
 											'Order notes',
 											'multivendorx'
 										)}
+										titleIcon="order"
+										desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 									>
 										{orderData?.order_notes &&
 											orderData.order_notes.length > 0 ? (

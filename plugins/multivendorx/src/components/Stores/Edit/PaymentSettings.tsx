@@ -125,7 +125,7 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 		<>
 			<ContainerComponent>
 				<ColumnComponent grid={8}>
-					<CardComponent title={__('Withdrawal methods', 'multivendorx')}>
+					<CardComponent title={__('Withdrawal methods', 'multivendorx')} titleIcon="withdraw" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						{paymentAddNewOptions.length === 0 && (
 							<NoticeComponent
 								type="info"
@@ -164,6 +164,8 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 				<ColumnComponent grid={4}>
 					<CardComponent
 						title={__('Store-specific commission', 'multivendorx')}
+						titleIcon="commission"
+						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 					>
 						<NoticeComponent
 							type="info"
