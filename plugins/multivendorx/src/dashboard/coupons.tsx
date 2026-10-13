@@ -16,7 +16,6 @@ import {
 	FormGroupComponent,
 	FormGroupWrapperComponent,
 	PopupComponent,
-	InformationItemComponent,
 	NoticeComponent,
 	NavigatorHeaderComponent,
 	TabsComponent,
@@ -25,7 +24,12 @@ import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 
 import axios from 'axios';
 import Popup from '../components/Popup/Popup';
-import { toWcIsoDate } from '@/services/commonFunction';
+import {
+	formatCurrency,
+	formatDate,
+	formatStatusLabel,
+	toWcIsoDate,
+} from '@/services/commonFunction';
 
 const COUPON_STATUS_MAP: Record<string, string> = {
 	all: __('All', 'multivendorx'),
@@ -639,45 +643,22 @@ const AllCoupon: React.FC = () => {
 	const headers = {
 		code: {
 			label: __('Code', 'multivendorx'),
-			render: (row) => {
-				return (
-					<InformationItemComponent
-						title={row.code}
-						onClick={() => handleEditCoupon(row.id)}
-						descriptions={[
-							{
-								label: __('By', 'multivendorx'),
-								value: row.store_name,
-							},
-						]}
-					/>
-				);
-			},
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
+			width: '45%'
 		},
-		discount_type: {
-			label: __('Discount Type', 'multivendorx'),
-		},
-		amount: {
+		amount_display: {
 			label: __('Amount', 'multivendorx'),
-			type: 'currency',
+			labelKey: 'amount_label',
+			type: 'labeled',
+			valueType: 'text',
 		},
-		description: {
-			label: __('Description', 'multivendorx'),
-		},
-		usage_limit: {
-			label: __('Usage / Limit', 'multivendorx'),
-		},
-		date_created: {
-			label: __('Date created', 'multivendorx'),
-			type: 'date',
-		},
-		date_expires: {
-			label: __('Expiry Date', 'multivendorx'),
-			type: 'date',
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status', statusClass: (row) => `${row.status}`,
+		created_expiry: {
+			label: __('Created / Expiry', 'multivendorx'),
+			type: 'labeled',
+			valueType: 'text',
 		},
 		action: {
 			type: 'action',
@@ -700,6 +681,62 @@ const AllCoupon: React.FC = () => {
 			],
 		},
 	};
+
+	const discountTypeLabels: Record<string, string> = {
+		percent: __('Percentage Discount', 'multivendorx'),
+		fixed_cart: __('Fixed Cart Discount', 'multivendorx'),
+		fixed_product: __('Fixed Product Discount', 'multivendorx'),
+	};
+
+	const discountTypeColors: Record<string, string> = {
+		percent: 'purple',
+		fixed_cart: 'blue',
+		fixed_product: 'yellow',
+	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'coupon',
+		info_descriptions: [
+			{
+				label: __('By', 'multivendorx'),
+				icon: 'storefront',
+				value: row.store_name || '—',
+			},
+			...(row.description
+				? [
+						{
+							label: __('Description', 'multivendorx'),
+							icon: 'text',
+							value: row.description,
+						},
+					]
+				: []),
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{
+				text:
+					discountTypeLabels[row.discount_type] ||
+					formatStatusLabel(row.discount_type || ''),
+				color: discountTypeColors[row.discount_type] || 'teal',
+			},
+		],
+		amount_label:
+			row.discount_type === 'percent'
+				? __('Percentage', 'multivendorx')
+				: __('Amount', 'multivendorx'),
+		amount_display:
+			row.discount_type === 'percent'
+				? `${row.amount}%`
+				: formatCurrency(row.amount),
+		created_expiry: `${formatDate(row.date_created)} / ${
+			row.date_expires ? formatDate(row.date_expires) : '—'
+		}`,
+	}));
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -750,7 +787,7 @@ const AllCoupon: React.FC = () => {
 			key: 'couponType',
 			label: __('Select Coupon Type', 'multivendorx'),
 			type: 'select',
-			size: 12,
+			size: 18,
 			options: [
 				{
 					label: __('Percentage Discount', 'multivendorx'),
@@ -915,7 +952,8 @@ const AllCoupon: React.FC = () => {
 			)}
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

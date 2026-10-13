@@ -72,6 +72,7 @@ const MinMax = ({ product, setProduct }) => {
 	return (
 		<CardComponent
 			title={__('Min/Max', 'multivendorx')}
+			titleIcon="cart"
 			desc={__('Define the minimum and maximum values.', 'multivendorx')}
 		>
 			<FormGroupWrapperComponent>

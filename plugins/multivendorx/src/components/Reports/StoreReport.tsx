@@ -2,7 +2,14 @@
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { AnalyticsComponent, CardComponent, ColumnComponent, InformationItemComponent } from '@zyra/components';
+import {
+	AnalyticsComponent,
+	CardComponent,
+	ColumnComponent,
+	InformationItemComponent,
+	ListComponent,
+	ContainerComponent
+} from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
 	Cell,
@@ -19,12 +26,14 @@ import {
 	getUrl,
 } from '../../services/commonFunction';
 import Counter from '@/services/Counter';
+
 type OverViewItem = {
 	id: string;
 	label: string;
 	count: number;
 	icon: string;
 };
+
 const StoreReport: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [rowIds, setRowIds] = useState<number[]>([]);
@@ -37,6 +46,7 @@ const StoreReport: React.FC = () => {
 	const [pieData, setPieData] = useState<{ name: string; value: number }[]>(
 		[]
 	);
+
 	useEffect(() => {
 		const fetchOverviewAndPie = async () => {
 			try {
@@ -194,77 +204,68 @@ const StoreReport: React.FC = () => {
 	const headers = {
 		store_name: {
 			label: __('Store', 'multivendorx'),
-			width: 15,
-			render: (row: any) => (
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
+			width: '30%',
+		},
+		primary_owner: {
+			key: 'primary_owner',
+			label: __('Primary Owner', 'multivendorx'),
+			render: (row) => (
 				<InformationItemComponent
-					title={row.store_name}
-					titleLink={getUrl(row.id, 'store')}
+					title={row.primary_owner?.display_name}
+					titleLink={getUrl(row.primary_owner?.ID, 'user')}
 					avatar={{
-						image: row.store_image,
-						iconClass: row.store_image ? '' : 'store-inventory',
+						image: row.primary_owner_image,
+						iconClass: 'person',
 					}}
 					descriptions={[
 						{
-							label: __('Since', 'multivendorx'),
-							value: row.date || '—',
+							label: __('Email', 'multivendorx'),
+							value: row.primary_owner?.user_email || '—',
 						},
 					]}
 				/>
 			),
 		},
-		primary_owner: {
-			key: 'primary_owner',
-			label: __('Primary Owner', 'multivendorx'),
-			width: 15,
-			render: (row) => (
-				<>
-					<InformationItemComponent
-						title={row.primary_owner?.display_name}
-						titleLink={getUrl(row.primary_owner?.ID, 'user')}
-						avatar={{
-							image: row.primary_owner_image,
-							iconClass: 'person',
-						}}
-						descriptions={[
-							{
-								label: __('Email', 'multivendorx'),
-								value:
-									row.primary_owner?.user_email || '—',
-							},
-						]}
+		commission_summary: {
+			label: __('Commission Summary', 'multivendorx'),
+			render: (row) => {
+				const earningItems = [
+					{
+						title: __('Order Total', 'multivendorx'),
+						value: formatCurrency(row.commission?.total_order_amount),
+					},
+					{
+						title: __('Shipping', 'multivendorx'),
+						value: formatCurrency(row.commission?.shipping_amount),
+					},
+					{
+						title: __('Tax', 'multivendorx'),
+						value: formatCurrency(row.commission?.tax_amount),
+					},
+					{
+						title: __('Store Commission', 'multivendorx'),
+						value: formatCurrency(row.commission?.commission_total),
+					},
+				];
+
+				return (
+					<ListComponent
+						className="price-list"
+						items={earningItems}
 					/>
-				</>
-			),
+				);
+			},
 		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
-		},
-		order_total: {
-			key: 'order_total',
-			label: __('Order Total', 'multivendorx'),
-			render: (row) => formatCurrency(row.commission?.total_order_amount),
-		},
-		shipping: {
-			key: 'shipping',
-			label: __('Shipping', 'multivendorx'),
-			render: (row) => formatCurrency(row.commission?.shipping_amount),
-		},
-		tax: {
-			label: __('Tax', 'multivendorx'),
-			render: (row) => formatCurrency(row.commission?.tax_amount),
-		},
-		store_ommission: {
-			label: __('Store Commission', 'multivendorx'),
-			render: (row) => formatCurrency(row.commission?.commission_total),
-		},
-		email: { label: __('Contact', 'multivendorx') },
 		admin_earning: {
 			label: __('Admin Earnings', 'multivendorx'),
 			render: (row) =>
 				formatCurrency(
 					Number(row.commission?.total_order_amount || 0) -
-						Number(row.commission?.commission_total || 0)
+					Number(row.commission?.commission_total || 0)
 				),
 		},
 	};
@@ -277,71 +278,106 @@ const StoreReport: React.FC = () => {
 		},
 	];
 
+	// Build info rows for the info-type first column
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'store-inventory',
+		info_descriptions: [
+			{
+				label: __('Since', 'multivendorx'),
+				icon: 'calendar',
+				value: row.date || '—',
+			},
+			{
+				label: __('Contact', 'multivendorx'),
+				icon: 'email',
+				value: row.email || row.primary_owner?.user_email || '—',
+			},
+		],
+		info_badges: [
+			{
+				text: row.status_label || row.status || '—',
+				color: `badge-${row.status}`,
+			},
+		],
+	}));
+
 	return (
 		<>
-			<ColumnComponent row>
-				<AnalyticsComponent
-					cols={2}
-					data={overviewData.map((item) => ({
-						icon: item.icon,
-						number: <Counter value={item.count} />,
-						text: __(item.label, 'multivendorx'),
-					}))}
-					isLoading={isLoading}
-				/>
+			<ContainerComponent>
+				<ColumnComponent grid={5}>
+					<AnalyticsComponent
+						cols={2}
+						data={overviewData.map((item) => ({
+							icon: item.icon,
+							number: <Counter value={item.count} />,
+							text: __(item.label, 'multivendorx'),
+						}))}
+						isLoading={isLoading}
+					/>
+				</ColumnComponent>
+				<ColumnComponent grid={7}>
+					<CardComponent
+						title={__('Top revenue generating stores', 'multivendorx')}
+						titleIcon="star"
+						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+					>
+						<ResponsiveContainer width="100%" height={300}>
+							<PieChart>
+								{pieData.length > 0 && (
+									<Pie
+										data={pieData}
+										cx="50%"
+										cy="50%"
+										outerRadius={100}
+										dataKey="value"
+									>
+										{pieData.map((entry, index) => (
+											<Cell
+												key={`cell-${index}`}
+												className={`admin-color${index + 2}`}
+											/>
+										))}
+									</Pie>
+								)}
+
+								<Tooltip
+									formatter={(value: number) =>
+										formatCurrency(value)
+									}
+								/>
+								<Legend />
+							</PieChart>
+						</ResponsiveContainer>
+					</CardComponent>
+				</ColumnComponent>
+
 				<CardComponent
-					title={__('Top revenue generating stores', 'multivendorx')}
+					title={__('Account Overview', 'multivendorx')}
+					titleIcon="analytics"
+					desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 				>
-					<ResponsiveContainer width="100%" height={300}>
-						<PieChart>
-							{pieData.length > 0 && (
-								<Pie
-									data={pieData}
-									cx="50%"
-									cy="50%"
-									outerRadius={100}
-									dataKey="value"
-								>
-									{pieData.map((entry, index) => (
-										<Cell
-											key={`cell-${index}`}
-											className={`admin-color${index + 2}`}
-										/>
-									))}
-								</Pie>
-							)}
-
-							<Tooltip
-								formatter={(value: number) =>
-									formatCurrency(value)
-								}
-							/>
-							<Legend />
-						</PieChart>
-					</ResponsiveContainer>
+					<TableCard
+						headers={headers}
+						rows={infoRows}
+						totalRows={totalRows}
+						isLoading={isLoading}
+						onQueryUpdate={doRefreshTableData}
+						ids={rowIds}
+						categoryCounts={categoryCounts}
+						search={{}}
+						filters={filters}
+						format={appLocalizer.date_format}
+						currency={{
+							currencySymbol: appLocalizer.currency_symbol,
+							priceDecimals: appLocalizer.price_decimals,
+							decimalSeparator: appLocalizer.decimal_separator,
+							thousandSeparator: appLocalizer.thousand_separator,
+							currencyPosition: appLocalizer.currency_position,
+						}}
+					/>
 				</CardComponent>
-			</ColumnComponent>
-
-			<TableCard
-				headers={headers}
-				title={__('Account Overview', 'multivendorx')}
-				rows={rows}
-				totalRows={totalRows}
-				isLoading={isLoading}
-				onQueryUpdate={doRefreshTableData}
-				ids={rowIds}
-				categoryCounts={categoryCounts}
-				search={{}}
-				filters={filters}
-				format={appLocalizer.date_format}
-				currency={{
-					currencySymbol: appLocalizer.currency_symbol,
-					priceDecimals: appLocalizer.price_decimals,
-					decimalSeparator: appLocalizer.decimal_separator,
-					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition: appLocalizer.currency_position,
-				}}
-			/>
+			</ContainerComponent>
 		</>
 	);
 };

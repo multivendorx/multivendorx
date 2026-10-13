@@ -1,14 +1,14 @@
 # Copyright (c) 2026 MultiVendorX Inc. All Rights Reserved.
 msgid ""
 msgstr ""
-"Project-Id-Version: MultiVendorX 5.0.19\n"
+"Project-Id-Version: MultiVendorX 5.0.20\n"
 "Report-Msgid-Bugs-To: https://multivendorx.com/contact/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-08T06:36:46+00:00\n"
+"POT-Creation-Date: 2026-10-13T08:27:47+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: multivendorx\n"
@@ -16,7 +16,7 @@ msgstr ""
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: dc_product_vendor.php
-#: classes/FrontendScripts.php:409
+#: classes/FrontendScripts.php:411
 #: classes/Pattern.php:46
 #: classes/Status.php:43
 #: modules/Elementor/WidgetLoader.php:106
@@ -82,30 +82,25 @@ msgid "Settings"
 msgstr ""
 
 #: classes/Admin.php:131
-#: assets/js/index.js:1
-msgid "Modules"
-msgstr ""
-
-#: classes/Admin.php:136
 msgid "Status & Tools"
 msgstr ""
 
-#: classes/Admin.php:141
+#: classes/Admin.php:136
 #: assets/js/index.js:1
 msgid "Help & Support"
 msgstr ""
 
-#: classes/Admin.php:192
-#: classes/Admin.php:193
+#: classes/Admin.php:187
+#: classes/Admin.php:188
 #: classes/MultiVendorX.php:260
 #: classes/Tracker.php:148
 #: assets/js/index.js:1
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: classes/Admin.php:325
-#: classes/Admin.php:559
-#: classes/Admin.php:652
+#: classes/Admin.php:320
+#: classes/Admin.php:554
+#: classes/Admin.php:647
 #: classes/Product.php:56
 #: modules/Privacy/Frontend.php:52
 #: templates/store/shared-listing-single-product-tab.php:25
@@ -113,65 +108,65 @@ msgstr ""
 msgid "Store"
 msgstr ""
 
-#: classes/Admin.php:346
-#: classes/Admin.php:576
+#: classes/Admin.php:341
+#: classes/Admin.php:571
 #: classes/Product.php:177
 msgid "Assign Store"
 msgstr ""
 
-#: classes/Admin.php:351
-#: classes/Admin.php:581
+#: classes/Admin.php:346
+#: classes/Admin.php:576
 msgid "Search for a store…"
 msgstr ""
 
-#: classes/Admin.php:369
+#: classes/Admin.php:364
 msgid "Marketplace commission (fixed)"
 msgstr ""
 
-#: classes/Admin.php:371
+#: classes/Admin.php:366
 msgid "Fixed commission."
 msgstr ""
 
-#: classes/Admin.php:383
+#: classes/Admin.php:378
 msgid "Marketplace commission (%)"
 msgstr ""
 
-#: classes/Admin.php:385
+#: classes/Admin.php:380
 msgid "Percentage commission."
 msgstr ""
 
-#: classes/Admin.php:436
-#: classes/Admin.php:484
+#: classes/Admin.php:431
+#: classes/Admin.php:479
 msgid "Commission Fixed"
 msgstr ""
 
-#: classes/Admin.php:438
+#: classes/Admin.php:433
 msgid "Fixed Commission."
 msgstr ""
 
-#: classes/Admin.php:446
-#: classes/Admin.php:480
-#: classes/Admin.php:500
+#: classes/Admin.php:441
+#: classes/Admin.php:475
+#: classes/Admin.php:495
 msgid "Commission Percentage"
 msgstr ""
 
-#: classes/Admin.php:448
+#: classes/Admin.php:443
 msgid "Percentage Commission."
 msgstr ""
 
-#: classes/Admin.php:505
+#: classes/Admin.php:500
 msgid "Commission Fixed per transaction"
 msgstr ""
 
-#: classes/Admin.php:535
+#: classes/Admin.php:530
 msgid "You are not allowed to search stores."
 msgstr ""
 
-#: classes/Admin.php:626
+#: classes/Admin.php:621
 msgid "COD Order Payment"
 msgstr ""
 
-#: classes/Admin.php:648
+#: classes/Admin.php:643
 #: templates/store/shared-listing-single-product-tab.php:48
 #: assets/js/index.js:1
 msgid "Admin"
@@ -240,17 +235,17 @@ msgstr ""
 msgid "Go to store dashboard"
 msgstr ""
 
-#: classes/FrontendScripts.php:452
+#: classes/FrontendScripts.php:454
 msgid "Select an item..."
 msgstr ""
 
-#: classes/FrontendScripts.php:514
-#: classes/FrontendScripts.php:530
+#: classes/FrontendScripts.php:516
+#: classes/FrontendScripts.php:532
 msgid "This field is required"
 msgstr ""
 
-#: classes/FrontendScripts.php:515
-#: classes/FrontendScripts.php:531
+#: classes/FrontendScripts.php:517
+#: classes/FrontendScripts.php:533
 msgid "Invalid email format"
 msgstr ""
 
@@ -979,8 +974,8 @@ msgstr ""
 #: classes/RestAPI/Controllers/Notifications.php:102
 #: classes/RestAPI/Controllers/Notifications.php:370
 #: classes/RestAPI/Controllers/Notifications.php:505
-#: classes/RestAPI/Controllers/Settings.php:113
-#: classes/RestAPI/Controllers/Settings.php:246
+#: classes/RestAPI/Controllers/Settings.php:112
+#: classes/RestAPI/Controllers/Settings.php:245
 #: classes/RestAPI/Controllers/Status.php:72
 #: classes/RestAPI/Controllers/Status.php:111
 #: classes/RestAPI/Controllers/Stores.php:128
@@ -1037,14 +1032,14 @@ msgstr ""
 #: classes/RestAPI/Controllers/Notifications.php:306
 #: classes/RestAPI/Controllers/Notifications.php:493
 #: classes/RestAPI/Controllers/Notifications.php:523
-#: classes/RestAPI/Controllers/Settings.php:234
-#: classes/RestAPI/Controllers/Settings.php:291
+#: classes/RestAPI/Controllers/Settings.php:233
+#: classes/RestAPI/Controllers/Settings.php:290
 #: classes/RestAPI/Controllers/Status.php:93
 #: classes/RestAPI/Controllers/Status.php:178
 #: classes/RestAPI/Controllers/Stores.php:225
 #: classes/RestAPI/Controllers/Stores.php:567
 #: classes/RestAPI/Controllers/Stores.php:733
-#: classes/RestAPI/Controllers/Stores.php:1235
+#: classes/RestAPI/Controllers/Stores.php:1238
 #: classes/RestAPI/Controllers/Tour.php:121
 #: classes/RestAPI/Controllers/Tour.php:182
 #: classes/RestAPI/Controllers/Transactions.php:220
@@ -1237,12 +1232,12 @@ msgstr ""
 msgid "Notification(s) updated successfully."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Settings.php:166
+#: classes/RestAPI/Controllers/Settings.php:165
 msgid "You are not allowed to change role permissions."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Settings.php:229
-#: classes/RestAPI/Controllers/Stores.php:1227
+#: classes/RestAPI/Controllers/Settings.php:228
+#: classes/RestAPI/Controllers/Stores.php:1230
 msgid "Settings Saved"
 msgstr ""
 
@@ -1275,27 +1270,27 @@ msgstr ""
 msgid "You are not allowed to change the status of these stores."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:838
+#: classes/RestAPI/Controllers/Stores.php:841
 msgid "You are not allowed to perform this action on the store."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:934
+#: classes/RestAPI/Controllers/Stores.php:937
 msgid "New owner ID missing."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:969
+#: classes/RestAPI/Controllers/Stores.php:972
 msgid "Store registration approved."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:1030
+#: classes/RestAPI/Controllers/Stores.php:1033
 msgid "Store registration rejected permanently."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:1044
+#: classes/RestAPI/Controllers/Stores.php:1047
 msgid "Store registration rejected."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:1252
+#: classes/RestAPI/Controllers/Stores.php:1255
 #: modules/FollowStore/Rest.php:226
 msgid "Invalid store ID"
 msgstr ""
@@ -1352,25 +1347,25 @@ msgstr ""
 msgid "Withdrawal request submitted successfully."
 msgstr ""
 
-#: classes/RestAPI/Rest.php:535
+#: classes/RestAPI/Rest.php:536
 msgid "You can only manage items that belong to your store."
 msgstr ""
 
 #. translators: 1: refund id, 2: date, 3: user
-#: classes/RestAPI/Rest.php:743
+#: classes/RestAPI/Rest.php:744
 #, php-format
 msgid "Refund #%1$s - %2$s by %3$s"
 msgstr ""
 
-#: classes/RestAPI/Rest.php:746
+#: classes/RestAPI/Rest.php:747
 msgid "system"
 msgstr ""
 
-#: classes/RestAPI/Rest.php:911
+#: classes/RestAPI/Rest.php:941
 msgid "Variation SKU is not generated!"
 msgstr ""
 
-#: classes/RestAPI/Rest.php:951
+#: classes/RestAPI/Rest.php:981
 msgid "SKU is not generated!"
 msgstr ""
 
@@ -3810,14 +3805,6 @@ msgid "Delete"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Status"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Recipients"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Action"
 msgstr ""
 
@@ -3827,6 +3814,10 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Failed to load announcement for editing"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Recipients"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -3906,6 +3897,10 @@ msgid "Announcement message"
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Status"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Select the status of the announcement."
 msgstr ""
 
@@ -3918,6 +3913,10 @@ msgid "Product"
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Answer"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "By"
 msgstr ""
 
@@ -3926,23 +3925,11 @@ msgid "Question"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Q:"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "A:"
+msgid "Asked By"
 msgstr ""
 
 #: assets/js/index.js:1
 msgid "Votes"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Visibility"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Answer"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -4034,10 +4021,6 @@ msgid "Name your article"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Write your explanation or tutorial"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Failed to load entry"
 msgstr ""
 
@@ -4078,15 +4061,15 @@ msgid "Failed to perform bulk action"
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "SKU"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Reported By"
 msgstr ""
 
 #: assets/js/index.js:1
 msgid "Reason"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Date created"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -4114,6 +4097,14 @@ msgid "Review reports and maintain quality."
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "View Details"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Reject"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Amount"
 msgstr ""
 
@@ -4123,14 +4114,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Refund Reason"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "View Details"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Reject"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -5369,11 +5352,11 @@ msgid "Decide how your marketplace takes commission from sales."
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "You are currently using the older vendor-specific commission system from previous versions of MultiVendorX. Because of that, the <b>Marketplace commission</b> and <b>Commission value</b> fields shown below will continue to work as vendor-specific until you update or modify this settings page.<br><br>Once you make any change, your marketplace will automatically switch to the new <b>Marketplace commission</b> model. From that point onward, all commissions will be calculated using the updated system, and this notice will no longer appear."
+msgid "Marketplace commission"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Marketplace commission"
+msgid "You are currently using the older vendor-specific commission system from previous versions of MultiVendorX. Because of that, the <b>Marketplace commission</b> and <b>Commission value</b> fields shown below will continue to work as vendor-specific until you update or modify this settings page.<br><br>Once you make any change, your marketplace will automatically switch to the new <b>Marketplace commission</b> model. From that point onward, all commissions will be calculated using the updated system, and this notice will no longer appear."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -5562,6 +5545,10 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Tailor your marketplace commission plan to fit your revenue sharing preferences."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Payout Schedule"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -5829,6 +5816,10 @@ msgid "AI services can be enabled to assist with creating product details and en
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "AI provider API keys"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Gemini"
 msgstr ""
 
@@ -6085,6 +6076,10 @@ msgid "Set purchase limits for individual products to prevent bulk buying or ens
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Product Purchase Limits"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Purchase quantity limits"
 msgstr ""
 
@@ -6329,6 +6324,10 @@ msgid "Configure the essential system pages required for your marketplace - incl
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Marketplace pages"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Store registration page"
 msgstr ""
 
@@ -6353,15 +6352,7 @@ msgid "Set a custom base for your store URL. For example, in the URL: https://yo
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Customer-facing order presentation & invoicing"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Customers will see information for"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Choose which order statuses will send customers email notifications, PDF invoices, and display order details in their account."
+msgid "Orders shown to customers"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -6393,11 +6384,7 @@ msgid "Customers receive both a single marketplace order and individual store or
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Enable content styling tools for stores"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "TinyMCE API"
+msgid "Enable store content styling with TinyMCE"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -6406,10 +6393,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Shortcode library"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Available shortcodes"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -6477,6 +6460,10 @@ msgid "Store name"
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Store role capabilities"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Store Permissions"
 msgstr ""
 
@@ -6514,6 +6501,14 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Define what each store role can access and manage within the marketplace."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Modules"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Manage marketplace features by enabling or disabling modules. Turning a module on activates its settings and workflows, while turning it off hides them from admin and stores."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -6582,6 +6577,10 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Get notified about important updates. Choose how you want to receive notifications from your marketplace - by email, text message, or both."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Notification recipients"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -6950,6 +6949,10 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Manage how store details are shared with customers, from branding and contact info to policies and profile visibility."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Store Profile Visibility"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -7397,11 +7400,15 @@ msgid "Decide which product/listing types, fields, and features stores can acces
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Allowed product/listing options"
+msgid "Product/listing options"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Select the product/listing fields stores can configure when adding or managing their products/listings."
+msgid "Choose which product types and editing sections stores can use when creating or updating products."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Allowed product/listing options"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -7418,10 +7425,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Edit product/listing page blocks"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Control which product/listing data fields are available to stores when creating or editing products/listing."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -7481,10 +7484,6 @@ msgid "Product/listing category selection"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Choose whether stores follow a guided category selection flow or freely choose multiple categories."
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "<ul><li><strong>Hierarchical selection</strong> – Stores select categories through a structured parent-to-child hierarchy.</li><li><strong>Free selection</strong> – Stores can select multiple categories freely without following a hierarchy.</li></ul>"
 msgstr ""
 
@@ -7509,10 +7508,6 @@ msgid "SKU management for products/listing"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Choose how SKUs for simple, external, or parent products/listing are generated."
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "<ul><li><strong>Never (let me set them)</strong> – SKUs will not be generated automatically. Stores must manually enter a SKU.</li><li><strong>Using the product/listing slug (name)</strong> – Automatically generate the SKU from the product or listing slug if none is provided.</li><li><strong>Using the product/listing ID</strong> – Automatically generate the SKU using the product or listing ID if none is provided.</li></ul>"
 msgstr ""
 
@@ -7530,10 +7525,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "SKU space handling"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Choose how spaces in attribute names should be handled when generating SKUs."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -7565,10 +7556,6 @@ msgid "Recommendation source"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Choose whether related products/listings are shown from the same store only or from the entire marketplace."
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "<ul><li>Same store - Show related products/listing only from the current store.</li><li>All stores - Show related products/listings from across the marketplace.</li><li>Do not display - Hide related products/listings completely.</li><ul>"
 msgstr ""
 
@@ -7586,6 +7573,10 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Loading..."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Settings not found."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -7718,6 +7709,10 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Set a marketplace logo to strengthen brand identity across all connected stores."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Marketplace Branding"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -8069,7 +8064,11 @@ msgid "Choose how new stores enter your marketplace, review them manually or all
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "New store registration approval"
+msgid "Store registration"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Approval method"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -8454,6 +8453,10 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Site errors and events are logged for easy troubleshooting."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Cache & Database Tools"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -9285,11 +9288,11 @@ msgid "Hide Phone"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Order Amount"
+msgid "Amounts"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Commission Summary"
+msgid "Order Amount"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -9629,19 +9632,7 @@ msgid "Allowed emails"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Discount Type"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Usage / Limit"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Expiry Date"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Select Coupon Type"
+msgid "Created / Expiry"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -9654,6 +9645,14 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Fixed Product Discount"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Percentage"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Select Coupon Type"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -9685,6 +9684,10 @@ msgid "Delete Coupon"
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Edit Product"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Customer Questions"
 msgstr ""
 
@@ -9698,18 +9701,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Order ID"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Qty:"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Order Status"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "SKU"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -9878,10 +9869,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "View all activities"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Type"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -10133,19 +10120,11 @@ msgid "On Backorder"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Stock"
+msgid "Copy URL"
 msgstr ""
 
 #: assets/js/index.js:1
 msgid "Categories"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "-"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Copy URL"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -10201,6 +10180,10 @@ msgid "Passwords do not match"
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "View Order"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Refund Amount"
 msgstr ""
 
@@ -10213,19 +10196,19 @@ msgid "Zone Name"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Region(s)"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Shipping Method(s)"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Add Shipping Method"
 msgstr ""
 
 #: assets/js/index.js:1
 msgid "Add New Method"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Region(s)"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Shipping Method(s)"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -10665,10 +10648,6 @@ msgid "Not found"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Followed On"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Store Followers"
 msgstr ""
 
@@ -10694,6 +10673,10 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Your dashboard stores temporary data (transients) to load faster. If your dashboard shows outdated information or recent changes are not visible, clearing the transients will refresh the data and display the latest updates."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Transaction"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -10734,6 +10717,10 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Associated Order"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Order Status"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -10881,7 +10868,11 @@ msgid "Deactivated"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Since"
+msgid "Lifetime Earning"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Storefront"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -10889,15 +10880,7 @@ msgid "Contact"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Lifetime Earning"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Primary Owner"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Storefront"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -10995,10 +10978,6 @@ msgstr ""
 #: assets/js/index.js:1
 #, js-format
 msgid "Set the commission the <b>marketplace earns</b> from each store sale. If not set, the <a href=\"%s\">global commission</a> will automatically apply."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Percentage"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -11664,15 +11643,19 @@ msgid "Failed to load dashboard data"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Items sold"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Net sales"
 msgstr ""
 
 #: assets/js/index.js:1
 msgid "Date Created"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "item sold"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Uncategorized"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -11720,6 +11703,10 @@ msgid "Deactivated Stores"
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Commission Summary"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Order Total"
 msgstr ""
 
@@ -11732,15 +11719,15 @@ msgid "Admin Earnings"
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Since"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Top revenue generating stores"
 msgstr ""
 
 #: assets/js/index.js:1
 msgid "Account Overview"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Applied On"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -11808,10 +11795,6 @@ msgid "Free vs Pro"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Manage marketplace features by enabling or disabling modules. Turning a module on activates its settings and workflows, while turning it off hides them from admin and stores."
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Manage marketplace stores with ease. Review, edit, or add new stores anytime."
 msgstr ""
 
@@ -11872,15 +11855,15 @@ msgid "Profile image"
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Regenerate Commission"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Store Earning"
 msgstr ""
 
 #: assets/js/index.js:1
 msgid "Marketplace Earning"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Regenerate Commission"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -12465,6 +12448,14 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Used to identify this product in your inventory."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "GTIN, UPC, EAN, or ISBN"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enter the product identifier (GTIN, UPC, EAN, or ISBN)."
 msgstr ""
 
 #: assets/js/index.js:1

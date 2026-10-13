@@ -275,6 +275,7 @@ const DashboardTab: React.FC<object> = () => {
 							'Build a professional marketplace',
 							'multivendorx'
 						)}
+						titleIcon="pro-tag"
 						badge={[
 							{
 								text: 'Starting at $299/year',
@@ -325,6 +326,8 @@ const DashboardTab: React.FC<object> = () => {
 				)}
 				<CardComponent
 					title={__('Modules', 'multivendorx')}
+					titleIcon="section"
+					desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 					action={
 						<ButtonInput
 							buttons={[
@@ -355,7 +358,7 @@ const DashboardTab: React.FC<object> = () => {
 
 			{/* Right Side */}
 			<ColumnComponent grid={4}>
-				<CardComponent title={__('Extend your website', 'multivendorx')}>
+				<CardComponent title={__('Extend your website', 'multivendorx')} titleIcon="section" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 					<ColumnComponent row>
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
 							<ListComponent
@@ -546,7 +549,7 @@ const DashboardTab: React.FC<object> = () => {
 				</CardComponent>
 
 				{/* Quick Links */}
-				<CardComponent title={__('Need help getting started?', 'multivendorx')}>
+				<CardComponent title={__('Need help getting started?', 'multivendorx')} titleIcon="help" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 					<div className="quick-link">
 						{resources.map((res) => (
 							<ListComponent

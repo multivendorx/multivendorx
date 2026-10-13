@@ -17,6 +17,7 @@ const Tools: React.FC = () => {
 
 			<CardComponent
 				title={__('Refresh store dashboard data', 'multivendorx')}
+				titleIcon="storefront"
 				desc={__(
 					'Your dashboard stores temporary data (transients) to load faster. If your dashboard shows outdated information or recent changes are not visible, clearing the transients will refresh the data and display the latest updates.',
 					'multivendorx'

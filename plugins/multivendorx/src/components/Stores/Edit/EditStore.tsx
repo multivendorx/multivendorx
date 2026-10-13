@@ -443,7 +443,7 @@ const EditStore = () => {
 											'Banner',
 											'multivendorx'
 										)}
-										tooltipPosition="end"
+										tooltipPosition="bottom-right"
 										toggleIcon="edit theme-background"
 									>
 										<ListComponent
@@ -623,7 +623,7 @@ const EditStore = () => {
 										)} */}
 									</div>
 								</div>
-								<div className="details-wrapper">
+								<div className="store-details-wrapper">
 									<div className="left-section">
 										<div className="details">
 											<div className="heading">
@@ -1006,7 +1006,7 @@ const EditStore = () => {
 						position="menu-dropdown"
 						toggleIcon="more-vertical"
 						tooltipName={__('Settings', 'multivendorx')}
-						tooltipPosition="end"
+						tooltipPosition="bottom-right"
 					>
 						<ListComponent items={actionItems} />
 					</PopupComponent>
