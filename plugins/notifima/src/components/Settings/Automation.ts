@@ -703,9 +703,9 @@ export default {
         {
             key: 'is_auto_delete_enable',
             type: 'choice-toggle',
-            label: __('Auto-delete subscriptions', 'notifima'),
+            label: __('Auto-delete Subscriptions', 'notifima'),
             settingDescription: __(
-                'Choose whether subscriptions matching the selected order statuses should be automatically deleted after a specified number of days.',
+                'Enable automatic deletion of subscriber records based on the selected statuses and retention period.',
                 'notifima'
             ),
             options: [
@@ -726,7 +726,7 @@ export default {
             type: 'checkbox',
             label: __('Subscriber Statuses', 'notifima'),
             settingDescription: __(
-                'Select the subscriber statuses for which records should be automatically deleted.',
+                'Select one or more subscriber statuses to include in the automatic cleanup process.',
                 'notifima'
             ),
             options: [
@@ -761,11 +761,38 @@ export default {
         {
             key: 'auto_delete_after_days',
             type: 'number',
-            label: __('Delete After (Days)', 'notifima'),
+            size: '17rem',
+            label: __('Delete Records After (Days)', 'notifima'),
             settingDescription: __(
-                'Specify how many days to wait before automatically deleting subscribers with the selected notification statuses.',
+                'Specify how long to keep subscriber records before automatically deleting records that match the selected statuses.',
                 'notifima'
             ),
+            dependent: {
+                key: 'is_auto_delete_enable',
+                set: true,
+                value: 'yes',
+            },
+        },
+        {
+            key: 'auto_delete_frequency',
+            type: 'choice-toggle',
+            label: __('Cleanup Frequency', 'notifima'),
+            settingDescription: __(
+                'Choose how often Notifima checks for subscriber records eligible for automatic deletion.',
+                'notifima'
+            ),
+            options: [
+                {
+                    key: 'daily',
+                    label: __('Daily', 'notifima'),
+                    value: 'daily',
+                },
+                {
+                    key: 'weekly',
+                    label: __('Weekly', 'notifima'),
+                    value: 'weekly',
+                }
+            ],
             dependent: {
                 key: 'is_auto_delete_enable',
                 set: true,
