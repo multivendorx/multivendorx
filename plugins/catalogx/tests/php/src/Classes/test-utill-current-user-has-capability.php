@@ -59,8 +59,7 @@ class CatalogX_Utill_Current_User_Has_Capability_Test extends WP_UnitTestCase {
             'this_setting_key_does_not_exist'
         );
 
-        // The default value get_setting() falls back to is 'everyone', so an
-        // unset setting key behaves the same as an explicit 'everyone'.
+        // Missing key falls back to the 'everyone' default.
         $this->assertTrue( $allowed );
     }
 

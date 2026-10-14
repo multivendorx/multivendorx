@@ -7,11 +7,6 @@
 
 define( 'CATALOGX_PLUGIN_DIR', dirname( __DIR__, 2 ) );
 
-// Load this machine's local test env (WP_TESTS_DIR, TEST_WC_DIR, ...) if present.
-// One shared file at the monorepo root (multivendorx-pro/.env.testing) covers
-// every plugin's bootstrap.php, parent repo and submodule alike. Gitignored -
-// holds developer-machine-specific paths, never committed - so
-// `pnpm run test:php` works standalone without exporting anything by hand first.
 $local_test_env_file = dirname( CATALOGX_PLUGIN_DIR, 3 ) . '/.env.testing';
 
 if ( file_exists( $local_test_env_file ) ) {
@@ -31,12 +26,7 @@ if ( file_exists( $local_test_env_file ) ) {
 }
 
 /**
- * Resolve a usable WooCommerce checkout for the test suite, same recipe on
- * every machine: an explicit override wins, then a copy already sitting next
- * to this repo, and otherwise it's downloaded straight from wordpress.org
- * into the system temp dir (mirroring how install-wp-tests.sh fetches WP
- * core/the test library) - so a fresh clone of this repo can run the test
- * suite with no manual WooCommerce setup step at all.
+ * Locates a WooCommerce checkout for tests, downloading one if needed.
  *
  * @return string Path to a directory containing woocommerce.php.
  */
@@ -82,17 +72,12 @@ function catalogx_locate_or_download_woocommerce_for_tests() {
 	$zip->close();
 	unlink( $zip_path );
 
-	// The zip's top-level folder is always "woocommerce" - rename it to our
-	// cache dir name so repeat runs recognise it without re-downloading.
+	// Rename to the cache dir name so repeat runs skip re-downloading.
 	rename( $extract_to . '/woocommerce', $cache_dir );
 
 	return $cache_dir;
 }
 
-// TEST_WC_DIR defaults to a WooCommerce checkout living inside this repo, falls
-// back to an explicit TEST_WC_DIR env var, and otherwise auto-downloads one -
-// avoids needing a symlink/clone inside the repo tree itself, and avoids any
-// manual setup step on a machine that has neither.
 define( 'TEST_WC_DIR', catalogx_locate_or_download_woocommerce_for_tests() );
 
 error_log( 'CatalogX plugin dir : ' . CATALOGX_PLUGIN_DIR );
@@ -104,7 +89,6 @@ if ( ! $_tests_dir ) {
 	$_tests_dir = rtrim( sys_get_temp_dir(), '/\\' ) . '/wordpress-tests-lib';
 }
 
-// Forward custom PHPUnit Polyfills configuration to PHPUnit bootstrap file.
 $_phpunit_polyfills_path = getenv( 'WP_TESTS_PHPUNIT_POLYFILLS_PATH' );
 if ( false !== $_phpunit_polyfills_path ) {
 	define( 'WP_TESTS_PHPUNIT_POLYFILLS_PATH', $_phpunit_polyfills_path );
@@ -171,11 +155,7 @@ function install_wc() {
 }
 
 /**
- * Run CatalogX's own activation + installer routine before the test suite
- * starts, same as a real site: CatalogX()->activate() only flips the
- * run_installer option, the table/option creation itself happens from
- * Installer::run_migration() on 'init' - so that's constructed directly
- * here rather than relying on a second request round-trip.
+ * Runs CatalogX's activation + installer routine before tests start.
  *
  * @return void
  */
@@ -185,20 +165,13 @@ function install_catalogx() {
 
 	CatalogX()->activate();
 
-	// CatalogX::activate() sets 'catalogx_plugin_activated', which the
-	// plugin's own 'init' callback (catalogx_register_strings_and_setup_wizard())
-	// turns into a wp_safe_redirect()+exit() to the setup wizard on the very
-	// next 'init' - fine on a real first activation, fatal for a test run
-	// that needs that same 'init' pass to finish. Clear it immediately so
-	// bootstrap can proceed.
+	// Avoids the setup-wizard redirect+exit() the 'init' hook fires on activation.
 	delete_option( \CatalogX\Utill::CATALOGX_OTHER_SETTINGS['plugin_activated'] );
 
 	new \CatalogX\Installer();
 }
 
-// Install WC and CatalogX.
 tests_add_filter( 'setup_theme', 'install_wc' );
 tests_add_filter( 'setup_theme', 'install_catalogx' );
 
-// Start up the WP testing environment.
 require "{$_tests_dir}/includes/bootstrap.php";

@@ -112,9 +112,7 @@ class CatalogX_Quote_Cart_Rest_Controller_Test extends WP_UnitTestCase {
     public function test_permission_check_denies_a_customers_delete_request() {
         $user_id = self::factory()->user->create( array( 'role' => 'customer' ) );
         wp_set_current_user( $user_id );
-        // CatalogX()->current_user_id is a service captured once at boot,
-        // not a live get_current_user_id() call - set it directly so the
-        // permission check reads the user this test just switched to.
+        // current_user_id is cached at boot, not read live.
         CatalogX()->current_user_id = $user_id;
 
         $request = $this->create_request( 'DELETE' );
