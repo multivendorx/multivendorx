@@ -468,7 +468,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 			<ContainerComponent>
 				<ColumnComponent grid={8}>
 					{/* Contact Information */}
-					<CardComponent title={__('Contact information', 'multivendorx')} titleIcon="mail" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+					<CardComponent title={__('Contact information', 'multivendorx')} titleIcon="mail" desc="Manage the store’s email addresses and phone number.">
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
 								label={__('Store email(s)', 'multivendorx')}
@@ -544,7 +544,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 						</FormGroupWrapperComponent>
 					</CardComponent>
 					{/* Communication Address */}
-					<CardComponent title={__('Communication address', 'multivendorx')} titleIcon="location" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+					<CardComponent title={__('Communication address', 'multivendorx')} titleIcon="location" desc="Set the store’s official business address and location.">
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
 								label={__('Address *', 'multivendorx')}
@@ -633,7 +633,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 						id="store-status"
 						title={__('Manage store status', 'multivendorx')}
 						titleIcon="storefront"
-						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+						desc="Set the store’s official business address and location."
 					>
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
@@ -668,7 +668,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 						id="store-slug"
 						title={__('Manage storefront link', 'multivendorx')}
 						titleIcon="storefront"
-						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+						desc="View and manage the store’s public storefront URL."
 					>
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
@@ -702,7 +702,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 					</CardComponent>
 
 					{/* Social Information */}
-					<CardComponent title={__('Social information', 'multivendorx')} titleIcon="social-share" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+					<CardComponent title={__('Social information', 'multivendorx')} titleIcon="social-share" desc="Add social media links to connect customers with your store.">
 						{(
 							[
 								'facebook',

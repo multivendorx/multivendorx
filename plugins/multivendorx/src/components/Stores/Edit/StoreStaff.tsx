@@ -231,7 +231,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 					id="primary-owner"
 					title={__('Store ownership', 'multivendorx')}
 					titleIcon="storefront"
-					desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+					desc="Manage store ownership and assign the primary owner."
 				>
 					<FormGroupWrapperComponent>
 						<FormGroupComponent

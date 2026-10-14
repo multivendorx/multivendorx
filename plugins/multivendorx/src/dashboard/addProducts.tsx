@@ -324,7 +324,7 @@ const AddProduct = () => {
 						<CardComponent
 							title={__('Recommended', 'multivendorx')}
 							titleIcon="section"
-							desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+							desc="Sell a single product with its own price and inventory."
 							toggle={true}
 							action={
 								<div className="admin-badge blue">
@@ -464,7 +464,7 @@ const AddProduct = () => {
 								'multivendorx'
 							)}
 							titleIcon="rejecte"
-							desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+							desc="Review the admin’s feedback, update your product, and resubmit for approval."
 						// action={
 						// <ButtonInput
 						// 	buttons={[
@@ -766,7 +766,7 @@ const AddProduct = () => {
 						<CardComponent
 							title={__('Translations', 'multivendorx')}
 							titleIcon="global-community"
-							desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+							desc="Translate your store content to reach customers in multiple languages."
 							iconName="translate"
 							toggle={true}
 						>
@@ -809,7 +809,7 @@ const AddProduct = () => {
 					<CardComponent
 						title={__('Upload image', 'multivendorx')}
 						titleIcon="image"
-						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+						desc="Upload images to showcase your products or store."
 					>
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
