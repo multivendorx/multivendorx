@@ -1,3 +1,4 @@
+/* global appLocalizer */
 import { useLocation } from 'react-router-dom';
 
 import Settings from './components/Settings/Settings';
@@ -55,13 +56,11 @@ const bannerItem = [
 		'moowoodle'
 	),
 ];
-const isBannerDismissed = localStorage.getItem('banner_dismissed') === 'true';
-
 const App = () => {
 	const currentTabParams = new URLSearchParams(useLocation().hash);
-	const [query, setQuery] = useState('');
+	const [, setQuery] = useState('');
 	const [results, setResults] = useState<SearchItem[]>([]);
-	const [selectValue, setSelectValue] = useState('all');
+	const selectValue = 'all';
 
 	document
 		.querySelectorAll('#toplevel_page_moowoodle>ul>li>a')
@@ -144,7 +143,6 @@ const App = () => {
 				pro={appLocalizer.pro_data.version}
 				utilityList={utilityList}
 			/>
-			{/* {!isBannerDismissed && ( */}
 			<NoticeComponent
 				uniqueKey="banner"
 				type="banner"
@@ -156,7 +154,6 @@ const App = () => {
 					window.location.href = appLocalizer.shop_url;
 				}}
 			/>
-			{/* )} */}
 			<Route />
 		</>
 	);

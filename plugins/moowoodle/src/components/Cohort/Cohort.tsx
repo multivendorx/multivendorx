@@ -1,3 +1,4 @@
+/* global appLocalizer */
 import React, { useState } from 'react';
 import { __ } from '@wordpress/i18n';
 
@@ -71,6 +72,7 @@ const Cohort: React.FC = () => {
 				{
 					label: __('Sync Cohort Data', 'moowoodle'),
 					icon: 'refresh',
+					// eslint-disable-next-line no-unused-vars -- row param required by the action button's callback signature.
 					onClick: (row) => {
 						setopenPopup(true);
 					},
@@ -80,9 +82,9 @@ const Cohort: React.FC = () => {
 					label: (row: CohortRow) => {
 						return row?.products && Object.keys(row.products).length
 							? __(
-								'Sync Cohort Data & Update Product',
-								'moowoodle'
-							)
+									'Sync Cohort Data & Update Product',
+									'moowoodle'
+								)
 							: __('Create Product', 'moowoodle');
 					},
 
@@ -91,6 +93,7 @@ const Cohort: React.FC = () => {
 							? 'update-product'
 							: 'add-product';
 					},
+					// eslint-disable-next-line no-unused-vars -- row param required by the action button's callback signature.
 					onClick: (row) => {
 						setopenPopup(true);
 					},
@@ -144,9 +147,14 @@ const Cohort: React.FC = () => {
 			/>
 			<ContainerComponent general>
 				<ColumnComponent>
-					<div className="demo-wrapper" onClick={handleTableWrapperClick}>
+					<div
+						className="demo-wrapper"
+						onClick={handleTableWrapperClick}
+					>
 						{!appLocalizer.khali_dabba && (
-							<div className="watermark">{__('This is sample Data', 'moowoodle')}</div>
+							<div className="watermark">
+								{__('This is sample Data', 'moowoodle')}
+							</div>
 						)}
 						<TableCard {...tableProps} />
 					</div>

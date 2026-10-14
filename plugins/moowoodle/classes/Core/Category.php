@@ -37,11 +37,16 @@ class Category {
 			: array_filter( array_map( 'intval', (array) $category_ids ) );
 
 		$table_name = $wpdb->prefix . Util::TABLES['category'];
-		$query      = "SELECT * FROM {$table_name}";
+		$params     = array( $table_name );
+		$query      = 'SELECT * FROM %i';
+
         if ( ! empty( $category_ids ) ) {
-            $in     = implode( ',', $category_ids );
-            $query .= " WHERE id IN ($in)";
+            $placeholders = implode( ',', array_fill( 0, count( $category_ids ), '%d' ) );
+            $query       .= " WHERE id IN ($placeholders)"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $params       = array_merge( $params, $category_ids );
         }
+
+		$query      = $wpdb->prepare( $query, $params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$categories = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		return $categories;
     }

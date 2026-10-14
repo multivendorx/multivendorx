@@ -39,19 +39,18 @@ class Enrollment {
 	public static function get_enrollments( $enrollment_args ) {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . Util::TABLES['enrollment'];
-		$where      = array();
+		$table_name       = $wpdb->prefix . Util::TABLES['enrollment'];
+		$table_identifier = $wpdb->prepare( '%i', $table_name );
+		$where            = array();
 
 		// Filters.
 		if ( isset( $enrollment_args['id'] ) ) {
-			$ids     = is_array( $enrollment_args['id'] ) ? $enrollment_args['id'] : array( $enrollment_args['id'] );
-			$ids     = implode( ',', array_map( 'intval', $ids ) );
+			$ids     = implode( ',', array_map( 'intval', (array) $enrollment_args['id'] ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- cast to int, not user-controlled SQL.
 			$where[] = "id IN ($ids)";
 		}
 
 		if ( isset( $enrollment_args['user_id'] ) ) {
-			$ids     = is_array( $enrollment_args['user_id'] ) ? $enrollment_args['user_id'] : array( $enrollment_args['user_id'] );
-			$ids     = implode( ',', array_map( 'intval', $ids ) );
+			$ids     = implode( ',', array_map( 'intval', (array) $enrollment_args['user_id'] ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- cast to int, not user-controlled SQL.
 			$where[] = "user_id IN ($ids)";
 		}
 
@@ -107,8 +106,8 @@ class Enrollment {
 		}
 
 		$query = isset( $enrollment_args['count'] )
-			? "SELECT COUNT(*) FROM {$table_name}"
-			: "SELECT {$select_fields} FROM {$table_name}";
+			? "SELECT COUNT(*) FROM {$table_identifier}"
+			: "SELECT {$select_fields} FROM {$table_identifier}";
 
 		if ( ! empty( $where ) ) {
 			$query .= ' WHERE ' . implode( ' AND ', $where );
@@ -118,6 +117,7 @@ class Enrollment {
 			$query .= $wpdb->prepare( ' LIMIT %d OFFSET %d', intval( $enrollment_args['limit'] ), intval( $enrollment_args['offset'] ) );
 		}
 
+		// Table name is escaped via %i above; each $where fragment is already escaped via its own $wpdb->prepare() call.
 		if ( isset( $enrollment_args['count'] ) ) {
 			return $wpdb->get_var( $query ) ?? 0; // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		}
