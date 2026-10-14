@@ -46,14 +46,17 @@ class FrontendScripts {
     /**
      * Get the build path for assets based on environment.
      *
+     * @param string $path_type   'file' for a filesystem path, anything else for a URL.
+     * @param string $plugin_path Plugin path to build from; defaults to CatalogX()->plugin_path.
+     * @param string $plugin_url  Plugin URL to build from; defaults to CatalogX()->plugin_url.
      * @return string Relative path to the build directory.
      */
     public static function get_asset_path( $path_type = 'url', $plugin_path = '', $plugin_url = '' ) {
         $build_path = 'assets/';
-        if ( $plugin_path === '' ) {
+        if ( '' === $plugin_path ) {
             $plugin_path = CatalogX()->plugin_path;
         }
-        if ( $plugin_url === '' ) {
+        if ( '' === $plugin_url ) {
             $plugin_url = CatalogX()->plugin_url;
         }
 

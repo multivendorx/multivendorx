@@ -18,7 +18,18 @@ use CatalogX\Utill;
  * @author      MultiVendorX
  */
 class Frontend {
+    /**
+     * Cached 'enquiry_user_permission' setting value.
+     *
+     * @var string
+     */
     private $enquiry_user_permission;
+
+    /**
+     * Cached 'is_enable_out_of_stock' setting value.
+     *
+     * @var string
+     */
     private $enable_out_of_stock;
 
     /**

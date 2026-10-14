@@ -50,6 +50,11 @@ class Installer {
         add_action( 'init', array( $this, 'run_migration' ) );
     }
 
+    /**
+     * Run version-gated migrations/upgrades on 'init'.
+     *
+     * @return void
+     */
     public function run_migration() {
         // Get the previous version and current version.
         self::$previous_version = get_option( self::VERSION_KEY, '' );

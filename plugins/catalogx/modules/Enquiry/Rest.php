@@ -61,7 +61,7 @@ class Rest {
     /**
      * Save enquiry form data
      *
-     * quantity string required
+     * Quantity string required
      * Retrieve the quantity of product
      * productId string required
      * Retrieve the product id of enquiry

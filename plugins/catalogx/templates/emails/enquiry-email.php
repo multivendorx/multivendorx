@@ -114,7 +114,7 @@ $enquiry_data = $args['enquiry_data'];
             <?php
             foreach ( $enquiry_data['user_enquiry_fields'] as $field ) {
                 if ( isset( $field['name'] ) && isset( $field['value'] ) ) {
-                    if ( $field['name'] === 'phone' ) {
+                    if ( 'phone' === $field['name'] ) {
 						?>
                         <p>
                             <strong><?php esc_html_e( 'User Phone : ', 'catalogx' ); ?></strong>
@@ -122,7 +122,7 @@ $enquiry_data = $args['enquiry_data'];
                         </p>
 						<?php
                     }
-                    if ( $field['name'] === 'address' ) {
+                    if ( 'address' === $field['name'] ) {
 						?>
                         <p>
                             <strong><?php esc_html_e( 'User Address : ', 'catalogx' ); ?></strong>
@@ -130,7 +130,7 @@ $enquiry_data = $args['enquiry_data'];
                         </p>
 						<?php
                     }
-                    if ( $field['name'] === 'subject' ) {
+                    if ( 'subject' === $field['name'] ) {
 						?>
                         <p>
                             <strong><?php esc_html_e( 'User Subject : ', 'catalogx' ); ?></strong>
@@ -138,7 +138,7 @@ $enquiry_data = $args['enquiry_data'];
                         </p>
 						<?php
                     }
-                    if ( $field['name'] === 'comment' ) {
+                    if ( 'comment' === $field['name'] ) {
 						?>
                         <p>
                             <strong><?php esc_html_e( 'User Comments : ', 'catalogx' ); ?></strong>

@@ -394,6 +394,11 @@ class Utill {
 		return strtr( $date_format, $map );
 	}
 
+    /**
+     * Get the {field_label} replacement tags available in the enquiry form builder.
+     *
+     * @return array
+     */
     public static function get_tags_enquiry_form() {
         $tags = array();
 

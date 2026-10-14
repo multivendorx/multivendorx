@@ -4,7 +4,9 @@
  *
  * @author  MultiVendorX
  * @version  6.0.0
+ * @package CatalogX
  */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -63,4 +65,5 @@ if ( isset( $enquiry_data['comment'] ) ) {
 
 echo "\n\n\n****************************************************\n\n";
 
+// translators: %s: site name.
 echo esc_html( wp_strip_all_tags( apply_filters( 'catalogx_email_footer_text', sprintf( __( '%s - Powered by CatalogX', 'catalogx' ), get_bloginfo( 'name', 'display' ) ) ) ) );

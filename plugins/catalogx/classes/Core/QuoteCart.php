@@ -163,7 +163,7 @@ class QuoteCart {
     private function set_cart_cookies( $set = true ) {
         if ( $set ) {
             wc_setcookie( 'quote_items_in_cart', 1 );
-            wc_setcookie( 'quote_hash', md5( json_encode( $this->quote_cart_content ) ) );
+            wc_setcookie( 'quote_hash', md5( wp_json_encode( $this->quote_cart_content ) ) );
         } elseif ( null !== filter_input( INPUT_COOKIE, 'quote_items_in_cart' ) ) {
             wc_setcookie( 'quote_items_in_cart', 0, time() - HOUR_IN_SECONDS );
             wc_setcookie( 'quote_hash', '', time() - HOUR_IN_SECONDS );

@@ -1,27 +1,55 @@
 <?php
-namespace CatalogX\Emails;
-
 /**
- * Email for request quote send
+ * Email for sending a quote request notification to the admin.
  *
- * An email will be sent to customer
- *
- * @class   RequestQuoteSendEmail class
- * @version 6.0.0
- * @author MultiVendorX
- * @extends     \WC_Email
+ * @package CatalogX
  */
+
+namespace CatalogX\Emails;
 
 defined( 'ABSPATH' ) || exit;
 
-
 if ( ! class_exists( 'RequestQuoteSendEmail' ) ) {
 
+    /**
+     * Email for request quote send
+     *
+     * An email will be sent to customer
+     *
+     * @class   RequestQuoteSendEmail class
+     * @version 6.0.0
+     * @author MultiVendorX
+     * @extends     \WC_Email
+     */
     class RequestQuoteSendEmail extends \WC_Email {
+        /**
+         * Products included in the quote request.
+         *
+         * @var array
+         */
         public $products;
+
+        /**
+         * The order/object this email relates to (unused by this email, kept for WC_Email compatibility).
+         *
+         * @var mixed
+         */
         public $object;
+
+        /**
+         * Customer data submitted with the quote request.
+         *
+         * @var array
+         */
         public $customer_data;
+
+        /**
+         * Display name of the admin user the request is routed to.
+         *
+         * @var string
+         */
         public $admin;
+
         /**
          * Constructor method, used to return object of the class to WC
          *
@@ -40,12 +68,14 @@ if ( ! class_exists( 'RequestQuoteSendEmail' ) ) {
             parent::__construct();
         }
 		/**
-		 * trigger function.
+		 * Trigger function.
 		 *
 		 * @access public
+		 * @param array $products      Products included in the quote request.
+		 * @param array $customer_data Customer data submitted with the request.
 		 * @return void
 		 */
-		function trigger( $products, $customer_data ) {
+		public function trigger( $products, $customer_data ) {
 			$additional_email = CatalogX()->setting->get_setting( 'additional_alert_email' );
 
 			$this->recipient     = $additional_email;
@@ -90,24 +120,24 @@ if ( ! class_exists( 'RequestQuoteSendEmail' ) ) {
 		}
 
 		/**
-		 * get_content_html function.
+		 * Get_content_html function.
 		 *
 		 * @access public
 		 * @return string
 		 */
-		function get_content_html() {
+		public function get_content_html() {
 			ob_start();
 			CatalogX()->util->get_template( $this->template_html, $this->get_template_args() );
 			return ob_get_clean();
 		}
 
 		/**
-		 * get_content_plain function.
+		 * Get_content_plain function.
 		 *
 		 * @access public
 		 * @return string
 		 */
-		function get_content_plain() {
+		public function get_content_plain() {
 			ob_start();
 			CatalogX()->util->get_template( $this->template_plain, $this->get_template_args() );
 			return ob_get_clean();

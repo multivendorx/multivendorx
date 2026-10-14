@@ -8,6 +8,7 @@
  * @package   woocommerce-catalog-enquiry/templates
  * @version   6.0.0
  */
+
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
 do_action( 'catalogx_email_header', $email_heading );
@@ -18,7 +19,12 @@ $customer_data = $args['customer_data'] ?? array();
 
 <div class="email-container" style="border: 1px solid #557DA1;">
     <div style="background: #557DA1; padding: 30px 30px; border: 1px solid #557DA1;">
-            <h2 style="font-family: Arial; line-height: 43px; text-align: center; color: #fff; font-size: 46px; font-weight: 700; margin: 0;padding: 0 0 0px 0;"><?php printf( esc_html__( 'Dear %s', 'catalogx' ), esc_html( $args['admin'] ?? __( 'Store Admin', 'catalogx' ) ) ); ?> </h2>
+            <h2 style="font-family: Arial; line-height: 43px; text-align: center; color: #fff; font-size: 46px; font-weight: 700; margin: 0;padding: 0 0 0px 0;">
+            <?php
+			// translators: %s: admin's display name.
+			printf( esc_html__( 'Dear %s', 'catalogx' ), esc_html( $args['admin'] ?? __( 'Store Admin', 'catalogx' ) ) );
+			?>
+            </h2>
             <p style=" color:#fff; margin-bottom:0; text-align: center; font-size:16px; "><?php esc_html_e( 'You have received a new quote request from a customer for the following product:', 'catalogx' ); ?></p>
     </div>
     
