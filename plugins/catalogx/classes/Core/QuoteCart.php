@@ -101,8 +101,13 @@ class QuoteCart {
     public function clean_session() {
         global $wpdb;
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- no variables to prepare, the LIKE pattern is a hardcoded literal.
-        $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '_catalogx_session_%'" );
+        $wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- $wpdb->options is WordPress core's own table name, not user input.
+            $wpdb->prepare(
+                'DELETE FROM %i WHERE option_name LIKE %s',
+                $wpdb->options, // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                $wpdb->esc_like( '_catalogx_session_' ) . '%'
+            )
+        );
     }
 
 

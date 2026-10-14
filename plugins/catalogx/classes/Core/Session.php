@@ -236,10 +236,10 @@ class Session extends \WC_Session {
 
             $now              = time();
             $expired_sessions = array();
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            $wc_session_expires = $wpdb->get_col(
+            $wc_session_expires = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- $wpdb->options is WordPress core's own table name, not user input.
                 $wpdb->prepare(
-                    "SELECT option_name FROM $wpdb->options WHERE option_name LIKE %s AND option_value < %d",
+                    'SELECT option_name FROM %i WHERE option_name LIKE %s AND option_value < %d',
+                    $wpdb->options, // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                     $wpdb->esc_like( '_wcce_session_expires_' ) . '%',
                     $now
                 )
@@ -262,11 +262,10 @@ class Session extends \WC_Session {
 
 			// delete from options table.
 			$placeholders = implode( ', ', array_fill( 0, count( $session_option_batch ), '%s' ) );
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-			$wpdb->query(
+			$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- $wpdb->options is WordPress core's own table name, not user input.
 				$wpdb->prepare(
-					"DELETE FROM $wpdb->options WHERE option_name IN ($placeholders)", // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- placeholders count always matches $session_option_batch, built dynamically above.
-					$session_option_batch
+					"DELETE FROM %i WHERE option_name IN ($placeholders)", // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- placeholders count always matches $session_option_batch, built dynamically above.
+					array_merge( array( $wpdb->options ), $session_option_batch )
 				)
 			);
 		}
