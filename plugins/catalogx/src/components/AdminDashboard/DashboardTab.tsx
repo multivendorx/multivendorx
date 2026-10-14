@@ -301,8 +301,8 @@ const DashboardTab: React.FC<object> = () => {
 			</ColumnComponent>
 
 			{/* Right Side */}
-			<ColumnComponent grid={4}>
-				<CardComponent title={__('Extend your website', 'catalogx')} titleIcon="section" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+			<ColumnComponent grid={4}>L
+				<CardComponent title={__('Extend your website', 'catalogx')} titleIcon="section" desc="Discover more tools to grow your marketplace.">
 					<ColumnComponent row>
 						{pluginStatus['dc-woocommerce-multi-vendor'] ? (
 							<ListComponent
@@ -493,7 +493,7 @@ const DashboardTab: React.FC<object> = () => {
 				</CardComponent>
 
 				{/* Quick Links */}
-				<CardComponent title={__('Need help getting started?', 'catalogx')} titleIcon="help" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+				<CardComponent title={__('Need help getting started?', 'catalogx')} titleIcon="help" desc="Find the guides and support you need to build your marketplace.">
 					<div className="quick-link">
 						{resources.map((res) => (
 							<ListComponent

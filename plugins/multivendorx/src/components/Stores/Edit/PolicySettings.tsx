@@ -66,7 +66,7 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 	return (
 		<ContainerComponent>
 			<ColumnComponent row>
-				<CardComponent title={__('Store policy', 'multivendorx')} titleIcon="store-policy" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+				<CardComponent title={__('Store policy', 'multivendorx')} titleIcon="store-policy" desc="Define the policies that guide your store operations and customer experience.">
 					<FormGroupWrapperComponent>
 						<TextAreaInput
 							name="store_policy"
@@ -83,7 +83,7 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 						/>
 					</FormGroupWrapperComponent>
 				</CardComponent>
-				<CardComponent title={__('Shipping policy', 'multivendorx')} titleIcon="shipping" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+				<CardComponent title={__('Shipping policy', 'multivendorx')} titleIcon="shipping" desc="Explain shipping methods, delivery timelines, and charges.">
 					<FormGroupWrapperComponent>
 						<TextAreaInput
 							name="shipping_policy"
@@ -102,7 +102,7 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 				</CardComponent>
 			</ColumnComponent>
 			<ColumnComponent row>
-				<CardComponent title={__('Refund policy', 'multivendorx')} titleIcon="store-policy" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+				<CardComponent title={__('Refund policy', 'multivendorx')} titleIcon="store-policy" desc="Outline refund eligibility, conditions, and processing timelines.">
 					<FormGroupWrapperComponent>
 						<TextAreaInput
 							name="refund_policy"
@@ -125,7 +125,7 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 						'multivendorx'
 					)}
 					titleIcon="store-policy"
-					desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+					desc="Specify the rules for order cancellations, product returns, and exchanges."
 				>
 					<FormGroupWrapperComponent>
 						<TextAreaInput
