@@ -63,7 +63,7 @@ export default {
             key: 'section',
             type: 'section',
             icon: 'clock',
-            title: __('Restock Timing (Lead Time)', 'notifima'),
+            title: __('Estimate Stock Arrival Time', 'notifima'),
             desc: __(
                 'Control when and how the expected restock time is shown to shoppers.',
                 'notifima'
@@ -72,7 +72,7 @@ export default {
         {
             key: 'display_lead_times',
             type: 'checkbox',
-            label: __('Stock Status for Lead Time', 'notifima'),
+            label: __('Stock arrival time', 'notifima'),
             settingDescription: __(
                 'Choose which products show an expected restock time.',
                 'notifima'
