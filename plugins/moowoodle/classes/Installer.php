@@ -150,6 +150,7 @@ class Installer {
     /**
      * Migrate database.
      *
+     * @param string $previous_version The plugin version being upgraded from.
      * @return void
      */
     public static function run_migrations( $previous_version ) {
@@ -245,6 +246,7 @@ class Installer {
             global $wpdb;
 
             // Get terms with '_category_id' meta and optional '_parent' meta for 'course_cat' taxonomy.
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table names are $wpdb properties, not user input; the one dynamic value uses a %s placeholder below.
             $category_migration_query = $wpdb->prepare(
                 "
                 SELECT 
@@ -264,7 +266,7 @@ class Installer {
                 'course_cat'
             );
 
-        $category_terms = $wpdb->get_results( $category_migration_query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+        $category_terms = $wpdb->get_results( $category_migration_query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( empty( $category_terms ) ) {
 			return;
@@ -490,10 +492,11 @@ class Installer {
         );
 
         if ( ! $column_exists ) {
+            // Table identifier comes from Util::TABLES, not user input; $wpdb->prepare() can't placeholder identifiers in DDL.
             $wpdb->query(
                 "ALTER TABLE {$table_name}
                 ADD COLUMN expiry_date TIMESTAMP NULL DEFAULT NULL
-                AFTER enrollment_date"
+                AFTER enrollment_date" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             );
         }
     }

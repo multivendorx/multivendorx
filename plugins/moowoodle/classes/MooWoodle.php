@@ -299,7 +299,12 @@ final class MooWoodle {
         return $emails;
     }
 
-    // Alternative of __get()
+    /**
+     * Alternative of __get().
+     *
+     * @param string $service_key Service key to look up.
+     * @return mixed|null
+     */
     public function get_service( $service_key ) {
         return $this->services[ $service_key ] ?? null;
     }

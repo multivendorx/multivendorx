@@ -113,8 +113,8 @@ class TestConnection extends \WP_REST_Controller {
 
 			// Get register webservice functions.
 			$registered_functions = array_map(
-                function ( $function ) {
-					return $function['name'];
+                function ( $service_function ) {
+					return $service_function['name'];
 				},
                 $response['functions']
             );

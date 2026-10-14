@@ -70,7 +70,8 @@ class Courses extends \WP_REST_Controller {
                 return $this->get_filter_options( $request );
             }
 
-            $limit              = intval( $request->get_param( 'row' ) ) ?: 10;
+            $row_param          = intval( $request->get_param( 'row' ) );
+            $limit              = $row_param ? $row_param : 10;
             $page               = max( intval( $request->get_param( 'page' ) ), 1 );
             $offset             = ( $page - 1 ) * $limit;
             $category_id        = $request->get_param( 'category' );

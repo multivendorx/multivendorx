@@ -48,8 +48,7 @@ class MyCourses extends \WP_REST_Controller {
      *
      * @param object $request The REST request object.
      */
-    // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
-    public function get_item_permissions_check( $request ) {
+    public function get_item_permissions_check( $request ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
         return Util::current_user_has_capability( array( 'customer', 'manage_options' ) );
     }
 
@@ -152,13 +151,15 @@ class MyCourses extends \WP_REST_Controller {
 					}
                 }
 
+                $thumbnail_url = get_the_post_thumbnail_url( $course['product_id'], 'full' );
+
                 $courses[] = array(
                     'user_name'       => $current_user->user_login,
                     'course_name'     => $course['fullname'] ?? '',
                     'enrollment_date' => $formatted_enrolled_date,
                     'status'          => $enrollment['status'],
                     'product_url'     => get_permalink( $course['product_id'] ),
-                    'product_image'   => get_the_post_thumbnail_url( $course['product_id'], 'full' ) ?: '',
+                    'product_image'   => $thumbnail_url ? $thumbnail_url : '',
                     'moodle_url'      => ! empty( $course['moodle_course_id'] )
                         ? apply_filters(
                             'moodle_course_view_url',

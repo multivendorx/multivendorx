@@ -7,6 +7,8 @@
 
 namespace MooWoodle\Core;
 
+defined( 'ABSPATH' ) || exit;
+
 use MooWoodle\Util;
 
 /**

@@ -7,6 +7,8 @@
 
 namespace MooWoodle;
 
+defined( 'ABSPATH' ) || exit;
+
 use MooWoodle\Util;
 /**
  * MooWoodle Enrollment class
@@ -464,10 +466,10 @@ class Enrollment {
 		foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 			$product_id = $cart_item['product_id'];
 
-			// Check if product has Moodle course ID
+			// Check if product has Moodle course ID.
 			$moodle_course_id = get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
 			if ( empty( $moodle_course_id ) ) {
-				continue; // Skip non-Moodle products
+				continue; // Skip non-Moodle products.
 			}
 
 			if ( $cart_item['quantity'] > 1 ) {

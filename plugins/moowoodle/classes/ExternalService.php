@@ -128,10 +128,10 @@ class ExternalService {
 
 		// if moodle response contains error.
 		if ( $response && ! empty( $response['exception'] ) ) {
-			if ( str_contains( $response['message'], 'Access control exception' ) ) {
+			if ( false !== strpos( $response['message'], 'Access control exception' ) ) {
 				return array( 'error' => $response['message'] . ' <a href="' . MooWoodle()->setting->get_setting( 'moodle_url' ) . '/admin/settings.php?section=externalservices">Link</a>' );
 			}
-			if ( str_contains( $response['message'], 'Invalid moodle_access_token' ) ) {
+			if ( false !== strpos( $response['message'], 'Invalid moodle_access_token' ) ) {
 				return array( 'error' => $response['message'] . ' <a href="' . MooWoodle()->setting->get_setting( 'moodle_url' ) . '/admin/webservice/tokens.php">Link</a>' );
 			}
 			return array( 'error' => $response['message'] . ' <a href="' . MooWoodle()->setting->get_setting( 'moodle_url' ) . '/admin/webservice/tokens.php">Link</a>' );

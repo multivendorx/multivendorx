@@ -7,6 +7,8 @@
 
 namespace MooWoodle\Core;
 
+defined( 'ABSPATH' ) || exit;
+
 use MooWoodle\Util;
 use MooWoodle\FrontendScripts;
 
@@ -140,15 +142,16 @@ class Course {
 		}
 
 		if ( ! empty( $query_params ) ) {
-			$sql = $wpdb->prepare( $sql, $query_params );
+			$sql = $wpdb->prepare( $sql, $query_params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		}
 
 		if ( $is_count ) {
-			$course_count = $wpdb->get_var( $sql );
+			$course_count = $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			return $course_count ?? 0;
 		}
 
-		return $wpdb->get_results( $sql, ARRAY_A ) ?: array();
+		$courses = $wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		return $courses ? $courses : array();
 	}
 
 	/**
