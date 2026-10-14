@@ -130,7 +130,7 @@ class Session extends \WC_Session {
      * @return bool
      */
     public function has_session() {
-        return null !== filter_input( INPUT_COOKIE, $this->cookie_name ) || $this->is_cookie_set || is_user_logged_in();
+        return ! empty( filter_input( INPUT_COOKIE, $this->cookie_name ) ) || $this->is_cookie_set || is_user_logged_in();
     }
 
     /**
@@ -234,8 +234,8 @@ class Session extends \WC_Session {
             return;
         }
 
-            $now              = time();
-            $expired_sessions = array();
+            $now                = time();
+            $expired_sessions   = array();
             $wc_session_expires = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- $wpdb->options is WordPress core's own table name, not user input.
                 $wpdb->prepare(
                     'SELECT option_name FROM %i WHERE option_name LIKE %s AND option_value < %d',

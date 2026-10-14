@@ -53,7 +53,7 @@ class QuoteCart {
      * Starts the php session data for the cart.
      */
     public function quote_session_start() {
-        if ( null === filter_input( INPUT_COOKIE, 'woocommerce_items_in_cart' ) ) {
+        if ( empty( filter_input( INPUT_COOKIE, 'woocommerce_items_in_cart' ) ) ) {
             do_action( 'woocommerce_set_cart_cookies', true );
         }
         $this->session = new Session();
@@ -151,7 +151,7 @@ class QuoteCart {
 		if ( ! empty( $this->quote_cart_content ) ) {
 			$this->set_cart_cookies( true );
 			$set = true;
-		} elseif ( null !== filter_input( INPUT_COOKIE, 'quote_items_in_cart' ) ) {
+		} elseif ( ! empty( filter_input( INPUT_COOKIE, 'quote_items_in_cart' ) ) ) {
 			$this->set_cart_cookies( false );
 			$set = false;
 		}
@@ -169,7 +169,7 @@ class QuoteCart {
         if ( $set ) {
             wc_setcookie( 'quote_items_in_cart', 1 );
             wc_setcookie( 'quote_hash', md5( wp_json_encode( $this->quote_cart_content ) ) );
-        } elseif ( null !== filter_input( INPUT_COOKIE, 'quote_items_in_cart' ) ) {
+        } elseif ( ! empty( filter_input( INPUT_COOKIE, 'quote_items_in_cart' ) ) ) {
             wc_setcookie( 'quote_items_in_cart', 0, time() - HOUR_IN_SECONDS );
             wc_setcookie( 'quote_hash', '', time() - HOUR_IN_SECONDS );
         }
