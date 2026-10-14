@@ -410,7 +410,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 				</ColumnComponent>
 
 				<ColumnComponent fullHeight row>
-					<CardComponent title={__('Revenue breakdown', 'multivendorx')}>
+					<CardComponent title={__('Revenue breakdown', 'multivendorx')} titleIcon="revenue" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						{earningSummary.map((product) => (
 							<InformationItemComponent
 								key={product.id}
@@ -420,7 +420,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 							/>
 						))}
 					</CardComponent>
-					<CardComponent title={__('Revenue breakdown', 'multivendorx')}>
+					<CardComponent title={__('Revenue breakdown', 'multivendorx')} titleIcon="revenue" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						<ResponsiveContainer width="100%" height={400}>
 							<PieChart>
 								<Pie
@@ -473,7 +473,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 
 				{/* Keep categories and brands */}
 				<ColumnComponent fullHeight row>
-					<CardComponent title={__('Top Selling Coupons', 'multivendorx')}>
+					<CardComponent title={__('Top Selling Coupons', 'multivendorx')} titleIcon="coupon" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						{topCoupons.length > 0 ? (
 							topCoupons.map((coupon: Coupon, index: number) => (
 								<InformationItemComponent
@@ -512,7 +512,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 							/>
 						)}
 					</CardComponent>
-					<CardComponent title={__('Top Customers', 'multivendorx')}>
+					<CardComponent title={__('Top Customers', 'multivendorx')} titleIcon="customer-support" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						{topCustomers.length > 0 ? (
 							topCustomers.map(
 								(customer: Customer, index: number) => (
@@ -562,7 +562,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = () => {
 							/>
 						)}
 					</CardComponent>
-					<CardComponent title={__('Top Stores', 'multivendorx')}>
+					<CardComponent title={__('Top Stores', 'multivendorx')} titleIcon="storefront" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						{topStores.length > 0 ? (
 							topStores.map((store: Store, index: number) => (
 								<>

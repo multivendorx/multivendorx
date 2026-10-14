@@ -66,7 +66,7 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 	return (
 		<ContainerComponent>
 			<ColumnComponent row>
-				<CardComponent title={__('Store policy', 'multivendorx')}>
+				<CardComponent title={__('Store policy', 'multivendorx')} titleIcon="store-policy" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 					<FormGroupWrapperComponent>
 						<TextAreaInput
 							name="store_policy"
@@ -83,7 +83,7 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 						/>
 					</FormGroupWrapperComponent>
 				</CardComponent>
-				<CardComponent title={__('Shipping policy', 'multivendorx')}>
+				<CardComponent title={__('Shipping policy', 'multivendorx')} titleIcon="shipping" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 					<FormGroupWrapperComponent>
 						<TextAreaInput
 							name="shipping_policy"
@@ -102,7 +102,7 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 				</CardComponent>
 			</ColumnComponent>
 			<ColumnComponent row>
-				<CardComponent title={__('Refund policy', 'multivendorx')}>
+				<CardComponent title={__('Refund policy', 'multivendorx')} titleIcon="store-policy" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 					<FormGroupWrapperComponent>
 						<TextAreaInput
 							name="refund_policy"
@@ -124,6 +124,8 @@ const PolicySettings: React.FC<PolicySettingsProps> = ({ id, data }) => {
 						'Cancellation / return / exchange policy',
 						'multivendorx'
 					)}
+					titleIcon="store-policy"
+					desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 				>
 					<FormGroupWrapperComponent>
 						<TextAreaInput

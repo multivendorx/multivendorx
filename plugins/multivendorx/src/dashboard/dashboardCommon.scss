@@ -30,6 +30,20 @@ body.dark {
         color: #fff !important;
     }
 
+    // page header strip + dropdown rows were hardcoded light
+    .header-wrapper {
+        background: transparent;
+    }
+
+    ul .item:hover {
+        background: var(--background-color);
+    }
+
+    // hardcoded translucent-black timestamps vanish on dark cards
+    .item .time {
+        color: var(--sub-text-color);
+    }
+
     // header background color
     .card-header,
     .table-wrapper .admin-table,

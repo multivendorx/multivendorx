@@ -126,6 +126,16 @@ export const formatDate = (date?: string): string => {
 	}).format(d);
 };
 
+// Same `under_review` -> `Under Review` formatting zyra's own `status` table
+// cell applies, for status badges built inside an `info` column instead.
+export const formatStatusLabel = (status?: string): string =>
+	String(status ?? '')
+		.toLowerCase()
+		.split(/[-_]/)
+		.filter(Boolean)
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(' ');
+
 export const toWcIsoDate = (date: Date, type: 'start' | 'end'): string => {
 	const d = new Date(date);
 

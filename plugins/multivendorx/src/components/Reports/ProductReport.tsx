@@ -43,6 +43,8 @@ interface Product {
 	description?: string;
 	stock_status?: string;
 	store_name?: string;
+	store_id?: number;
+	sku?: string;
 	date_created?: string;
 }
 interface ChartDataItem {
@@ -256,52 +258,39 @@ const ProductReport: React.FC = () => {
 	const headers = {
 		name: {
 			label: __('Product', 'multivendorx'),
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
+			width: '40%',
+		},
+		store_name: {
+			label: __('Store', 'multivendorx'),
+			width: '25%',
 			render: (row) => {
+				if (!row.store_name) {
+					return <span>—</span>;
+				}
+
 				return (
 					<InformationItemComponent
-						title={row.name}
-						titleLink={getUrl(row.id, 'product') || ''}
+						title={row.store_name}
+						titleLink={
+							row.store_id
+								? getUrl(row.store_id, 'store', 'edit')
+								: undefined
+						}
 						avatar={{
-							image: row.images?.[0]?.src || '',
-							iconClass: row.images?.[0]?.src
-								? ''
-								: 'single-product',
+							iconClass: 'store-inventory',
 						}}
-						descriptions={[
-							{
-								label: __('SKU:', 'multivendorx'),
-								value: row.sku || '—',
-							},
-						]}
-						isLoading={isDashboardLoading}
+						isLoading={isTableLoading}
 					/>
 				);
 			},
 		},
-		store_name: {
-			label: __('Store', 'multivendorx'),
-			render: (row) => (
-				<InformationItemComponent
-					title={row.store_name}
-					titleLink={getUrl(row.store_id, 'store', 'edit')}
-					avatar={{
-						iconClass: 'store-inventory',
-					}}
-					isLoading={isDashboardLoading}
-				/>
-			),
-		},
-		total_sales: {
-			label: __('Items sold', 'multivendorx'),
-		},
 		price: {
 			label: __('Net sales', 'multivendorx'),
 			type: 'currency',
-		},
-		category: {
-			label: __('Category', 'multivendorx'),
-			render: (row) =>
-				row.categories?.map((cat) => cat.name).join(', ') || '-',
 		},
 		date_created: {
 			label: __('Date Created', 'multivendorx'),
@@ -407,11 +396,52 @@ const ProductReport: React.FC = () => {
 
 		return params;
 	};
+
+	// Build info rows for the info-type first column
+	const infoRows = rows.map((row: any) => {
+		const soldCount = Number(row.total_sales) || 0;
+
+		const soldBadge = {
+			text: `${soldCount} ${__('item sold', 'multivendorx')}`,
+			color: soldCount === 0 ? 'red' : 'blue',
+		};
+
+		const categories = row.categories || [];
+
+		// If no categories → single "Uncategorized" badge with its own color
+		// Otherwise → all real category badges share the same color
+		const categoryBadges =
+			categories.length > 0
+				? categories.map((cat: { id: number; name: string }) => ({
+						text: cat.name,
+						color: 'green',
+					}))
+				: [
+						{
+							text: __('Uncategorized', 'multivendorx'),
+							color: 'grey',
+						},
+					];
+
+		return {
+			...row,
+			info_icon: 'single-product',
+			info_descriptions: [
+				{
+					label: __('SKU', 'multivendorx'),
+					icon: 'info',
+					value: row.sku || '—',
+				},
+			],
+			info_badges: [soldBadge, ...categoryBadges],
+		};
+	});
+
 	return (
 		<>
 			<ContainerComponent>
 				{/* Keep entire top dashboard layout */}
-				<ColumnComponent row>
+				<ColumnComponent grid={5}>
 					<AnalyticsComponent
 						cols={2}
 						data={overview.map((item, idx) => ({
@@ -422,9 +452,12 @@ const ProductReport: React.FC = () => {
 						}))}
 						isLoading={isDashboardLoading}
 					/>
-
+				</ColumnComponent>
+				<ColumnComponent grid={7}>
 					<CardComponent
 						title={__('Revenue & Sales Comparison', 'multivendorx')}
+						titleIcon="sales"
+						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 					>
 						{error ? (
 							<p>{error}</p>
@@ -462,7 +495,7 @@ const ProductReport: React.FC = () => {
 				{/* Categories and brands */}
 				<ColumnComponent row>
 					{/* Top Reviewed Products Section */}
-					<CardComponent title="Top Reviewed Products">
+					<CardComponent title="Top Reviewed Products" titleIcon="review" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						{toReviewedProduct.length > 0 ? (
 							toReviewedProduct.map(
 								(product: Product, index: number) => (
@@ -498,7 +531,7 @@ const ProductReport: React.FC = () => {
 							/>
 						)}
 					</CardComponent>
-					<CardComponent title="Top Selling Products">
+					<CardComponent title="Top Selling Products" titleIcon="product" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 						{toSellingProduct.length > 0 ? (
 							toSellingProduct.map(
 								(product: Product, index: number) => (
@@ -534,28 +567,33 @@ const ProductReport: React.FC = () => {
 						)}
 					</CardComponent>
 				</ColumnComponent>
-			</ContainerComponent>
 
-			<TableCard
-				headers={headers}
-				rows={rows}
-				title={__('Revenue Distribution', 'multivendorx')}
-				totalRows={totalRows}
-				isLoading={isTableLoading}
-				onQueryUpdate={doRefreshTableData}
-				search={{ placeholder: 'Search Products...' }}
-				filters={filters}
-				buttonActions={buttonActions}
-				rowIds={rowIds}
-				format={appLocalizer.date_format}
-				currency={{
-					currencySymbol: appLocalizer.currency_symbol,
-					priceDecimals: appLocalizer.price_decimals,
-					decimalSeparator: appLocalizer.decimal_separator,
-					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition: appLocalizer.currency_position,
-				}}
-			/>
+				<CardComponent
+					title={__('Revenue Distribution', 'multivendorx')}
+					titleIcon="revenue"
+					desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+				>
+					<TableCard
+						headers={headers}
+						rows={infoRows}
+						totalRows={totalRows}
+						isLoading={isTableLoading}
+						onQueryUpdate={doRefreshTableData}
+						search={{ placeholder: 'Search Products...' }}
+						filters={filters}
+						buttonActions={buttonActions}
+						rowIds={rowIds}
+						format={appLocalizer.date_format}
+						currency={{
+							currencySymbol: appLocalizer.currency_symbol,
+							priceDecimals: appLocalizer.price_decimals,
+							decimalSeparator: appLocalizer.decimal_separator,
+							thousandSeparator: appLocalizer.thousand_separator,
+							currencyPosition: appLocalizer.currency_position,
+						}}
+					/>
+				</CardComponent>
+			</ContainerComponent>
 		</>
 	);
 };

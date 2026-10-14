@@ -59,6 +59,7 @@ const ShippingCard = ({
 		(
 			<CardComponent
 				title={__('How will this be delivered?', 'multivendorx')}
+				titleIcon="shipping"
 				className="full-width"
 				desc={__(
 					'Choose how customers receive this product after purchase.',

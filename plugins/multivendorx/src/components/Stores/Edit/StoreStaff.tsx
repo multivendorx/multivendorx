@@ -230,6 +230,8 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 				<CardComponent
 					id="primary-owner"
 					title={__('Store ownership', 'multivendorx')}
+					titleIcon="storefront"
+					desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 				>
 					<FormGroupWrapperComponent>
 						<FormGroupComponent

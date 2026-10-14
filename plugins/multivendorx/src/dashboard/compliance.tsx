@@ -303,6 +303,7 @@ const Compliance = (React.FC = () => {
 									'Product Images & Descriptions',
 									'multivendorx'
 								)}
+								titleIcon="product"
 								// desc={__('Each product listing must have at least one clear image and an accurate description matching the actual item being sold.', 'multivendorx')}
 								action={
 									<>
@@ -326,6 +327,8 @@ const Compliance = (React.FC = () => {
 									'Product Authenticity Certificates',
 									'multivendorx'
 								)}
+								titleIcon="product"
+								desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 							>
 								<ListComponent
 									className="mini-card"
@@ -406,6 +409,8 @@ const Compliance = (React.FC = () => {
 									'Safety Certifications',
 									'multivendorx'
 								)}
+								titleIcon="section"
+								desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 								action={
 									<>
 										<span className="admin-badge yellow">
@@ -468,6 +473,8 @@ const Compliance = (React.FC = () => {
 									'Product Abuse Reporting',
 									'multivendorx'
 								)}
+								titleIcon="product"
+								desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 							>
 								<ListComponent
 									className="badge-list"
@@ -537,6 +544,8 @@ const Compliance = (React.FC = () => {
 									'Bank Account Details',
 									'multivendorx'
 								)}
+								titleIcon="profile"
+								desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 								action={
 									<>
 										<span className="admin-badge yellow">
@@ -593,6 +602,8 @@ const Compliance = (React.FC = () => {
 									'Business Registration',
 									'multivendorx'
 								)}
+								titleIcon="form"
+								desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 							>
 								<ListComponent
 									className="mini-card"
@@ -642,6 +653,8 @@ const Compliance = (React.FC = () => {
 									'Tax Identification Documents ',
 									'multivendorx'
 								)}
+								titleIcon="tax-compliance"
+								desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 								action={
 									<>
 										<span className="admin-badge blue">
@@ -789,6 +802,8 @@ const Compliance = (React.FC = () => {
 									'Identity Verification',
 									'multivendorx'
 								)}
+								titleIcon="identity-verification"
+								desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 							>
 								<ListComponent
 									className="mini-card"
@@ -896,6 +911,8 @@ const Compliance = (React.FC = () => {
 									'Social Verification',
 									'multivendorx'
 								)}
+								titleIcon="identity-verification"
+								desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 							>
 								<ExpandablePanelInput
 									key={inputField.key}
