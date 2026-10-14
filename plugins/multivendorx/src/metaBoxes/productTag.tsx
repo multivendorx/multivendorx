@@ -22,7 +22,7 @@ const ProductTag = ({ product, setProduct }) => {
 		<CardComponent
 			title={__('Product tag', 'multivendorx')}
 			titleIcon="coupon"
-			desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+			desc="Add relevant tags to help customers discover your products."
 		>
 			<FormGroupWrapperComponent>
 				<SelectInput

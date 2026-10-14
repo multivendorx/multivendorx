@@ -202,7 +202,7 @@ const Withdrawals: React.FC = () => {
 
 			<ContainerComponent className="store-withdrawals">
 				<ColumnComponent grid={6}>
-					<CardComponent title={__('Last Withdrawal', 'multivendorx')} titleIcon="withdraw" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+					<CardComponent title={__('Last Withdrawal', 'multivendorx')} titleIcon="withdraw" desc="View your most recent withdrawal details and payment status.">
 						{lastWithdraws && lastWithdraws.length > 0 ? (
 							lastWithdraws.map((item: WithdrawalItem) => (
 								<div

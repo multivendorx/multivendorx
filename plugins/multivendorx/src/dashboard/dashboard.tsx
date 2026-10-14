@@ -606,7 +606,7 @@ const Dashboard: React.FC = () => {
 					<CardComponent
 						title={__('Sales Overview', 'multivendorx')}
 						titleIcon="dollar"
-						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+						desc="Track your earnings, orders, and sales over time."
 					>
 						{revenueData && revenueData.length > 0 ? (
 							<ResponsiveContainer height={250}>
@@ -671,7 +671,7 @@ const Dashboard: React.FC = () => {
 					<CardComponent
 						title={__('Last Withdrawal', 'multivendorx')}
 						titleIcon="wallet"
-						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+						desc="View your most recent payout and transaction details."
 					>
 						<div className="top-customer-wrapper">
 							{lastWithdraws && lastWithdraws.length > 0 ? (
@@ -734,7 +734,7 @@ const Dashboard: React.FC = () => {
 					<CardComponent
 						title={__('Visitors Map', 'multivendorx')}
 						titleIcon="global-community"
-						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+						desc="See where your store visitors are located."
 					>
 						<VisitorsMap dateRange={dateRange} />
 					</CardComponent>
@@ -744,7 +744,7 @@ const Dashboard: React.FC = () => {
 					<CardComponent
 						title={__('Recent Orders', 'multivendorx')}
 						titleIcon="order"
-						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+						desc="Monitor your latest orders and their current status."
 						iconName="external icon"
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
@@ -791,7 +791,7 @@ const Dashboard: React.FC = () => {
 					<CardComponent
 						title={__('Best-Selling Products', 'multivendorx')}
 						titleIcon="single-product"
-						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+						desc="Track your top products by sales volume."
 						iconName="external icon"
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
@@ -826,7 +826,7 @@ const Dashboard: React.FC = () => {
 					<CardComponent
 						title={__('Commission Overview', 'multivendorx')}
 						titleIcon="commission"
-						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+						desc="Compare earned commissions, refunds, and total revenue.."
 						iconName="external icon"
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
@@ -884,7 +884,7 @@ const Dashboard: React.FC = () => {
 						<CardComponent
 							title={__('Admin Announcements', 'multivendorx')}
 							titleIcon="announcement"
-							desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+							desc="Stay updated with the latest marketplace announcements."
 							iconName="external icon"
 							onIconClick={() => {
 								const url = appLocalizer.permalink_structure
@@ -925,7 +925,7 @@ const Dashboard: React.FC = () => {
 						<CardComponent
 							title={__('Pending Refunds', 'multivendorx')}
 							titleIcon="marketplace-refund"
-							desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+							desc="Review refund requests that need your attention."
 							iconName="external icon"
 							onIconClick={() => {
 								const url = appLocalizer.permalink_structure
@@ -975,7 +975,7 @@ const Dashboard: React.FC = () => {
 							<CardComponent
 								title={__('Top Customers', 'multivendorx')}
 								titleIcon="person"
-								desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+								desc="Discover your highest-value customers by purchase activity."
 							>
 								{customers && customers.length > 0 ? (
 									customers.map((order, index) => {
@@ -1016,7 +1016,7 @@ const Dashboard: React.FC = () => {
 					<CardComponent
 						title={__('Store Activity', 'multivendorx')}
 						titleIcon="notification"
-						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+						desc="Keep track of important events and updates from your store."
 					>
 						<div className="activity-log">
 							{Array.isArray(activities) &&
@@ -1044,7 +1044,7 @@ const Dashboard: React.FC = () => {
 						<CardComponent
 							title={__('Latest Reviews', 'multivendorx')}
 							titleIcon="store-review"
-							desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+							desc="Read recent customer feedback on your products."
 							iconName="external icon"
 							onIconClick={() => {
 								const url = appLocalizer.permalink_structure

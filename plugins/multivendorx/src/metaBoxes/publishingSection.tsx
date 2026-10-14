@@ -42,7 +42,7 @@ const PublishingSection = ({ product, setProduct, handleChange }) => {
 		<CardComponent
 			title={__('Publishing', 'multivendorx')}
 			titleIcon="publish"
-			desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+			desc="Manage your product’s visibility and publishing status."
 			action={
 				<>
 					<label
