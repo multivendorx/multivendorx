@@ -253,8 +253,16 @@ class Utill {
         // Use the theme template if it exists, otherwise use the plugin template.
         $located = file_exists( $theme_template ) ? $theme_template : CatalogX()->plugin_path . 'templates/' . $template_name;
 
-        // Load the template.
-        load_template( $located, false, $args );
+        // WP core's load_template() only extracts $wp_query->query_vars, not
+        // the $args passed here - unlike WooCommerce's own wc_get_template(),
+        // which these email templates are written to match (bare vars like
+        // $email_heading alongside $args['...'] for everything else). Extract
+        // here so both access styles work.
+        if ( $args && is_array( $args ) ) {
+            extract( $args ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
+        }
+
+        include $located;
     }
 
 
