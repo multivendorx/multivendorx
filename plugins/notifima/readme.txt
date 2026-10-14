@@ -172,6 +172,7 @@ Manual installation method requires downloading the [Notifima] (https://wordpres
 = 3.1.8 - 2026-10-20 =
 * Added     - Compatibility of WordPress 7.1.3.
 * Added     - Compatibility of WooCommerce 11.2.1.
+* Fixed     - Issue in the Downloaded CSV file with Subscriber details.
 * Updated   - Language file.
 
 = 3.1.7 - 2026-10-06 =
