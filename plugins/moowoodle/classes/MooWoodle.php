@@ -281,7 +281,7 @@ final class MooWoodle {
      * @return object | null
      */
 	public static function init( $file ) {
-        if ( null === self::$instance ) {
+        if ( empty( self::$instance ) ) {
             self::$instance = new self( $file );
         }
 

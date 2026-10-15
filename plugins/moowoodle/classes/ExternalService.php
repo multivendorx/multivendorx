@@ -99,7 +99,7 @@ class ExternalService {
 	 * @return array $response
 	 */
 	private function parse_moodle_response( $response ) {
-		if ( null === $response ) {
+		if ( empty( $response ) ) {
 			return array( 'error' => 'Response is not available' );
 		}
 

@@ -54,7 +54,7 @@ class Enrollment {
 			$where[] = "user_id IN ($ids)";
 		}
 
-		if ( isset( $enrollment_args['user_email'] ) && '' !== $enrollment_args['user_email'] ) {
+		if ( ! empty( $enrollment_args['user_email'] ) ) {
 			$email   = sanitize_email( strtolower( trim( $enrollment_args['user_email'] ) ) );
 			$where[] = $wpdb->prepare( 'LOWER(user_email) = %s', $email );
 		}
@@ -81,7 +81,7 @@ class Enrollment {
 			$where[] = $wpdb->prepare( 'order_id = %d', $enrollment_args['order_id'] );
 		}
 
-		if ( isset( $enrollment_args['status'] ) && '' !== $enrollment_args['status'] ) {
+		if ( ! empty( $enrollment_args['status'] ) ) {
 			$where[] = $wpdb->prepare( 'status = %s', sanitize_text_field( $enrollment_args['status'] ) );
 		}
 

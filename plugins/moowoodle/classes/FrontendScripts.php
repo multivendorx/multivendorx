@@ -50,10 +50,10 @@ class FrontendScripts {
 	 */
     public static function get_asset_path( $path_type = 'url', $plugin_path = '', $plugin_url = '' ) {
         $build_path = 'assets/';
-        if ( '' === $plugin_path ) {
+        if ( empty( $plugin_path ) ) {
             $plugin_path = MooWoodle()->plugin_path;
         }
-        if ( '' === $plugin_url ) {
+        if ( empty( $plugin_url ) ) {
             $plugin_url = MooWoodle()->plugin_url;
         }
 
@@ -245,7 +245,7 @@ class FrontendScripts {
      * @return array Settings keyed by tab name.
      */
     public static function get_admin_settings() {
-        if ( null !== self::$settings_cache ) {
+        if ( ! empty( self::$settings_cache ) ) {
             return self::$settings_cache;
         }
 
@@ -271,7 +271,7 @@ class FrontendScripts {
      * @return array Account menu items.
      */
     public static function get_account_menu() {
-        if ( null !== self::$account_menu_cache ) {
+        if ( ! empty( self::$account_menu_cache ) ) {
             return self::$account_menu_cache;
         }
 
