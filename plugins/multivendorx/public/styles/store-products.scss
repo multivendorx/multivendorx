@@ -8,7 +8,6 @@ $star-color: #d49c00;
 // common style 
 .store-card,
 .store-list {
-
     h3,
     h4,
     h5,
@@ -179,7 +178,6 @@ $star-color: #d49c00;
     }
 
     .store-details {
-
         .details {
             width: 100%;
 
@@ -239,7 +237,6 @@ $star-color: #d49c00;
     }
 
     &.signature-view {
-
         h2,
         .store-address {
             text-align: center;
@@ -459,7 +456,6 @@ $star-color: #d49c00;
 //  review page start
 #multivendorx-store-reviews {
     .avg-rating-summary {
-
         .overall-wrapper {
             margin-bottom: 1rem;
             display: flex;
@@ -677,7 +673,6 @@ $star-color: #d49c00;
 
 // Request timeline section
 .multivendorx-timeline {
-
     .multivendorx-timeline-item {
         display: flex;
         gap: 1.5rem;
@@ -791,6 +786,7 @@ $star-color: #d49c00;
 
     
 }
+
 .multivendorxstep-wizard {
         margin: 1rem 0 2rem;
         width: 50%;
@@ -880,6 +876,7 @@ $star-color: #d49c00;
             }
         }
     }
+
 .multivendorxstep-wizard {
     margin: 1rem 0 2rem;
     width: 50%;
