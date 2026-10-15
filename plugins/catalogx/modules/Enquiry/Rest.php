@@ -43,7 +43,7 @@ class Rest {
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'create_item' ),
-                    'permission_callback' => array( $this, 'create_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'catalogx_create_item_permissions_check' ),
                 ),
             )
         );
@@ -54,7 +54,7 @@ class Rest {
      *
      * @return bool True if the user has permission, false otherwise.
      */
-    public function create_item_permissions_check() {
+    public function catalogx_create_item_permissions_check() {
         return Utill::current_user_has_capability( array( 'customer', 'wholesale_user', 'manage_options' ), '', 'enquiry_user_permission' );
     }
 

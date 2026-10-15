@@ -150,6 +150,7 @@ class Installer {
     /**
      * Migrate database.
      *
+     * @param string $previous_version The plugin version being upgraded from.
      * @return void
      */
     public static function run_migrations( $previous_version ) {
@@ -246,25 +247,29 @@ class Installer {
 
             // Get terms with '_category_id' meta and optional '_parent' meta for 'course_cat' taxonomy.
             $category_migration_query = $wpdb->prepare(
-                "
-                SELECT 
+                '
+                SELECT
                     t.term_id,
                     t.name,
                     tm.meta_value AS id,
                     pm.meta_value AS parent_id
-                FROM {$wpdb->terms} t
-                INNER JOIN {$wpdb->term_taxonomy} tt 
+                FROM %i t
+                INNER JOIN %i tt
                     ON t.term_id = tt.term_id
-                INNER JOIN {$wpdb->termmeta} tm 
-                    ON t.term_id = tm.term_id AND tm.meta_key = '_category_id' AND tm.meta_value > 0
-                LEFT JOIN {$wpdb->termmeta} pm 
-                    ON t.term_id = pm.term_id AND pm.meta_key = '_parent'
+                INNER JOIN %i tm
+                    ON t.term_id = tm.term_id AND tm.meta_key = \'_category_id\' AND tm.meta_value > 0
+                LEFT JOIN %i pm
+                    ON t.term_id = pm.term_id AND pm.meta_key = \'_parent\'
                 WHERE tt.taxonomy = %s
-            ",
+            ',
+                $wpdb->terms,
+                $wpdb->term_taxonomy,
+                $wpdb->termmeta,
+                $wpdb->termmeta,
                 'course_cat'
             );
 
-        $category_terms = $wpdb->get_results( $category_migration_query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+        $category_terms = $wpdb->get_results( $category_migration_query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( empty( $category_terms ) ) {
 			return;
@@ -433,29 +438,32 @@ class Installer {
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
         $wpdb->query(
-            "
-            UPDATE {$wpdb->postmeta}
-            SET meta_key = CASE meta_key
-                WHEN '_course_startdate' THEN 'moowoodle_course_startdate'
-                WHEN '_course_enddate' THEN 'moowoodle_course_enddate'
-                WHEN 'moodle_course_id' THEN 'moowoodle_moodle_course_id'
-                WHEN 'linked_course_id' THEN 'moowoodle_wordpress_course_id'
-                WHEN 'linked_cohort_id' THEN 'moowoodle_wordpress_cohort_id'
-                WHEN 'moodle_cohort_id' THEN 'moowoodle_moodle_cohort_id'
-                WHEN 'moodle_group_id' THEN 'moowoodle_moodle_group_id'
-                WHEN 'linked_group_id' THEN 'moowoodle_wordpress_group_id'
-            END
-            WHERE meta_key IN (
-                '_course_startdate',
-                '_course_enddate',
-                'moodle_course_id',
-                'linked_course_id',
-                'linked_cohort_id',
-                'moodle_cohort_id',
-                'moodle_group_id',
-                'linked_group_id'
+            $wpdb->prepare(
+                '
+                UPDATE %i
+                SET meta_key = CASE meta_key
+                    WHEN \'_course_startdate\' THEN \'moowoodle_course_startdate\'
+                    WHEN \'_course_enddate\' THEN \'moowoodle_course_enddate\'
+                    WHEN \'moodle_course_id\' THEN \'moowoodle_moodle_course_id\'
+                    WHEN \'linked_course_id\' THEN \'moowoodle_wordpress_course_id\'
+                    WHEN \'linked_cohort_id\' THEN \'moowoodle_wordpress_cohort_id\'
+                    WHEN \'moodle_cohort_id\' THEN \'moowoodle_moodle_cohort_id\'
+                    WHEN \'moodle_group_id\' THEN \'moowoodle_moodle_group_id\'
+                    WHEN \'linked_group_id\' THEN \'moowoodle_wordpress_group_id\'
+                END
+                WHERE meta_key IN (
+                    \'_course_startdate\',
+                    \'_course_enddate\',
+                    \'moodle_course_id\',
+                    \'linked_course_id\',
+                    \'linked_cohort_id\',
+                    \'moodle_cohort_id\',
+                    \'moodle_group_id\',
+                    \'linked_group_id\'
+                )
+                ',
+                $wpdb->postmeta
             )
-            "
         );
 
         wp_cache_flush();
@@ -490,10 +498,13 @@ class Installer {
         );
 
         if ( ! $column_exists ) {
-            $wpdb->query(
-                "ALTER TABLE {$table_name}
-                ADD COLUMN expiry_date TIMESTAMP NULL DEFAULT NULL
-                AFTER enrollment_date"
+            $wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange
+                $wpdb->prepare(
+                    'ALTER TABLE %i
+                    ADD COLUMN expiry_date TIMESTAMP NULL DEFAULT NULL
+                    AFTER enrollment_date',
+                    $table_name
+                )
             );
         }
     }
