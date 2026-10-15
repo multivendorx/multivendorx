@@ -745,7 +745,7 @@ const AllCoupon: React.FC = () => {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: {
 					page: query.paged || 1,
-					row: query.per_page || 10,
+					per_page: query.per_page || 10,
 					status: query.categoryFilter || '',
 					search: query.searchValue || '',
 					after: query.filter?.created_at?.startDate
@@ -834,7 +834,7 @@ const AllCoupon: React.FC = () => {
 					open={AddCoupon}
 					onClose={() => setAddCoupon(false)}
 					width={31.25}
-					height="90%"
+					height="70%"
 					header={{
 						icon: 'coupon',
 						title: __('Add Coupon', 'multivendorx'),
