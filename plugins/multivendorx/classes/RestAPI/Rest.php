@@ -756,7 +756,7 @@ class Rest {
      * Filter WooCommerce products by meta key existence.
      *
      * @param WP_REST_Response $response REST API response.
-     * @param WC_Product        $product   Product object.
+     * @param WC_Product       $product   Product object.
      * @param WP_REST_Request  $request  Request object.
      * @return WP_REST_Response
      */

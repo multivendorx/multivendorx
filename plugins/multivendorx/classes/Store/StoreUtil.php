@@ -1000,7 +1000,7 @@ class StoreUtil {
 
         $pending_coupons = (int) $query->found_posts;
 
-        $all_stores               = self::get_store_information();
+        $all_stores                         = self::get_store_information();
         $pending_withdrawal_count           = 0;
         $pending_deactivation_request_count = 0;
 

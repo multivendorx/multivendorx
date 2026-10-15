@@ -1939,7 +1939,7 @@ class Notifications {
 			$by_dates         = ( isset( $args['start_date'] ) && isset( $args['end_date'] ) ) ? 1 : 0;
 			$start_date       = (string) ( $args['start_date'] ?? '' );
 			$end_date         = (string) ( $args['end_date'] ?? '' );
-			$filter_values   = array( $filter_by_id, isset( $args['category'] ) ? 1 : 0, $category, ...array_fill( 0, 2, $store_id ), $by_dates, $start_date, $end_date );
+			$filter_values    = array( $filter_by_id, isset( $args['category'] ) ? 1 : 0, $category, ...array_fill( 0, 2, $store_id ), $by_dates, $start_date, $end_date );
 
 			// Every filter is always present in the literal query; an unused one is a no-op.
 			if ( isset( $args['count'] ) ) {
