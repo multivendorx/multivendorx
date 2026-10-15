@@ -47,18 +47,16 @@ export const downloadCSV = (
         .filter(([, h]) => h.csvDisplay !== false)
         .map(([key, h]) => ({ key, label: h.label }));
 
-    const escapeCSV = (value: unknown) =>
-        `"${String(value ?? '').replace(/"/g, '""')}"`;
 
     // Header row
-    const csvRows = [csvColumns.map((column) => escapeCSV(column.label)).join(',')];
-
+    const csvRows = [csvColumns.map((column) => column.label).join(',')];
+    
     // Data rows
     rows.forEach((row) => {
         const rowData = csvColumns
             .map((col) => {
                 const value = row[col.key];
-                return escapeCSV(value);
+                return String(value ?? '');
             })
             .join(',');
         csvRows.push(rowData);
@@ -99,12 +97,12 @@ const SubscribersList = () => {
                             label: __('Email', 'notifima'),
                             value: row.email,
                         },
-                         {
+                        {
                             label: __('Phone', 'notifima'),
                             value: row.phone,
                         },
                     ]}
-                     badges={[
+                    badges={[
                         {
                             text: row.status,
                             className: `badge-${row.status_key}`,
@@ -114,18 +112,18 @@ const SubscribersList = () => {
             ),
         },
         date: {
-			label: __('Date', 'notifima'),
-			render: (row) => {
-				return (
-					<>
-						<div className='table-details'>
-							<span className='label'>{__('Date:', 'notifima')}</span>
-							{row.date || '-'}
-						</div>
-					</>
-				);
-			},
-		},
+            label: __('Date', 'notifima'),
+            render: (row) => {
+                return (
+                    <>
+                        <div className='table-details'>
+                            <span className='label'>{__('Date:', 'notifima')}</span>
+                            {row.date || '-'}
+                        </div>
+                    </>
+                );
+            },
+        },
     };
 
     const downloadCSVByQuery = () => {
