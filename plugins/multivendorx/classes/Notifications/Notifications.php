@@ -1727,7 +1727,19 @@ class Notifications {
 			}
 			$headers = array( 'Content-Type: text/html; charset=UTF-8' );
 
-			wp_mail( $to, $subject, $message, $headers );
+			if ( function_exists( 'vulomail_is_email_ready' ) && vulomail_is_email_ready() ) {
+				vulomail_send_email(
+					array(
+						'to'      => $to,
+						'subject' => $subject,
+						'message' => $message,
+						'headers' => $headers,
+						'source'  => 'multivendorx',
+					)
+				);
+			} else {
+				wp_mail( $to, $subject, $message, $headers );
+			}
 		}
 
 		if ( $event->sms_enabled ) {
@@ -1754,10 +1766,16 @@ class Notifications {
 				$message = str_replace( '[' . $key . ']', $value, $message );
 			}
 
-			$gateway = $this->active_gateway();
-			if ( $gateway ) {
+			if ( function_exists( 'vulomail_is_sms_ready' ) && vulomail_is_sms_ready() ) {
 				foreach ( array_filter( $receivers ) as $number ) {
-					$gateway->send( $number, $message );
+					vulomail_send_sms( $number, $message );
+				}
+			} else {
+				$gateway = $this->active_gateway();
+				if ( $gateway ) {
+					foreach ( array_filter( $receivers ) as $number ) {
+						$gateway->send( $number, $message );
+					}
 				}
 			}
 		}

@@ -176,6 +176,7 @@ final class MultiVendorX {
         $this->container['tracker']         = new Tracker();
         $this->container['promotions']      = new Promotions();
         $this->container['migration']       = new Migration\Cron();
+        $this->container['vulomail_integration'] = new Integrations\VuloMailIntegration();
 
         $this->initialize_multivendorx_log();
 
