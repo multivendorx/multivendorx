@@ -404,48 +404,58 @@ class Util {
      */
     public static function query_reviews( $args ) {
         global $wpdb;
-        $where = array();
+        $where  = array();
+        $params = array();
 
         // Filter by review IDs.
         if ( isset( $args['review_id'] ) ) {
-            $ids     = is_array( $args['review_id'] ) ? $args['review_id'] : array( $args['review_id'] );
-            $ids     = implode( ',', array_map( 'intval', $ids ) );
-            $where[] = "review_id IN ($ids)";
+            $ids          = is_array( $args['review_id'] ) ? $args['review_id'] : array( $args['review_id'] );
+            $ids          = array_map( 'intval', $ids );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $where[]      = "review_id IN ($placeholders)";
+            $params       = array_merge( $params, $ids );
         }
 
         // Filter by store_id.
         if ( isset( $args['store_id'] ) ) {
-            $where[] = 'store_id = ' . intval( $args['store_id'] );
+            $where[]  = 'store_id = %d';
+            $params[] = intval( $args['store_id'] );
         }
 
         // Filter by customer_id.
         if ( isset( $args['customer_id'] ) ) {
-            $where[] = 'customer_id = ' . intval( $args['customer_id'] );
+            $where[]  = 'customer_id = %d';
+            $params[] = intval( $args['customer_id'] );
         }
 
         // Filter by order_id.
         if ( isset( $args['order_id'] ) ) {
-            $where[] = 'order_id = ' . intval( $args['order_id'] );
+            $where[]  = 'order_id = %d';
+            $params[] = intval( $args['order_id'] );
         }
 
         // Filter by review status (pending, approved, rejected, etc.).
         if ( isset( $args['status'] ) && '' !== $args['status'] ) {
-            $where[] = "status = '" . esc_sql( $args['status'] ) . "'";
+            $where[]  = 'status = %s';
+            $params[] = $args['status'];
         }
 
         // Filter by reported flag.
         if ( isset( $args['reported'] ) ) {
-            $where[] = 'reported = ' . intval( $args['reported'] );
+            $where[]  = 'reported = %d';
+            $params[] = intval( $args['reported'] );
         }
 
         // Filter by start_date.
         if ( ! empty( $args['start_date'] ) ) {
-            $where[] = "date_created >= '" . esc_sql( $args['start_date'] ) . "'";
+            $where[]  = 'date_created >= %s';
+            $params[] = $args['start_date'];
         }
 
         // Filter by end_date.
         if ( ! empty( $args['end_date'] ) ) {
-            $where[] = "date_created <= '" . esc_sql( $args['end_date'] ) . "'";
+            $where[]  = 'date_created <= %s';
+            $params[] = $args['end_date'];
         }
         // Filter by overall_rating ("X stars & up" style).
         if ( isset( $args['overall_rating'] ) && '' !== $args['overall_rating'] ) {
@@ -457,7 +467,8 @@ class Util {
             }
 
             // Flipkart-style filter: show reviews with rating >= selected value.
-            $where[] = "overall_rating >= {$rating}";
+            $where[]  = 'overall_rating >= %f';
+            $params[] = $rating;
         }
 
         // Table name (update according to your DB structure).
@@ -465,10 +476,12 @@ class Util {
 
         // Build query.
         if ( isset( $args['count'] ) ) {
-            $query = $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table );
+            $query = 'SELECT COUNT(*) FROM %i';
         } else {
-            $query = $wpdb->prepare( 'SELECT * FROM %i', $table );
+            $query = 'SELECT * FROM %i';
         }
+
+        array_unshift( $params, $table );
 
         // Add WHERE conditions.
         if ( ! empty( $where ) ) {
@@ -487,13 +500,17 @@ class Util {
                 ? strtoupper( $args['order_dir'] )
                 : 'DESC';
 
-            $query .= ' ORDER BY ' . esc_sql( $order_by ) . ' ' . esc_sql( $order_dir );
+            $query .= ' ORDER BY ' . $order_by . ' ' . $order_dir;
         }
 
         // Limit & offset.
         if ( isset( $args['limit'] ) && isset( $args['offset'] ) && ! isset( $args['count'] ) ) {
-            $query .= ' LIMIT ' . intval( $args['limit'] ) . ' OFFSET ' . intval( $args['offset'] );
+            $query   .= ' LIMIT %d OFFSET %d';
+            $params[] = intval( $args['limit'] );
+            $params[] = intval( $args['offset'] );
         }
+
+        $query = $wpdb->prepare( $query, ...$params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
         // Run query first (no return yet).
 		$results = isset( $args['count'] )

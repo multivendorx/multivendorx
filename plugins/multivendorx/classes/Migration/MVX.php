@@ -191,7 +191,7 @@ class MVX {
         $zone_table = $wpdb->prefix . 'mvx_shipping_zone_methods';
         $results    = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$zone_table} LIMIT %d OFFSET %d",
+                "SELECT * FROM {$zone_table} LIMIT %d OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 self::BATCH_SIZE,
                 $offset
             )
@@ -288,7 +288,7 @@ class MVX {
 
         $rows = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$old_visitors_table} LIMIT %d OFFSET %d",
+                "SELECT * FROM {$old_visitors_table} LIMIT %d OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 self::BATCH_SIZE,
                 $offset
             )
@@ -339,7 +339,7 @@ class MVX {
 
         $questions = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$questions_table} LIMIT %d OFFSET %d",
+                "SELECT * FROM {$questions_table} LIMIT %d OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 self::BATCH_SIZE,
                 $offset
             )
@@ -408,10 +408,11 @@ class MVX {
 
         $spmv_products = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT product_map_id, product_id, created 
-                FROM {$old_spmv_table}
+                'SELECT product_map_id, product_id, created
+                FROM %i
                 ORDER BY product_map_id, ID
-                LIMIT %d OFFSET %d",
+                LIMIT %d OFFSET %d',
+                $old_spmv_table,
                 self::BATCH_SIZE,
                 $offset
             )
@@ -630,9 +631,9 @@ class MVX {
             // Get all user meta.
             $user_meta = $wpdb->get_results(
                 $wpdb->prepare(
-                    "SELECT meta_key, meta_value 
-                    FROM {$wpdb->usermeta} 
-                    WHERE user_id = %d",
+                    "SELECT meta_key, meta_value
+                    FROM {$wpdb->usermeta}
+                    WHERE user_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                     $user_id
                 ),
                 ARRAY_A
@@ -640,7 +641,7 @@ class MVX {
             $term_id   = get_user_meta( $user_id, '_vendor_term_id', true );
             $term      = $wpdb->get_row(
                 $wpdb->prepare(
-                    "SELECT name, slug FROM {$wpdb->terms} WHERE term_id = %d",
+                    "SELECT name, slug FROM {$wpdb->terms} WHERE term_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                     $term_id
                 )
             );
@@ -1105,7 +1106,7 @@ class MVX {
 
         $transactions = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$old_ledger_table} LIMIT %d OFFSET %d",
+                "SELECT * FROM {$old_ledger_table} LIMIT %d OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 self::BATCH_SIZE,
                 $offset
             ),

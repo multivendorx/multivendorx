@@ -7,6 +7,8 @@
 
 namespace MooWoodle\Core;
 
+defined( 'ABSPATH' ) || exit;
+
 use MooWoodle\Util;
 
 /**
@@ -35,13 +37,15 @@ class Category {
 			: array_filter( array_map( 'intval', (array) $category_ids ) );
 
 		$table_name = $wpdb->prefix . Util::TABLES['category'];
-		$query      = "SELECT * FROM {$table_name}";
-        if ( ! empty( $category_ids ) ) {
-            $in     = implode( ',', $category_ids );
-            $query .= " WHERE id IN ($in)";
-        }
-		$categories = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-		return $categories;
+
+		if ( empty( $category_ids ) ) {
+			return $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i', $table_name ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		}
+
+		$placeholders = implode( ',', array_fill( 0, count( $category_ids ), '%d' ) );
+
+		// $placeholders is a locally built sequence of %d tokens sized to count( $category_ids ), never user input; each id is still bound individually below.
+		return $wpdb->get_results( $wpdb->prepare( "SELECT * FROM %i WHERE id IN ($placeholders)", array_merge( array( $table_name ), $category_ids ) ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
     }
 
 	/**

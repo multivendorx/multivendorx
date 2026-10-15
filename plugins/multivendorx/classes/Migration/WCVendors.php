@@ -135,7 +135,7 @@ class WCVendors {
         $wc_orders_table = $wpdb->prefix . 'pv_commission';
         $table_name      = $wpdb->prefix . Utill::TABLES['commission'];
 
-        $wc_orders = $wpdb->get_results( "SELECT * FROM {$wc_orders_table}" );
+        $wc_orders = $wpdb->get_results( "SELECT * FROM {$wc_orders_table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
         foreach ( $wc_orders as $row ) {
             $order_id = $row->order_id;

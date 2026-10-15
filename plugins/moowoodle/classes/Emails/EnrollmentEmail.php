@@ -7,6 +7,8 @@
 
 namespace MooWoodle\Emails;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MooWoodle EnrollmentEmail class
  *
