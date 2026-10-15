@@ -307,7 +307,7 @@ const DashboardTab: React.FC<object> = () => {
 				<CardComponent
 					title={__('Extend your website', 'moowoodle')}
 					titleIcon="section"
-					desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+					desc="Discover more tools to grow your marketplace."
 				>
 					<ColumnComponent row>
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
@@ -490,7 +490,7 @@ const DashboardTab: React.FC<object> = () => {
 				<CardComponent
 					title={__('Need help getting started?', 'moowoodle')}
 					titleIcon="help"
-					desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+					desc="Find the guides and support you need to build your marketplace."
 				>
 					<div className="quick-link">
 						{resources.map((res) => (
