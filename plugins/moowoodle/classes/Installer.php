@@ -246,32 +246,30 @@ class Installer {
             global $wpdb;
 
             // Get terms with '_category_id' meta and optional '_parent' meta for 'course_cat' taxonomy.
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-            $category_terms = $wpdb->get_results(
-                $wpdb->prepare(
-                    '
-                    SELECT
-                        t.term_id,
-                        t.name,
-                        tm.meta_value AS id,
-                        pm.meta_value AS parent_id
-                    FROM %i t
-                    INNER JOIN %i tt
-                        ON t.term_id = tt.term_id
-                    INNER JOIN %i tm
-                        ON t.term_id = tm.term_id AND tm.meta_key = \'_category_id\' AND tm.meta_value > 0
-                    LEFT JOIN %i pm
-                        ON t.term_id = pm.term_id AND pm.meta_key = \'_parent\'
-                    WHERE tt.taxonomy = %s
-                ',
-                    $wpdb->terms,
-                    $wpdb->term_taxonomy,
-                    $wpdb->termmeta,
-                    $wpdb->termmeta,
-                    'course_cat'
-                ),
-                ARRAY_A
+            $category_migration_query = $wpdb->prepare(
+                '
+                SELECT
+                    t.term_id,
+                    t.name,
+                    tm.meta_value AS id,
+                    pm.meta_value AS parent_id
+                FROM %i t
+                INNER JOIN %i tt
+                    ON t.term_id = tt.term_id
+                INNER JOIN %i tm
+                    ON t.term_id = tm.term_id AND tm.meta_key = \'_category_id\' AND tm.meta_value > 0
+                LEFT JOIN %i pm
+                    ON t.term_id = pm.term_id AND pm.meta_key = \'_parent\'
+                WHERE tt.taxonomy = %s
+            ',
+                $wpdb->terms,
+                $wpdb->term_taxonomy,
+                $wpdb->termmeta,
+                $wpdb->termmeta,
+                'course_cat'
             );
+
+        $category_terms = $wpdb->get_results( $category_migration_query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( empty( $category_terms ) ) {
 			return;

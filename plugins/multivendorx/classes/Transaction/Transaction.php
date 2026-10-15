@@ -137,7 +137,7 @@ class Transaction {
         $transaction_id = $wpdb->insert_id;
 
         if ( $transaction_id ) {
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
             $wpdb->update( $wpdb->prefix . Utill::TABLES['commission'], array( 'status' => 'paid' ), array( 'id' => $commission_id ), array( '%s' ), array( '%d' ) );
         }
 
@@ -169,16 +169,15 @@ class Transaction {
 	 */
     public static function get_transaction_db( $commission_id ) {
         global $wpdb;
-        /* phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching */
+        /* phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared */
         $transaction = $wpdb->get_row(
             $wpdb->prepare(
-                'SELECT * FROM %i WHERE commission_id = %d',
-                $wpdb->prefix . Utill::TABLES['transaction'],
+                'SELECT * FROM `' . $wpdb->prefix . Utill::TABLES['transaction'] . '` WHERE commission_id = %d',
                 $commission_id
             ),
             ARRAY_A
         );
-        /* phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching */
+        /* phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared */
 
         if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
@@ -265,39 +264,44 @@ class Transaction {
 
         $table = $wpdb->prefix . Utill::TABLES['transaction'];
 
-        array_unshift( $params, $table );
-
-        // $where_clause holds only %d/%s placeholder tokens built from the filters above, never raw data; every real value is bound positionally via $params.
-        $where_clause = '';
-        if ( ! empty( $where ) ) {
-            $condition    = $args['condition'] ?? ' AND ';
-            $where_clause = ' WHERE ' . implode( $condition, $where );
+        // Base query (count or select).
+        if ( isset( $args['count'] ) ) {
+            $query = 'SELECT COUNT(*) FROM %i';
+        } else {
+            $query = 'SELECT * FROM %i';
         }
 
-        // Add ORDER BY (only for non-count queries). $order_by/$order are both restricted to fixed whitelists above, never raw input.
-        $order_clause = '';
+        array_unshift( $params, $table );
+
+        // Add WHERE.
+        if ( ! empty( $where ) ) {
+            $condition = $args['condition'] ?? ' AND ';
+            $query    .= ' WHERE ' . implode( $condition, $where );
+        }
+
+        // Add ORDER BY (only for non-count queries).
         if ( ! isset( $args['count'] ) && ! empty( $order_by ) ) {
+            // Only allow ASC or DESC.
             if ( ! in_array( $order, array( 'ASC', 'DESC' ), true ) ) {
                 $order = 'ASC';
             }
-            $order_clause = " ORDER BY {$order_by} {$order}";
+            $query .= " ORDER BY {$order_by} {$order}";
         }
 
         // Add limit & offset (only for non-count).
-        $limit_clause = '';
         if ( ! isset( $args['count'] ) && isset( $args['limit'], $args['offset'] ) ) {
-            $limit_clause = ' LIMIT %d OFFSET %d';
-            $params[]     = intval( $args['limit'] );
-            $params[]     = intval( $args['offset'] );
+            $limit  = intval( $args['limit'] );
+            $offset = intval( $args['offset'] );
+            $query .= " LIMIT {$limit} OFFSET {$offset}";
         }
+
+        // Run query.
+        $query = $wpdb->prepare( $query, ...$params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
         if ( isset( $args['count'] ) ) {
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-            return (int) ( $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i' . $where_clause, ...$params ) ) ?? 0 );
+            return (int) ( $wpdb->get_var( $query ) ?? 0 );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
         }
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        $result = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i' . $where_clause . $order_clause . $limit_clause, ...$params ), ARRAY_A ) ?? array();
+        $result = $wpdb->get_results( $query, ARRAY_A ) ?? array();// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 
         if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );

@@ -65,7 +65,7 @@ class Rest extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'multivendorx_get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
                 ),
             )
         );
@@ -76,29 +76,27 @@ class Rest extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'multivendorx_permissions_check' ),
+                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
                     'args'                => array( 'id' => array( 'required' => true ) ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'multivendorx_permissions_check' ),
+                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
                 ),
             )
         );
     }
 
-    public function multivendorx_get_items_permissions_check( $request ) {
-        return Utill::current_user_has_capability( array( 'edit_stores' ) );
+    public function get_items_permissions_check( $request ) {
+        return current_user_can( 'read' ) || current_user_can( 'edit_stores' ); // phpcs:ignore WordPress.WP.Capabilities.Unknown
     }
 
-    public function multivendorx_permissions_check( $request ) {
-        return Utill::current_user_has_capability( array( 'read' ) );
+    public function update_item_permissions_check( $request ) {
+        return current_user_can( 'read' ) || current_user_can( 'edit_stores' ); // phpcs:ignore WordPress.WP.Capabilities.Unknown
     }
 }
 ```
-
-Permission-callback method names in this plugin are prefixed `multivendorx_` (e.g. `multivendorx_get_items_permissions_check`, `multivendorx_permissions_check`) — a deliberate convention applied across every REST controller, in place of `WP_REST_Controller`'s own unprefixed naming suggestion. `get_item`'s and `update_item`'s routes above share one `multivendorx_permissions_check()` rather than each having its own distinctly-named check — don't assume every route needs a uniquely-named permission method; collapse to one shared check when the logic is actually identical, same as this real example does.
 
 11 modules have their own `Rest.php` as of this writing: `SharedListing`, `Intelligence`, `MarketplaceRefund`, `Announcement`, `CustomerQueries`, `WPML`, `FollowStore`, `MarketplaceCompliance`, `Knowledgebase`, `StoreShipping`, `StoreReview`.
 
@@ -119,9 +117,17 @@ public function get_items( $request ) {
 }
 ```
 
-This nonce check is belt-and-suspenders on top of the permission callback, not a replacement for it.
+This nonce check is meant to be belt-and-suspenders on top of an already-correct `permission_callback` — but see the Security note below, where that's not actually the case for this specific controller.
 
-**Update**: an earlier version of this doc flagged `classes/RestAPI/Controllers/Stores.php`'s `get_items_permissions_check()` as an unconditional `return true;` with no real capability check. **That's no longer the case** — verified against the current file: `multivendorx_get_items_permissions_check()` (`Stores.php:93-95`) now checks `Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) )`, and the controller's `multivendorx_create_item_permissions_check()`/`multivendorx_update_item_permissions_check()` (`Stores.php:103-115`) check `create_stores`/`edit_stores` respectively. All three are real capability checks today — don't carry forward the old security concern when reading or citing this file.
+**Security note**: `classes/RestAPI/Controllers/Stores.php:93-95`'s `get_items_permissions_check()` — used as the `permission_callback` for `GET /stores`, `GET /stores/{id}`, and `GET /states/{country}` — is an unconditional `return true;`, not a capability check:
+
+```php
+public function get_items_permissions_check( $request ) {
+    return true;
+}
+```
+
+The nonce check quoted above (present in `get_items()`'s body) is the *only* real gate on those three routes — any logged-in user with a valid REST nonce (which WordPress issues broadly, not per-capability) can call them. Contrast with the same controller's `create_item_permissions_check()`/`update_item_permissions_check()` (`Stores.php:102-113`), which do check `current_user_can( 'create_stores' )`/`current_user_can( 'edit_stores' )`. Documented here as a real, verified fact about existing code — not fixed as a side effect of writing this doc; flag to the maintainers if broader store data shouldn't be readable this way.
 
 ## Errors
 

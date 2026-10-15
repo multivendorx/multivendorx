@@ -50,8 +50,8 @@ class CatalogX_Installation_Test extends WP_UnitTestCase {
 
             $this->assertSame(
                 $full_table_name,
-                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-                $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $full_table_name ) ),
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                $wpdb->get_var( "SHOW TABLES LIKE '{$full_table_name}'" ),
                 "Expected table {$full_table_name} to exist after installation"
             );
         }

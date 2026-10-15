@@ -449,26 +449,25 @@ class Subscriber {
         }
 
         $table = $wpdb->prefix . Utill::TABLES['subscribers'];
+        $query = 'SELECT id, email FROM %i WHERE product_id = %d AND status = %s';
+        $args  = array( $table, $product_id, $status );
 
         // Failed notifications: skip subscribers who reached the max retry attempts.
-        $f_retry = ( 'notification_failed' === $status ) ? 1 : 0;
-        $v_retry = $f_retry ? (int) Notifima()->setting->get_setting( 'notification_retry_max_attempts', 3 ) : 0;
+        if ( 'notification_failed' === $status ) {
+            $query .= ' AND retry_count < %d';
+            $args[] = (int) Notifima()->setting->get_setting( 'notification_retry_max_attempts', 3 );
+        }
 
-        $v_limit = ( $limit > 0 ) ? (int) $limit : PHP_INT_MAX;
+        // Lowest retry count first (it is always 0 for other statuses).
+        $query .= ' ORDER BY retry_count ASC, id ASC';
 
-        // $f_retry makes its condition a no-op when the status isn't 'notification_failed'; LIMIT
-        // is always present, defaulting to an effectively unbounded value, so the template never changes shape.
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $rows = $wpdb->get_results(
-            $wpdb->prepare(
-                'SELECT id, email FROM %i
-                WHERE product_id = %d AND status = %s
-                AND ( %d = 0 OR retry_count < %d )
-                ORDER BY retry_count ASC, id ASC
-                LIMIT %d',
-                array( $table, $product_id, $status, $f_retry, $v_retry, $v_limit )
-            )
-        );
+        if ( $limit > 0 ) {
+            $query .= ' LIMIT %d';
+            $args[] = (int) $limit;
+        }
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+        $rows = $wpdb->get_results( $wpdb->prepare( $query, $args ) );
 
         return wp_list_pluck( (array) $rows, 'email', 'id' );
     }

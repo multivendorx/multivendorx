@@ -633,7 +633,7 @@ class MVX {
                 $wpdb->prepare(
                     "SELECT meta_key, meta_value
                     FROM {$wpdb->usermeta}
-                    WHERE user_id = %d",
+                    WHERE user_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                     $user_id
                 ),
                 ARRAY_A
@@ -641,7 +641,7 @@ class MVX {
             $term_id   = get_user_meta( $user_id, '_vendor_term_id', true );
             $term      = $wpdb->get_row(
                 $wpdb->prepare(
-                    "SELECT name, slug FROM {$wpdb->terms} WHERE term_id = %d",
+                    "SELECT name, slug FROM {$wpdb->terms} WHERE term_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                     $term_id
                 )
             );

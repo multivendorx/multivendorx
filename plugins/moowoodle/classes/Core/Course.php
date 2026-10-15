@@ -59,162 +59,100 @@ class Course {
 
 		$table_name = $wpdb->prefix . Util::TABLES['course'];
 
-		$is_count = ! empty( $query_args['count'] );
+		$where        = array();
+		$query_params = array();
 
-		// No caller in this codebase passes 'fields' today; rather than needing a dynamic,
-		// caller-controlled SELECT column list (which can't be bound via the single-identifier
-		// %i placeholder), every column is always fetched and projected down to the requested
-		// subset in PHP afterward.
-		$requested_fields = array();
+		$is_count      = ! empty( $query_args['count'] );
+		$select_fields = '*';
+
 		if ( ! empty( $query_args['fields'] ) ) {
-			$requested_fields = array_map( 'sanitize_key', is_array( $query_args['fields'] ) ? $query_args['fields'] : array( $query_args['fields'] ) );
+			if ( is_array( $query_args['fields'] ) ) {
+				$select_fields = implode( ', ', array_map( 'sanitize_key', $query_args['fields'] ) );
+			} else {
+				$select_fields = sanitize_key( $query_args['fields'] );
+			}
 		}
 
-		$id_list = ! empty( $query_args['id'] ) ? implode( ',', array_map( 'intval', (array) $query_args['id'] ) ) : '';
+		$query_params[] = $table_name;
 
-		$is_and = ( strtoupper( trim( $query_args['condition'] ?? 'AND' ) ) !== 'OR' ) ? 1 : 0;
+		$sql = $is_count
+			? 'SELECT COUNT(*) FROM %i'
+			: "SELECT {$select_fields} FROM %i";
 
-		$f_id      = ! empty( $query_args['id'] ) ? 1 : 0;
-		$f_course  = isset( $query_args['moodle_course_id'] ) ? 1 : 0;
-		$v_course  = isset( $query_args['moodle_course_id'] ) ? (int) $query_args['moodle_course_id'] : 0;
-		$f_cat     = isset( $query_args['category_id'] ) ? 1 : 0;
-		$v_cat     = isset( $query_args['category_id'] ) ? (int) $query_args['category_id'] : 0;
-		$f_product = isset( $query_args['product_id'] ) ? 1 : 0;
-		$v_product = isset( $query_args['product_id'] ) ? (int) $query_args['product_id'] : 0;
-		$f_start   = isset( $query_args['startdate'] ) ? 1 : 0;
-		$v_start   = isset( $query_args['startdate'] ) ? (int) $query_args['startdate'] : 0;
-		$f_end     = isset( $query_args['enddate'] ) ? 1 : 0;
-		$v_end     = isset( $query_args['enddate'] ) ? (int) $query_args['enddate'] : 0;
-		$f_short   = isset( $query_args['shortname'] ) ? 1 : 0;
-		$v_short   = isset( $query_args['shortname'] ) ? ( '%' . $wpdb->esc_like( $query_args['shortname'] ) . '%' ) : '';
-		$f_full    = isset( $query_args['fullname'] ) ? 1 : 0;
-		$v_full    = isset( $query_args['fullname'] ) ? ( '%' . $wpdb->esc_like( $query_args['fullname'] ) . '%' ) : '';
-		$f_expired = ( isset( $query_args['expired'] ) && $query_args['expired'] ) ? 1 : 0;
-		$v_now     = time();
-		$f_hasprod = ( isset( $query_args['has_product'] ) && $query_args['has_product'] ) ? 1 : 0;
+		if ( ! empty( $query_args['id'] ) ) {
+			$ids          = array_map( 'intval', (array) $query_args['id'] );
+			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 
-		$any_filter = ( $f_id || $f_course || $f_cat || $f_product || $f_start || $f_end || $f_short || $f_full || $f_expired || $f_hasprod ) ? 1 : 0;
+			$where[]      = "id IN ($placeholders)";
+			$query_params = array_merge( $query_params, $ids );
+		}
 
-		$has_limit = isset( $query_args['limit'] );
-		$v_limit   = $has_limit ? (int) $query_args['limit'] : PHP_INT_MAX;
-		$v_offset  = ( $has_limit && isset( $query_args['offset'] ) ) ? (int) $query_args['offset'] : 0;
-
-		// Every filter below is always present in the literal query string. In AND-mode an absent
-		// filter's "and" term is a no-op (TRUE); in OR-mode its "or" term is excluded (FALSE) —
-		// $is_and picks which branch actually constrains the result; $any_filter short-circuits
-		// the whole expression to TRUE when nothing is set (matching this method's original
-		// "no WHERE" behaviour regardless of 'condition'). The template never changes shape.
-		$where_values = array(
-			$any_filter,
-			$is_and,
-			$f_id, $id_list, $f_course, $v_course, $f_cat, $v_cat, $f_product, $v_product,
-			$f_start, $v_start, $f_end, $v_end, $f_short, $v_short, $f_full, $v_full,
-			$f_expired, $v_now, $f_hasprod,
-			$is_and,
-			$f_id, $id_list, $f_course, $v_course, $f_cat, $v_cat, $f_product, $v_product,
-			$f_start, $v_start, $f_end, $v_end, $f_short, $v_short, $f_full, $v_full,
-			$f_expired, $v_now, $f_hasprod,
+		$supported_filters = array(
+			'moodle_course_id' => '%d',
+			'category_id'      => '%d',
+			'product_id'       => '%d',
+			'startdate'        => '%d',
+			'enddate'          => '%d',
 		);
 
-		$bind_values = array_merge( array( $table_name ), $where_values, array( $v_limit, $v_offset ) );
+		foreach ( $supported_filters as $field => $format ) {
+			if ( isset( $query_args[ $field ] ) ) {
+				$where[]        = "{$field} = {$format}";
+				$query_params[] = (int) $query_args[ $field ];
+			}
+		}
+
+		if ( isset( $query_args['shortname'] ) ) {
+			$where[]        = 'shortname LIKE %s';
+			$query_params[] = '%' . $wpdb->esc_like( $query_args['shortname'] ) . '%';
+		}
+
+		if ( isset( $query_args['fullname'] ) ) {
+			$where[]        = 'fullname LIKE %s';
+			$query_params[] = '%' . $wpdb->esc_like( $query_args['fullname'] ) . '%';
+		}
+
+		if ( isset( $query_args['expired'] ) && $query_args['expired'] ) {
+			$where[]        = 'enddate > %d';
+			$query_params[] = 0;
+
+			$where[]        = 'enddate <= %d';
+			$query_params[] = time();
+		}
+
+		if ( isset( $query_args['has_product'] ) && $query_args['has_product'] ) {
+			$where[]        = 'product_id > %d';
+			$query_params[] = 0;
+		}
+
+		if ( ! empty( $where ) ) {
+			$condition = strtoupper( $query_args['condition'] ?? 'AND' );
+			if ( ! in_array( $condition, array( 'AND', 'OR' ), true ) ) {
+				$condition = 'AND';
+			}
+			$sql .= ' WHERE ' . implode( " $condition ", $where );
+		}
+
+		if ( isset( $query_args['limit'] ) ) {
+			$sql           .= ' LIMIT %d';
+			$query_params[] = (int) $query_args['limit'];
+
+			if ( isset( $query_args['offset'] ) ) {
+				$sql           .= ' OFFSET %d';
+				$query_params[] = (int) $query_args['offset'];
+			}
+		}
+
+		// The query template is assembled from a fixed, literal $supported_filters whitelist above, never from user input.
+		$sql = $wpdb->prepare( $sql, $query_params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( $is_count ) {
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-			$course_count = $wpdb->get_var(
-				$wpdb->prepare(
-					'SELECT COUNT(*) FROM %i
-					WHERE (
-						%d = 0
-						OR (
-							( %d = 1
-								AND ( %d = 0 OR FIND_IN_SET(id, %s) )
-								AND ( %d = 0 OR moodle_course_id = %d )
-								AND ( %d = 0 OR category_id = %d )
-								AND ( %d = 0 OR product_id = %d )
-								AND ( %d = 0 OR startdate = %d )
-								AND ( %d = 0 OR enddate = %d )
-								AND ( %d = 0 OR shortname LIKE %s )
-								AND ( %d = 0 OR fullname LIKE %s )
-								AND ( %d = 0 OR ( enddate > 0 AND enddate <= %d ) )
-								AND ( %d = 0 OR product_id > 0 )
-							)
-							OR
-							( %d = 0
-								AND (
-									( %d = 1 AND FIND_IN_SET(id, %s) )
-									OR ( %d = 1 AND moodle_course_id = %d )
-									OR ( %d = 1 AND category_id = %d )
-									OR ( %d = 1 AND product_id = %d )
-									OR ( %d = 1 AND startdate = %d )
-									OR ( %d = 1 AND enddate = %d )
-									OR ( %d = 1 AND shortname LIKE %s )
-									OR ( %d = 1 AND fullname LIKE %s )
-									OR ( %d = 1 AND ( enddate > 0 AND enddate <= %d ) )
-									OR ( %d = 1 AND product_id > 0 )
-								)
-							)
-						)
-					)
-					LIMIT %d OFFSET %d',
-					$bind_values
-				)
-			);
+			$course_count = $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 			return $course_count ?? 0;
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$courses = $wpdb->get_results(
-			$wpdb->prepare(
-				'SELECT * FROM %i
-				WHERE (
-					%d = 0
-					OR (
-						( %d = 1
-							AND ( %d = 0 OR FIND_IN_SET(id, %s) )
-							AND ( %d = 0 OR moodle_course_id = %d )
-							AND ( %d = 0 OR category_id = %d )
-							AND ( %d = 0 OR product_id = %d )
-							AND ( %d = 0 OR startdate = %d )
-							AND ( %d = 0 OR enddate = %d )
-							AND ( %d = 0 OR shortname LIKE %s )
-							AND ( %d = 0 OR fullname LIKE %s )
-							AND ( %d = 0 OR ( enddate > 0 AND enddate <= %d ) )
-							AND ( %d = 0 OR product_id > 0 )
-						)
-						OR
-						( %d = 0
-							AND (
-								( %d = 1 AND FIND_IN_SET(id, %s) )
-								OR ( %d = 1 AND moodle_course_id = %d )
-								OR ( %d = 1 AND category_id = %d )
-								OR ( %d = 1 AND product_id = %d )
-								OR ( %d = 1 AND startdate = %d )
-								OR ( %d = 1 AND enddate = %d )
-								OR ( %d = 1 AND shortname LIKE %s )
-								OR ( %d = 1 AND fullname LIKE %s )
-								OR ( %d = 1 AND ( enddate > 0 AND enddate <= %d ) )
-								OR ( %d = 1 AND product_id > 0 )
-							)
-						)
-					)
-				)
-				LIMIT %d OFFSET %d',
-				$bind_values
-			),
-			ARRAY_A
-		);
-		$courses = $courses ? $courses : array();
-
-		if ( empty( $requested_fields ) ) {
-			return $courses;
-		}
-
-		return array_map(
-			static function ( $row ) use ( $requested_fields ) {
-				return array_intersect_key( $row, array_flip( $requested_fields ) );
-			},
-			$courses
-		);
+		$courses = $wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		return $courses ? $courses : array();
 	}
 
 	/**

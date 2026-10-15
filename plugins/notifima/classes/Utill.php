@@ -203,52 +203,51 @@ class Utill {
         global $wpdb;
 
         $table = $wpdb->prefix . self::TABLES['subscribers'];
+        $where = array();
 
-        $product_id_list = isset( $args['product_ids'] ) ? implode( ',', array_map( 'absint', $args['product_ids'] ) ) : '';
+        if ( isset( $args['product_ids'] ) ) {
+            $product_ids  = array_map( 'absint', $args['product_ids'] );
+            $placeholders = implode( ',', array_fill( 0, count( $product_ids ), '%d' ) );
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- placeholder count is dynamic (one %d per id), the sniff can't verify it statically.
+            $where[] = $wpdb->prepare( "product_id IN ({$placeholders})", $product_ids );
+        }
 
-        $f_products = isset( $args['product_ids'] ) ? 1 : 0;
-        $f_email    = ! empty( $args['email'] ) ? 1 : 0;
-        $v_email    = ! empty( $args['email'] ) ? ( '%' . $wpdb->esc_like( $args['email'] ) . '%' ) : '';
-        $f_status   = ( ! empty( $args['status'] ) && 'all' !== $args['status'] ) ? 1 : 0;
-        $v_status   = $f_status ? $args['status'] : '';
-        $f_dates    = ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) ? 1 : 0;
-        $v_start    = $f_dates ? $args['start_date'] : 0;
-        $v_end      = $f_dates ? $args['end_date'] : 0;
-
-        // Every filter below is always present in the literal query string; a 0 "enabled" flag
-        // makes its condition a no-op, so the template never changes shape regardless of $args.
-        $where_values = array( $table, $f_products, $product_id_list, $f_email, $v_email, $f_status, $v_status, $f_dates, $v_start, $v_end );
-
-        if ( ! empty( $args['count'] ) ) {
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            return (int) $wpdb->get_var(
-                $wpdb->prepare(
-                    'SELECT COUNT(*) FROM %i
-                    WHERE ( %d = 0 OR FIND_IN_SET(product_id, %s) )
-                    AND ( %d = 0 OR email LIKE %s )
-                    AND ( %d = 0 OR status = %s )
-                    AND ( %d = 0 OR create_time BETWEEN FROM_UNIXTIME(%d) AND FROM_UNIXTIME(%d) )',
-                    $where_values
-                )
+        if ( ! empty( $args['email'] ) ) {
+            $where[] = $wpdb->prepare(
+                'email LIKE %s',
+                '%' . $wpdb->esc_like( $args['email'] ) . '%'
             );
         }
 
-        $has_limit = isset( $args['limit'], $args['offset'] );
-        $v_limit   = $has_limit ? (int) $args['limit'] : PHP_INT_MAX;
-        $v_offset  = $has_limit ? (int) $args['offset'] : 0;
+        if ( ! empty( $args['status'] ) && 'all' !== $args['status'] ) {
+            $where[] = $wpdb->prepare( 'status = %s', $args['status'] );
+        }
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        return $wpdb->get_results(
-            $wpdb->prepare(
-                'SELECT * FROM %i
-                WHERE ( %d = 0 OR FIND_IN_SET(product_id, %s) )
-                AND ( %d = 0 OR email LIKE %s )
-                AND ( %d = 0 OR status = %s )
-                AND ( %d = 0 OR create_time BETWEEN FROM_UNIXTIME(%d) AND FROM_UNIXTIME(%d) )
-                LIMIT %d OFFSET %d',
-                array_merge( $where_values, array( $v_limit, $v_offset ) )
-            )
-        );
+        if ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) {
+            $where[] = $wpdb->prepare(
+                'create_time BETWEEN FROM_UNIXTIME(%d) AND FROM_UNIXTIME(%d)',
+                $args['start_date'],
+                $args['end_date']
+            );
+        }
+
+        $where_sql = ! empty( $where ) ? 'WHERE ' . implode( ' AND ', $where ) : '';
+
+        if ( ! empty( $args['count'] ) ) {
+            $query = $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) . " {$where_sql}";
+
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+            return (int) $wpdb->get_var( $query );
+        }
+
+        $limit_clause = isset( $args['limit'], $args['offset'] )
+            ? $wpdb->prepare( 'LIMIT %d OFFSET %d', $args['limit'], $args['offset'] )
+            : '';
+
+        $query = $wpdb->prepare( 'SELECT * FROM %i', $table ) . " {$where_sql} {$limit_clause}";
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+        return $wpdb->get_results( $query );
     }
 
     /**

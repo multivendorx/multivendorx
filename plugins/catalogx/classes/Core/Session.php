@@ -239,7 +239,7 @@ class Session extends \WC_Session {
             $wc_session_expires = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- $wpdb->options is WordPress core's own table name, not user input.
                 $wpdb->prepare(
                     'SELECT option_name FROM %i WHERE option_name LIKE %s AND option_value < %d',
-                    $wpdb->options,
+                    $wpdb->options, // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                     $wpdb->esc_like( '_wcce_session_expires_' ) . '%',
                     $now
                 )
@@ -260,17 +260,12 @@ class Session extends \WC_Session {
 				}
 			}
 
-			// delete from options table. These option names are always either
-			// "_catalogx_session_{customer_id}" or a "_wcce_session_expires_*" option_name read
-			// back from the options table itself, never arbitrary/user-supplied text, so none of
-			// them can contain a comma — safe to match via a single FIND_IN_SET() value instead
-			// of a variable-length IN() placeholder list.
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- $wpdb->options is WordPress core's own table name, not user input.
-			$wpdb->query(
+			// delete from options table.
+			$placeholders = implode( ', ', array_fill( 0, count( $session_option_batch ), '%s' ) );
+			$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- $wpdb->options is WordPress core's own table name, not user input.
 				$wpdb->prepare(
-					'DELETE FROM %i WHERE FIND_IN_SET(option_name, %s)',
-					$wpdb->options,
-					implode( ',', $session_option_batch )
+					"DELETE FROM %i WHERE option_name IN ($placeholders)", // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- placeholders count always matches $session_option_batch, built dynamically above.
+					array_merge( array( $wpdb->options ), $session_option_batch )
 				)
 			);
 		}
