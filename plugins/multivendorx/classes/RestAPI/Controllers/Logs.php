@@ -36,7 +36,7 @@ class Logs extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'permission_callback' => array( $this, 'multivendorx_get_items_permissions_check' ),
                 ),
 			)
         );
@@ -47,7 +47,7 @@ class Logs extends \WP_REST_Controller {
      *
      * @param mixed $request all requests params from api.
      */
-    public function get_items_permissions_check( $request ) {
+    public function multivendorx_get_items_permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 

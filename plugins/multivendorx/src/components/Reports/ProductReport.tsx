@@ -457,7 +457,7 @@ const ProductReport: React.FC = () => {
 					<CardComponent
 						title={__('Revenue & Sales Comparison', 'multivendorx')}
 						titleIcon="sales"
-						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+						desc="Compare product sales and net revenue across marketplace stores."
 					>
 						{error ? (
 							<p>{error}</p>
@@ -495,7 +495,7 @@ const ProductReport: React.FC = () => {
 				{/* Categories and brands */}
 				<ColumnComponent row>
 					{/* Top Reviewed Products Section */}
-					<CardComponent title="Top Reviewed Products" titleIcon="review" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+					<CardComponent title="Top Reviewed Products" titleIcon="review" desc="See which products receive the most customer reviews.">
 						{toReviewedProduct.length > 0 ? (
 							toReviewedProduct.map(
 								(product: Product, index: number) => (
@@ -531,7 +531,7 @@ const ProductReport: React.FC = () => {
 							/>
 						)}
 					</CardComponent>
-					<CardComponent title="Top Selling Products" titleIcon="product" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+					<CardComponent title="Top Selling Products" titleIcon="product" desc="Discover your best-selling products and compare sales across stores.">
 						{toSellingProduct.length > 0 ? (
 							toSellingProduct.map(
 								(product: Product, index: number) => (
@@ -571,7 +571,7 @@ const ProductReport: React.FC = () => {
 				<CardComponent
 					title={__('Revenue Distribution', 'multivendorx')}
 					titleIcon="revenue"
-					desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+					desc="Review product-level sales and revenue across your marketplace."
 				>
 					<TableCard
 						headers={headers}

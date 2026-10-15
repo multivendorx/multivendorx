@@ -7,6 +7,8 @@
 
 namespace MooWoodle;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MooWoodle Endpoint class
  *

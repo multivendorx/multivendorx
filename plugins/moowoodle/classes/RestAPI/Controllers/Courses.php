@@ -36,7 +36,7 @@ class Courses extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'moowoodle_get_items_permissions_check' ),
                 ),
             )
         );
@@ -47,7 +47,7 @@ class Courses extends \WP_REST_Controller {
      *
      * @param \WP_REST_Request $request The REST request object.
      */
-    public function get_items_permissions_check( $request ) {
+    public function moowoodle_get_items_permissions_check( $request ) {
         return Util::current_user_has_capability( array( 'manage_options' ) );
     }
 
@@ -70,7 +70,8 @@ class Courses extends \WP_REST_Controller {
                 return $this->get_filter_options( $request );
             }
 
-            $limit              = intval( $request->get_param( 'row' ) ) ?: 10;
+            $row_param          = intval( $request->get_param( 'row' ) );
+            $limit              = $row_param ? $row_param : 10;
             $page               = max( intval( $request->get_param( 'page' ) ), 1 );
             $offset             = ( $page - 1 ) * $limit;
             $category_id        = $request->get_param( 'category' );

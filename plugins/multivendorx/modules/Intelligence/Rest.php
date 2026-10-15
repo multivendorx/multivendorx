@@ -33,7 +33,7 @@ class Rest extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'multivendorx_get_items_permissions_check' ),
                 ),
             )
         );
@@ -45,7 +45,7 @@ class Rest extends \WP_REST_Controller {
      * @param object $request WP_REST_Request object.
      * @return bool|\WP_Error
      */
-    public function get_items_permissions_check( $request ) {
+    public function multivendorx_get_items_permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'edit_products' ) );
     }
 

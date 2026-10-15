@@ -320,7 +320,7 @@ const StoreReport: React.FC = () => {
 					<CardComponent
 						title={__('Top revenue generating stores', 'multivendorx')}
 						titleIcon="star"
-						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+						desc="Compare store contributions to total marketplace revenue."
 					>
 						<ResponsiveContainer width="100%" height={300}>
 							<PieChart>
@@ -355,7 +355,7 @@ const StoreReport: React.FC = () => {
 				<CardComponent
 					title={__('Account Overview', 'multivendorx')}
 					titleIcon="analytics"
-					desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+					desc="Monitor store status, ownership, commissions, and admin earnings at a glance. elit."
 				>
 					<TableCard
 						headers={headers}

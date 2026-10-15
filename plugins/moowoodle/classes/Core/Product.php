@@ -7,6 +7,8 @@
 
 namespace MooWoodle\Core;
 
+defined( 'ABSPATH' ) || exit;
+
 use MooWoodle\Util;
 
 /**
@@ -18,6 +20,9 @@ use MooWoodle\Util;
  */
 class Product {
 
+    /**
+     * Product class constructor.
+     */
     public function __construct() {
 		// Course meta save with WooCommerce product save.
 		add_action( 'woocommerce_process_product_meta', array( $this, 'save_product_meta_data' ) );

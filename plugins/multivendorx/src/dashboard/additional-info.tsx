@@ -80,7 +80,7 @@ const AdditionalInformation = () => {
 			<ContainerComponent general>
 				<ColumnComponent grid={8}>
 					{/* Message to Buyer */}
-					<CardComponent title={__('Message to Buyer', 'multivendorx')} titleIcon="section" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+					<CardComponent title={__('Message to Buyer', 'multivendorx')} titleIcon="section" desc="Add a message that customers will see with their order.">
 						<FormGroupWrapperComponent>
 							<TextAreaInput
 								name="messageToBuyer"
@@ -91,7 +91,7 @@ const AdditionalInformation = () => {
 					</CardComponent>
 
 					{/* Privacy Controls */}
-					<CardComponent title={__('Privacy Controls', 'multivendorx')} titleIcon="privacy" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+					<CardComponent title={__('Privacy Controls', 'multivendorx')} titleIcon="privacy" desc="Manage which store details are visible to customers.">
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
 								label={__('Hide Address', 'multivendorx')}

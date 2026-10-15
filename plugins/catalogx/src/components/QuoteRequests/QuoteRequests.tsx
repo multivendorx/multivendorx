@@ -70,12 +70,12 @@ const QuoteRequests = () => {
                 {
                     label: __('View', 'catalogx-pro'),
                     icon: 'eye',
-                    onClick: (row: any) => setopenPopup(true),
+                    onClick: (_row: any) => setopenPopup(true),
                 },
                 {
                     label: __('Send Mail', 'catalogx-pro'),
                     icon: 'mail',
-                    onClick: (row: any) => setopenPopup(true),
+                    onClick: (_row: any) => setopenPopup(true),
                 },
             ],
         },

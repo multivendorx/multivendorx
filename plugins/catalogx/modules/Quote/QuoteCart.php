@@ -13,7 +13,7 @@ use CatalogX\Utill;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * catalogx REST API Quote Cart controller.
+ * Catalogx REST API Quote Cart controller.
  *
  * @class       Module class
  * @version     PRODUCT_VERSION
@@ -39,7 +39,7 @@ class QuoteCart extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'catalogx_permissions_check' ),
+                    'permission_callback' => array( $this, 'check_quote_cart_permission' ),
                 ),
             )
         );
@@ -51,17 +51,17 @@ class QuoteCart extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'catalogx_permissions_check' ),
+                    'permission_callback' => array( $this, 'check_quote_cart_permission' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'catalogx_permissions_check' ),
+                    'permission_callback' => array( $this, 'check_quote_cart_permission' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::DELETABLE,
                     'callback'            => array( $this, 'delete_item' ),
-                    'permission_callback' => array( $this, 'catalogx_permissions_check' ), // Only admins can delete.
+                    'permission_callback' => array( $this, 'check_quote_cart_permission' ), // Only admins can delete.
                 ),
             )
         );
@@ -72,7 +72,7 @@ class QuoteCart extends \WP_REST_Controller {
      *
      * @param object $request The request object.
      */
-    public function catalogx_permissions_check( $request ) {
+    public function check_quote_cart_permission( $request ) {
         $user_id = CatalogX()->current_user_id;
         $method  = $request->get_method();
 
