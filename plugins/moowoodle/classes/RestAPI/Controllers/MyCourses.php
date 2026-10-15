@@ -37,7 +37,7 @@ class MyCourses extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'get_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'moowoodle_get_item_permissions_check' ),
                 ),
             )
         );
@@ -48,7 +48,7 @@ class MyCourses extends \WP_REST_Controller {
      *
      * @param object $request The REST request object.
      */
-    public function get_item_permissions_check( $request ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+    public function moowoodle_get_item_permissions_check( $request ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
         return Util::current_user_has_capability( array( 'customer', 'manage_options' ) );
     }
 

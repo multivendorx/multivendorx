@@ -62,7 +62,7 @@ class Rest {
             array(
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_stock_notification_form' ),
-				'permission_callback' => array( $this, 'notifima_permission' ),
+				'permission_callback' => array( $this, 'notifima_permissions_check' ),
 			)
         );
     }
@@ -70,7 +70,7 @@ class Rest {
     /**
      * Check if a given request has access to get items.
      */
-    public function notifima_permission() {
+    public function notifima_permissions_check() {
         return Utill::current_user_has_capability( 'manage_options' );
     }
 

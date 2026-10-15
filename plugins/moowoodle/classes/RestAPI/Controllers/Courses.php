@@ -36,7 +36,7 @@ class Courses extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'moowoodle_get_items_permissions_check' ),
                 ),
             )
         );
@@ -47,7 +47,7 @@ class Courses extends \WP_REST_Controller {
      *
      * @param \WP_REST_Request $request The REST request object.
      */
-    public function get_items_permissions_check( $request ) {
+    public function moowoodle_get_items_permissions_check( $request ) {
         return Util::current_user_has_capability( array( 'manage_options' ) );
     }
 
