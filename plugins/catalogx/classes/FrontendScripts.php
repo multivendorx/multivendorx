@@ -53,10 +53,10 @@ class FrontendScripts {
      */
     public static function get_asset_path( $path_type = 'url', $plugin_path = '', $plugin_url = '' ) {
         $build_path = 'assets/';
-        if ( '' === $plugin_path ) {
+        if ( empty( $plugin_path ) ) {
             $plugin_path = CatalogX()->plugin_path;
         }
-        if ( '' === $plugin_url ) {
+        if ( empty( $plugin_url ) ) {
             $plugin_url = CatalogX()->plugin_url;
         }
 

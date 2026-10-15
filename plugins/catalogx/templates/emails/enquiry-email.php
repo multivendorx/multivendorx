@@ -44,7 +44,7 @@ $enquiry_data = $args['enquiry_data'];
                                 <tr>
                                 <td scope="col"><?php echo esc_html( $product_obj->get_name() ); ?>
                                 <?php
-								if ( $product_obj->get_type() === 'variation' ) {
+								if ( 'variation' === $product_obj->get_type() ) {
 									if ( isset( $enquiry_data['variations'] ) && count( $enquiry_data['variations'] ) > 0 ) {
 										foreach ( $enquiry_data['variations'] as $label => $value ) {
 											$label = str_replace( 'attribute_pa_', '', $label );
@@ -74,7 +74,7 @@ $enquiry_data = $args['enquiry_data'];
                             <tr>
                             <td scope="col"><?php echo esc_html( $product_obj->get_name() ); ?>
                             <?php
-							if ( $product_obj->get_type() === 'variation' ) {
+							if ( 'variation' === $product_obj->get_type() ) {
 								if ( isset( $enquiry_data['variations'] ) && count( $enquiry_data['variations'] ) > 0 ) {
 									foreach ( $enquiry_data['variations'] as $label => $value ) {
 										$label = str_replace( 'attribute_pa_', '', $label );

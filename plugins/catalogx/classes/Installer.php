@@ -704,7 +704,7 @@ class Installer {
         $previous_settings = get_option( 'mvx_catalog_general_tab_settings', array() );
 
         // Enable enquiry module based on previous setting.
-        if ( isset( $previous_settings['is_enable_enquiry'] ) && reset( $previous_settings['is_enable_enquiry'] ) === 'is_enable_enquiry' ) {
+        if ( isset( $previous_settings['is_enable_enquiry'] ) && 'is_enable_enquiry' === reset( $previous_settings['is_enable_enquiry'] ) ) {
             $active_modules = get_option( Utill::ACTIVE_MODULES_DB_KEY, array() );
             update_option( Utill::ACTIVE_MODULES_DB_KEY, array_unique( array_merge( $active_modules, array( 'enquiry' ) ) ) );
         }

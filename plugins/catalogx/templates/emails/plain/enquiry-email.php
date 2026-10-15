@@ -24,7 +24,7 @@ $product_obj = wc_get_product( key( $args['product_id'] ) );
 
 echo "\n Product Name : " . esc_html( $product_obj->get_name() );
 
-if ( $product_obj->get_type() === 'variation' ) {
+if ( 'variation' === $product_obj->get_type() ) {
     if ( isset( $enquiry_data['variations'] ) && count( $enquiry_data['variations'] ) > 0 ) {
 		foreach ( $enquiry_data['variations'] as $label => $value ) {
 			$label = str_replace( 'attribute_pa_', '', $label );
