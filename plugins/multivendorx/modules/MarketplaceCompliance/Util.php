@@ -84,9 +84,7 @@ class Util {
 
 		// Date range filter.
 		if ( isset( $args['date_range'] ) ) {
-			$start   = esc_sql( $args['date_range']['start'] );
-			$end     = esc_sql( $args['date_range']['end'] );
-			$where[] = "DATE(created_at) BETWEEN '$start' AND '$end'";
+			$where[] = $wpdb->prepare( 'DATE(created_at) BETWEEN %s AND %s', $args['date_range']['start'], $args['date_range']['end'] );
 		}
 
 		// Build base query.

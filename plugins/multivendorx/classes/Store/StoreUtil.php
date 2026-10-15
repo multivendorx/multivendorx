@@ -1101,8 +1101,12 @@ class StoreUtil {
         $where_clause = implode( ' AND ', $conditions );
 
         // Direct query execution
-        $sql     = "SELECT DISTINCT store_id FROM %i WHERE {$where_clause}";
-        $results = $wpdb->get_col( $wpdb->prepare( $sql, array_merge( array( $table ), $params ) ) );
+        $results = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            $wpdb->prepare(
+                "SELECT DISTINCT store_id FROM %i WHERE {$where_clause}", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                array_merge( array( $table ), $params )
+            )
+        );
 
         return $results ? array_map( 'intval', $results ) : array();
     }

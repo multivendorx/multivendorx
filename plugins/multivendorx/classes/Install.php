@@ -218,7 +218,7 @@ class Install {
                 ),
             );
 
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             $store_ids = $wpdb->get_col( "SELECT ID FROM {$store_table}" );
 
             foreach ( (array) $store_ids as $store_id ) {
@@ -625,7 +625,13 @@ class Install {
         ";
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
-        $wpdb->query( $wpdb->prepare( $sql, $table, $table ) );
+        $wpdb->query(
+            $wpdb->prepare(
+                $sql, // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- %i table placeholders prepared below; sniff can't trace the multi-line $sql assignment above.
+                $table,
+                $table
+            )
+        );
     }
 
     /**
