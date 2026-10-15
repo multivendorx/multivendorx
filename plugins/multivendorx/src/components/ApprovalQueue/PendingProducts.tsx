@@ -218,18 +218,18 @@ const PendingProducts: React.FC<object> = () => {
 				value: row.store_name || '—',
 			},
 			{
-				label: __('Category', 'multivendorx'),
-				icon: 'category',
-				value:
-					row.categories?.map((cat) => cat.name).join(', ') || '—',
-			},
-			{
 				label: __('Price', 'multivendorx'),
 				icon: 'dollar',
 				value: formatCurrency(row.price),
 			},
 		],
-		info_badges: [{ text: formatDate(row.date_created), color: 'blue' }],
+		info_badges: [
+			{ text: formatDate(row.date_created), color: 'blue' },
+			...(row.categories || []).map((cat) => ({
+				text: cat.name,
+				color: 'purple',
+			})),
+		],
 	}));
 
 	return (
