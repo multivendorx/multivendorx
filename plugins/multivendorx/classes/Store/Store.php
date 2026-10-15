@@ -119,14 +119,15 @@ class Store {
 
         $table = $wpdb->prefix . Utill::TABLES['store'];
 
-        $sql = $wpdb->prepare(
-            'SELECT * FROM %i WHERE ID = %d LIMIT 1',
-            $table,
-            $store_id
-        );
-
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $row = $wpdb->get_row( $sql, ARRAY_A );
+        $row = $wpdb->get_row(
+            $wpdb->prepare(
+                'SELECT * FROM %i WHERE ID = %d LIMIT 1',
+                $table,
+                $store_id
+            ),
+            ARRAY_A
+        );
         if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( $wpdb->last_error, 'ERROR' );
         }
@@ -257,14 +258,15 @@ class Store {
 
         $table = $wpdb->prefix . Utill::TABLES['store_meta'];
 
-        $sql = $wpdb->prepare(
-            'SELECT meta_key, meta_value FROM %i WHERE store_id = %d',
-            $table,
-            $this->id
-        );
-
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $rows = $wpdb->get_results( $sql, ARRAY_A );
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT meta_key, meta_value FROM %i WHERE store_id = %d',
+                $table,
+                $this->id
+            ),
+            ARRAY_A
+        );
 
         $meta = array();
 
@@ -454,21 +456,21 @@ class Store {
                 case 'user':
                     $user_id           = (int) $value;
 					$excluded_statuses = array( 'permanently_rejected', 'deactivated' );
-					$placeholders      = implode( ', ', array_fill( 0, count( $excluded_statuses ), '%s' ) );
 					$params            = array_merge( array( $store_users, $table, $user_id ), $excluded_statuses );
 
-					$sql = "
+					$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+                        $wpdb->prepare(
+                            '
                         SELECT
                             su.store_id AS id,
                             s.name AS name
                         FROM %i su
                         INNER JOIN %i s ON s.ID = su.store_id
                         WHERE su.user_id = %d
-                        AND s.status NOT IN ($placeholders)
-                    ";
-
-					$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-                        $wpdb->prepare( $sql, $params ),
+                        AND s.status NOT IN (%s, %s)
+                    ',
+                            $params
+                        ),
                         ARRAY_A
 					);
 
@@ -500,21 +502,25 @@ class Store {
 		$table = $wpdb->prefix . Utill::TABLES['store'];
 
 		if ( $exclude_id ) {
-			$query = $wpdb->prepare(
-                'SELECT COUNT(*) FROM %i WHERE slug = %s AND ID != %d',
-                $table,
-                $slug,
-                $exclude_id
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$exists = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT COUNT(*) FROM %i WHERE slug = %s AND ID != %d',
+					$table,
+					$slug,
+					$exclude_id
+				)
 			);
 		} else {
-			$query = $wpdb->prepare(
-                'SELECT COUNT(*) FROM %i WHERE slug = %s',
-                $table,
-                $slug
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$exists = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT COUNT(*) FROM %i WHERE slug = %s',
+					$table,
+					$slug
+				)
 			);
 		}
-
-		$exists = (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );

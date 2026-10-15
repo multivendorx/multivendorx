@@ -1,6 +1,8 @@
-# notifima developer docs
+# Notifima developer docs
 
 Developer-facing reference documentation for extending `notifima`, the free/base-tier WooCommerce back-in-stock notification plugin. This is separate from the parent monorepo's `.claude/rules/` (internal AI guidance) — this `/docs` folder is for third-party developers building on top of the plugin. Mirrors the same section breakdown as `multivendorx`'s and `multivendorx-pro`'s own `docs/` folders, adapted to what this plugin actually owns — it's a much smaller plugin than either (no `modules/` system, one custom table, ~30 hooks total, one React mount point).
+
+Looking for how to *use* the plugin instead of extend it? See the [user guides](../user/README.md).
 
 ## Contents
 

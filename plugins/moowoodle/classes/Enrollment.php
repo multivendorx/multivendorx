@@ -66,12 +66,12 @@ class Enrollment {
 		if ( ! empty( $enrollment_args['meta_query'] ) ) {
 			foreach ( $enrollment_args['meta_query'] as $meta_condition ) {
 				if ( ! empty( $meta_condition['key'] ) ) {
-					$key     = $meta_condition['key'];
+					$key     = sanitize_key( $meta_condition['key'] );
 					$compare = strtoupper( $meta_condition['compare'] );
 					$value   = $meta_condition['value'];
 
 					if ( in_array( $compare, array( '=', '!=', '>', '<', '>=', '<=', 'LIKE', 'NOT LIKE' ), true ) ) {
-						$where[] = "`$key` $compare " . $wpdb->prepare( '%s', $value );
+						$where[] = $wpdb->prepare( "`$key` $compare %s", $value ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $key is sanitize_key()'d, $compare is allowlisted above.
 					}
 				}
 			}
