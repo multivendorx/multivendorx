@@ -208,9 +208,8 @@ class Transaction {
         // Text and date filters use their value as the "enabled" flag: '' turns the condition into a no-op.
         $text_values = array();
         foreach ( array( 'transaction_type', 'entry_type', 'status', 'start_date', 'end_date' ) as $filter_key ) {
-            $value         = (string) ( $args[ $filter_key ] ?? '' );
-            $text_values[] = $value;
-            $text_values[] = $value;
+            $value = (string) ( $args[ $filter_key ] ?? '' );
+            array_push( $text_values, $value, $value );
         }
 
         // "OR" only applies when at least one filter is set; with none, every row matches.

@@ -102,18 +102,15 @@ class CommissionUtil {
         $status       = (string) ( $args['status'] ?? '' );
         $by_dates     = isset( $args['start_date'], $args['end_date'] ) ? 1 : 0;
 
+        $id_or_order   = array( $has_id, $has_order );
         $filter_values = array(
             $has_store,
             $has_customer,
-            $status,
-            $status,
+            ...array_fill( 0, 2, $status ),
             $by_dates,
             (string) ( $args['start_date'] ?? '' ),
             (string) ( $args['end_date'] ?? '' ),
-            $has_id,
-            $has_order,
-            $has_id,
-            $has_order,
+            ...array_merge( $id_or_order, $id_or_order ),
         );
 
         // ID and order_id are alternatives (OR) to each other, but both are ANDed with the other filters.
@@ -291,11 +288,7 @@ class CommissionUtil {
 				AND ( %d = 0 OR DATE(created_at) BETWEEN %s AND %s )
 				',
 				$table_name,
-				(int) $store_id,
-				(int) $store_id,
-				$by_dates,
-				$start_date,
-				$end_date
+				...array_merge( array_fill( 0, 2, (int) $store_id ), array( $by_dates, $start_date, $end_date ) )
 			)
 		);
 

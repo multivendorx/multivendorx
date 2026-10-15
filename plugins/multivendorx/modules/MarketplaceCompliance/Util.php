@@ -75,10 +75,8 @@ class Util {
 		$date_end         = (string) ( $args['date_range']['end'] ?? '' );
 		$filter_values    = array(
 			$filter_by_stores,
-			$email,
-			$email,
-			$product_id,
-			$product_id,
+			...array_fill( 0, 2, $email ),
+			...array_fill( 0, 2, $product_id ),
 			$by_date_range,
 			$date_start,
 			$date_end,

@@ -68,13 +68,12 @@ class Enrollment {
 		$offset     = $has_limit ? intval( $enrollment_args['offset'] ) : 0;
 
 		$filter_values = array_merge(
-			array( $list_filters['id']['enabled'], $list_filters['user_id']['enabled'], $user_email, $user_email ),
+			array( $list_filters['id']['enabled'], $list_filters['user_id']['enabled'], ...array_fill( 0, 2, $user_email ) ),
 			$integer_values,
 			array(
 				$list_filters['learners_hub_id']['enabled'],
 				$list_filters['order_item_id']['enabled'],
-				$status,
-				$status,
+				...array_fill( 0, 2, $status ),
 				$by_dates,
 				(string) ( $enrollment_args['start_date'] ?? '' ),
 				(string) ( $enrollment_args['end_date'] ?? '' ),

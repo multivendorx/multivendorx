@@ -210,6 +210,7 @@ class Utill {
         $by_dates          = ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) ? 1 : 0;
         $start_date        = (int) ( $args['start_date'] ?? 0 );
         $end_date          = (int) ( $args['end_date'] ?? 0 );
+        $filter_values     = array( $filter_by_product, ...array_fill( 0, 2, $email_pattern ), ...array_fill( 0, 2, $status ), $by_dates, $start_date, $end_date );
 
         // Every filter is always present in the literal query; an unused one is a no-op.
         if ( ! empty( $args['count'] ) ) {
@@ -222,14 +223,7 @@ class Utill {
                     AND ( CHAR_LENGTH( %s ) = 0 OR status = %s )
                     AND ( %d = 0 OR create_time BETWEEN FROM_UNIXTIME(%d) AND FROM_UNIXTIME(%d) )',
                     $table,
-                    $filter_by_product,
-                    $email_pattern,
-                    $email_pattern,
-                    $status,
-                    $status,
-                    $by_dates,
-                    $start_date,
-                    $end_date
+                    ...$filter_values
                 )
             );
         }
@@ -248,16 +242,7 @@ class Utill {
                 AND ( %d = 0 OR create_time BETWEEN FROM_UNIXTIME(%d) AND FROM_UNIXTIME(%d) )
                 LIMIT %d OFFSET %d',
                 $table,
-                $filter_by_product,
-                $email_pattern,
-                $email_pattern,
-                $status,
-                $status,
-                $by_dates,
-                $start_date,
-                $end_date,
-                $limit,
-                $offset
+                ...array_merge( $filter_values, array( $limit, $offset ) )
             )
         );
     }
