@@ -83,7 +83,7 @@ const Rules = () => {
 
                 return (
                     <>
-                        {lines.map((item: string, index: number) => (item))}
+                        {lines.map((item: string, _index: number) => (item))}
                     </>
                 );
             }
@@ -112,7 +112,7 @@ const Rules = () => {
                 ].filter(Boolean);
 
                 return (
-                    <> {lines.map((item: string, index: number) => (item))} </>
+                    <> {lines.map((item: string, _index: number) => (item))} </>
                 );
             }
         },

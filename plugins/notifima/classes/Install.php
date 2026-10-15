@@ -77,7 +77,8 @@ class Install {
             $wpdb->query(
                 $wpdb->prepare(
                     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
-                    'ALTER TABLE `' . $wpdb->prefix . 'stockalert_subscribers` RENAME TO %i',
+                    'ALTER TABLE %i RENAME TO %i',
+                    $wpdb->prefix . 'stockalert_subscribers',
                     $wpdb->prefix . Utill::TABLES['subscribers']
                 )
             );
@@ -271,17 +272,21 @@ class Install {
             // Get woosubscribe post and post meta.
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.SlowDBQuery.slow_db_query_meta_key
             $legacy_subscriber_rows = $wpdb->get_results(
-                "SELECT posts.ID as id,
-                    posts.post_date as date,
-                    posts.post_title as email,
-                    posts.post_status as status,
-                    posts.post_author as user_id,
-                    pm.meta_value as product_id
-                FROM {$wpdb->prefix}posts as posts, {$wpdb->prefix}postmeta as pm
-                WHERE posts.post_type = 'woostockalert'
-                AND pm.post_id = posts.ID
-                AND pm.meta_key = 'wooinstock_product_id'
-                ",
+                $wpdb->prepare(
+                    "SELECT posts.ID as id,
+                        posts.post_date as date,
+                        posts.post_title as email,
+                        posts.post_status as status,
+                        posts.post_author as user_id,
+                        pm.meta_value as product_id
+                    FROM %i as posts, %i as pm
+                    WHERE posts.post_type = 'woostockalert'
+                    AND pm.post_id = posts.ID
+                    AND pm.meta_key = 'wooinstock_product_id'
+                    ",
+                    $wpdb->posts,
+                    $wpdb->postmeta
+                ),
                 ARRAY_A
             );
 
@@ -659,9 +664,14 @@ class Install {
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $posts = $wpdb->get_results(
-                "SELECT ID, post_content FROM {$wpdb->posts} 
-                 WHERE post_content LIKE '%display_stock_manager_form%' 
-                 OR post_content LIKE '%display_stock_alert_form%'"
+                $wpdb->prepare(
+                    "SELECT ID, post_content FROM %i
+                     WHERE post_content LIKE %s
+                     OR post_content LIKE %s",
+                    $wpdb->posts,
+                    '%display_stock_manager_form%',
+                    '%display_stock_alert_form%'
+                )
             );
 
             foreach ( $posts as $post ) {

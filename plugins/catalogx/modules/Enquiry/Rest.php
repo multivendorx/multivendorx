@@ -61,7 +61,7 @@ class Rest {
     /**
      * Save enquiry form data
      *
-     * quantity string required
+     * Quantity string required
      * Retrieve the quantity of product
      * productId string required
      * Retrieve the product id of enquiry
@@ -142,8 +142,9 @@ class Rest {
                 WC()->initialize_session();
             }
 
-            $product_variations = WC()->session ? WC()->session->get( 'catalogx_variation_list', array() ) : array();            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-            $result             = $wpdb->insert( "{$wpdb->prefix}" . Utill::TABLES['enquiry'], $enquiry_record );
+            $product_variations = WC()->session ? WC()->session->get( 'catalogx_variation_list', array() ) : array();
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+            $result = $wpdb->insert( "{$wpdb->prefix}" . Utill::TABLES['enquiry'], $enquiry_record );
 
             if ( $result ) {
                 $enquiry_id   = $wpdb->insert_id;
@@ -162,7 +163,7 @@ class Rest {
                     }
                 }
 
-                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->insert(
                     "{$wpdb->prefix}" . Utill::TABLES['message'],
                     array(

@@ -84,7 +84,8 @@ class Logs extends \WP_REST_Controller {
 
 		global $wp_filesystem;
 
-		$log_limit = absint( $request->get_param( 'logcount' ) ?: 100 );
+		$log_count = $request->get_param( 'logcount' );
+		$log_limit = absint( $log_count ? $log_count : 100 );
 
 		if ( ! $wp_filesystem ) {
 			require_once ABSPATH . '/wp-admin/includes/file.php';
