@@ -145,7 +145,8 @@ class Admin {
 			$transaction_table = $wpdb->prefix . Utill::TABLES['transaction'];
 			$row               = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->prepare(
-                    "SELECT * FROM {$transaction_table} WHERE commission_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                    'SELECT * FROM %i WHERE commission_id = %d',
+                    $transaction_table,
                     $regenerate_commission_id
                 )
 			);

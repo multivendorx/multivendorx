@@ -137,7 +137,7 @@ class Transaction {
         $transaction_id = $wpdb->insert_id;
 
         if ( $transaction_id ) {
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->update( $wpdb->prefix . Utill::TABLES['commission'], array( 'status' => 'paid' ), array( 'id' => $commission_id ), array( '%s' ), array( '%d' ) );
         }
 
@@ -169,15 +169,16 @@ class Transaction {
 	 */
     public static function get_transaction_db( $commission_id ) {
         global $wpdb;
-        /* phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared */
+        /* phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching */
         $transaction = $wpdb->get_row(
             $wpdb->prepare(
-                'SELECT * FROM `' . $wpdb->prefix . Utill::TABLES['transaction'] . '` WHERE commission_id = %d',
+                'SELECT * FROM %i WHERE commission_id = %d',
+                $wpdb->prefix . Utill::TABLES['transaction'],
                 $commission_id
             ),
             ARRAY_A
         );
-        /* phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared */
+        /* phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching */
 
         if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
@@ -196,112 +197,111 @@ class Transaction {
     public static function get_transaction_information( $args ) {
         global $wpdb;
 
-        $where  = array();
-        $params = array();
-
-        // Extract and sanitize order/orderBy early so they don't go into WHERE.
-        $allowed  = array( 'created_at', 'entry_type', 'transaction_type', 'id', 'store_id', 'order_id', 'commission_id' );
-        $order_by = in_array( $args['order_by'], $allowed, true ) ? $args['order_by'] : '';
-        $order    = isset( $args['order'] ) ? strtoupper( $args['order'] ) : 'ASC';
-
-        // Remove non-column keys.
-        unset( $args['order_by'], $args['order'] );
-
-        // Filter by id(s).
-        if ( isset( $args['id'] ) ) {
-            $ids          = is_array( $args['id'] ) ? $args['id'] : array( $args['id'] );
-            $ids          = array_map( 'intval', $ids );
-            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-            $where[]      = "id IN ($placeholders)";
-            $params       = array_merge( $params, $ids );
-        }
-
-        // Filter by store_id.
-        if ( isset( $args['store_id'] ) ) {
-            $where[]  = '( store_id = %d )';
-            $params[] = intval( $args['store_id'] );
-        }
-
-        // Filter by order_id.
-        if ( isset( $args['order_id'] ) ) {
-            $where[]  = '( order_id = %d )';
-            $params[] = intval( $args['order_id'] );
-        }
-
-        // Filter by commission_id.
-        if ( isset( $args['commission_id'] ) ) {
-            $where[]  = '( commission_id = %d )';
-            $params[] = intval( $args['commission_id'] );
-        }
-
-        // Filter by transaction_type.
-        if ( isset( $args['transaction_type'] ) ) {
-            $where[]  = '( transaction_type = %s )';
-            $params[] = $args['transaction_type'];
-        }
-
-        // Filter by entry_type (Cr/Dr).
-        if ( isset( $args['entry_type'] ) ) {
-            $where[]  = '( entry_type = %s )';
-            $params[] = $args['entry_type'];
-        }
-
-        // Filter by status.
-        if ( isset( $args['status'] ) ) {
-            $where[]  = '( status = %s )';
-            $params[] = $args['status'];
-        }
-
-        // Filter by date range.
-        if ( isset( $args['start_date'] ) ) {
-            $where[]  = '( created_at >= %s )';
-            $params[] = $args['start_date'];
-        }
-        if ( isset( $args['end_date'] ) ) {
-            $where[]  = '( created_at <= %s )';
-            $params[] = $args['end_date'];
-        }
-
         $table = $wpdb->prefix . Utill::TABLES['transaction'];
 
-        // Base query (count or select).
+        $filter_by_id         = isset( $args['id'] ) ? 1 : 0;
+        $transaction_ids      = array_merge( array( 0 ), array_map( 'intval', (array) ( $args['id'] ?? 0 ) ) ); // 0 keeps IN () valid for an empty list.
+        $filter_by_store      = isset( $args['store_id'] ) ? 1 : 0;
+        $filter_by_order      = isset( $args['order_id'] ) ? 1 : 0;
+        $filter_by_commission = isset( $args['commission_id'] ) ? 1 : 0;
+
+        // Text and date filters use their value as the "enabled" flag: '' turns the condition into a no-op.
+        $text_values = array();
+        foreach ( array( 'transaction_type', 'entry_type', 'status', 'start_date', 'end_date' ) as $filter_key ) {
+            $value         = (string) ( $args[ $filter_key ] ?? '' );
+            $text_values[] = $value;
+            $text_values[] = $value;
+        }
+
+        // "OR" only applies when at least one filter is set; with none, every row matches.
+        $has_filter = $filter_by_id || $filter_by_store || $filter_by_order || $filter_by_commission || array_filter( $text_values, 'strlen' );
+        $match_all  = ( ! $has_filter || 'OR' !== strtoupper( trim( $args['condition'] ?? 'AND' ) ) ) ? 1 : 0;
+
+        // Each filter is always in the query: with AND an unused one is a no-op, with OR it is excluded.
+        $filter_values = array_merge(
+            array(
+                $filter_by_id,
+                $filter_by_store,
+                intval( $args['store_id'] ?? 0 ),
+                $filter_by_order,
+                intval( $args['order_id'] ?? 0 ),
+                $filter_by_commission,
+                intval( $args['commission_id'] ?? 0 ),
+            ),
+            $text_values
+        );
+        $filter_values = array_merge( array( $match_all ), $filter_values, array( $match_all ), $filter_values );
+
         if ( isset( $args['count'] ) ) {
-            $query = 'SELECT COUNT(*) FROM %i';
-        } else {
-            $query = 'SELECT * FROM %i';
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            return (int) $wpdb->get_var(
+                $wpdb->prepare(
+                    'SELECT COUNT(*) FROM %i
+                    WHERE ( %d = 1
+                            AND ( %d = 0 OR id IN (' . esc_sql( implode( ',', $transaction_ids ) ) . ') )
+                            AND ( %d = 0 OR store_id = %d )
+                            AND ( %d = 0 OR order_id = %d )
+                            AND ( %d = 0 OR commission_id = %d )
+                            AND ( CHAR_LENGTH( %s ) = 0 OR transaction_type = %s )
+                            AND ( CHAR_LENGTH( %s ) = 0 OR entry_type = %s )
+                            AND ( CHAR_LENGTH( %s ) = 0 OR status = %s )
+                            AND ( CHAR_LENGTH( %s ) = 0 OR created_at >= %s )
+                            AND ( CHAR_LENGTH( %s ) = 0 OR created_at <= %s ) )
+                        OR ( %d = 0 AND (
+                                ( %d = 1 AND id IN (' . esc_sql( implode( ',', $transaction_ids ) ) . ') )
+                                OR ( %d = 1 AND store_id = %d )
+                                OR ( %d = 1 AND order_id = %d )
+                                OR ( %d = 1 AND commission_id = %d )
+                                OR ( CHAR_LENGTH( %s ) > 0 AND transaction_type = %s )
+                                OR ( CHAR_LENGTH( %s ) > 0 AND entry_type = %s )
+                                OR ( CHAR_LENGTH( %s ) > 0 AND status = %s )
+                                OR ( CHAR_LENGTH( %s ) > 0 AND created_at >= %s )
+                                OR ( CHAR_LENGTH( %s ) > 0 AND created_at <= %s ) ) )',
+                    $table,
+                    ...$filter_values
+                )
+            );
         }
 
-        array_unshift( $params, $table );
+        // Ordering is optional; without a valid order_by rows come back by id.
+        $allowed   = array( 'created_at', 'entry_type', 'transaction_type', 'id', 'store_id', 'order_id', 'commission_id' );
+        $order_by  = in_array( $args['order_by'] ?? '', $allowed, true ) ? $args['order_by'] : 'id';
+        $sort_desc = ( isset( $args['order'] ) && 'DESC' === strtoupper( $args['order'] ) ) ? 1 : 0;
+        $has_limit = isset( $args['limit'], $args['offset'] );
+        $limit     = $has_limit ? intval( $args['limit'] ) : PHP_INT_MAX;
+        $offset    = $has_limit ? intval( $args['offset'] ) : 0;
 
-        // Add WHERE.
-        if ( ! empty( $where ) ) {
-            $condition = $args['condition'] ?? ' AND ';
-            $query    .= ' WHERE ' . implode( $condition, $where );
-        }
-
-        // Add ORDER BY (only for non-count queries).
-        if ( ! isset( $args['count'] ) && ! empty( $order_by ) ) {
-            // Only allow ASC or DESC.
-            if ( ! in_array( $order, array( 'ASC', 'DESC' ), true ) ) {
-                $order = 'ASC';
-            }
-            $query .= " ORDER BY {$order_by} {$order}";
-        }
-
-        // Add limit & offset (only for non-count).
-        if ( ! isset( $args['count'] ) && isset( $args['limit'], $args['offset'] ) ) {
-            $limit  = intval( $args['limit'] );
-            $offset = intval( $args['offset'] );
-            $query .= " LIMIT {$limit} OFFSET {$offset}";
-        }
-
-        // Run query.
-        $query = $wpdb->prepare( $query, ...$params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-
-        if ( isset( $args['count'] ) ) {
-            return (int) ( $wpdb->get_var( $query ) ?? 0 );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        }
-        $result = $wpdb->get_results( $query, ARRAY_A ) ?? array();// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $result = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT * FROM %i
+                WHERE ( %d = 1
+                        AND ( %d = 0 OR id IN (' . esc_sql( implode( ',', $transaction_ids ) ) . ') )
+                        AND ( %d = 0 OR store_id = %d )
+                        AND ( %d = 0 OR order_id = %d )
+                        AND ( %d = 0 OR commission_id = %d )
+                        AND ( CHAR_LENGTH( %s ) = 0 OR transaction_type = %s )
+                        AND ( CHAR_LENGTH( %s ) = 0 OR entry_type = %s )
+                        AND ( CHAR_LENGTH( %s ) = 0 OR status = %s )
+                        AND ( CHAR_LENGTH( %s ) = 0 OR created_at >= %s )
+                        AND ( CHAR_LENGTH( %s ) = 0 OR created_at <= %s ) )
+                    OR ( %d = 0 AND (
+                            ( %d = 1 AND id IN (' . esc_sql( implode( ',', $transaction_ids ) ) . ') )
+                            OR ( %d = 1 AND store_id = %d )
+                            OR ( %d = 1 AND order_id = %d )
+                            OR ( %d = 1 AND commission_id = %d )
+                            OR ( CHAR_LENGTH( %s ) > 0 AND transaction_type = %s )
+                            OR ( CHAR_LENGTH( %s ) > 0 AND entry_type = %s )
+                            OR ( CHAR_LENGTH( %s ) > 0 AND status = %s )
+                            OR ( CHAR_LENGTH( %s ) > 0 AND created_at >= %s )
+                            OR ( CHAR_LENGTH( %s ) > 0 AND created_at <= %s ) ) )
+                ORDER BY CASE WHEN %d = 1 THEN %i END DESC, %i ASC
+                LIMIT %d OFFSET %d',
+                $table,
+                ...array_merge( $filter_values, array( $sort_desc, $order_by, $order_by, $limit, $offset ) )
+            ),
+            ARRAY_A
+        ) ?? array();
 
         if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );

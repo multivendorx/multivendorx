@@ -202,52 +202,64 @@ class Utill {
     public static function get_subscribers( $args ) {
         global $wpdb;
 
-        $table = $wpdb->prefix . self::TABLES['subscribers'];
-        $where = array();
+        $table             = $wpdb->prefix . self::TABLES['subscribers'];
+        $filter_by_product = isset( $args['product_ids'] ) ? 1 : 0;
+        $product_ids       = array_merge( array( 0 ), array_map( 'absint', (array) ( $args['product_ids'] ?? 0 ) ) ); // 0 keeps IN () valid for an empty list.
+        $email_pattern     = ! empty( $args['email'] ) ? '%' . $wpdb->esc_like( $args['email'] ) . '%' : '';
+        $status            = ( ! empty( $args['status'] ) && 'all' !== $args['status'] ) ? (string) $args['status'] : '';
+        $by_dates          = ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) ? 1 : 0;
+        $start_date        = (int) ( $args['start_date'] ?? 0 );
+        $end_date          = (int) ( $args['end_date'] ?? 0 );
 
-        if ( isset( $args['product_ids'] ) ) {
-            $product_ids  = array_map( 'absint', $args['product_ids'] );
-            $placeholders = implode( ',', array_fill( 0, count( $product_ids ), '%d' ) );
-            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- placeholder count is dynamic (one %d per id), the sniff can't verify it statically.
-            $where[] = $wpdb->prepare( "product_id IN ({$placeholders})", $product_ids );
-        }
-
-        if ( ! empty( $args['email'] ) ) {
-            $where[] = $wpdb->prepare(
-                'email LIKE %s',
-                '%' . $wpdb->esc_like( $args['email'] ) . '%'
-            );
-        }
-
-        if ( ! empty( $args['status'] ) && 'all' !== $args['status'] ) {
-            $where[] = $wpdb->prepare( 'status = %s', $args['status'] );
-        }
-
-        if ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) {
-            $where[] = $wpdb->prepare(
-                'create_time BETWEEN FROM_UNIXTIME(%d) AND FROM_UNIXTIME(%d)',
-                $args['start_date'],
-                $args['end_date']
-            );
-        }
-
-        $where_sql = ! empty( $where ) ? 'WHERE ' . implode( ' AND ', $where ) : '';
-
+        // Every filter is always present in the literal query; an unused one is a no-op.
         if ( ! empty( $args['count'] ) ) {
-            $query = $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) . " {$where_sql}";
-
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-            return (int) $wpdb->get_var( $query );
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            return (int) $wpdb->get_var(
+                $wpdb->prepare(
+                    'SELECT COUNT(*) FROM %i
+                    WHERE ( %d = 0 OR product_id IN (' . esc_sql( implode( ',', $product_ids ) ) . ') )
+                    AND ( CHAR_LENGTH( %s ) = 0 OR email LIKE %s )
+                    AND ( CHAR_LENGTH( %s ) = 0 OR status = %s )
+                    AND ( %d = 0 OR create_time BETWEEN FROM_UNIXTIME(%d) AND FROM_UNIXTIME(%d) )',
+                    $table,
+                    $filter_by_product,
+                    $email_pattern,
+                    $email_pattern,
+                    $status,
+                    $status,
+                    $by_dates,
+                    $start_date,
+                    $end_date
+                )
+            );
         }
 
-        $limit_clause = isset( $args['limit'], $args['offset'] )
-            ? $wpdb->prepare( 'LIMIT %d OFFSET %d', $args['limit'], $args['offset'] )
-            : '';
+        $has_limit = isset( $args['limit'], $args['offset'] );
+        $limit     = $has_limit ? (int) $args['limit'] : PHP_INT_MAX;
+        $offset    = $has_limit ? (int) $args['offset'] : 0;
 
-        $query = $wpdb->prepare( 'SELECT * FROM %i', $table ) . " {$where_sql} {$limit_clause}";
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        return $wpdb->get_results( $query );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT * FROM %i
+                WHERE ( %d = 0 OR product_id IN (' . esc_sql( implode( ',', $product_ids ) ) . ') )
+                AND ( CHAR_LENGTH( %s ) = 0 OR email LIKE %s )
+                AND ( CHAR_LENGTH( %s ) = 0 OR status = %s )
+                AND ( %d = 0 OR create_time BETWEEN FROM_UNIXTIME(%d) AND FROM_UNIXTIME(%d) )
+                LIMIT %d OFFSET %d',
+                $table,
+                $filter_by_product,
+                $email_pattern,
+                $email_pattern,
+                $status,
+                $status,
+                $by_dates,
+                $start_date,
+                $end_date,
+                $limit,
+                $offset
+            )
+        );
     }
 
     /**

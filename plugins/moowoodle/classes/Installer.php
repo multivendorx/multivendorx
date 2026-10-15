@@ -246,8 +246,10 @@ class Installer {
             global $wpdb;
 
             // Get terms with '_category_id' meta and optional '_parent' meta for 'course_cat' taxonomy.
-            $category_migration_query = $wpdb->prepare(
-                '
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+            $category_terms = $wpdb->get_results(
+                $wpdb->prepare(
+                    '
                 SELECT
                     t.term_id,
                     t.name,
@@ -262,14 +264,14 @@ class Installer {
                     ON t.term_id = pm.term_id AND pm.meta_key = \'_parent\'
                 WHERE tt.taxonomy = %s
             ',
-                $wpdb->terms,
-                $wpdb->term_taxonomy,
-                $wpdb->termmeta,
-                $wpdb->termmeta,
-                'course_cat'
+                    $wpdb->terms,
+                    $wpdb->term_taxonomy,
+                    $wpdb->termmeta,
+                    $wpdb->termmeta,
+                    'course_cat'
+                ),
+                ARRAY_A
             );
-
-        $category_terms = $wpdb->get_results( $category_migration_query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( empty( $category_terms ) ) {
 			return;
