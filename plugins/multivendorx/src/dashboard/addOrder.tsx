@@ -1011,7 +1011,7 @@ const AddOrder = () => {
 					</CardComponent>
 				</ColumnComponent>
 				<ColumnComponent grid={4}>
-					<CardComponent title={__('Payment Method', 'multivendorx')} titleIcon="payment" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+					<CardComponent title={__('Payment Method', 'multivendorx')} titleIcon="payment" desc="Choose how the order will be paid.">
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
 								row
@@ -1034,7 +1034,7 @@ const AddOrder = () => {
 						</FormGroupWrapperComponent>
 					</CardComponent>
 
-					<CardComponent title={__('Customer details', 'multivendorx')} titleIcon="customer-support" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+					<CardComponent title={__('Customer details', 'multivendorx')} titleIcon="customer-support" desc="Select an existing customer or create a new one.">
 						{!selectedCustomer && (
 							<>
 								<FormGroupWrapperComponent>
@@ -1144,7 +1144,7 @@ const AddOrder = () => {
 					</CardComponent>
 
 					{showCreateCustomer && !selectedCustomer && (
-						<CardComponent title={__('Create customer', 'multivendorx')} titleIcon="customer-support" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+						<CardComponent title={__('Create customer', 'multivendorx')} titleIcon="customer-support" desc="Add a new customer to your marketplace.">
 							<FormGroupWrapperComponent>
 								<FormGroupComponent
 									cols={6}
@@ -1250,7 +1250,7 @@ const AddOrder = () => {
 						'billing'
 					)}
 
-					<CardComponent title={__('Order note', 'multivendorx')} titleIcon="order" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+					<CardComponent title={__('Order note', 'multivendorx')} titleIcon="order" desc="Add an internal note or special instructions for this order.">
 						<FormGroupComponent>
 							<TextAreaInput
 								name="order_note"

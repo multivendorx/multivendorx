@@ -924,7 +924,7 @@ const OrderDetails: React.FC = () => {
 											'multivendorx'
 										)}
 										titleIcon="refund"
-										desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+										desc="Review pending refund requests and take the necessary action."
 										action={
 											<>
 												<ButtonInput
@@ -1183,7 +1183,7 @@ const OrderDetails: React.FC = () => {
 												'multivendorx'
 											)}
 											titleIcon="customer-support"
-											desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+											desc="View customer information and contact details for this order."
 										>
 											<InformationItemComponent
 												title={
@@ -1283,7 +1283,7 @@ const OrderDetails: React.FC = () => {
 												'multivendorx'
 											)}
 											titleIcon="location"
-											desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+											desc="Review the customer's billing information."
 										>
 											<FormGroupWrapperComponent>
 												<FormGroupComponent
@@ -1443,7 +1443,7 @@ const OrderDetails: React.FC = () => {
 											'multivendorx'
 										)}
 										titleIcon="shipping"
-										desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+										desc="View the delivery address for this order."
 									>
 										<div>
 											{orderData?.shipping.address_1}
@@ -1467,7 +1467,7 @@ const OrderDetails: React.FC = () => {
 							<CardComponent
 								title={__('Shipping Tracking', 'multivendorx')}
 								titleIcon="shipping"
-								desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+								desc="Add shipment details and tracking information to keep customers informed."
 							>
 								<FormGroupWrapperComponent>
 									<FormGroupComponent
@@ -1583,7 +1583,7 @@ const OrderDetails: React.FC = () => {
 											'multivendorx'
 										)}
 										titleIcon="order"
-										desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+										desc="View order updates, system messages, and important activity."
 									>
 										{orderData?.order_notes &&
 											orderData.order_notes.length > 0 ? (

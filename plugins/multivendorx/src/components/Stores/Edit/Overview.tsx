@@ -197,7 +197,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 					<CardComponent
 						title={__('Recent payouts', 'multivendorx')}
 						titleIcon="payment"
-						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+						desc="Track the store’s latest payout activity and payment status."
 						iconName="external icon"
 						onIconClick={() => {
 							navigate(
@@ -294,7 +294,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 					<CardComponent
 						title={__('Latest products', 'multivendorx')}
 						titleIcon="product"
-						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+						desc="View recently added products and their current prices."
 						iconName="external icon"
 						onIconClick={() => {
 							window.open(
@@ -354,7 +354,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 						<CardComponent
 							title={__('Latest reviews', 'multivendorx')}
 							titleIcon="review"
-							desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+							desc="See recent customer feedback and store ratings."
 							iconName="external icon"
 							onIconClick={() => {
 								navigate(
@@ -370,7 +370,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 						<CardComponent
 							title={__('Latest refunds', 'multivendorx')}
 							titleIcon="refund"
-							desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+							desc="Monitor recent refund activity and track returned payments."
 							iconName="external icon"
 							onIconClick={() => {
 								navigate(
@@ -385,7 +385,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 					)}
 				</ColumnComponent>
 				<ColumnComponent grid={4}>
-					<CardComponent title={__('Store overview', 'multivendorx')} titleIcon="storefront" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+					<CardComponent title={__('Store overview', 'multivendorx')} titleIcon="storefront" desc="Review store performance, activity, and key account details.">
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
 								row
