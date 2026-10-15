@@ -39,28 +39,33 @@ class Enrollment {
 	public static function get_enrollments( $enrollment_args ) {
 		global $wpdb;
 
-		$table_name       = $wpdb->prefix . Util::TABLES['enrollment'];
-		$table_identifier = $wpdb->prepare( '%i', $table_name );
-		$where            = array();
+		$table_name = $wpdb->prefix . Util::TABLES['enrollment'];
+		$where      = array();
+		$values     = array( $table_name );
 
 		// Filters.
 		if ( isset( $enrollment_args['id'] ) ) {
-			$ids     = implode( ',', array_map( 'intval', (array) $enrollment_args['id'] ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- cast to int, not user-controlled SQL.
-			$where[] = "id IN ($ids)";
+			$ids          = array_map( 'intval', (array) $enrollment_args['id'] );
+			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+			$where[]      = "id IN ($placeholders)";
+			$values       = array_merge( $values, $ids );
 		}
 
 		if ( isset( $enrollment_args['user_id'] ) ) {
-			$ids     = implode( ',', array_map( 'intval', (array) $enrollment_args['user_id'] ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- cast to int, not user-controlled SQL.
-			$where[] = "user_id IN ($ids)";
+			$ids          = array_map( 'intval', (array) $enrollment_args['user_id'] );
+			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+			$where[]      = "user_id IN ($placeholders)";
+			$values       = array_merge( $values, $ids );
 		}
 
 		if ( ! empty( $enrollment_args['user_email'] ) ) {
-			$email   = sanitize_email( strtolower( trim( $enrollment_args['user_email'] ) ) );
-			$where[] = $wpdb->prepare( 'LOWER(user_email) = %s', $email );
+			$where[]  = 'LOWER(user_email) = %s';
+			$values[] = sanitize_email( strtolower( trim( $enrollment_args['user_email'] ) ) );
 		}
 
 		if ( isset( $enrollment_args['course_id'] ) ) {
-			$where[] = $wpdb->prepare( 'course_id = %d', $enrollment_args['course_id'] );
+			$where[]  = 'course_id = %d';
+			$values[] = (int) $enrollment_args['course_id'];
 		}
 
 		if ( ! empty( $enrollment_args['meta_query'] ) ) {
@@ -71,59 +76,71 @@ class Enrollment {
 					$value   = $meta_condition['value'];
 
 					if ( in_array( $compare, array( '=', '!=', '>', '<', '>=', '<=', 'LIKE', 'NOT LIKE' ), true ) ) {
-						$where[] = $wpdb->prepare( "`$key` $compare %s", $value ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $key is sanitize_key()'d, $compare is allowlisted above.
+						// $key is sanitize_key()'d above; $compare is restricted to the fixed whitelist checked by in_array() above.
+						$where[]  = "%i {$compare} %s";
+						$values[] = $key;
+						$values[] = $value;
 					}
 				}
 			}
 		}
 
 		if ( isset( $enrollment_args['order_id'] ) ) {
-			$where[] = $wpdb->prepare( 'order_id = %d', $enrollment_args['order_id'] );
+			$where[]  = 'order_id = %d';
+			$values[] = (int) $enrollment_args['order_id'];
 		}
 
 		if ( ! empty( $enrollment_args['status'] ) ) {
-			$where[] = $wpdb->prepare( 'status = %s', sanitize_text_field( $enrollment_args['status'] ) );
+			$where[]  = 'status = %s';
+			$values[] = sanitize_text_field( $enrollment_args['status'] );
 		}
 
 		if ( ! empty( $enrollment_args['start_date'] ) && ! empty( $enrollment_args['end_date'] ) ) {
-			$where[] = $wpdb->prepare(
-				'enrollment_date BETWEEN %s AND %s',
-				$enrollment_args['start_date'],
-				$enrollment_args['end_date']
-			);
+			$where[]  = 'enrollment_date BETWEEN %s AND %s';
+			$values[] = $enrollment_args['start_date'];
+			$values[] = $enrollment_args['end_date'];
 		}
 
 		$where = apply_filters( 'moowoodle_enrollment_query', $where, $enrollment_args );
 
-		$select_fields = '*';
-
+		// No caller in this codebase passes 'fields' today; rather than needing a dynamic,
+		// caller-controlled SELECT column list (which can't be bound via the single-identifier
+		// %i placeholder), every column is always fetched and projected down to the requested
+		// subset in PHP afterward.
+		$requested_fields = array();
 		if ( ! empty( $enrollment_args['fields'] ) ) {
-			if ( is_array( $enrollment_args['fields'] ) ) {
-				$select_fields = implode( ', ', array_map( 'sanitize_key', $enrollment_args['fields'] ) );
-			} else {
-				$select_fields = sanitize_key( $enrollment_args['fields'] );
-			}
+			$requested_fields = array_map( 'sanitize_key', is_array( $enrollment_args['fields'] ) ? $enrollment_args['fields'] : array( $enrollment_args['fields'] ) );
 		}
 
-		$query = isset( $enrollment_args['count'] )
-			? "SELECT COUNT(*) FROM {$table_identifier}"
-			: "SELECT {$select_fields} FROM {$table_identifier}";
-
-		if ( ! empty( $where ) ) {
-			$query .= ' WHERE ' . implode( ' AND ', $where );
-		}
+		// $where fragments above hold only %d/%s/%i placeholder tokens, never raw data; every real value is bound positionally via $values.
+		$where_clause = empty( $where ) ? '' : ( ' WHERE ' . implode( ' AND ', $where ) );
+		$limit_clause = '';
 
 		if ( isset( $enrollment_args['limit'] ) && isset( $enrollment_args['offset'] ) ) {
-			$query .= $wpdb->prepare( ' LIMIT %d OFFSET %d', intval( $enrollment_args['limit'] ), intval( $enrollment_args['offset'] ) );
+			$limit_clause = ' LIMIT %d OFFSET %d';
+			$values[]     = intval( $enrollment_args['limit'] );
+			$values[]     = intval( $enrollment_args['offset'] );
 		}
 
-		// Table name is escaped via %i above; each $where fragment is already escaped via its own $wpdb->prepare() call.
 		if ( isset( $enrollment_args['count'] ) ) {
-			return $wpdb->get_var( $query ) ?? 0; // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			return $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i' . $where_clause, $values ) ) ?? 0;
 		}
 
-		$results = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-		return $results ?? array();
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		$results = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i' . $where_clause . $limit_clause, $values ), ARRAY_A );
+		$results = $results ?? array();
+
+		if ( empty( $requested_fields ) ) {
+			return $results;
+		}
+
+		return array_map(
+			static function ( $row ) use ( $requested_fields ) {
+				return array_intersect_key( $row, array_flip( $requested_fields ) );
+			},
+			$results
+		);
 	}
 
 	/**

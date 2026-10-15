@@ -39,13 +39,13 @@ class Category {
 		$table_name = $wpdb->prefix . Util::TABLES['category'];
 
 		if ( empty( $category_ids ) ) {
-			return $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i', $table_name ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			return $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i', $table_name ), ARRAY_A );
 		}
 
-		$placeholders = implode( ',', array_fill( 0, count( $category_ids ), '%d' ) );
-
-		// $placeholders is a locally built sequence of %d tokens sized to count( $category_ids ), never user input; each id is still bound individually below.
-		return $wpdb->get_results( $wpdb->prepare( "SELECT * FROM %i WHERE id IN ($placeholders)", array_merge( array( $table_name ), $category_ids ) ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// $category_ids is already intval()'d above; joined into one %s value so the query template never changes shape.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		return $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i WHERE FIND_IN_SET(id, %s)', $table_name, implode( ',', $category_ids ) ), ARRAY_A );
     }
 
 	/**

@@ -886,44 +886,45 @@ class StoreUtil {
         $lat_key = Utill::STORE_SETTINGS_KEYS['location_lat'];
         $lng_key = Utill::STORE_SETTINGS_KEYS['location_lng'];
 
-        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-        $sql = $wpdb->prepare(
-            "
-            SELECT s.ID,
-            (
-                %f * ACOS(
-                    COS( RADIANS( %f ) ) *
-                    COS( RADIANS( lat.meta_value ) ) *
-                    COS( RADIANS( lng.meta_value ) - RADIANS( %f ) ) +
-                    SIN( RADIANS( %f ) ) *
-                    SIN( RADIANS( lat.meta_value ) )
-                )
-            ) AS distance
-            FROM {$store_table} s
-            INNER JOIN {$meta_table} lat
-                ON s.ID = lat.store_id
-                AND lat.meta_key = %s
-                AND lat.meta_value != ''
-            INNER JOIN {$meta_table} lng
-                ON s.ID = lng.store_id
-                AND lng.meta_key = %s
-                AND lng.meta_value != ''
-            WHERE s.status = 'active'
-            HAVING distance <= %f
-            ORDER BY distance ASC
-            ",
-            $earth_radius,
-            $lat,
-            $lng,
-            $lat,
-            $lat_key,
-            $lng_key,
-            $radius
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        return $wpdb->get_col(
+            $wpdb->prepare(
+                "
+                SELECT s.ID,
+                (
+                    %f * ACOS(
+                        COS( RADIANS( %f ) ) *
+                        COS( RADIANS( lat.meta_value ) ) *
+                        COS( RADIANS( lng.meta_value ) - RADIANS( %f ) ) +
+                        SIN( RADIANS( %f ) ) *
+                        SIN( RADIANS( lat.meta_value ) )
+                    )
+                ) AS distance
+                FROM %i s
+                INNER JOIN %i lat
+                    ON s.ID = lat.store_id
+                    AND lat.meta_key = %s
+                    AND lat.meta_value != ''
+                INNER JOIN %i lng
+                    ON s.ID = lng.store_id
+                    AND lng.meta_key = %s
+                    AND lng.meta_value != ''
+                WHERE s.status = 'active'
+                HAVING distance <= %f
+                ORDER BY distance ASC
+                ",
+                $earth_radius,
+                $lat,
+                $lng,
+                $lat,
+                $store_table,
+                $meta_table,
+                $lat_key,
+                $meta_table,
+                $lng_key,
+                $radius
+            )
         );
-        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        return $wpdb->get_col( $sql );
     }
 
     /**
