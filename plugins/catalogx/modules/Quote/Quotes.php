@@ -12,7 +12,7 @@ use CatalogX\Utill;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * catalogx REST API Quote controller.
+ * Catalogx REST API Quote controller.
  *
  * @class       Module class
  * @version     PRODUCT_VERSION
@@ -55,7 +55,7 @@ class Quotes extends \WP_REST_Controller {
 
 
     /**
-     * create an item.
+     * Create an item.
      *
      * @param object $request The request object.
      */
@@ -68,7 +68,7 @@ class Quotes extends \WP_REST_Controller {
         }
 
         try {
-            $rejection_response = apply_filters( 'catalogx_quote_rejection_response', null, $request);
+            $rejection_response = apply_filters( 'catalogx_quote_rejection_response', null, $request );
 
             if ( null !== $rejection_response ) {
                 return $rejection_response;

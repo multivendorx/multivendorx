@@ -195,14 +195,14 @@ class Admin {
      * @return string Modified path.
      */
     public function textdomain_relative_path( $path, $url ) {
-        if ( strpos( $url, 'woocommerce-catalog-enquiry' ) !== false ) {
+        if ( false !== strpos( $url, 'woocommerce-catalog-enquiry' ) ) {
             foreach ( CatalogX()->block_paths as $block_path_key => $relative_path ) {
-                if ( strpos( $url, $block_path_key ) !== false ) {
+                if ( false !== strpos( $url, $block_path_key ) ) {
                     $path = $relative_path;
                 }
             }
 
-            if ( strpos( $url, 'block' ) === false ) {
+            if ( false === strpos( $url, 'block' ) ) {
                 $path = 'assets/js/vendors.js';
             }
         }
