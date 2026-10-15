@@ -1,6 +1,8 @@
-# multivendorx developer docs
+# MultiVendorX Developer Docs
 
 Developer-facing reference documentation for extending `multivendorx`, the free/base-tier WooCommerce multivendor marketplace plugin. This is separate from the parent monorepo's `.claude/rules/` (internal AI guidance) — this `/docs` folder is for third-party developers building on top of the plugin. Mirrors the same section breakdown as `multivendorx-pro`'s own `docs/` folder (in the parent repo, `plugins/multivendorx-pro/docs/`), adapted to what this plugin actually owns — since this is the **base** plugin, several sections here describe the real mechanism itself rather than just how Pro extends it.
+
+Looking for how to *use* the plugin instead of extend it? See the [user guides](../user/README.md).
 
 ## Contents
 

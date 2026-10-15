@@ -18,6 +18,7 @@ export type SearchItem = {
 	icon?: string;
 };
 
+// eslint-disable-next-line no-undef -- __WebpackModuleApi is a global TS namespace from @types/webpack-env, not a runtime identifier.
 function buildIndexFromContext(context: __WebpackModuleApi.RequireContext) {
 	return context
 		.keys()

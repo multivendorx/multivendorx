@@ -7,6 +7,8 @@
 
 namespace MooWoodle;
 
+defined( 'ABSPATH' ) || exit;
+
 use MooWoodle\Util;
 /**
  * MooWoodle Enrollment class
@@ -37,23 +39,22 @@ class Enrollment {
 	public static function get_enrollments( $enrollment_args ) {
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . Util::TABLES['enrollment'];
-		$where      = array();
+		$table_name       = $wpdb->prefix . Util::TABLES['enrollment'];
+		$table_identifier = $wpdb->prepare( '%i', $table_name );
+		$where            = array();
 
 		// Filters.
 		if ( isset( $enrollment_args['id'] ) ) {
-			$ids     = is_array( $enrollment_args['id'] ) ? $enrollment_args['id'] : array( $enrollment_args['id'] );
-			$ids     = implode( ',', array_map( 'intval', $ids ) );
+			$ids     = implode( ',', array_map( 'intval', (array) $enrollment_args['id'] ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- cast to int, not user-controlled SQL.
 			$where[] = "id IN ($ids)";
 		}
 
 		if ( isset( $enrollment_args['user_id'] ) ) {
-			$ids     = is_array( $enrollment_args['user_id'] ) ? $enrollment_args['user_id'] : array( $enrollment_args['user_id'] );
-			$ids     = implode( ',', array_map( 'intval', $ids ) );
+			$ids     = implode( ',', array_map( 'intval', (array) $enrollment_args['user_id'] ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- cast to int, not user-controlled SQL.
 			$where[] = "user_id IN ($ids)";
 		}
 
-		if ( isset( $enrollment_args['user_email'] ) && '' !== $enrollment_args['user_email'] ) {
+		if ( ! empty( $enrollment_args['user_email'] ) ) {
 			$email   = sanitize_email( strtolower( trim( $enrollment_args['user_email'] ) ) );
 			$where[] = $wpdb->prepare( 'LOWER(user_email) = %s', $email );
 		}
@@ -65,12 +66,12 @@ class Enrollment {
 		if ( ! empty( $enrollment_args['meta_query'] ) ) {
 			foreach ( $enrollment_args['meta_query'] as $meta_condition ) {
 				if ( ! empty( $meta_condition['key'] ) ) {
-					$key     = $meta_condition['key'];
+					$key     = sanitize_key( $meta_condition['key'] );
 					$compare = strtoupper( $meta_condition['compare'] );
 					$value   = $meta_condition['value'];
 
 					if ( in_array( $compare, array( '=', '!=', '>', '<', '>=', '<=', 'LIKE', 'NOT LIKE' ), true ) ) {
-						$where[] = "`$key` $compare " . $wpdb->prepare( '%s', $value );
+						$where[] = $wpdb->prepare( "`$key` $compare %s", $value ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $key is sanitize_key()'d, $compare is allowlisted above.
 					}
 				}
 			}
@@ -80,7 +81,7 @@ class Enrollment {
 			$where[] = $wpdb->prepare( 'order_id = %d', $enrollment_args['order_id'] );
 		}
 
-		if ( isset( $enrollment_args['status'] ) && '' !== $enrollment_args['status'] ) {
+		if ( ! empty( $enrollment_args['status'] ) ) {
 			$where[] = $wpdb->prepare( 'status = %s', sanitize_text_field( $enrollment_args['status'] ) );
 		}
 
@@ -105,8 +106,8 @@ class Enrollment {
 		}
 
 		$query = isset( $enrollment_args['count'] )
-			? "SELECT COUNT(*) FROM {$table_name}"
-			: "SELECT {$select_fields} FROM {$table_name}";
+			? "SELECT COUNT(*) FROM {$table_identifier}"
+			: "SELECT {$select_fields} FROM {$table_identifier}";
 
 		if ( ! empty( $where ) ) {
 			$query .= ' WHERE ' . implode( ' AND ', $where );
@@ -116,6 +117,7 @@ class Enrollment {
 			$query .= $wpdb->prepare( ' LIMIT %d OFFSET %d', intval( $enrollment_args['limit'] ), intval( $enrollment_args['offset'] ) );
 		}
 
+		// Table name is escaped via %i above; each $where fragment is already escaped via its own $wpdb->prepare() call.
 		if ( isset( $enrollment_args['count'] ) ) {
 			return $wpdb->get_var( $query ) ?? 0; // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		}
@@ -464,10 +466,10 @@ class Enrollment {
 		foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 			$product_id = $cart_item['product_id'];
 
-			// Check if product has Moodle course ID
+			// Check if product has Moodle course ID.
 			$moodle_course_id = get_post_meta( $product_id, Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true );
 			if ( empty( $moodle_course_id ) ) {
-				continue; // Skip non-Moodle products
+				continue; // Skip non-Moodle products.
 			}
 
 			if ( $cart_item['quantity'] > 1 ) {

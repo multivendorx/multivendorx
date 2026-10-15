@@ -47,12 +47,12 @@ class Rest extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'permission_callback' => array( $this, 'multivendorx_get_items_permissions_check' ),
 				),
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'create_item' ),
-					'permission_callback' => array( $this, 'permissions_check' ),
+					'permission_callback' => array( $this, 'multivendorx_permissions_check' ),
 				),
 			)
         );
@@ -64,7 +64,7 @@ class Rest extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_item' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'permission_callback' => array( $this, 'multivendorx_get_items_permissions_check' ),
 					'args'                => array(
 						'id' => array( 'required' => true ),
 					),
@@ -72,12 +72,12 @@ class Rest extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'update_item' ),
-					'permission_callback' => array( $this, 'permissions_check' ),
+					'permission_callback' => array( $this, 'multivendorx_permissions_check' ),
 				),
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array( $this, 'delete_item' ),
-					'permission_callback' => array( $this, 'permissions_check' ),
+					'permission_callback' => array( $this, 'multivendorx_permissions_check' ),
 					'args'                => array(
 						'id' => array( 'required' => true ),
 					),
@@ -91,7 +91,7 @@ class Rest extends \WP_REST_Controller {
      *
      * @param object $request Request object.
      */
-    public function get_items_permissions_check( $request ) {
+    public function multivendorx_get_items_permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 
@@ -101,7 +101,7 @@ class Rest extends \WP_REST_Controller {
      * @param object $request Request object.
      * @return true|\WP_Error
      */
-    public function permissions_check( $request ) {
+    public function multivendorx_permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'edit_stores' ) );
     }
 
