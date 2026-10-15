@@ -29,6 +29,24 @@ class Admin {
         add_filter( 'allowed_redirect_hosts', array( $this, 'allow_moowoodle_redirect_host' ) );
 		// For loco translation.
         add_action( 'load_script_textdomain_relative_path', array( $this, 'textdomain_relative_path' ), 10, 2 );
+		// Style the "Upgrade to Pro" submenu label (rendered in every admin page's sidebar).
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_upgrade_menu_style' ) );
+	}
+
+	/**
+	 * Enqueue the "Upgrade to Pro" submenu label's highlight style.
+	 *
+	 * @return void
+	 */
+	public function enqueue_upgrade_menu_style() {
+		if ( Util::is_khali_dabba() ) {
+			return;
+		}
+
+		wp_add_inline_style(
+			'wp-admin',
+			'a:has(.upgrade-to-pro){background: linear-gradient(-28deg, #c4a9e8, #7848b9, #852aff) !important; color: white !important; padding: 5px 0;}'
+		);
 	}
 
 	/**
@@ -105,14 +123,7 @@ class Admin {
 			add_submenu_page(
 				'moowoodle',
 				__( 'Upgrade to Pro', 'moowoodle' ),
-				'<style>
-					a:has(.upgrade-to-pro){
-						background: linear-gradient(-28deg, #c4a9e8, #7848b9, #852aff) !important;
-						color: white !important;
-						padding: 5px 0;
-					}
-				</style>
-				<div class="upgrade-to-pro"><i class="dashicons dashicons-awards"></i>' . esc_html__( 'Upgrade to Pro', 'moowoodle' ) . '</div> ',
+				'<div class="upgrade-to-pro"><i class="dashicons dashicons-awards"></i>' . esc_html__( 'Upgrade to Pro', 'moowoodle' ) . '</div> ',
 				'manage_options',
 				'moowoodle-upgrade',
 				array( self::class, 'handle_external_redirects' )

@@ -84,15 +84,15 @@ class Promotions {
         }
         switch ( $action_type ) {
             case 'later':
-                set_transient( 'wp_review_request', 'yes', MONTH_IN_SECONDS );
+                set_transient( 'multivendorx_review_request', 'yes', MONTH_IN_SECONDS );
                 break;
 
             case 'add_review':
-                update_user_meta( $user_id, 'wp_review_request', 'true', true );
+                update_user_meta( $user_id, 'multivendorx_review_request', 'true', true );
                 break;
 
             case 'review_closed':
-                set_transient( 'wp_review_request', 'yes', YEAR_IN_SECONDS );
+                set_transient( 'multivendorx_review_request', 'yes', YEAR_IN_SECONDS );
                 break;
         }
         wp_send_json_success();
@@ -104,7 +104,7 @@ class Promotions {
     public function seek_product_review() {
         $user_id = get_current_user_id();
 
-        if ( false !== get_transient( 'wp_review_request' ) || get_user_meta( $user_id, 'wp_review_request', true ) ) {
+        if ( false !== get_transient( 'multivendorx_review_request' ) || get_user_meta( $user_id, 'multivendorx_review_request', true ) ) {
             return;
         }
         ?>
@@ -123,7 +123,7 @@ class Promotions {
      * Show the anonymous-usage-tracking opt-in admin notice and handle the yes/no response.
      */
     public function seek_site_information() {
-        if ( get_option( 'plugin_action_block_notice' ) ) {
+        if ( get_option( 'multivendorx_plugin_action_block_notice' ) ) {
             return;
         }
 
@@ -163,7 +163,7 @@ class Promotions {
         $plugin_action = is_string( $plugin_action ) ? sanitize_text_field( wp_unslash( $plugin_action ) ) : '';
 
         if ( $plugin_action ) {
-            update_option( 'plugin_action_block_notice', $plugin_action );
+            update_option( 'multivendorx_plugin_action_block_notice', $plugin_action );
             if ( 'yes' === $plugin_action ) {
                 $body                     = MultiVendorX()->tracker->get_tracking_payload();
                 $body['status']           = 'Deactivated';

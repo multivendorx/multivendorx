@@ -74,7 +74,7 @@ class Synchronization extends \WP_REST_Controller {
 			if ( 'course' === $sync_type ) {
 				$response = array(
 					'status'  => Util::get_sync_status( 'course' ),
-					'running' => get_transient( 'course_sync_running' ),
+					'running' => get_transient( 'moowoodle_course_sync_running' ),
 				);
             } else {
                 $response = apply_filters( 'moowoodle_sync_status', $request );
@@ -126,7 +126,7 @@ class Synchronization extends \WP_REST_Controller {
         // Flush course sync status before sync start.
         Util::flush_sync_status( 'course' );
 
-        set_transient( 'course_sync_running', true );
+        set_transient( 'moowoodle_course_sync_running', true );
 
         $sync_settings = MooWoodle()->setting->get_setting( 'sync_course_options', array() );
         // update course and product categories.
@@ -179,7 +179,7 @@ class Synchronization extends \WP_REST_Controller {
          */
         do_action( 'moowoodle_after_sync_course' );
 
-        delete_transient( 'course_sync_running' );
+        delete_transient( 'moowoodle_course_sync_running' );
 
         return rest_ensure_response( true );
     }
