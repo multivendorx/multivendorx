@@ -253,8 +253,12 @@ class Utill {
         // Use the theme template if it exists, otherwise use the plugin template.
         $located = file_exists( $theme_template ) ? $theme_template : CatalogX()->plugin_path . 'templates/' . $template_name;
 
-        // Load the template.
-        load_template( $located, false, $args );
+        // load_template() doesn't extract $args like wc_get_template() does.
+        if ( $args && is_array( $args ) ) {
+            extract( $args ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
+        }
+
+        include $located;
     }
 
 
@@ -390,6 +394,11 @@ class Utill {
 		return strtr( $date_format, $map );
 	}
 
+    /**
+     * Get the {field_label} replacement tags available in the enquiry form builder.
+     *
+     * @return array
+     */
     public static function get_tags_enquiry_form() {
         $tags = array();
 

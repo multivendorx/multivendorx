@@ -241,7 +241,7 @@ const Overview: React.FC<OverviewProps> = () => {
 				</ColumnComponent>
 
 				<ColumnComponent grid={6}>
-					<CardComponent title={__('Revenue breakdown', 'multivendorx')} titleIcon="revenue" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+					<CardComponent title={__('Revenue breakdown', 'multivendorx')} titleIcon="revenue" desc="View a summary of marketplace earnings and revenue breakdown.">
 						{earningSummary.map((product) => (
 							<>
 								<InformationItemComponent
@@ -255,7 +255,7 @@ const Overview: React.FC<OverviewProps> = () => {
 					</CardComponent>
 				</ColumnComponent>
 				<ColumnComponent grid={6}>
-					<CardComponent title={__('Revenue breakdown', 'multivendorx')} titleIcon="revenue" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+					<CardComponent title={__('Revenue breakdown', 'multivendorx')} titleIcon="revenue" desc="View a summary of marketplace earnings and revenue breakdown.">
 							<ResponsiveContainer width="100%" height={400}>
 								<PieChart>
 									<Pie

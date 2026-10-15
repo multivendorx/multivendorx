@@ -29,6 +29,24 @@ class Admin {
         add_filter( 'allowed_redirect_hosts', array( $this, 'allow_catalogx_redirect_host' ) );
         // For load translation.
         add_action( 'load_script_textdomain_relative_path', array( $this, 'textdomain_relative_path' ), 10, 2 );
+        // Style the "Upgrade to Pro" submenu label (rendered in every admin page's sidebar).
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_upgrade_menu_style' ) );
+    }
+
+    /**
+     * Enqueue the "Upgrade to Pro" submenu label's highlight style.
+     *
+     * @return void
+     */
+    public function enqueue_upgrade_menu_style() {
+        if ( Utill::is_khali_dabba() ) {
+            return;
+        }
+
+        wp_add_inline_style(
+            'wp-admin',
+            'a:has(.upgrade-to-pro){background: linear-gradient(-28deg, #c4a9e8, #7848b9, #852aff) !important; color: white !important; padding: 5px 0;}'
+        );
     }
 
     /**
@@ -113,14 +131,7 @@ class Admin {
             add_submenu_page(
                 'catalogx',
                 __( 'Upgrade to Pro', 'catalogx' ),
-                '<style>
-                        a:has(.upgrade-to-pro){
-                            background: linear-gradient(-28deg, #c4a9e8, #7848b9, #852aff) !important;
-                            color: white !important;
-                            padding: 5px 0;
-                        }
-                    </style>
-                <div class="upgrade-to-pro"><i style="margin-right: 0.25rem" class="dashicons dashicons-awards"></i>' . __( 'Upgrade to pro', 'catalogx' ) . '</div>',
+                '<div class="upgrade-to-pro"><i style="margin-right: 0.25rem" class="dashicons dashicons-awards"></i>' . __( 'Upgrade to pro', 'catalogx' ) . '</div>',
                 'manage_woocommerce',
                 'catalogx-upgrade',
                 array( $this, 'handle_external_redirects' )
@@ -195,14 +206,14 @@ class Admin {
      * @return string Modified path.
      */
     public function textdomain_relative_path( $path, $url ) {
-        if ( strpos( $url, 'woocommerce-catalog-enquiry' ) !== false ) {
+        if ( false !== strpos( $url, 'woocommerce-catalog-enquiry' ) ) {
             foreach ( CatalogX()->block_paths as $block_path_key => $relative_path ) {
-                if ( strpos( $url, $block_path_key ) !== false ) {
+                if ( false !== strpos( $url, $block_path_key ) ) {
                     $path = $relative_path;
                 }
             }
 
-            if ( strpos( $url, 'block' ) === false ) {
+            if ( false === strpos( $url, 'block' ) ) {
                 $path = 'assets/js/vendors.js';
             }
         }

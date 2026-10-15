@@ -115,7 +115,7 @@ const ShippingSettings: React.FC<ShippingSettingsProps> = ({ id, data }) => {
 			{appLocalizer.shipping_methods &&
 			appLocalizer.shipping_methods.length > 0 ? (
 				<ColumnComponent>
-					<CardComponent title={__('Method type', 'multivendorx')} titleIcon="section" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+					<CardComponent title={__('Method type', 'multivendorx')} titleIcon="section" desc="Choose how shipping rates are calculated for your store.">
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
 								row

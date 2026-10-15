@@ -51,7 +51,7 @@ export default {
 			size: 25,
 			label: __("'My Course' menu position", 'moowoodle'),
 			options: Object.entries(appLocalizer.account_menu).map(
-				([key, label], index) => {
+				([, label], index) => {
 					return {
 						key: index,
 						label: label,

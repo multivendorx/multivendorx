@@ -12,7 +12,7 @@ use CatalogX\Utill;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * catalogx REST API Quote controller.
+ * Catalogx REST API Quote controller.
  *
  * @class       Module class
  * @version     PRODUCT_VERSION
@@ -38,7 +38,7 @@ class Quotes extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'create_item' ),
-                    'permission_callback' => array( $this, 'create_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'catalogx_create_item_permissions_check' ),
                 ),
             )
         );
@@ -49,13 +49,13 @@ class Quotes extends \WP_REST_Controller {
      *
      * @param object $request The request object.
      */
-    public function create_item_permissions_check( $request ) {
+    public function catalogx_create_item_permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'customer', 'wholesale_user', 'manage_options' ), '', 'quote_user_permission' );
     }
 
 
     /**
-     * create an item.
+     * Create an item.
      *
      * @param object $request The request object.
      */
@@ -68,7 +68,7 @@ class Quotes extends \WP_REST_Controller {
         }
 
         try {
-            $rejection_response = apply_filters( 'catalogx_quote_rejection_response', null, $request);
+            $rejection_response = apply_filters( 'catalogx_quote_rejection_response', null, $request );
 
             if ( null !== $rejection_response ) {
                 return $rejection_response;

@@ -7,6 +7,8 @@
 
 namespace MooWoodle\Core;
 
+defined( 'ABSPATH' ) || exit;
+
 use MooWoodle\Util;
 use MooWoodle\FrontendScripts;
 
@@ -71,9 +73,11 @@ class Course {
 			}
 		}
 
+		$query_params[] = $table_name;
+
 		$sql = $is_count
-			? "SELECT COUNT(*) FROM {$table_name}"
-			: "SELECT {$select_fields} FROM {$table_name}";
+			? 'SELECT COUNT(*) FROM %i'
+			: "SELECT {$select_fields} FROM %i";
 
 		if ( ! empty( $query_args['id'] ) ) {
 			$ids          = array_map( 'intval', (array) $query_args['id'] );
@@ -139,16 +143,16 @@ class Course {
 			}
 		}
 
-		if ( ! empty( $query_params ) ) {
-			$sql = $wpdb->prepare( $sql, $query_params );
-		}
+		// The query template is assembled from a fixed, literal $supported_filters whitelist above, never from user input.
+		$sql = $wpdb->prepare( $sql, $query_params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( $is_count ) {
-			$course_count = $wpdb->get_var( $sql );
+			$course_count = $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 			return $course_count ?? 0;
 		}
 
-		return $wpdb->get_results( $sql, ARRAY_A ) ?: array();
+		$courses = $wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		return $courses ? $courses : array();
 	}
 
 	/**
@@ -160,7 +164,7 @@ class Course {
 	public static function update_course( $course_data ) {
 		global $wpdb;
 
-		$moodle_course_id = (int) $course_data['moodle_course_id'];
+		$moodle_course_id = (int) ( $course_data['moodle_course_id'] ?? 0 );
 		if ( empty( $moodle_course_id ) ) {
 			return false;
 		}
