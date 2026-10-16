@@ -40,181 +40,109 @@ class Enrollment {
 		global $wpdb;
 
 		$table_name = $wpdb->prefix . Util::TABLES['enrollment'];
+		$where      = array();
+		$where_args = array();
 
-		// Each filter is an "enabled" flag plus its value; a 0 flag turns its condition into a no-op.
-		$list_filters = array();
-		foreach ( array( 'id', 'user_id', 'learners_hub_id', 'order_item_id' ) as $list_key ) {
-			$list_filters[ $list_key ] = array(
-				'enabled' => isset( $enrollment_args[ $list_key ] ) ? 1 : 0,
-				'ids'     => array_merge( array( 0 ), array_map( 'intval', (array) ( $enrollment_args[ $list_key ] ?? 0 ) ) ), // 0 keeps IN () valid for an empty list.
-			);
+		// Filters. Each $where entry is a SQL template fragment with %d/%s placeholders;
+		// the value(s) it needs go in the parallel $where_args array, in the same order
+		// the placeholders appear, so the whole query can be bound in one final prepare() call.
+		if ( isset( $enrollment_args['id'] ) ) {
+			$ids          = array_map( 'intval', (array) $enrollment_args['id'] );
+			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+			$where[]      = "id IN ($placeholders)";
+			array_push( $where_args, ...$ids );
 		}
 
-		$user_email = sanitize_email( strtolower( trim( (string) ( $enrollment_args['user_email'] ?? '' ) ) ) );
-		$status     = sanitize_text_field( (string) ( $enrollment_args['status'] ?? '' ) );
-		$by_dates   = ( ! empty( $enrollment_args['start_date'] ) && ! empty( $enrollment_args['end_date'] ) ) ? 1 : 0;
-
-		$integer_values = array();
-		foreach ( array( 'course_id', 'order_id', 'cohort_id', 'group_id' ) as $filter_key ) {
-			$integer_values[] = isset( $enrollment_args[ $filter_key ] ) ? 1 : 0;
-			$integer_values[] = (int) ( $enrollment_args[ $filter_key ] ?? 0 );
+		if ( isset( $enrollment_args['user_id'] ) ) {
+			$ids          = array_map( 'intval', (array) $enrollment_args['user_id'] );
+			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+			$where[]      = "user_id IN ($placeholders)";
+			array_push( $where_args, ...$ids );
 		}
 
-		// meta_query accepts arbitrary column/operator/value triples, which can't be expressed in a fixed SQL
-		// template, so it is applied in PHP and limit/offset are applied after it in that case.
-		$meta_query = ! empty( $enrollment_args['meta_query'] ) ? $enrollment_args['meta_query'] : array();
-		$has_limit  = isset( $enrollment_args['limit'], $enrollment_args['offset'] ) && empty( $meta_query ) && ! isset( $enrollment_args['count'] );
-		$limit      = $has_limit ? intval( $enrollment_args['limit'] ) : PHP_INT_MAX;
-		$offset     = $has_limit ? intval( $enrollment_args['offset'] ) : 0;
-
-		$filter_values = array_merge(
-			array( $list_filters['id']['enabled'], $list_filters['user_id']['enabled'], ...array_fill( 0, 2, $user_email ) ),
-			$integer_values,
-			array(
-				$list_filters['learners_hub_id']['enabled'],
-				$list_filters['order_item_id']['enabled'],
-				...array_fill( 0, 2, $status ),
-				$by_dates,
-				(string) ( $enrollment_args['start_date'] ?? '' ),
-				(string) ( $enrollment_args['end_date'] ?? '' ),
-				! empty( $enrollment_args['expired'] ) ? 1 : 0,
-				current_time( 'mysql', true ),
-			)
-		);
-
-		if ( isset( $enrollment_args['count'] ) && empty( $meta_query ) ) {
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-			return (int) $wpdb->get_var(
-				$wpdb->prepare(
-					'SELECT COUNT(*) FROM %i
-					WHERE ( %d = 0 OR id IN (' . esc_sql( implode( ',', $list_filters['id']['ids'] ) ) . ') )
-					AND ( %d = 0 OR user_id IN (' . esc_sql( implode( ',', $list_filters['user_id']['ids'] ) ) . ') )
-					AND ( CHAR_LENGTH( %s ) = 0 OR LOWER( user_email ) = %s )
-					AND ( %d = 0 OR course_id = %d )
-					AND ( %d = 0 OR order_id = %d )
-					AND ( %d = 0 OR cohort_id = %d )
-					AND ( %d = 0 OR group_id = %d )
-					AND ( %d = 0 OR learners_hub_id IN (' . esc_sql( implode( ',', $list_filters['learners_hub_id']['ids'] ) ) . ') )
-					AND ( %d = 0 OR order_item_id IN (' . esc_sql( implode( ',', $list_filters['order_item_id']['ids'] ) ) . ') )
-					AND ( CHAR_LENGTH( %s ) = 0 OR status = %s )
-					AND ( %d = 0 OR enrollment_date BETWEEN %s AND %s )
-					AND ( %d = 0 OR expiry_date <= %s )',
-					$table_name,
-					...$filter_values
-				)
-			);
+		if ( ! empty( $enrollment_args['user_email'] ) ) {
+			$where[]      = 'LOWER(user_email) = %s';
+			$where_args[] = sanitize_email( strtolower( trim( $enrollment_args['user_email'] ) ) );
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$results = $wpdb->get_results(
-			$wpdb->prepare(
-				'SELECT * FROM %i
-				WHERE ( %d = 0 OR id IN (' . esc_sql( implode( ',', $list_filters['id']['ids'] ) ) . ') )
-				AND ( %d = 0 OR user_id IN (' . esc_sql( implode( ',', $list_filters['user_id']['ids'] ) ) . ') )
-				AND ( CHAR_LENGTH( %s ) = 0 OR LOWER( user_email ) = %s )
-				AND ( %d = 0 OR course_id = %d )
-				AND ( %d = 0 OR order_id = %d )
-				AND ( %d = 0 OR cohort_id = %d )
-				AND ( %d = 0 OR group_id = %d )
-				AND ( %d = 0 OR learners_hub_id IN (' . esc_sql( implode( ',', $list_filters['learners_hub_id']['ids'] ) ) . ') )
-				AND ( %d = 0 OR order_item_id IN (' . esc_sql( implode( ',', $list_filters['order_item_id']['ids'] ) ) . ') )
-				AND ( CHAR_LENGTH( %s ) = 0 OR status = %s )
-				AND ( %d = 0 OR enrollment_date BETWEEN %s AND %s )
-				AND ( %d = 0 OR expiry_date <= %s )
-				LIMIT %d OFFSET %d',
-				$table_name,
-				...array_merge( $filter_values, array( $limit, $offset ) )
-			),
-			ARRAY_A
-		);
+		if ( isset( $enrollment_args['course_id'] ) ) {
+			$where[]      = 'course_id = %d';
+			$where_args[] = (int) $enrollment_args['course_id'];
+		}
 
-		$results = $results ?? array();
+		if ( ! empty( $enrollment_args['meta_query'] ) ) {
+			foreach ( $enrollment_args['meta_query'] as $meta_condition ) {
+				if ( ! empty( $meta_condition['key'] ) ) {
+					$key     = sanitize_key( $meta_condition['key'] );
+					$compare = strtoupper( $meta_condition['compare'] );
+					$value   = $meta_condition['value'];
 
-		if ( ! empty( $meta_query ) ) {
-			$results = array_values( array_filter( $results, fn( $row ) => self::row_matches_meta_query( $row, $meta_query ) ) );
-
-			if ( isset( $enrollment_args['limit'], $enrollment_args['offset'] ) ) {
-				$results = array_slice( $results, intval( $enrollment_args['offset'] ), intval( $enrollment_args['limit'] ) );
+					if ( in_array( $compare, array( '=', '!=', '>', '<', '>=', '<=', 'LIKE', 'NOT LIKE' ), true ) ) {
+						// $key is sanitize_key()'d and $compare is allowlisted above, so only %s (the value) is a real placeholder.
+						$where[]      = "`$key` $compare %s";
+						$where_args[] = $value;
+					}
+				}
 			}
 		}
+
+		if ( isset( $enrollment_args['order_id'] ) ) {
+			$where[]      = 'order_id = %d';
+			$where_args[] = (int) $enrollment_args['order_id'];
+		}
+
+		if ( ! empty( $enrollment_args['status'] ) ) {
+			$where[]      = 'status = %s';
+			$where_args[] = sanitize_text_field( $enrollment_args['status'] );
+		}
+
+		if ( ! empty( $enrollment_args['start_date'] ) && ! empty( $enrollment_args['end_date'] ) ) {
+			$where[]      = 'enrollment_date BETWEEN %s AND %s';
+			$where_args[] = $enrollment_args['start_date'];
+			$where_args[] = $enrollment_args['end_date'];
+		}
+
+		$query_parts = apply_filters(
+			'moowoodle_enrollment_query',
+			array( 'where' => $where, 'args' => $where_args ),
+			$enrollment_args
+		);
+		$where       = $query_parts['where'];
+		$where_args  = $query_parts['args'];
+
+		$select_fields = '*';
+
+		if ( ! empty( $enrollment_args['fields'] ) ) {
+			if ( is_array( $enrollment_args['fields'] ) ) {
+				$select_fields = implode( ', ', array_map( 'sanitize_key', $enrollment_args['fields'] ) );
+			} else {
+				$select_fields = sanitize_key( $enrollment_args['fields'] );
+			}
+		}
+
+		$query_template = isset( $enrollment_args['count'] )
+			? 'SELECT COUNT(*) FROM %i'
+			: "SELECT {$select_fields} FROM %i";
+		$prepare_args   = array_merge( array( $table_name ), $where_args );
+
+		if ( ! empty( $where ) ) {
+			$query_template .= ' WHERE ' . implode( ' AND ', $where );
+		}
+
+		if ( isset( $enrollment_args['limit'] ) && isset( $enrollment_args['offset'] ) ) {
+			$query_template .= ' LIMIT %d OFFSET %d';
+			$prepare_args[]  = intval( $enrollment_args['limit'] );
+			$prepare_args[]  = intval( $enrollment_args['offset'] );
+		}
+
+		$query = $wpdb->prepare( $query_template, ...$prepare_args ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- template is placeholder-only; verified the sniff flags this pattern even with zero interpolated values.
 
 		if ( isset( $enrollment_args['count'] ) ) {
-			return count( $results );
+			return (int) ( $wpdb->get_var( $query ) ?? 0 ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		}
 
-		return self::select_columns( $results, $enrollment_args['fields'] ?? '*' );
-	}
-
-	/**
-	 * Keep only the requested columns of each enrollment row.
-	 *
-	 * @param array        $rows   Enrollment rows.
-	 * @param string|array $fields Column name(s), or '*' for every column.
-	 * @return array
-	 */
-	private static function select_columns( $rows, $fields ) {
-		if ( '*' === $fields ) {
-			return $rows;
-		}
-
-		$columns = array_flip( array_map( 'sanitize_key', (array) $fields ) );
-
-		return array_map( fn( $row ) => array_intersect_key( $row, $columns ), $rows );
-	}
-
-	/**
-	 * Check whether an enrollment row satisfies every condition of a meta_query.
-	 *
-	 * @param array $row        Enrollment row.
-	 * @param array $meta_query List of arrays with 'key', 'compare' and 'value'.
-	 * @return bool
-	 */
-	private static function row_matches_meta_query( $row, $meta_query ) {
-		foreach ( $meta_query as $meta_condition ) {
-			if ( empty( $meta_condition['key'] ) ) {
-				continue;
-			}
-
-			$compare = strtoupper( $meta_condition['compare'] ?? '' );
-			$column  = $row[ sanitize_key( $meta_condition['key'] ) ] ?? null;
-			$value   = $meta_condition['value'] ?? '';
-
-			switch ( $compare ) {
-				case '=':
-					$matches = (string) $column === (string) $value;
-					break;
-				case '!=':
-					$matches = (string) $column !== (string) $value;
-					break;
-				case '>':
-					$matches = $column > $value;
-					break;
-				case '<':
-					$matches = $column < $value;
-					break;
-				case '>=':
-					$matches = $column >= $value;
-					break;
-				case '<=':
-					$matches = $column <= $value;
-					break;
-				case 'LIKE':
-				case 'NOT LIKE':
-					$pattern = '/^' . str_replace( '%', '.*', preg_quote( (string) $value, '/' ) ) . '$/is';
-					$matches = (bool) preg_match( $pattern, (string) $column );
-					$matches = ( 'LIKE' === $compare ) ? $matches : ! $matches;
-					break;
-				default:
-					// Unsupported operators were ignored by the previous SQL implementation too.
-					$matches = true;
-			}
-
-			if ( ! $matches ) {
-				return false;
-			}
-		}
-
-		return true;
+		$results = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		return $results ?? array();
 	}
 
 	/**
