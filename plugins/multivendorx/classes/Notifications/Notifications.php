@@ -1746,8 +1746,7 @@ class Notifications {
 			$receivers = array();
 
 			if ( $event->admin_enabled ) {
-				$parameters['admin_phone'] = $parameters['admin_phone']['country_code'] . $parameters['admin_phone']['sms_receiver_phone_number'];
-				$receivers[]               = $parameters['admin_phone'];
+				$receivers[] = $parameters['admin_phone'];
 			}
 
 			if ( $event->store_enabled ) {
@@ -2081,6 +2080,22 @@ class Notifications {
 	}
 
 	/**
+	 * Where admin SMS alerts go, now that the "Receiver phone number" field has moved
+	 * out of MultiVendorX's own settings. VuloMail owns it as `sms_admin_phone` (its
+	 * "Admin phone" setting) — there's no MultiVendorX-side fallback once VuloMail is
+	 * the delivery path, since the UI to configure one no longer exists.
+	 *
+	 * @return string Phone number in the format VuloMail's "Admin phone" setting stores it, or ''.
+	 */
+	private function get_sms_admin_recipient() {
+		if ( ! function_exists( 'VuloMail' ) || ! isset( VuloMail()->settings ) ) {
+			return '';
+		}
+
+		return (string) VuloMail()->settings->get( 'sms_admin_phone' );
+	}
+
+	/**
 	 * Build the common notification payload and fire the event's trigger hook.
 	 *
 	 * Merges admin/store/customer contact info derived from $store and $order
@@ -2115,7 +2130,7 @@ class Notifications {
 		$payload = array_merge(
 			array(
 				'admin_email'      => MultiVendorX()->setting->get_setting( 'receiver_email_address' ),
-				'admin_phone'      => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+				'admin_phone'      => $this->get_sms_admin_recipient(),
 				'store_name'       => $store_name,
 				'store_email'      => $store_email,
 				'store_phone'      => $store_phone,
