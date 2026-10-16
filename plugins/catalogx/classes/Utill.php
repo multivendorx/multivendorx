@@ -81,7 +81,7 @@ class Utill {
     public const ACTIVE_MODULES_DB_KEY = 'catalogx_all_active_module_list';
 
     /**
-     * Write log entry to Catalogx log file.
+     * Write log entry to CatalogX log file.
      *
      * @param mixed  $message Log message, Exception, or WP_Error.
      * @param string $log_type Log level/type.

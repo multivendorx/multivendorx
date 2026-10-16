@@ -10,7 +10,7 @@ namespace CatalogX;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Catalogx SetupWizard class
+ * CatalogX SetupWizard class
  *
  * @class       SetupWizard
  * @version     5.0.0
