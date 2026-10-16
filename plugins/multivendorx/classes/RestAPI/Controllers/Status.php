@@ -165,8 +165,8 @@ class Status extends \WP_REST_Controller {
 
             if ( 'visitor' === $key ) {
                 $table = $wpdb->prefix . Utill::TABLES['visitors_stats'];
-                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery
-                $result = $wpdb->query( "TRUNCATE TABLE `$table`" );
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange
+                $result = $wpdb->query( $wpdb->prepare( 'TRUNCATE TABLE %i', $table ) );
 
                 if ( $result ) {
                     $message = __( 'MultiVendorX visitors stats successfully deleted', 'multivendorx' );

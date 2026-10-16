@@ -235,37 +235,31 @@ class Session extends \WC_Session {
         }
 
             $now                = time();
-            $expired_sessions   = array();
             $wc_session_expires = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- $wpdb->options is WordPress core's own table name, not user input.
                 $wpdb->prepare(
                     'SELECT option_name FROM %i WHERE option_name LIKE %s AND option_value < %d',
-                    $wpdb->options, // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                    $wpdb->options,
                     $wpdb->esc_like( '_wcce_session_expires_' ) . '%',
                     $now
                 )
             );
 
 		foreach ( $wc_session_expires as $option_name ) {
-			$session_id         = substr( $option_name, 20 );
-			$expired_sessions[] = $option_name;  // Expires key.
-			$expired_sessions[] = "_catalogx_session_$session_id"; // Session key.
-		}
+			$session_key = '_catalogx_session_' . substr( $option_name, 20 );
 
-                $expired_sessions_chunked = array_chunk( $expired_sessions, 100 );
-		foreach ( $expired_sessions_chunked as $session_option_batch ) {
 			if ( wp_using_ext_object_cache() ) {
 				// delete from object cache first, to avoid cached but deleted options.
-				foreach ( $session_option_batch as $option_name ) {
-					wp_cache_delete( $option_name, 'options' );
-				}
+				wp_cache_delete( $option_name, 'options' );
+				wp_cache_delete( $session_key, 'options' );
 			}
 
-			// delete from options table.
-			$placeholders = implode( ', ', array_fill( 0, count( $session_option_batch ), '%s' ) );
+			// delete the expires key and its session key from options table.
 			$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- $wpdb->options is WordPress core's own table name, not user input.
 				$wpdb->prepare(
-					"DELETE FROM %i WHERE option_name IN ($placeholders)", // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- placeholders count always matches $session_option_batch, built dynamically above.
-					array_merge( array( $wpdb->options ), $session_option_batch )
+					'DELETE FROM %i WHERE option_name IN (%s, %s)',
+					$wpdb->options,
+					$option_name,
+					$session_key
 				)
 			);
 		}

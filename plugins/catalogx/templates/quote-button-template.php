@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalogx Quote Button Section
+ * CatalogX Quote Button Section
  *
  * Override this template by copying it to yourtheme/woocommerce-catalog-enquiry/quote-button-template.php
  *

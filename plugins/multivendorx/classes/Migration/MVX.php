@@ -191,7 +191,8 @@ class MVX {
         $zone_table = $wpdb->prefix . 'mvx_shipping_zone_methods';
         $results    = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$zone_table} LIMIT %d OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                'SELECT * FROM %i LIMIT %d OFFSET %d',
+                $zone_table,
                 self::BATCH_SIZE,
                 $offset
             )
@@ -288,7 +289,8 @@ class MVX {
 
         $rows = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$old_visitors_table} LIMIT %d OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                'SELECT * FROM %i LIMIT %d OFFSET %d',
+                $old_visitors_table,
                 self::BATCH_SIZE,
                 $offset
             )
@@ -339,7 +341,8 @@ class MVX {
 
         $questions = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$questions_table} LIMIT %d OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                'SELECT * FROM %i LIMIT %d OFFSET %d',
+                $questions_table,
                 self::BATCH_SIZE,
                 $offset
             )
@@ -348,7 +351,8 @@ class MVX {
 		foreach ( $questions as $question ) {
 			$answer = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 				$wpdb->prepare(
-                    "SELECT * FROM {$answers_table} WHERE ques_ID = %d ORDER BY ans_created ASC LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                    'SELECT * FROM %i WHERE ques_ID = %d ORDER BY ans_created ASC LIMIT 1',
+                    $answers_table,
                     $question->ques_ID // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				)
 			);
@@ -631,9 +635,10 @@ class MVX {
             // Get all user meta.
             $user_meta = $wpdb->get_results(
                 $wpdb->prepare(
-                    "SELECT meta_key, meta_value
-                    FROM {$wpdb->usermeta}
-                    WHERE user_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                    'SELECT meta_key, meta_value
+                    FROM %i
+                    WHERE user_id = %d',
+                    $wpdb->usermeta,
                     $user_id
                 ),
                 ARRAY_A
@@ -641,7 +646,8 @@ class MVX {
             $term_id   = get_user_meta( $user_id, '_vendor_term_id', true );
             $term      = $wpdb->get_row(
                 $wpdb->prepare(
-                    "SELECT name, slug FROM {$wpdb->terms} WHERE term_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                    'SELECT name, slug FROM %i WHERE term_id = %d',
+                    $wpdb->terms,
                     $term_id
                 )
             );
@@ -849,9 +855,9 @@ class MVX {
                 }
 
                 if ( 'shipping_options' == $new_meta_key ) {
-                    if ( $meta_values == 'distance_by_zone' ) {
+                    if ( 'distance_by_zone' == $meta_values ) {
                         $meta_values = 'shipping_by_zone';
-                    } elseif ( $meta_values == 'distance_by_shipping' ) {
+                    } elseif ( 'distance_by_shipping' == $meta_values ) {
                         $meta_values = 'shipping_by_distance';
                     } else {
                         $meta_values = 'shipping_by_country';
@@ -1106,7 +1112,8 @@ class MVX {
 
         $transactions = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$old_ledger_table} LIMIT %d OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                'SELECT * FROM %i LIMIT %d OFFSET %d',
+                $old_ledger_table,
                 self::BATCH_SIZE,
                 $offset
             ),
@@ -1116,7 +1123,7 @@ class MVX {
         $store_cache = array();
 
         foreach ( $transactions as $row ) {
-            if ( $row['ref_status'] !== 'completed' ) {
+            if ( 'completed' !== $row['ref_status'] ) {
                 continue;
             }
             $author_id = (int) $row['vendor_id'];
@@ -1202,7 +1209,7 @@ class MVX {
         foreach ( $products as $product_id ) {
             $author_id = get_post_field( 'post_author', $product_id );
 
-            // Only assign if author is store_owner
+            // Only assign if author is store_owner.
             if ( in_array( $author_id, $store_owners, true ) ) {
                 $active_store = get_user_meta( $author_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
                 update_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], $active_store );

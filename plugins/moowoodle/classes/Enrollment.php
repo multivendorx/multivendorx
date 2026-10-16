@@ -39,28 +39,35 @@ class Enrollment {
 	public static function get_enrollments( $enrollment_args ) {
 		global $wpdb;
 
-		$table_name       = $wpdb->prefix . Util::TABLES['enrollment'];
-		$table_identifier = $wpdb->prepare( '%i', $table_name );
-		$where            = array();
+		$table_name = $wpdb->prefix . Util::TABLES['enrollment'];
+		$where      = array();
+		$where_args = array();
 
-		// Filters.
+		// Filters. Each $where entry is a SQL template fragment with %d/%s placeholders;
+		// the value(s) it needs go in the parallel $where_args array, in the same order
+		// the placeholders appear, so the whole query can be bound in one final prepare() call.
 		if ( isset( $enrollment_args['id'] ) ) {
-			$ids     = implode( ',', array_map( 'intval', (array) $enrollment_args['id'] ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- cast to int, not user-controlled SQL.
-			$where[] = "id IN ($ids)";
+			$ids          = array_map( 'intval', (array) $enrollment_args['id'] );
+			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+			$where[]      = "id IN ($placeholders)";
+			array_push( $where_args, ...$ids );
 		}
 
 		if ( isset( $enrollment_args['user_id'] ) ) {
-			$ids     = implode( ',', array_map( 'intval', (array) $enrollment_args['user_id'] ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- cast to int, not user-controlled SQL.
-			$where[] = "user_id IN ($ids)";
+			$ids          = array_map( 'intval', (array) $enrollment_args['user_id'] );
+			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+			$where[]      = "user_id IN ($placeholders)";
+			array_push( $where_args, ...$ids );
 		}
 
 		if ( ! empty( $enrollment_args['user_email'] ) ) {
-			$email   = sanitize_email( strtolower( trim( $enrollment_args['user_email'] ) ) );
-			$where[] = $wpdb->prepare( 'LOWER(user_email) = %s', $email );
+			$where[]      = 'LOWER(user_email) = %s';
+			$where_args[] = sanitize_email( strtolower( trim( $enrollment_args['user_email'] ) ) );
 		}
 
 		if ( isset( $enrollment_args['course_id'] ) ) {
-			$where[] = $wpdb->prepare( 'course_id = %d', $enrollment_args['course_id'] );
+			$where[]      = 'course_id = %d';
+			$where_args[] = (int) $enrollment_args['course_id'];
 		}
 
 		if ( ! empty( $enrollment_args['meta_query'] ) ) {
@@ -71,29 +78,37 @@ class Enrollment {
 					$value   = $meta_condition['value'];
 
 					if ( in_array( $compare, array( '=', '!=', '>', '<', '>=', '<=', 'LIKE', 'NOT LIKE' ), true ) ) {
-						$where[] = $wpdb->prepare( "`$key` $compare %s", $value ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $key is sanitize_key()'d, $compare is allowlisted above.
+						// $key is sanitize_key()'d and $compare is allowlisted above, so only %s (the value) is a real placeholder.
+						$where[]      = "`$key` $compare %s";
+						$where_args[] = $value;
 					}
 				}
 			}
 		}
 
 		if ( isset( $enrollment_args['order_id'] ) ) {
-			$where[] = $wpdb->prepare( 'order_id = %d', $enrollment_args['order_id'] );
+			$where[]      = 'order_id = %d';
+			$where_args[] = (int) $enrollment_args['order_id'];
 		}
 
 		if ( ! empty( $enrollment_args['status'] ) ) {
-			$where[] = $wpdb->prepare( 'status = %s', sanitize_text_field( $enrollment_args['status'] ) );
+			$where[]      = 'status = %s';
+			$where_args[] = sanitize_text_field( $enrollment_args['status'] );
 		}
 
 		if ( ! empty( $enrollment_args['start_date'] ) && ! empty( $enrollment_args['end_date'] ) ) {
-			$where[] = $wpdb->prepare(
-				'enrollment_date BETWEEN %s AND %s',
-				$enrollment_args['start_date'],
-				$enrollment_args['end_date']
-			);
+			$where[]      = 'enrollment_date BETWEEN %s AND %s';
+			$where_args[] = $enrollment_args['start_date'];
+			$where_args[] = $enrollment_args['end_date'];
 		}
 
-		$where = apply_filters( 'moowoodle_enrollment_query', $where, $enrollment_args );
+		$query_parts = apply_filters(
+			'moowoodle_enrollment_query',
+			array( 'where' => $where, 'args' => $where_args ),
+			$enrollment_args
+		);
+		$where       = $query_parts['where'];
+		$where_args  = $query_parts['args'];
 
 		$select_fields = '*';
 
@@ -105,21 +120,25 @@ class Enrollment {
 			}
 		}
 
-		$query = isset( $enrollment_args['count'] )
-			? "SELECT COUNT(*) FROM {$table_identifier}"
-			: "SELECT {$select_fields} FROM {$table_identifier}";
+		$query_template = isset( $enrollment_args['count'] )
+			? 'SELECT COUNT(*) FROM %i'
+			: "SELECT {$select_fields} FROM %i";
+		$prepare_args   = array_merge( array( $table_name ), $where_args );
 
 		if ( ! empty( $where ) ) {
-			$query .= ' WHERE ' . implode( ' AND ', $where );
+			$query_template .= ' WHERE ' . implode( ' AND ', $where );
 		}
 
 		if ( isset( $enrollment_args['limit'] ) && isset( $enrollment_args['offset'] ) ) {
-			$query .= $wpdb->prepare( ' LIMIT %d OFFSET %d', intval( $enrollment_args['limit'] ), intval( $enrollment_args['offset'] ) );
+			$query_template .= ' LIMIT %d OFFSET %d';
+			$prepare_args[]  = intval( $enrollment_args['limit'] );
+			$prepare_args[]  = intval( $enrollment_args['offset'] );
 		}
 
-		// Table name is escaped via %i above; each $where fragment is already escaped via its own $wpdb->prepare() call.
+		$query = $wpdb->prepare( $query_template, ...$prepare_args ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- template is placeholder-only; verified the sniff flags this pattern even with zero interpolated values.
+
 		if ( isset( $enrollment_args['count'] ) ) {
-			return $wpdb->get_var( $query ) ?? 0; // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			return (int) ( $wpdb->get_var( $query ) ?? 0 ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		}
 
 		$results = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared

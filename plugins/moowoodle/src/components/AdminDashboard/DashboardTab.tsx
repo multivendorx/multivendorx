@@ -316,7 +316,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('CatalogX Pro', 'moowoodle'),
+										title: 'CatalogX Pro',
 										desc: __(
 											'Advanced product catalog with enhanced enquiry features and premium templates',
 											'moowoodle'
@@ -346,7 +346,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('CatalogX', 'moowoodle'),
+										title: 'CatalogX',
 										desc: __(
 											'Turn your store into a product catalog with enquiry-based sales',
 											'moowoodle'
@@ -403,7 +403,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('Notifima Pro', 'moowoodle'),
+										title: 'Notifima Pro',
 										desc: __(
 											'Advanced stock alerts, wishlist features, and premium notification system',
 											'moowoodle'
@@ -433,7 +433,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('Notifima', 'moowoodle'),
+										title: 'Notifima',
 										desc: __(
 											'Advanced stock alerts and wishlist features for WooCommerce',
 											'moowoodle'

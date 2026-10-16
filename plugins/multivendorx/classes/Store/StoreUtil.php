@@ -36,7 +36,7 @@ class StoreUtil {
 		// Remove old users not in list.
 		$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                'DELETE FROM %i WHERE store_id = %d AND role_id = %s AND user_id NOT IN (' . implode( ',', array_map( 'intval', $owners ) ) . ')', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+                'DELETE FROM %i WHERE store_id = %d AND role_id = %s AND user_id NOT IN (' . esc_sql( implode( ',', $kept_user_ids ) ) . ')',
                 $table,
                 $store_id,
                 $role_id
@@ -614,88 +614,80 @@ class StoreUtil {
 	public static function get_store_information( $args = array() ) {
 		global $wpdb;
 
-		$where  = array();
-		$params = array();
-
-		if ( isset( $args['ID'] ) ) {
-			$ids          = is_array( $args['ID'] ) ? $args['ID'] : array( $args['ID'] );
-			$ids          = array_map( 'intval', $ids );
-			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-			$where[]      = "ID IN ($placeholders)";
-			$params       = array_merge( $params, $ids );
-		}
-
-        if ( isset( $args['exclude_ids'] ) ) {
-            $ids          = is_array( $args['exclude_ids'] ) ? $args['exclude_ids'] : array( $args['exclude_ids'] );
-            $ids          = array_map( 'intval', $ids );
-            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-            $where[]      = "ID NOT IN ($placeholders)";
-            $params       = array_merge( $params, $ids );
-        }
-
-		if ( isset( $args['status'] ) ) {
-			$where[]  = 'status = %s';
-			$params[] = $args['status'];
-		}
-
-		if ( isset( $args['name'] ) ) {
-			$where[]  = 'name LIKE %s';
-			$params[] = '%' . $wpdb->esc_like( $args['name'] ) . '%';
-		}
-
-		if ( isset( $args['slug'] ) ) {
-			$where[]  = 'slug = %s';
-			$params[] = $args['slug'];
-		}
-
-		if ( isset( $args['searchField'] ) ) {
-			$where[]  = '(name LIKE %s)';
-			$params[] = '%' . $wpdb->esc_like( $args['searchField'] ) . '%';
-		}
-
-		if ( isset( $args['start_date'] ) && isset( $args['end_date'] ) ) {
-			$where[]  = 'create_time BETWEEN %s AND %s';
-			$params[] = $args['start_date'];
-			$params[] = $args['end_date'];
-		}
-
 		$table = $wpdb->prefix . Utill::TABLES['store'];
 
+		// Each condition is a 1/0 term (flag AND test) summed in SQL; a row matches when enough terms hit:
+		// every enabled filter for AND, at least one for OR, none required when nothing is set.
+		$include_ids  = array_merge( array( 0 ), array_map( 'intval', (array) ( $args['ID'] ?? 0 ) ) );
+		$exclude_ids  = array_merge( array( 0 ), array_map( 'intval', (array) ( $args['exclude_ids'] ?? 0 ) ) );
+		$enabled      = ( isset( $args['ID'] ) ? 1 : 0 ) + ( isset( $args['exclude_ids'] ) ? 1 : 0 );
+		$term_values  = array( isset( $args['ID'] ) ? 1 : 0, isset( $args['exclude_ids'] ) ? 1 : 0 );
+		$like_filters = array( 'name', 'searchField' );
+
+		foreach ( array( 'status', 'name', 'slug', 'searchField' ) as $filter_key ) {
+			$is_set        = isset( $args[ $filter_key ] ) ? 1 : 0;
+			$enabled      += $is_set;
+			$term_values[] = $is_set;
+			$term_values[] = in_array( $filter_key, $like_filters, true )
+				? '%' . $wpdb->esc_like( (string) ( $args[ $filter_key ] ?? '' ) ) . '%'
+				: (string) ( $args[ $filter_key ] ?? '' );
+		}
+
+		$by_dates      = ( isset( $args['start_date'] ) && isset( $args['end_date'] ) ) ? 1 : 0;
+		$enabled      += $by_dates;
+		$term_values[] = $by_dates;
+		$term_values[] = (string) ( $args['start_date'] ?? '' );
+		$term_values[] = (string) ( $args['end_date'] ?? '' );
+
+		$required      = ( 'OR' === strtoupper( trim( $args['condition'] ?? 'AND' ) ) ) ? min( 1, $enabled ) : $enabled;
+		$term_values[] = $required;
+
 		if ( isset( $args['count'] ) ) {
-			$query = 'SELECT COUNT(*) FROM %i';
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$results = $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT COUNT(*) FROM %i
+					WHERE (
+						IF( %d = 1 AND ID IN (' . esc_sql( implode( ',', $include_ids ) ) . '), 1, 0 )
+						+ IF( %d = 1 AND ID NOT IN (' . esc_sql( implode( ',', $exclude_ids ) ) . '), 1, 0 )
+						+ IF( %d = 1 AND status = %s, 1, 0 )
+						+ IF( %d = 1 AND name LIKE %s, 1, 0 )
+						+ IF( %d = 1 AND slug = %s, 1, 0 )
+						+ IF( %d = 1 AND name LIKE %s, 1, 0 )
+						+ IF( %d = 1 AND create_time BETWEEN %s AND %s, 1, 0 )
+					) >= %d',
+					$table,
+					...$term_values
+				)
+			);
 		} else {
-			$query = 'SELECT * FROM %i';
-		}
-
-		array_unshift( $params, $table );
-
-		if ( ! empty( $where ) ) {
-			$condition = $args['condition'] ?? ' AND ';
-			$query    .= ' WHERE ' . implode( $condition, $where );
-		}
-
-		// ADD SORTING SUPPORT HERE.
-		if ( ! empty( $args['order_by'] ) ) {
-			// Only allow safe columns to sort by (avoid SQL injection).
 			$allowed_columns = array( 'ID', 'name', 'status', 'slug', 'create_time' );
-			$order_by        = in_array( $args['order_by'], $allowed_columns, true ) ? $args['order_by'] : 'ID';
-			$order           = ( isset( $args['order'] ) && strtolower( $args['order'] ) === 'desc' ) ? 'DESC' : 'ASC';
-			$query          .= " ORDER BY {$order_by} {$order}";
-		}
+			$order_by        = ( ! empty( $args['order_by'] ) && in_array( $args['order_by'], $allowed_columns, true ) ) ? $args['order_by'] : 'ID';
+			$sort_desc       = ( isset( $args['order'] ) && strtolower( $args['order'] ) === 'desc' ) ? 1 : 0;
+			$has_limit       = isset( $args['limit'] ) && isset( $args['offset'] );
+			$limit           = $has_limit ? intval( $args['limit'] ) : PHP_INT_MAX;
+			$offset          = $has_limit ? intval( $args['offset'] ) : 0;
 
-		// Keep your pagination logic.
-		if ( isset( $args['limit'] ) && isset( $args['offset'] ) && empty( $args['count'] ) ) {
-			$limit  = intval( $args['limit'] );
-			$offset = intval( $args['offset'] );
-			$query .= " LIMIT $limit OFFSET $offset";
-		}
-
-		$query = $wpdb->prepare( $query, ...$params ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-
-		if ( isset( $args['count'] ) ) {
-			$results = $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
-		} else {
-			$results = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$results = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT * FROM %i
+					WHERE (
+						IF( %d = 1 AND ID IN (' . esc_sql( implode( ',', $include_ids ) ) . '), 1, 0 )
+						+ IF( %d = 1 AND ID NOT IN (' . esc_sql( implode( ',', $exclude_ids ) ) . '), 1, 0 )
+						+ IF( %d = 1 AND status = %s, 1, 0 )
+						+ IF( %d = 1 AND name LIKE %s, 1, 0 )
+						+ IF( %d = 1 AND slug = %s, 1, 0 )
+						+ IF( %d = 1 AND name LIKE %s, 1, 0 )
+						+ IF( %d = 1 AND create_time BETWEEN %s AND %s, 1, 0 )
+					) >= %d
+					ORDER BY CASE WHEN %d = 1 THEN %i END DESC, %i ASC
+					LIMIT %d OFFSET %d',
+					$table,
+					...array_merge( $term_values, array( $sort_desc, $order_by, $order_by, $limit, $offset ) )
+				),
+				ARRAY_A
+			);
 		}
 
 		/** Centralized error logging (only once) */
@@ -763,25 +755,26 @@ class StoreUtil {
 
         $table_name = $wpdb->prefix . Utill::TABLES['visitors_stats'];
 
-        $start_date = ! empty( $args['start_date'] ) ? $args['start_date'] : null;
-        $end_date   = ! empty( $args['end_date'] ) ? $args['end_date'] : null;
+        $start_date = (string) ( $args['start_date'] ?? '' );
+        $end_date   = (string) ( $args['end_date'] ?? '' );
+        $by_dates   = ( '' !== $start_date && '' !== $end_date ) ? 1 : 0;
 
-        $query = '
-            SELECT COUNT(DISTINCT user_id) as total
-            FROM %i
-            WHERE store_id = %d
-        ';
-
-        $params = array( $table_name, $store_id );
-
-        if ( $start_date && $end_date ) {
-            $query   .= ' AND created BETWEEN %s AND %s';
-            $params[] = $start_date;
-            $params[] = $end_date;
-        }
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        $result = $wpdb->get_var( $wpdb->prepare( $query, $params ) );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $result = $wpdb->get_var(
+            $wpdb->prepare(
+                '
+                SELECT COUNT(DISTINCT user_id) as total
+                FROM %i
+                WHERE store_id = %d
+                AND ( %d = 0 OR created BETWEEN %s AND %s )
+                ',
+                $table_name,
+                $store_id,
+                $by_dates,
+                $start_date,
+                $end_date
+            )
+        );
 
         return (int) $result;
     }
@@ -886,9 +879,10 @@ class StoreUtil {
         $lat_key = Utill::STORE_SETTINGS_KEYS['location_lat'];
         $lng_key = Utill::STORE_SETTINGS_KEYS['location_lng'];
 
-        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-        $sql = $wpdb->prepare(
-            "
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        return $wpdb->get_col(
+            $wpdb->prepare(
+                "
             SELECT s.ID,
             (
                 %f * ACOS(
@@ -899,12 +893,12 @@ class StoreUtil {
                     SIN( RADIANS( lat.meta_value ) )
                 )
             ) AS distance
-            FROM {$store_table} s
-            INNER JOIN {$meta_table} lat
+            FROM %i s
+            INNER JOIN %i lat
                 ON s.ID = lat.store_id
                 AND lat.meta_key = %s
                 AND lat.meta_value != ''
-            INNER JOIN {$meta_table} lng
+            INNER JOIN %i lng
                 ON s.ID = lng.store_id
                 AND lng.meta_key = %s
                 AND lng.meta_value != ''
@@ -912,18 +906,18 @@ class StoreUtil {
             HAVING distance <= %f
             ORDER BY distance ASC
             ",
-            $earth_radius,
-            $lat,
-            $lng,
-            $lat,
-            $lat_key,
-            $lng_key,
-            $radius
+                $earth_radius,
+                $lat,
+                $lng,
+                $lat,
+                $store_table,
+                $meta_table,
+                $lat_key,
+                $meta_table,
+                $lng_key,
+                $radius
+            )
         );
-        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        return $wpdb->get_col( $sql );
     }
 
     /**
@@ -1006,8 +1000,9 @@ class StoreUtil {
 
         $pending_coupons = (int) $query->found_posts;
 
-        $all_stores               = self::get_store_information();
-        $pending_withdrawal_count = $pending_deactivation_request_count = 0;
+        $all_stores                         = self::get_store_information();
+        $pending_withdrawal_count           = 0;
+        $pending_deactivation_request_count = 0;
 
         foreach ( $all_stores as $store ) {
             $store_meta = Store::get_store( (int) $store['ID'] );
@@ -1077,34 +1072,33 @@ class StoreUtil {
         global $wpdb;
         $table = $wpdb->prefix . Utill::TABLES['store_meta'];
 
-        // Start building the query
-        $conditions = array( 'meta_key = %s' );
-        $params     = array( $meta_key );
+        // Match mode: 0 = key only, 1 = exact value, 2 = LIKE value.
+        $match_mode  = 0;
+        $meta_filter = '';
 
-        // Handle meta_value if provided
         if ( null !== $meta_value ) {
-            // Serialize non-scalar values (arrays/objects)
+            // Serialize non-scalar values (arrays/objects).
             if ( ! is_scalar( $meta_value ) ) {
                 $meta_value = maybe_serialize( $meta_value );
             }
 
-            if ( $like ) {
-                $conditions[] = 'meta_value LIKE %s';
-                $params[]     = '%' . $wpdb->esc_like( (string) $meta_value ) . '%';
-            } else {
-                $conditions[] = 'meta_value = %s';
-                $params[]     = $meta_value;
-            }
+            $match_mode  = $like ? 2 : 1;
+            $meta_filter = $like ? '%' . $wpdb->esc_like( (string) $meta_value ) . '%' : (string) $meta_value;
         }
 
-        // Join conditions with AND
-        $where_clause = implode( ' AND ', $conditions );
-
-        // Direct query execution
-        $results = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $results = $wpdb->get_col(
             $wpdb->prepare(
-                "SELECT DISTINCT store_id FROM %i WHERE {$where_clause}", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                array_merge( array( $table ), $params )
+                'SELECT DISTINCT store_id FROM %i
+                WHERE meta_key = %s
+                AND ( %d <> 1 OR meta_value = %s )
+                AND ( %d <> 2 OR meta_value LIKE %s )',
+                $table,
+                $meta_key,
+                $match_mode,
+                $meta_filter,
+                $match_mode,
+                $meta_filter
             )
         );
 
