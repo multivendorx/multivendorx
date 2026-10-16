@@ -151,6 +151,11 @@ const PendingRefund: React.FC<object> = () => {
 			descriptionKey: 'info_descriptions',
 			badgesKey: 'info_badges',
 		},
+		refund_reason: {
+			label: __('Refund Reason', 'multivendorx'),
+			type: 'labeled',
+			valueType: 'text',
+		},
 		action: {
 			label: __('Action', 'multivendorx'),
 			render: (row: any) => {
@@ -258,6 +263,11 @@ const PendingRefund: React.FC<object> = () => {
 	const infoRows = rows.map((row: OrderRow) => ({
 		...row,
 		order_title: `#${row.id}`,
+		refund_reason:
+			getMetaValue(
+				row.meta_data,
+				appLocalizer.order_meta.customer_refund_reason
+			) || '—',
 		info_icon: 'marketplace-refund',
 		info_link: getUrl(row.id, 'order'),
 		info_descriptions: [
@@ -284,15 +294,6 @@ const PendingRefund: React.FC<object> = () => {
 				label: __('Commission', 'multivendorx'),
 				icon: 'commission',
 				value: formatCurrency(row.commission_amount),
-			},
-			{
-				label: __('Refund Reason', 'multivendorx'),
-				icon: 'question',
-				value:
-					getMetaValue(
-						row.meta_data,
-						appLocalizer.order_meta.customer_refund_reason
-					) || '—',
 			},
 		],
 		info_badges: [
