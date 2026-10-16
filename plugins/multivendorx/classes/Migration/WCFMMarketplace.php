@@ -167,7 +167,7 @@ class WCFMMarketplace {
         $wcfm_orders_table = $wpdb->prefix . 'wcfm_marketplace_orders';
         $table_name        = $wpdb->prefix . Utill::TABLES['commission'];
 
-        $wcfm_orders = $wpdb->get_results( "SELECT * FROM {$wcfm_orders_table}" );
+        $wcfm_orders = $wpdb->get_results( "SELECT * FROM {$wcfm_orders_table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
         foreach ( $wcfm_orders as $row ) {
             $order_id = $row->order_id;
@@ -243,17 +243,19 @@ class WCFMMarketplace {
         }
 
         $balance_table        = $wpdb->prefix . 'wcfm_marketplace_vendor_ledger';
-        $wcfm_vendor_balances = $wpdb->get_results( "SELECT * FROM {$balance_table}" );
+        $wcfm_vendor_balances = $wpdb->get_results( "SELECT * FROM {$balance_table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
         foreach ( $wcfm_vendor_balances as $row ) {
             $wcfm_commission_id = $row->reference_id;
 
-            $query = $wpdb->prepare(
-                "SELECT * FROM {$wcfm_orders_table} WHERE ID = %d",
-                $wcfm_commission_id
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            $wcfm_order = $wpdb->get_row(
+                $wpdb->prepare(
+                    'SELECT * FROM %i WHERE ID = %d',
+                    $wcfm_orders_table,
+                    $wcfm_commission_id
+                )
             );
-
-            $wcfm_order = $wpdb->get_row( $query );
 
             if ( in_array( $wcfm_order->order_status, array( 'pending', 'on-hold', 'cancelled', 'draft', 'failed' ) ) ) {
                 continue;
