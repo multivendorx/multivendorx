@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
  * @version     5.0.21
  * @author      MultiVendorX
  */
-class VuloMailIntegration {
+class VuloMailMigration {
 
 	/**
 	 * Option storing the current migration status: 'pending', 'done', or 'failed'.

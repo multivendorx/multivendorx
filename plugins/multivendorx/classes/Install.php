@@ -262,10 +262,6 @@ class Install {
         }
 
         if ( version_compare( $previous_version, '5.0.21', '<' ) ) {
-            // Sites that already have an admin notification email or SMS recipient
-            // configured are switched over to the VuloMail plugin for actual
-            // email/SMS delivery. The heavy lifting (install, activate, migrate)
-            // happens on the next wp-admin visit — see VuloMailIntegration.
             $events_delivery_settings = get_option( Utill::MULTIVENDORX_SETTINGS['events-delivery'], array() );
             $has_email_recipient      = ! empty( $events_delivery_settings['receiver_email_address'] );
             $has_sms_recipient        = ! empty( $events_delivery_settings['sms_receiver_phone_number'] );

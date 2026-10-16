@@ -1727,19 +1727,11 @@ class Notifications {
 			}
 			$headers = array( 'Content-Type: text/html; charset=UTF-8' );
 
-			if ( function_exists( 'vulomail_is_email_ready' ) && vulomail_is_email_ready() ) {
-				vulomail_send_email(
-					array(
-						'to'      => $to,
-						'subject' => $subject,
-						'message' => $message,
-						'headers' => $headers,
-						'source'  => 'multivendorx',
-					)
-				);
-			} else {
-				wp_mail( $to, $subject, $message, $headers );
-			}
+			// VuloMail intercepts every wp_mail() call sitewide via its own pre_wp_mail hook
+			// when it's ready, and falls back to WordPress's default mailer otherwise -- calling
+			// wp_mail() directly here is all that's needed; it works the same with or without
+			// VuloMail installed/active, without this file depending on VuloMail's own API.
+			wp_mail( $to, $subject, $message, $headers );
 		}
 
 		if ( $event->sms_enabled ) {
