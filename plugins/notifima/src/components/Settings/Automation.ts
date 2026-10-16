@@ -63,7 +63,7 @@ export default {
             key: 'section',
             type: 'section',
             icon: 'clock',
-            title: __('Restock Timing (Lead Time)', 'notifima'),
+            title: __('Expected Restock Time', 'notifima'),
             desc: __(
                 'Control when and how the expected restock time is shown to shoppers.',
                 'notifima'
@@ -72,9 +72,9 @@ export default {
         {
             key: 'display_lead_times',
             type: 'checkbox',
-            label: __('Stock Status for Lead Time', 'notifima'),
+            label: __('Product Stock Status', 'notifima'),
             settingDescription: __(
-                'Choose which products show an expected restock time.',
+                'Choose which products display an expected restock time.',
                 'notifima'
             ),
             options: [
@@ -94,7 +94,7 @@ export default {
         {
             key: 'lead_time_format',
             type: 'choice-toggle',
-            label: __('Lead Format', 'notifima'),
+            label: __('Restock Time Format', 'notifima'),
             settingDescription: __(
                 'Choose how the restock time message appears on product pages.',
                 'notifima'
@@ -121,9 +121,9 @@ export default {
         {
             key: 'lead_time_static_text',
             type: 'text',
-            label: __('Lead time default message', 'notifima'),
+            label: __('Default Restock Message', 'notifima'),
             settingDescription: __(
-                'The message shoppers see when a product has no restock time of its own.',
+                'Set the message shown when a product doesn\'t have its own restock time.',
                 'notifima'
             ),
             size: 20,
@@ -686,6 +686,119 @@ export default {
             settingDescription: __('Choose how many times a failed notification email should be retried.', 'notifima'),
             dependent: {
                 key: 'notification_retry_enable',
+                set: true,
+                value: 'yes',
+            },
+        },
+        {
+            key: 'section',
+            type: 'section',
+            icon: 'automation',
+            title: __('Subscriber Auto-Delete', 'notifima'),
+            desc: __(
+                'Configure automatic deletion of subscribers based on notification status and retention period.',
+                'notifima'
+            ),
+        },
+        {
+            key: 'is_auto_delete_enable',
+            type: 'choice-toggle',
+            label: __('Auto-delete Subscriptions', 'notifima'),
+            settingDescription: __(
+                'Enable automatic deletion of subscriber records based on the selected statuses and retention period.',
+                'notifima'
+            ),
+            options: [
+                {
+                    key: 'yes',
+                    label: __('Yes', 'notifima'),
+                    value: 'yes',
+                },
+                {
+                    key: 'no',
+                    label: __('No', 'notifima'),
+                    value: 'no',
+                },
+            ],
+            proSetting: true,
+        },
+        {
+            key: 'auto_delete_subscriber_statuses',
+            type: 'checkbox',
+            label: __('Subscriber Statuses', 'notifima'),
+            settingDescription: __(
+                'Select one or more subscriber statuses to include in the automatic cleanup process.',
+                'notifima'
+            ),
+            options: [
+                {
+                    key: 'subscribed',
+                    value: 'subscribed',
+                    label: __('Subscribed', 'notifima'),
+                },
+                {
+                    key: 'unsubscribed',
+                    value: 'unsubscribed',
+                    label: __('Unsubscribed', 'notifima'),
+                },
+                {
+                    key: 'notification_sent',
+                    value: 'notification_sent',
+                    label: __('Notification Sent', 'notifima'),
+                },
+                {
+                    key: 'notification_failed',
+                    value: 'notification_failed',
+                    label: __('Notification Failed', 'notifima'),
+                },
+            ],
+            proSetting: true,
+            selectDeselect: true,
+            dependent: {
+                key: 'is_auto_delete_enable',
+                set: true,
+                value: 'yes',
+            },
+        },
+        {
+            key: 'auto_delete_after_days',
+            type: 'number',
+            size: '17rem',
+            label: __('Delete Records After (Days)', 'notifima'),
+            settingDescription: __(
+                'Specify how long to keep subscriber records before automatically deleting records that match the selected statuses.',
+                'notifima'
+            ),
+            proSetting: true,
+            dependent: {
+                key: 'is_auto_delete_enable',
+                set: true,
+                value: 'yes',
+            },
+        },
+        {
+            key: 'auto_delete_frequency',
+            type: 'choice-toggle',
+            label: __('Cleanup Frequency', 'notifima'),
+            settingDescription: __(
+                'Choose how often Notifima checks for subscriber records eligible for automatic deletion.',
+                'notifima'
+            ),
+            options: [
+                {
+                    key: 'daily',
+                    label: __('Daily', 'notifima'),
+                    value: 'daily',
+                },
+                {
+                    key: 'weekly',
+                    label: __('Weekly', 'notifima'),
+                    value: 'weekly',
+                }
+            ],
+            proSetting: true,
+            dependent: {
+                key: 'is_auto_delete_enable',
                 set: true,
                 value: 'yes',
             },
