@@ -200,10 +200,14 @@ class VuloMailIntegration {
 		}
 
 		if ( ! $installed ) {
-			return new \WP_Error(
-				'vulomail_install_failed',
-				$upgrader_skin->get_error_messages() ? $upgrader_skin->get_error_messages() : __( 'VuloMail could not be downloaded or installed.', 'multivendorx' )
-			);
+			// WP_Upgrader_Skin has no get_error_messages() method; the result (string|bool|WP_Error)
+			// lands in its public $result property instead.
+			$skin_result = $upgrader_skin->result;
+			$message     = ( $skin_result instanceof \WP_Error && $skin_result->has_errors() )
+				? implode( ' ', $skin_result->get_error_messages() )
+				: __( 'VuloMail could not be downloaded or installed.', 'multivendorx' );
+
+			return new \WP_Error( 'vulomail_install_failed', $message );
 		}
 
 		return true;
