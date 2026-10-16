@@ -12,19 +12,12 @@ use MultiVendorX\Utill;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Installs, activates, and migrates MultiVendorX's built-in admin email/SMS
- * recipient settings into the companion VuloMail plugin (wordpress.org slug
- * `vulomail`) the first time an admin with install_plugins capability visits
- * wp-admin after the version-gated migration in Install.php flags a site as
- * eligible (i.e. the site already had an admin notification email or SMS
- * recipient configured before updating).
+ * Installs and migrates admin email/SMS settings into the companion
+ * VuloMail plugin, once Install.php flags a site as eligible.
  *
- * Once VuloMail is active and ready, Notifications::trigger_notifications()
- * routes email/SMS through VuloMail's public `vulomail_send_email()` /
- * `vulomail_send_sms()` functions instead of wp_mail()/the built-in SMS
- * gateway classes, falling back to the original path if VuloMail isn't
- * ready (e.g. install failed, or the admin hasn't finished configuring a
- * provider inside VuloMail yet).
+ * After that, Notifications::trigger_notifications() routes email/SMS
+ * through VuloMail instead of wp_mail()/the built-in SMS gateways,
+ * falling back to the original path if VuloMail isn't ready.
  *
  * @class       Module class
  * @version     5.0.21
@@ -79,21 +72,12 @@ class VuloMailIntegration {
 	}
 
 	/**
-	 * Install/activate VuloMail and migrate settings into it, if Install.php's
-	 * do_migration() flagged this site as eligible and nobody has done it yet.
+	 * Install/activate VuloMail and migrate settings into it, if eligible.
 	 *
-	 * Runs on admin_menu at an early priority (rather than inline during the
-	 * version-bump migration in Install.php) because installing a plugin needs
-	 * admin-only includes, WP_Filesystem, and an install_plugins-capable user —
-	 * none of which are reliably available on the arbitrary request (including a
-	 * front-end one) that happens to trigger the version bump. It specifically
-	 * is NOT on admin_init: wp-admin/admin.php requires menu.php (which fires
-	 * admin_menu) before it fires admin_init, so a plugin activated on admin_init
-	 * is always one page load too late to add its own admin_menu entry — the
-	 * freshly-activated VuloMail's menu item wouldn't appear until a refresh.
-	 * Hooking admin_menu itself, early, lets VuloMail's own admin_menu callback
-	 * (registered the moment activate_plugin() includes its file) still fire
-	 * within the same dispatch, since WP_Hook supports callbacks added mid-run.
+	 * Runs on early admin_menu rather than admin_init: installing a plugin
+	 * needs admin-only includes/capabilities not reliably available during
+	 * the version-bump migration, and admin_menu fires before admin_init,
+	 * so VuloMail's own menu callback can still register in the same request.
 	 *
 	 * @return void
 	 */
@@ -115,8 +99,8 @@ class VuloMailIntegration {
 			return;
 		}
 
-		$mvx_settings = get_option( Utill::MULTIVENDORX_SETTINGS['events-delivery'], array() );
-		$migrated     = $this->migrate_settings_to_vulomail( $mvx_settings );
+		$events_delivery_settings = get_option( Utill::MULTIVENDORX_SETTINGS['events-delivery'], array() );
+		$migrated     = $this->migrate_settings_to_vulomail( $events_delivery_settings );
 
 		if ( is_wp_error( $migrated ) ) {
 			$this->mark_failed( $migrated );
@@ -131,9 +115,9 @@ class VuloMailIntegration {
 		 *
 		 * @since 5.0.21
 		 *
-		 * @param array $mvx_settings The events-delivery settings that were migrated.
+		 * @param array $events_delivery_settings The events-delivery settings that were migrated.
 		 */
-		do_action( 'multivendorx_after_vulomail_migration', $mvx_settings );
+		do_action( 'multivendorx_after_vulomail_migration', $events_delivery_settings );
 	}
 
 	/**
@@ -178,16 +162,11 @@ class VuloMailIntegration {
 	}
 
 	/**
-	 * Finishes booting VuloMail within the current request when it was just activated.
+	 * Finish booting VuloMail in the current request if it was just activated.
 	 *
-	 * activate_plugin() only include()s the plugin's main file -- it doesn't replay
-	 * plugins_loaded/init, which is what VuloMail's own bootstrap (and its
-	 * admin_menu-registering Admin class, instantiated from init_classes()) is gated
-	 * behind. Without calling these directly, VuloMail's admin menu item, and anything
-	 * else from init_classes(), wouldn't exist until the next page load even though the
-	 * plugin is already active -- the symptom being "VuloMail doesn't show in the nav
-	 * until I refresh" right after migration finishes. No-ops when VuloMail was already
-	 * active before this request (its normal plugins_loaded/init boot already ran).
+	 * activate_plugin() only includes the main file, not plugins_loaded/init —
+	 * without this, VuloMail's admin menu wouldn't appear until the next page
+	 * load. No-ops if VuloMail was already active before this request.
 	 *
 	 * @return void
 	 */
@@ -233,8 +212,7 @@ class VuloMailIntegration {
 		}
 
 		if ( ! $installed ) {
-			// WP_Upgrader_Skin has no get_error_messages() method; the result (string|bool|WP_Error)
-			// lands in its public $result property instead.
+			// WP_Upgrader_Skin has no get_error_messages(); check its $result property instead.
 			$skin_result = $upgrader_skin->result;
 			$message     = ( $skin_result instanceof \WP_Error && $skin_result->has_errors() )
 				? implode( ' ', $skin_result->get_error_messages() )
@@ -247,27 +225,22 @@ class VuloMailIntegration {
 	}
 
 	/**
-	 * Migrate MultiVendorX's events-delivery settings into VuloMail's own
-	 * settings/connections storage via VuloMail's public service accessors.
+	 * Migrate events-delivery settings into VuloMail's own settings/connections.
 	 *
-	 * `receiver_email_address` (the "to" address for marketplace notification
-	 * emails) has no VuloMail equivalent and is intentionally left in
-	 * MultiVendorX's own settings — VuloMail only owns delivery/transport
-	 * (sender identity, SMS admin alert phone, provider connections), not
-	 * MultiVendorX's own notion of which address should receive which
-	 * marketplace event.
+	 * `receiver_email_address` has no VuloMail equivalent and stays in
+	 * MultiVendorX's settings — VuloMail only owns delivery/transport.
 	 *
-	 * @param array $mvx_settings The multivendorx_events_delivery_settings option value.
+	 * @param array $events_delivery_settings The multivendorx_events_delivery_settings option value.
 	 * @return true|\WP_Error
 	 */
-	private function migrate_settings_to_vulomail( array $mvx_settings ) {
+	private function migrate_settings_to_vulomail( array $events_delivery_settings ) {
 		if ( ! function_exists( 'VuloMail' ) ) {
 			return new \WP_Error( 'vulomail_unavailable', __( 'VuloMail did not load after activation.', 'multivendorx' ) );
 		}
 
 		$vulomail = VuloMail();
 
-		$receiver_phone = $this->read_composite_phone_field( $mvx_settings, 'sms_receiver_phone_number' );
+		$receiver_phone = $this->read_composite_phone_field( $events_delivery_settings, 'sms_receiver_phone_number' );
 
 		$settings_update = array();
 
@@ -279,32 +252,31 @@ class VuloMailIntegration {
 			$settings_update['sms_country_code'] = $receiver_phone['country_code'];
 		}
 
-		if ( ! empty( $mvx_settings['sender_email_address'] ) ) {
-			$settings_update['from_email'] = $mvx_settings['sender_email_address'];
+		if ( ! empty( $events_delivery_settings['sender_email_address'] ) ) {
+			$settings_update['from_email'] = $events_delivery_settings['sender_email_address'];
 		}
 
-		if ( ! empty( $mvx_settings['sender_name'] ) ) {
-			$settings_update['from_name'] = $mvx_settings['sender_name'];
+		if ( ! empty( $events_delivery_settings['sender_name'] ) ) {
+			$settings_update['from_name'] = $events_delivery_settings['sender_name'];
 		}
 
 		if ( $settings_update ) {
 			$vulomail->settings->update( $settings_update );
 		}
 
-		return $this->migrate_sms_gateway_connection( $vulomail, $mvx_settings );
+		return $this->migrate_sms_gateway_connection( $vulomail, $events_delivery_settings );
 	}
 
 	/**
-	 * Reads a beforeElement-paired "phone number + country code" field the way Zyra's
-	 * settings form actually stores it: nested under the field's own key, with the number
-	 * re-using that same key internally (e.g. `sms_receiver_phone_number.sms_receiver_phone_number`).
+	 * Read a "phone number + country code" field as Zyra's settings form stores it:
+	 * nested under the field's own key (e.g. `sms_receiver_phone_number.sms_receiver_phone_number`).
 	 *
-	 * @param array  $mvx_settings The multivendorx_events_delivery_settings option value.
+	 * @param array  $events_delivery_settings The multivendorx_events_delivery_settings option value.
 	 * @param string $field_key    The composite field's key, e.g. 'sms_receiver_phone_number'.
 	 * @return array{country_code: string, number: string}
 	 */
-	private function read_composite_phone_field( array $mvx_settings, $field_key ) {
-		$field = $mvx_settings[ $field_key ] ?? null;
+	private function read_composite_phone_field( array $events_delivery_settings, $field_key ) {
+		$field = $events_delivery_settings[ $field_key ] ?? null;
 
 		if ( ! is_array( $field ) ) {
 			return array(
@@ -320,42 +292,41 @@ class VuloMailIntegration {
 	}
 
 	/**
-	 * Migrate the active MultiVendorX SMS gateway's credentials into a VuloMail
-	 * SMS connection, using VuloMail's own ConnectionRepository::save() so
-	 * secret fields are encrypted by VuloMail itself rather than by us.
+	 * Migrate the active SMS gateway's credentials into a VuloMail connection,
+	 * so secret fields are encrypted by VuloMail itself rather than by us.
 	 *
 	 * @param object $vulomail     The VuloMail() plugin instance.
-	 * @param array  $mvx_settings The multivendorx_events_delivery_settings option value.
+	 * @param array  $events_delivery_settings The multivendorx_events_delivery_settings option value.
 	 * @return true|\WP_Error
 	 */
-	private function migrate_sms_gateway_connection( $vulomail, array $mvx_settings ) {
-		$gateway = $mvx_settings['sms_gateway_selector'] ?? '';
+	private function migrate_sms_gateway_connection( $vulomail, array $events_delivery_settings ) {
+		$gateway = $events_delivery_settings['sms_gateway_selector'] ?? '';
 
 		if ( empty( $gateway ) || 'none' === $gateway ) {
 			return true;
 		}
 
-		$sender_phone = $this->read_composite_phone_field( $mvx_settings, 'sms_sender_phone_number' );
+		$sender_phone = $this->read_composite_phone_field( $events_delivery_settings, 'sms_sender_phone_number' );
 		$sender       = trim( $sender_phone['country_code'] . $sender_phone['number'] );
 
 		$credentials_by_gateway = array(
 			'twilio'     => array(
-				'account_sid' => $mvx_settings['twilio_account_sid'] ?? '',
-				'auth_token'  => $mvx_settings['twilio_auth_token'] ?? '',
+				'account_sid' => $events_delivery_settings['twilio_account_sid'] ?? '',
+				'auth_token'  => $events_delivery_settings['twilio_auth_token'] ?? '',
 				'from'        => $sender,
 			),
 			'vonage'     => array(
-				'api_key'    => $mvx_settings['vonage_api_key'] ?? '',
-				'api_secret' => $mvx_settings['vonage_api_secret'] ?? '',
+				'api_key'    => $events_delivery_settings['vonage_api_key'] ?? '',
+				'api_secret' => $events_delivery_settings['vonage_api_secret'] ?? '',
 				'from'       => $sender,
 			),
 			'plivo'      => array(
-				'auth_id'    => $mvx_settings['plivo_auth_id'] ?? '',
-				'auth_token' => $mvx_settings['plivo_auth_token'] ?? '',
+				'auth_id'    => $events_delivery_settings['plivo_auth_id'] ?? '',
+				'auth_token' => $events_delivery_settings['plivo_auth_token'] ?? '',
 				'from'       => $sender,
 			),
 			'clickatell' => array(
-				'api_key' => $mvx_settings['clickatell_api_key'] ?? '',
+				'api_key' => $events_delivery_settings['clickatell_api_key'] ?? '',
 				'from'    => $sender,
 			),
 		);
@@ -389,9 +360,7 @@ class VuloMailIntegration {
 			return $saved;
 		}
 
-		// Saving a connection doesn't make it VuloMail's active one — Dispatcher::is_ready()
-		// only resolves a connection through the `sms_primary` setting, so without this the
-		// connection would exist but never actually be used to send anything.
+		// Saving a connection doesn't make it active — must also set sms_primary.
 		$vulomail->settings->update( array( 'sms_primary' => $saved['id'] ) );
 
 		return true;
