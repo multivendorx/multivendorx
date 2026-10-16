@@ -1727,6 +1727,10 @@ class Notifications {
 			}
 			$headers = array( 'Content-Type: text/html; charset=UTF-8' );
 
+			// VuloMail intercepts every wp_mail() call sitewide via its own pre_wp_mail hook
+			// when it's ready, and falls back to WordPress's default mailer otherwise -- calling
+			// wp_mail() directly here is all that's needed; it works the same with or without
+			// VuloMail installed/active, without this file depending on VuloMail's own API.
 			wp_mail( $to, $subject, $message, $headers );
 		}
 
@@ -1734,8 +1738,7 @@ class Notifications {
 			$receivers = array();
 
 			if ( $event->admin_enabled ) {
-				$parameters['admin_phone'] = $parameters['admin_phone']['country_code'] . $parameters['admin_phone']['sms_receiver_phone_number'];
-				$receivers[]               = $parameters['admin_phone'];
+				$receivers[] = $parameters['admin_phone'];
 			}
 
 			if ( $event->store_enabled ) {
@@ -1754,10 +1757,16 @@ class Notifications {
 				$message = str_replace( '[' . $key . ']', $value, $message );
 			}
 
-			$gateway = $this->active_gateway();
-			if ( $gateway ) {
+			if ( function_exists( 'vulomail_is_sms_ready' ) && vulomail_is_sms_ready() ) {
 				foreach ( array_filter( $receivers ) as $number ) {
-					$gateway->send( $number, $message );
+					vulomail_send_sms( $number, $message );
+				}
+			} else {
+				$gateway = $this->active_gateway();
+				if ( $gateway ) {
+					foreach ( array_filter( $receivers ) as $number ) {
+						$gateway->send( $number, $message );
+					}
 				}
 			}
 		}
@@ -2053,6 +2062,22 @@ class Notifications {
 	}
 
 	/**
+	 * Where admin SMS alerts go, now that the "Receiver phone number" field has moved
+	 * out of MultiVendorX's own settings. VuloMail owns it as `sms_admin_phone` (its
+	 * "Admin phone" setting) — there's no MultiVendorX-side fallback once VuloMail is
+	 * the delivery path, since the UI to configure one no longer exists.
+	 *
+	 * @return string Phone number in the format VuloMail's "Admin phone" setting stores it, or ''.
+	 */
+	private function get_sms_admin_recipient() {
+		if ( ! function_exists( 'VuloMail' ) || ! isset( VuloMail()->settings ) ) {
+			return '';
+		}
+
+		return (string) VuloMail()->settings->get( 'sms_admin_phone' );
+	}
+
+	/**
 	 * Build the common notification payload and fire the event's trigger hook.
 	 *
 	 * Merges admin/store/customer contact info derived from $store and $order
@@ -2087,7 +2112,7 @@ class Notifications {
 		$payload = array_merge(
 			array(
 				'admin_email'      => MultiVendorX()->setting->get_setting( 'receiver_email_address' ),
-				'admin_phone'      => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+				'admin_phone'      => $this->get_sms_admin_recipient(),
 				'store_name'       => $store_name,
 				'store_email'      => $store_email,
 				'store_phone'      => $store_phone,
