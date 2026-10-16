@@ -251,8 +251,7 @@ class QuoteCart extends \WP_REST_Controller {
         }
 
         try {
-            $product_id = $request->get_param( 'productId' );
-            $key        = $request->get_param( 'key' );
+            $key = $request->get_param( 'key' );
 
             if ( ! isset( $key ) || '' === (string) $key ) {
                 return new \WP_Error(
