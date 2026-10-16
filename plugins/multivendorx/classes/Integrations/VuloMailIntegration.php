@@ -234,14 +234,16 @@ class VuloMailIntegration {
 
 		$vulomail = VuloMail();
 
+		$receiver_phone = $this->read_composite_phone_field( $mvx_settings, 'sms_receiver_phone_number' );
+
 		$settings_update = array();
 
-		if ( ! empty( $mvx_settings['sms_receiver_phone_number'] ) ) {
-			$settings_update['sms_admin_phone'] = $mvx_settings['sms_receiver_phone_number'];
+		if ( '' !== $receiver_phone['number'] ) {
+			$settings_update['sms_admin_phone'] = $receiver_phone['number'];
 		}
 
-		if ( ! empty( $mvx_settings['country_code'] ) ) {
-			$settings_update['sms_country_code'] = $mvx_settings['country_code'];
+		if ( '' !== $receiver_phone['country_code'] ) {
+			$settings_update['sms_country_code'] = $receiver_phone['country_code'];
 		}
 
 		if ( ! empty( $mvx_settings['sender_email_address'] ) ) {
@@ -260,6 +262,31 @@ class VuloMailIntegration {
 	}
 
 	/**
+	 * Reads a beforeElement-paired "phone number + country code" field the way Zyra's
+	 * settings form actually stores it: nested under the field's own key, with the number
+	 * re-using that same key internally (e.g. `sms_receiver_phone_number.sms_receiver_phone_number`).
+	 *
+	 * @param array  $mvx_settings The multivendorx_events_delivery_settings option value.
+	 * @param string $field_key    The composite field's key, e.g. 'sms_receiver_phone_number'.
+	 * @return array{country_code: string, number: string}
+	 */
+	private function read_composite_phone_field( array $mvx_settings, $field_key ) {
+		$field = $mvx_settings[ $field_key ] ?? null;
+
+		if ( ! is_array( $field ) ) {
+			return array(
+				'country_code' => '',
+				'number'       => '',
+			);
+		}
+
+		return array(
+			'country_code' => (string) ( $field['country_code'] ?? '' ),
+			'number'       => (string) ( $field[ $field_key ] ?? '' ),
+		);
+	}
+
+	/**
 	 * Migrate the active MultiVendorX SMS gateway's credentials into a VuloMail
 	 * SMS connection, using VuloMail's own ConnectionRepository::save() so
 	 * secret fields are encrypted by VuloMail itself rather than by us.
@@ -275,7 +302,8 @@ class VuloMailIntegration {
 			return true;
 		}
 
-		$sender = trim( ( $mvx_settings['country_code'] ?? '' ) . ( $mvx_settings['sms_sender_phone_number'] ?? '' ) );
+		$sender_phone = $this->read_composite_phone_field( $mvx_settings, 'sms_sender_phone_number' );
+		$sender       = trim( $sender_phone['country_code'] . $sender_phone['number'] );
 
 		$credentials_by_gateway = array(
 			'twilio'     => array(
