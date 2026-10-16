@@ -12,7 +12,7 @@ use CatalogX\Utill;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Catalogx REST API Quote controller.
+ * CatalogX REST API Quote controller.
  *
  * @class       Module class
  * @version     PRODUCT_VERSION
