@@ -449,25 +449,28 @@ class Subscriber {
         }
 
         $table = $wpdb->prefix . Utill::TABLES['subscribers'];
-        $query = 'SELECT id, email FROM %i WHERE product_id = %d AND status = %s';
-        $args  = array( $table, $product_id, $status );
-
         // Failed notifications: skip subscribers who reached the max retry attempts.
-        if ( 'notification_failed' === $status ) {
-            $query .= ' AND retry_count < %d';
-            $args[] = (int) Notifima()->setting->get_setting( 'notification_retry_max_attempts', 3 );
-        }
+        $limit_retries = 'notification_failed' === $status ? 1 : 0;
+        $max_attempts  = $limit_retries ? (int) Notifima()->setting->get_setting( 'notification_retry_max_attempts', 3 ) : 0;
+        $row_limit     = $limit > 0 ? (int) $limit : PHP_INT_MAX;
 
         // Lowest retry count first (it is always 0 for other statuses).
-        $query .= ' ORDER BY retry_count ASC, id ASC';
-
-        if ( $limit > 0 ) {
-            $query .= ' LIMIT %d';
-            $args[] = (int) $limit;
-        }
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        $rows = $wpdb->get_results( $wpdb->prepare( $query, $args ) );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT id, email FROM %i
+                WHERE product_id = %d AND status = %s
+                AND ( %d = 0 OR retry_count < %d )
+                ORDER BY retry_count ASC, id ASC
+                LIMIT %d',
+                $table,
+                $product_id,
+                $status,
+                $limit_retries,
+                $max_attempts,
+                $row_limit
+            )
+        );
 
         return wp_list_pluck( (array) $rows, 'email', 'id' );
     }

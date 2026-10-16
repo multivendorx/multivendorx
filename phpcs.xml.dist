@@ -38,9 +38,14 @@
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array">
-				<element value="moowoodle"/>
-				<element value="multivendorx"/>
 				<element value="catalogx"/>
+				<element value="catalogx-pro"/>
+				<element value="moowoodle"/>
+				<element value="moowoodle-pro"/>
+				<element value="multivendorx"/>
+				<element value="multivendorx-pro"/>
+				<element value="notifima"/>
+				<element value="notifima-pro"/>
 			</property>
 		</properties>
 	</rule>
