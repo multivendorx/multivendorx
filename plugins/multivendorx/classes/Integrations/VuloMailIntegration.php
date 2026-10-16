@@ -73,7 +73,7 @@ class VuloMailIntegration {
 	 * @return void
 	 */
 	public function __construct() {
-		add_action( 'admin_init', array( $this, 'maybe_run_pending_migration' ) );
+		add_action( 'admin_menu', array( $this, 'maybe_run_pending_migration' ), 1 );
 		add_action( 'admin_notices', array( $this, 'render_admin_notice' ) );
 		add_action( 'admin_post_multivendorx_retry_vulomail_migration', array( $this, 'handle_retry_request' ) );
 	}
@@ -82,11 +82,18 @@ class VuloMailIntegration {
 	 * Install/activate VuloMail and migrate settings into it, if Install.php's
 	 * do_migration() flagged this site as eligible and nobody has done it yet.
 	 *
-	 * Runs on admin_init (rather than inline during the version-bump migration
-	 * in Install.php) because installing a plugin needs admin-only includes,
-	 * WP_Filesystem, and an install_plugins-capable user — none of which are
-	 * reliably available on the arbitrary request (including a front-end one)
-	 * that happens to trigger the version bump.
+	 * Runs on admin_menu at an early priority (rather than inline during the
+	 * version-bump migration in Install.php) because installing a plugin needs
+	 * admin-only includes, WP_Filesystem, and an install_plugins-capable user —
+	 * none of which are reliably available on the arbitrary request (including a
+	 * front-end one) that happens to trigger the version bump. It specifically
+	 * is NOT on admin_init: wp-admin/admin.php requires menu.php (which fires
+	 * admin_menu) before it fires admin_init, so a plugin activated on admin_init
+	 * is always one page load too late to add its own admin_menu entry — the
+	 * freshly-activated VuloMail's menu item wouldn't appear until a refresh.
+	 * Hooking admin_menu itself, early, lets VuloMail's own admin_menu callback
+	 * (registered the moment activate_plugin() includes its file) still fire
+	 * within the same dispatch, since WP_Hook supports callbacks added mid-run.
 	 *
 	 * @return void
 	 */
@@ -165,7 +172,33 @@ class VuloMailIntegration {
 			return $activated;
 		}
 
+		$this->ensure_vulomail_booted();
+
 		return true;
+	}
+
+	/**
+	 * Finishes booting VuloMail within the current request when it was just activated.
+	 *
+	 * activate_plugin() only include()s the plugin's main file -- it doesn't replay
+	 * plugins_loaded/init, which is what VuloMail's own bootstrap (and its
+	 * admin_menu-registering Admin class, instantiated from init_classes()) is gated
+	 * behind. Without calling these directly, VuloMail's admin menu item, and anything
+	 * else from init_classes(), wouldn't exist until the next page load even though the
+	 * plugin is already active -- the symptom being "VuloMail doesn't show in the nav
+	 * until I refresh" right after migration finishes. No-ops when VuloMail was already
+	 * active before this request (its normal plugins_loaded/init boot already ran).
+	 *
+	 * @return void
+	 */
+	private function ensure_vulomail_booted() {
+		if ( ! function_exists( 'VuloMail' ) || did_action( 'vulomail_loaded' ) ) {
+			return;
+		}
+
+		$vulomail = VuloMail();
+		$vulomail->init_plugin();
+		$vulomail->init_classes();
 	}
 
 	/**

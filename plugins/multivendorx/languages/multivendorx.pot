@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-16T09:27:00+00:00\n"
+"POT-Creation-Date: 2026-10-16T10:36:45+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: multivendorx\n"
@@ -249,37 +249,37 @@ msgstr ""
 msgid "Invalid email format"
 msgstr ""
 
-#: classes/Integrations/VuloMailIntegration.php:208
+#: classes/Integrations/VuloMailIntegration.php:241
 msgid "VuloMail could not be downloaded or installed."
 msgstr ""
 
-#: classes/Integrations/VuloMailIntegration.php:232
+#: classes/Integrations/VuloMailIntegration.php:265
 msgid "VuloMail did not load after activation."
 msgstr ""
 
-#: classes/Integrations/VuloMailIntegration.php:321
+#: classes/Integrations/VuloMailIntegration.php:382
 msgid "Migrated from MultiVendorX"
 msgstr ""
 
-#: classes/Integrations/VuloMailIntegration.php:355
+#: classes/Integrations/VuloMailIntegration.php:416
 msgid "MultiVendorX has installed VuloMail and migrated your admin notification settings to it. SMS notifications now deliver through VuloMail; email notifications will too once you add an email connection inside VuloMail (MultiVendorX never had its own SMTP credentials to migrate)."
 msgstr ""
 
-#: classes/Integrations/VuloMailIntegration.php:362
+#: classes/Integrations/VuloMailIntegration.php:423
 msgid "Unknown error."
 msgstr ""
 
 #. translators: %s: error message.
-#: classes/Integrations/VuloMailIntegration.php:373
+#: classes/Integrations/VuloMailIntegration.php:434
 #, php-format
 msgid "MultiVendorX could not automatically install/configure VuloMail: %s"
 msgstr ""
 
-#: classes/Integrations/VuloMailIntegration.php:378
+#: classes/Integrations/VuloMailIntegration.php:439
 msgid "Retry"
 msgstr ""
 
-#: classes/Integrations/VuloMailIntegration.php:391
+#: classes/Integrations/VuloMailIntegration.php:452
 msgid "You are not allowed to do this."
 msgstr ""
 
