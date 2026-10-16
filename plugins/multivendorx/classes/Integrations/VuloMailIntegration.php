@@ -324,6 +324,11 @@ class VuloMailIntegration {
 			return $saved;
 		}
 
+		// Saving a connection doesn't make it VuloMail's active one — Dispatcher::is_ready()
+		// only resolves a connection through the `sms_primary` setting, so without this the
+		// connection would exist but never actually be used to send anything.
+		$vulomail->settings->update( array( 'sms_primary' => $saved['id'] ) );
+
 		return true;
 	}
 
@@ -343,7 +348,7 @@ class VuloMailIntegration {
 		if ( 'done' === $status && ! get_option( self::NOTICE_SHOWN_OPTION ) ) {
 			printf(
 				'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-				esc_html__( 'MultiVendorX has installed VuloMail and migrated your admin notification email/SMS settings to it. Email and SMS notifications will now be delivered through VuloMail.', 'multivendorx' )
+				esc_html__( 'MultiVendorX has installed VuloMail and migrated your admin notification settings to it. SMS notifications now deliver through VuloMail; email notifications will too once you add an email connection inside VuloMail (MultiVendorX never had its own SMTP credentials to migrate).', 'multivendorx' )
 			);
 			update_option( self::NOTICE_SHOWN_OPTION, 1 );
 			return;
