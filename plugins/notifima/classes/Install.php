@@ -290,27 +290,18 @@ class Install {
                 ARRAY_A
             );
 
-            // Prepare insert values and placeholders.
-            $insert_bind_values = array();
-            $placeholders       = array();
-
+            // Insert the legacy subscribers into the custom table, one row at a time.
             foreach ( $legacy_subscriber_rows as $legacy_subscriber_row ) {
-                $insert_bind_values[] = (int) $legacy_subscriber_row['product_id'];
-                $insert_bind_values[] = (int) $legacy_subscriber_row['user_id'];
-                $insert_bind_values[] = $legacy_subscriber_row['email'];
-                $insert_bind_values[] = self::STATUS_MAP[ $legacy_subscriber_row['status'] ];
-                $insert_bind_values[] = $legacy_subscriber_row['date'];
-                $placeholders[]       = '( %d, %d, %s, %s, %s )';
-            }
-
-            // If result exist then insert those result into custom table.
-            if ( $insert_bind_values ) {
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->query(
                     $wpdb->prepare(
-                        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- placeholder count is dynamic (one row-tuple per migrated subscriber), the sniff can't verify it statically.
-                        'INSERT IGNORE INTO %i (product_id, user_id, email, status, create_time ) VALUES ' . implode( ', ', $placeholders ),
-                        array_merge( array( $table ), $insert_bind_values )
+                        'INSERT IGNORE INTO %i (product_id, user_id, email, status, create_time ) VALUES ( %d, %d, %s, %s, %s )',
+                        $table,
+                        (int) $legacy_subscriber_row['product_id'],
+                        (int) $legacy_subscriber_row['user_id'],
+                        $legacy_subscriber_row['email'],
+                        self::STATUS_MAP[ $legacy_subscriber_row['status'] ],
+                        $legacy_subscriber_row['date']
                     )
                 );
             }
@@ -665,9 +656,9 @@ class Install {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $posts = $wpdb->get_results(
                 $wpdb->prepare(
-                    "SELECT ID, post_content FROM %i
+                    'SELECT ID, post_content FROM %i
                      WHERE post_content LIKE %s
-                     OR post_content LIKE %s",
+                     OR post_content LIKE %s',
                     $wpdb->posts,
                     '%display_stock_manager_form%',
                     '%display_stock_alert_form%'

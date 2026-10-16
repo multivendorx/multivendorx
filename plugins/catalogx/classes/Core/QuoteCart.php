@@ -104,7 +104,7 @@ class QuoteCart {
         $wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- $wpdb->options is WordPress core's own table name, not user input.
             $wpdb->prepare(
                 'DELETE FROM %i WHERE option_name LIKE %s',
-                $wpdb->options, // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                $wpdb->options,
                 $wpdb->esc_like( '_catalogx_session_' ) . '%'
             )
         );

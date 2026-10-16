@@ -218,8 +218,8 @@ class Install {
                 ),
             );
 
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-            $store_ids = $wpdb->get_col( "SELECT ID FROM {$store_table}" );
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            $store_ids = $wpdb->get_col( $wpdb->prepare( 'SELECT ID FROM %i', $store_table ) );
 
             foreach ( (array) $store_ids as $store_id ) {
                 $store = new Store( (int) $store_id );
@@ -552,7 +552,10 @@ class Install {
         $wpdb->query( 'DROP TRIGGER IF EXISTS update_store_balance' );
         $table = $wpdb->prefix . Utill::TABLES['transaction'];
         // Create the trigger.
-        $sql = "
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+        $wpdb->query(
+            $wpdb->prepare(
+                "
         CREATE TRIGGER update_store_balance
         BEFORE INSERT ON %i
         FOR EACH ROW
@@ -622,12 +625,7 @@ class Install {
                 SET NEW.locking_balance = last_locking_balance;
             END IF;
         END;
-        ";
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
-        $wpdb->query(
-            $wpdb->prepare(
-                $sql, // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- %i table placeholders prepared below; sniff can't trace the multi-line $sql assignment above.
+        ",
                 $table,
                 $table
             )
