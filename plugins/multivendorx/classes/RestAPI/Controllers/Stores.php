@@ -353,13 +353,10 @@ class Stores extends \WP_REST_Controller {
 
             $is_admin = Utill::current_user_has_capability( array( 'manage_options' ) );
 
-            // Registration status is decided here, server-side, from facts the
-            // client can't forge — never trust a client-supplied header for this.
-            // A logged-in user can self-register exactly one store (no id yet,
-            // not already a store owner); anything else needs manage_options.
-            $registrations = empty( $store_data['id'] )
-                && ! $is_admin
-                && ! in_array( 'store_owner', (array) $current_user->roles, true );
+            $is_store_owner = in_array( 'store_owner', (array) $current_user->roles, true );
+
+            // Decide registration status ourselves - never trust a client header for this.
+            $registrations = empty( $store_data['id'] ) && ! $is_admin && ! $is_store_owner;
 
             // `create_stores` is granted to every logged-in user, so block a
             // direct, ownerless store create outside registration/self-edit.
