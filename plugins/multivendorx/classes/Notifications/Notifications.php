@@ -8,10 +8,6 @@
 namespace MultiVendorX\Notifications;
 
 use MultiVendorX\Utill;
-use MultiVendorX\Notifications\Gateways\Twilio;
-use MultiVendorX\Notifications\Gateways\Plivo;
-use MultiVendorX\Notifications\Gateways\Vonage;
-use MultiVendorX\Notifications\Gateways\Clickatell;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -34,6 +30,15 @@ class Notifications {
 	public $events = array();
 
 	/**
+	 * Option flagging that an SMS notification couldn't be sent because VuloMail has no
+	 * usable SMS connection (or isn't installed/active). render_vulomail_sms_notice() shows
+	 * a prompt once this is set, and clears it after the admin dismisses or fixes it.
+	 *
+	 * @var string
+	 */
+	const VULOMAIL_SMS_NOT_READY_OPTION = 'multivendorx_vulomail_sms_not_ready';
+
+	/**
 	 * Constructor
 	 *
 	 * @return void
@@ -41,6 +46,7 @@ class Notifications {
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_notification_hooks' ) );
 		add_action( 'multivendorx_clear_notifications', array( $this, 'multivendorx_clear_notifications' ) );
+		add_action( 'admin_notices', array( $this, 'render_vulomail_sms_notice' ) );
 	}
 
 	/**
@@ -1762,12 +1768,10 @@ class Notifications {
 					vulomail_send_sms( $number, $message );
 				}
 			} else {
-				$gateway = $this->active_gateway();
-				if ( $gateway ) {
-					foreach ( array_filter( $receivers ) as $number ) {
-						$gateway->send( $number, $message );
-					}
-				}
+				// VuloMail is the only SMS delivery path now -- nothing to fall back to, so
+				// flag it instead of silently dropping the message. render_vulomail_sms_notice()
+				// surfaces this once as a dismissible admin notice with a link to fix it.
+				update_option( self::VULOMAIL_SMS_NOT_READY_OPTION, 1 );
 			}
 		}
 	}
@@ -2034,31 +2038,35 @@ class Notifications {
 	}
 
 	/**
-	 * Get the active SMS gateway instance.
+	 * Renders a one-time, dismissible admin notice prompting the admin to install VuloMail
+	 * (if it's not active at all) or set up an SMS connection in it (if it is active but
+	 * has none configured), after an SMS notification couldn't be sent because of either.
 	 *
-	 * This function retrieves the SMS gateway selected in the MultiVendorX settings.
-	 * It applies the 'multivendorx_available_sms_gateways' filter to allow custom gateways.
-	 *
-	 * @return object|false Returns an instance of the selected gateway class, or false if none is selected.
+	 * @return void
 	 */
-	public function active_gateway() {
-		$gateways = apply_filters(
-			'multivendorx_available_sms_gateways',
-			array(
-				'twilio'     => new Twilio(),
-				'vonage'     => new Vonage(),
-				'clickatell' => new Clickatell(),
-				'plivo'      => new Plivo(),
-			)
-		);
-
-		$gateway = MultiVendorX()->setting->get_setting( 'sms_gateway_selector' );
-
-		if ( $gateway && array_key_exists( $gateway, $gateways ) ) {
-			return new $gateways[ $gateway ]();
+	public function render_vulomail_sms_notice() {
+		if ( ! get_option( self::VULOMAIL_SMS_NOT_READY_OPTION ) || ! current_user_can( 'manage_options' ) ) {
+			return;
 		}
 
-		return false;
+		if ( is_plugin_active( 'vulomail/vulomail.php' ) ) {
+			$message = __( 'MultiVendorX could not send an SMS notification because VuloMail has no SMS gateway connected yet.', 'multivendorx' );
+			$url     = admin_url( 'admin.php?page=vulomail' );
+			$cta     = __( 'Set up SMS in VuloMail', 'multivendorx' );
+		} else {
+			$message = __( 'MultiVendorX could not send an SMS notification because VuloMail, the plugin it relies on for SMS delivery, isn\'t installed.', 'multivendorx' );
+			$url     = admin_url( 'plugin-install.php?s=vulomail&tab=search&type=term' );
+			$cta     = __( 'Install VuloMail', 'multivendorx' );
+		}
+
+		printf(
+			'<div class="notice notice-warning is-dismissible"><p>%s</p><p><a href="%s" class="button">%s</a></p></div>',
+			esc_html( $message ),
+			esc_url( $url ),
+			esc_html( $cta )
+		);
+
+		delete_option( self::VULOMAIL_SMS_NOT_READY_OPTION );
 	}
 
 	/**
