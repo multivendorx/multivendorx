@@ -334,11 +334,11 @@ class Stores extends \WP_REST_Controller {
                 $store_data['description'] = $store_data['Description'];
             }
 
-            if ( isset( $store_data['name'] ) ) {
+            if ( array_key_exists( 'name', $store_data ) ) {
                 $store_data['name'] = sanitize_text_field( (string) $store_data['name'] );
             }
 
-            if ( isset( $store_data['description'] ) ) {
+            if ( array_key_exists( 'description', $store_data ) ) {
                 $store_data['description'] = wp_kses_post( (string) $store_data['description'] );
             }
 
