@@ -934,37 +934,37 @@ const Dashboard: React.FC = () => {
 								window.open(url);
 							}}
 						>
-							<div className="top-customer-wrapper">
-								{pendingRefund && pendingRefund.length > 0 ? (
-									pendingRefund.map((customer) => (
-										<div
-											key={customer.id}
-											className="customer"
-										>
-											<div className="left-section">
-												<div className="details">
-													<div className="name">
-														{customer.name}
-													</div>
-													<div className="order-number">
-														{customer.reason} |{' '}
-														{formatDate(
-															customer.time
-														)}
-													</div>
-												</div>
-											</div>
-										</div>
-									))
-								) : (
-									<ModuleGuardComponent
-										title={__(
-											'Refund requests will appear here when submitted.',
-											'multivendorx'
-										)}
+							{pendingRefund && pendingRefund.length > 0 ? (
+								pendingRefund.map((customer) => (
+									<InformationItemComponent
+										key={customer.id}
+										title={customer.name}
+										avatar={{
+											text: String(customer.name ?? '')
+												.charAt(0)
+												.toUpperCase(),
+											iconClass: 'person',
+										}}
+										descriptions={[
+											{
+												label: __('Reason', 'multivendorx'),
+												value: customer.reason,
+											},
+											{
+												label: __('Date', 'multivendorx'),
+												value: formatDate(customer.time),
+											},
+										]}
 									/>
-								)}
-							</div>
+								))
+							) : (
+								<ModuleGuardComponent
+									title={__(
+										'Refund requests will appear here when submitted.',
+										'multivendorx'
+									)}
+								/>
+							)}
 						</CardComponent>
 					</ColumnComponent>
 				)}

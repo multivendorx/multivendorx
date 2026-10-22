@@ -36,7 +36,7 @@ class Settings extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'update_item' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+					'permission_callback' => array( $this, 'moowoodle_update_item_permissions_check' ),
 				),
 			)
         );
@@ -47,7 +47,7 @@ class Settings extends \WP_REST_Controller {
      *
      * @param \WP_REST_Request $request The REST request object.
      */
-    public function update_item_permissions_check( $request ) {
+    public function moowoodle_update_item_permissions_check( $request ) {
         return Util::current_user_has_capability( array( 'manage_options' ) );
     }
 

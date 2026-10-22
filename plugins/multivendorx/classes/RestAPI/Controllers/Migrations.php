@@ -37,7 +37,7 @@ class Migrations extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'process_action' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'multivendorx_get_items_permissions_check' ),
                 ),
             )
         );
@@ -48,7 +48,7 @@ class Migrations extends \WP_REST_Controller {
      *
      * @param object $request Full details about the request.
      */
-    public function get_items_permissions_check( $request ) {
+    public function multivendorx_get_items_permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 

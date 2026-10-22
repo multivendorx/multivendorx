@@ -294,7 +294,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('Catalogx Pro', 'notifima'),
+										title: 'CatalogX Pro',
 										desc: __(
 											'Advanced product catalog, quotation, and enquiry features with premium templates.',
 											'notifima'
@@ -324,7 +324,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('Catalogx', 'notifima'),
+										title: 'CatalogX',
 										desc: __(
 											'Turn your WooCommerce store into a product catalog with enquiry and quotation features.',
 											'notifima'
@@ -413,7 +413,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('MultiVendorX', 'notifima'),
+										title: 'MultiVendorX',
 										desc: __(
 											'Build and manage a multivendor marketplace with powerful vendor management features.',
 											'notifima'

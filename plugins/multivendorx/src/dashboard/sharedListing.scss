@@ -1,4 +1,5 @@
 @use './dashboardConfig.scss' as *;
+
 .product-category-select-wrapper {
     width: 70%;
     margin: auto;
@@ -133,6 +134,7 @@
         .number-btn:not(.active),
         span i {
             background: $background-color !important;
+
             /* for  overwrite commo style */
         }
     }

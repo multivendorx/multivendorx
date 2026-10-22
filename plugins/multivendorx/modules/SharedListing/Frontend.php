@@ -116,9 +116,8 @@ class Frontend {
 
         $table = $wpdb->prefix . Utill::TABLES['shared_listing'];
         $limit = apply_filters( 'multivendorx_shared_listing_products_query_limit', 100 );
-        $query = $wpdb->prepare( 'SELECT listing_products FROM %i LIMIT %d', $table, $limit );
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        $maps = $wpdb->get_results( $query );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $maps = $wpdb->get_results( $wpdb->prepare( 'SELECT listing_products FROM %i LIMIT %d', $table, $limit ) );
         foreach ( $maps as $map ) {
             $ids = maybe_unserialize( $map->listing_products );
 
@@ -173,7 +172,7 @@ class Frontend {
                     }
                 }
 
-                // Fallback to min price if no rating found
+                // Fallback to min price if no rating found.
                 if ( $best <= 0 ) {
                     $selected_id = $this->get_min_price_product( $ids );
                 }
@@ -183,7 +182,7 @@ class Frontend {
                 $user_lat = isset( $_COOKIE['user_lat'] ) ? (float) $_COOKIE['user_lat'] : 0;
                 $user_lng = isset( $_COOKIE['user_lng'] ) ? (float) $_COOKIE['user_lng'] : 0;
 
-                // Fallback if user location not available
+                // Fallback if user location not available.
                 if ( ! $user_lat || ! $user_lng ) {
                     return $this->get_min_price_product( $ids );
                 }
@@ -210,7 +209,7 @@ class Frontend {
 						continue;
                     }
 
-                    // Calculate distance
+                    // Calculate distance.
                     $distance = $this->calculate_distance( $user_lat, $user_lng, $store_lat, $store_lng );
 
                     if ( $distance < $closest_distance ) {
@@ -231,6 +230,9 @@ class Frontend {
 
     /**
      * Get product with minimum price
+     *
+     * @param array $ids Product IDs.
+     * @return int|null ID of the cheapest product, or null when none has a price.
      */
     public function get_min_price_product( array $ids ) {
         $best_price  = PHP_FLOAT_MAX;
@@ -258,14 +260,14 @@ class Frontend {
      * @return float Distance in kilometers.
      */
     public function calculate_distance( $ulat, $ulng, $slat, $slng ) {
-        $earth_radius = 6371; // in KM
+        $earth_radius = 6371; // in KM.
 
-        $dLat = deg2rad( $slat - $ulat );
-        $dLng = deg2rad( $slng - $ulng );
+        $d_lat = deg2rad( $slat - $ulat );
+        $d_lng = deg2rad( $slng - $ulng );
 
-        $a = sin( $dLat / 2 ) * sin( $dLat / 2 ) +
+        $a = sin( $d_lat / 2 ) * sin( $d_lat / 2 ) +
             cos( deg2rad( $ulat ) ) * cos( deg2rad( $slat ) ) *
-            sin( $dLng / 2 ) * sin( $dLng / 2 );
+            sin( $d_lng / 2 ) * sin( $d_lng / 2 );
 
         $c = 2 * atan2( sqrt( $a ), sqrt( 1 - $a ) );
 

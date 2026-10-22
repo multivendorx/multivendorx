@@ -7,7 +7,6 @@ import { QueryProps, TableCard, TableRow } from '@zyra/table';
 
 import {
 	downloadCSV,
-	formatCurrency,
 	formatDate,
 	formatLocalDate,
 	formatStatusLabel,
@@ -54,16 +53,17 @@ const OrderReport: React.FC = () => {
 			titleLinkKey: 'info_link',
 			descriptionKey: 'info_descriptions',
 			badgesKey: 'info_badges',
+			width: '70%',
 		},
 		commission_total: {
 			label: __('Commission', 'multivendorx'),
-			render: (row) => (
-				<span>{formatCurrency(row.commission_total)}</span>
-			),
+			type: 'labeled',
+			valueType: 'currency',
 		},
 		total: {
 			label: __('Amount', 'multivendorx'),
-			render: (row) => <span>{formatCurrency(row.total)}</span>,
+			type: 'labeled',
+			valueType: 'currency',
 		},
 	};
 

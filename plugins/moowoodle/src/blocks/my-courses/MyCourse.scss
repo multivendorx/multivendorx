@@ -25,6 +25,7 @@
     --theme-secondary-rgb: 80, 7, 170;
     --theme-background: color-mix(in srgb, var(--theme-primary-color) 10%, transparent);
 }
+
 // skeleton style start
 .skeleton {
     display: inline-block;
@@ -54,6 +55,7 @@
     0% {
         background-position: 100% 0;
     }
+
     100% {
         background-position: -100% 0;
     }
@@ -148,12 +150,14 @@
     height: 3rem;
     margin-right: 0.625rem;
   }
+
    span {
       display: block;
       font-size: 0.913rem;
       line-height: 1;
       font-weight: 500;
     }
+
   img,
   svg {
     width: 100%;

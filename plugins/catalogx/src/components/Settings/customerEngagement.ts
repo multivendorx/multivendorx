@@ -82,6 +82,28 @@ export default {
             proSetting: true,
             moduleEnabled: 'catalog',
         },
+        {
+            key: 'hide_product_price',
+            type: 'choice-toggle',
+            label: __('Product price visibility', 'catalogx'),
+            settingDescription: __(
+                'Choose whether prices are displayed for products covered by the Catalog module.',
+                'catalogx'
+            ),
+            options: [
+                {
+                    key: 'visible',
+                    label: __('Show product prices', 'catalogx'),
+                    value: 'visible',
+                },
+                {
+                    key: 'hidden',
+                    label: __('Hide product prices', 'catalogx'),
+                    value: 'hidden',
+                },
+            ],
+            moduleEnabled: 'catalog',
+        },
         //enquiry
         {
             key: 'enquiry_user_permission',

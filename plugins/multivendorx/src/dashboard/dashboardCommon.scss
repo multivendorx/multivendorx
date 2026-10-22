@@ -12,53 +12,6 @@ a:focus {
 //     display: none; // for hide wordpress section
 // }
 
-body.dark {
-    background: #0b1220 !important;
-
-    .analytics-item {
-        background: $background-white !important;
-        /* overwrite zyra style */
-    }
-
-    .tab-name {
-        .adminfont-setting {
-            color: #fff;
-        }
-    }
-
-    .site-name {
-        color: #fff !important;
-    }
-
-    // page header strip + dropdown rows were hardcoded light
-    .header-wrapper {
-        background: transparent;
-    }
-
-    ul .item:hover {
-        background: var(--background-color);
-    }
-
-    // hardcoded translucent-black timestamps vanish on dark cards
-    .item .time {
-        color: var(--sub-text-color);
-    }
-
-    // header background color
-    .card-header,
-    .table-wrapper .admin-table,
-    .table-wrapper .admin-pagination,
-    .dropdown-menu .dropdown-header {
-        background: #192231;
-    }
-
-    // card header color
-    // .card-content{
-    //     border-color: #d8d5d5
-    // }
-
-}
-
 #store-dashboard .showing-number select {
     padding: 0.313rem;
 }
@@ -95,6 +48,7 @@ body.dark {
         color: #000;
     }
 }
+
 .document-popup-wrapper {
     .des {
         line-height: 1.5rem;
@@ -143,6 +97,7 @@ body.dark {
     background-position: center;
     background-repeat: no-repeat;
 }
+
 .document-preview{
     width: 100%;
     height: 100%;
@@ -166,6 +121,7 @@ body.dark {
     // dashboard stucture start
     .dashboard-tabs-wrapper {
         transform: translateX(-100%);
+
         .close-btn {
             position: fixed;
             right: 0.5rem;

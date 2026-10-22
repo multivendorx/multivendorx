@@ -36,7 +36,7 @@ class TestConnection extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'create_item' ),
-                    'permission_callback' => array( $this, 'permissions_check' ),
+                    'permission_callback' => array( $this, 'moowoodle_permissions_check' ),
                 ),
             )
         );
@@ -48,7 +48,7 @@ class TestConnection extends \WP_REST_Controller {
 	 * @param \WP_REST_Request $request REST request object.
 	 * @return bool
 	 */
-	public function permissions_check( $request ) {
+	public function moowoodle_permissions_check( $request ) {
 		return Util::current_user_has_capability( array( 'manage_options' ) );
 	}
 
@@ -113,8 +113,8 @@ class TestConnection extends \WP_REST_Controller {
 
 			// Get register webservice functions.
 			$registered_functions = array_map(
-                function ( $function ) {
-					return $function['name'];
+                function ( $service_function ) {
+					return $service_function['name'];
 				},
                 $response['functions']
             );

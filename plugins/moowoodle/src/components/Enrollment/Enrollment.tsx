@@ -1,5 +1,5 @@
 /* global appLocalizer */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import {
 	ColumnComponent,
@@ -8,7 +8,7 @@ import {
 	PopupComponent,
 	NavigatorHeaderComponent,
 } from '@zyra/components';
-import { CategoryCount, QueryProps, TableCard } from '@zyra/table';
+import { TableCard } from '@zyra/table';
 import { __ } from '@wordpress/i18n';
 import ShowProPopup from '../Popup/Popup';
 import { applyFilters } from '@wordpress/hooks';
@@ -43,7 +43,7 @@ const Enrollment: React.FC = () => {
 	const headers = {
 		learning_unit: {
 			label: __('Learning Unit', 'moowoodle'),
-			width: "50%",
+			width: '50%',
 			render: (row: EnrollmentRow) => {
 				let title = '';
 
@@ -83,8 +83,10 @@ const Enrollment: React.FC = () => {
 			render: (row: EnrollmentRow) => {
 				return (
 					<>
-						<div className='table-details'>
-							<span className='label'>{__('Enrollment Date', 'moowoodle')}</span>
+						<div className="table-details">
+							<span className="label">
+								{__('Enrollment Date', 'moowoodle')}
+							</span>
 							{row.enrollment_date || '-'}
 						</div>
 					</>
@@ -102,6 +104,7 @@ const Enrollment: React.FC = () => {
 							? __('Unenroll Now', 'moowoodle')
 							: __('Enroll Now', 'moowoodle');
 					},
+					// eslint-disable-next-line no-unused-vars -- row param required by the action button's callback signature.
 					onClick: (row: EnrollmentRow) => {
 						setOpenPopup(true);
 					},
@@ -168,9 +171,14 @@ const Enrollment: React.FC = () => {
 			/>
 			<ContainerComponent general>
 				<ColumnComponent>
-					<div className="demo-wrapper" onClick={handleTableWrapperClick}>
+					<div
+						className="demo-wrapper"
+						onClick={handleTableWrapperClick}
+					>
 						{!appLocalizer.khali_dabba && (
-							<div className="watermark">{__('This is sample Data', 'moowoodle')}</div>
+							<div className="watermark">
+								{__('This is sample Data', 'moowoodle')}
+							</div>
 						)}
 						<TableCard {...tableProps} />
 						{tableProps.popup}

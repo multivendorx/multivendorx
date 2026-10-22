@@ -9,6 +9,7 @@ import {
 	ContainerComponent,
 	NoticeManager,
 	ModuleGridComponent,
+	BadgeComponent,
 } from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { getModuleData } from '../../services/templateService';
@@ -359,11 +360,12 @@ const DashboardTab: React.FC<object> = () => {
 			{/* Right Side */}
 			<ColumnComponent grid={4}>
 				<CardComponent title={__('Extend your website', 'multivendorx')} titleIcon="section" desc="Discover tools and add-ons to expand your website’s capabilities.">
-					<ColumnComponent row>
+					<ColumnComponent>
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
 							<ListComponent
 								className="mini-card"
 								background
+								border
 								items={[
 									{
 										title: __(
@@ -377,10 +379,10 @@ const DashboardTab: React.FC<object> = () => {
 										img: catalogx,
 										tags: (
 											<>
-												<span className="admin-badge red">
-													<i className="adminfont-pro-tag"></i>{' '}
-													{__('Pro', 'multivendorx')}
-												</span>
+												<BadgeComponent
+													color="red"
+													text={__('Pro', 'multivendorx')}
+												/>
 												<a
 													href="https://catalogx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx"
 													target="_blank"
@@ -400,9 +402,10 @@ const DashboardTab: React.FC<object> = () => {
 							<ListComponent
 								className="mini-card"
 								background
+								border
 								items={[
 									{
-										title: __('CatalogX', 'multivendorx'),
+										title: 'CatalogX',
 										desc: __(
 											'Turn your store into a product catalog with enquiry-based sales',
 											'multivendorx'
@@ -410,9 +413,10 @@ const DashboardTab: React.FC<object> = () => {
 										img: catalogx,
 										tags: (
 											<>
-												<span className="admin-badge green">
-													{__('Free', 'multivendorx')}
-												</span>
+												<BadgeComponent
+													color="green"
+													text={__('Free', 'multivendorx')}
+												/>
 												<a
 													href="#"
 													onClick={(e) => {
@@ -457,6 +461,7 @@ const DashboardTab: React.FC<object> = () => {
 							<ListComponent
 								className="mini-card"
 								background
+								border
 								items={[
 									{
 										title: __(
@@ -470,10 +475,10 @@ const DashboardTab: React.FC<object> = () => {
 										img: notifima,
 										tags: (
 											<>
-												<span className="admin-badge red">
-													<i className="adminfont-pro-tag"></i>{' '}
-													{__('Pro', 'multivendorx')}
-												</span>
+												<BadgeComponent
+													color="red"
+													text={__('Pro', 'multivendorx')}
+												/>
 												<a
 													href="https://notifima.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx"
 													target="_blank"
@@ -493,9 +498,10 @@ const DashboardTab: React.FC<object> = () => {
 							<ListComponent
 								className="mini-card"
 								background
+								border
 								items={[
 									{
-										title: __('Notifima', 'multivendorx'),
+										title: 'Notifima',
 										desc: __(
 											'Advanced stock alerts and wishlist features for WooCommerce',
 											'multivendorx'
@@ -503,9 +509,10 @@ const DashboardTab: React.FC<object> = () => {
 										img: notifima,
 										tags: (
 											<>
-												<span className="admin-badge green">
-													{__('Free', 'multivendorx')}
-												</span>
+												<BadgeComponent
+													color="green"
+													text={__('Free', 'multivendorx')}
+												/>
 												<a
 													href="#"
 													onClick={(e) => {

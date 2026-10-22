@@ -1,12 +1,13 @@
 /* global appLocalizer */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import {
 	FormGroupWrapperComponent,
 	FormGroupComponent,
 	PopupComponent,
+	BadgeComponent,
 } from '@zyra/components';
 import {
 	TextInput,
@@ -162,6 +163,32 @@ const Queries: React.FC = () => {
 			descriptionKey: 'info_descriptions',
 			badgesKey: 'info_badges',
 		},
+		question_text: {
+			label: __('Question', 'multivendorx'),
+			render: (row: any) => (
+				<div className="question-wrapper">
+					<div className="question">
+						{__('Q:', 'multivendorx')} {row.question_text}{' '}
+						<BadgeComponent
+							color="blue"
+							text={sprintf(
+								/* translators: %d: number of votes. */
+								_n('%d vote', '%d votes', Number(row.total_votes) || 0, 'multivendorx'),
+								Number(row.total_votes) || 0
+							)}
+						/>
+					</div>
+					{row.answer_text && (
+						<div className="answer">
+							{__('A:', 'multivendorx')} {row.answer_text}
+						</div>
+					)}
+					<div className="desc">
+						{__('Asked by', 'multivendorx')} {row.author_name || '—'}
+					</div>
+				</div>
+			),
+		},
 		action: {
 			type: 'action',
 			label: __('Action', 'multivendorx'),
@@ -193,35 +220,11 @@ const Queries: React.FC = () => {
 				icon: 'storefront',
 				value: row.store_name || '—',
 			},
-			{
-				label: __('Question', 'multivendorx'),
-				icon: 'question',
-				value: row.question_text || '—',
-			},
-			...(row.answer_text
-				? [
-						{
-							label: __('Answer', 'multivendorx'),
-							icon: 'answer',
-							value: row.answer_text,
-						},
-					]
-				: []),
-			{
-				label: __('Asked By', 'multivendorx'),
-				icon: 'person',
-				value: row.author_name || '—',
-			},
-			{
-				label: __('Votes', 'multivendorx'),
-				icon: 'store-review',
-				value: row.total_votes ?? 0,
-			},
 		],
 		info_badges: [
 			{
 				text: formatStatusLabel(row.question_visibility),
-				color: `badge-${row.status}`,
+				color: `badge-${String(row.question_visibility || '').toLowerCase()}`,
 			},
 			{ text: formatDate(row.question_date), color: 'blue' },
 		],

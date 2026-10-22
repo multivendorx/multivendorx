@@ -239,7 +239,7 @@ class Dokan {
         }
 
         $balance_table         = $wpdb->prefix . 'dokan_vendor_balance';
-        $dokan_vendor_balances = $wpdb->get_results( "SELECT * FROM {$balance_table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $dokan_vendor_balances = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i', $balance_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         foreach ( $dokan_vendor_balances as $row ) {
             $order_id = $row->trn_id;
             $order    = wc_get_order( $order_id );
@@ -292,11 +292,11 @@ class Dokan {
      */
     public function deactive_previous_multivendor() {
 		require_once ABSPATH . '/wp-admin/includes/plugin.php';
-		// dokan free deactive
+		// dokan free deactive.
 		if ( is_plugin_active( 'dokan-lite/dokan.php' ) ) {
 	    	deactivate_plugins( 'dokan-lite/dokan.php' );
 	    }
-	    // dokan pro deactive
+	    // dokan pro deactive.
 	    if ( is_plugin_active( 'dokan-pro/dokan-pro.php' ) ) {
 	    	deactivate_plugins( 'dokan-pro/dokan-pro.php' );
 	    }

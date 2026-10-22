@@ -17,7 +17,7 @@ import {
 import { TableCard } from '@zyra/table';
 
 import ShowProPopup from '../Popup/Popup';
-import { formatDate, formatStatusLabel } from '../../services/commonFunction';
+import { formatDate } from '../../services/commonFunction';
 
 export interface WholesaleUserRow {
 	id?: number;
@@ -104,7 +104,7 @@ const WholesaleUser = () => {
 			],
 			info_badges: [
 				{
-					text: formatStatusLabel(row.status),
+					text: row.status,
 					color: `badge-${row.status?.toLowerCase()}`,
 				},
 				{ text: formatDate(row.date), color: 'blue' },

@@ -96,8 +96,8 @@ const StoreReview: React.FC = () => {
 	};
 
 	const headers = {
-		customer_name: {
-			label: __('Customer', 'multivendorx'),
+		review_title: {
+			label: __('Review', 'multivendorx'),
 			type: 'info',
 			iconKey: 'info_icon',
 			descriptionKey: 'info_descriptions',
@@ -121,43 +121,17 @@ const StoreReview: React.FC = () => {
 		return {
 			...row,
 			info_icon: 'person',
-			info_descriptions: [
-				{
-					label: __('Rating', 'multivendorx'),
-					value: (
-						<span className="review">
-							{[...Array(rating)].map((_, i) => (
-								<i
-									key={`filled-${i}`}
-									className="star-icon adminfont-star"
-								/>
-							))}
-							{[...Array(5 - rating)].map((_, i) => (
-								<i
-									key={`empty-${i}`}
-									className="star-icon adminfont-star-o"
-								/>
-							))}
-						</span>
-					),
-				},
-				{
-					label: __('Review', 'multivendorx'),
-					icon: 'store-review',
-					value: row.review_title || '—',
-				},
-				{
-					label: __('Details', 'multivendorx'),
-					icon: 'text',
-					value: row.review_content || '—',
-				},
-			],
+			info_descriptions: row.review_content || '—',
 			info_badges: [
 				{
 					text: formatStatusLabel(row.status),
 					color: `badge-${row.status}`,
 				},
 				{ text: formatDate(row.date_created), color: 'blue' },
+				{
+					text: `${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}`,
+					color: 'purple',
+				},
 			],
 		};
 	});
