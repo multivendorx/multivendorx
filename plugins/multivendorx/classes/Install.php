@@ -268,6 +268,7 @@ class Install {
 
             if ( $has_email_recipient || $has_sms_recipient ) {
                 update_option( 'multivendorx_vulomail_migration_status', 'pending' );
+                update_option( 'multivendorx_vulomail_migration_reason', 'migrate' );
             }
         }
     }
@@ -284,6 +285,13 @@ class Install {
             $this->plugin_create_pages();
             $this->set_default_modules();
             $this->set_default_settings();
+
+            // A brand new site has no prior email/SMS settings to migrate, but VuloMail is
+            // still installed as the delivery plugin going forward -- Integrations\VuloMailMigration
+            // picks this up on the next wp-admin visit and shows an install-only notice, not the
+            // "your settings were migrated" one used for sites upgrading from before 5.0.21.
+            update_option( 'multivendorx_vulomail_migration_status', 'pending' );
+            update_option( 'multivendorx_vulomail_migration_reason', 'install' );
         } else {
             $this->do_migration();
         }

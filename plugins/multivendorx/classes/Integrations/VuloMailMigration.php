@@ -12,12 +12,16 @@ use MultiVendorX\Utill;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Installs and migrates admin email/SMS settings into the companion
- * VuloMail plugin, once Install.php flags a site as eligible.
+ * Installs the companion VuloMail plugin once Install.php flags a site as
+ * eligible, and -- on a site upgrading from before 5.0.21 with prior admin
+ * email/SMS settings configured -- migrates those settings into it. A brand
+ * new install has nothing to migrate, so it only gets the plugin installed;
+ * REASON_OPTION ('install' vs 'migrate') is what render_admin_notice() uses
+ * to show the right wording for each case.
  *
- * After that, Notifications::trigger_notifications() routes email/SMS
- * through VuloMail instead of wp_mail()/the built-in SMS gateways,
- * falling back to the original path if VuloMail isn't ready.
+ * After that, Notifications::trigger_notifications() routes SMS through
+ * VuloMail instead of the built-in SMS gateways, falling back to the
+ * original path if VuloMail isn't ready for it yet.
  *
  * @class       Module class
  * @version     5.0.21
@@ -45,6 +49,15 @@ class VuloMailMigration {
 	 * @var string
 	 */
 	const NOTICE_SHOWN_OPTION = 'multivendorx_vulomail_migration_notice_shown';
+
+	/**
+	 * Option storing why this run is happening: 'install' (a brand new site, nothing to
+	 * migrate) or 'migrate' (an existing site upgrading from before 5.0.21 with prior
+	 * email/SMS settings configured). Controls which success notice text is shown.
+	 *
+	 * @var string
+	 */
+	const REASON_OPTION = 'multivendorx_vulomail_migration_reason';
 
 	/**
 	 * VuloMail's wordpress.org plugin slug.
@@ -380,9 +393,13 @@ class VuloMailMigration {
 		$status = get_option( self::STATUS_OPTION );
 
 		if ( 'done' === $status && ! get_option( self::NOTICE_SHOWN_OPTION ) ) {
+			$message = 'install' === get_option( self::REASON_OPTION )
+				? __( 'MultiVendorX has installed VuloMail, the companion plugin used to deliver marketplace email and SMS notifications. Set up an SMS gateway and/or email connection inside VuloMail to start sending.', 'multivendorx' )
+				: __( 'MultiVendorX has installed VuloMail and migrated your admin notification settings to it. SMS notifications now deliver through VuloMail; email notifications will too once you add an email connection inside VuloMail (MultiVendorX never had its own SMTP credentials to migrate).', 'multivendorx' );
+
 			printf(
 				'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-				esc_html__( 'MultiVendorX has installed VuloMail and migrated your admin notification settings to it. SMS notifications now deliver through VuloMail; email notifications will too once you add an email connection inside VuloMail (MultiVendorX never had its own SMTP credentials to migrate).', 'multivendorx' )
+				esc_html( $message )
 			);
 			update_option( self::NOTICE_SHOWN_OPTION, 1 );
 			return;
