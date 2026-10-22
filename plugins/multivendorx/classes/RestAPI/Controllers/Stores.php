@@ -322,10 +322,9 @@ class Stores extends \WP_REST_Controller {
         }
 
         try {
-            $registrations = (bool) $request->get_header( 'registrations' );
-            $store_data    = (array) $request->get_param( 'formData' );
-            $file_data     = $request->get_file_params();
-            $current_user  = MultiVendorX()->current_user;
+            $store_data   = (array) $request->get_param( 'formData' );
+            $file_data    = $request->get_file_params();
+            $current_user = MultiVendorX()->current_user;
 
             if ( ! empty( $store_data['Name'] ) && empty( $store_data['name'] ) ) {
                 $store_data['name'] = $store_data['Name'];
@@ -333,6 +332,14 @@ class Stores extends \WP_REST_Controller {
 
             if ( ! empty( $store_data['Description'] ) && empty( $store_data['description'] ) ) {
                 $store_data['description'] = $store_data['Description'];
+            }
+
+            if ( isset( $store_data['name'] ) ) {
+                $store_data['name'] = sanitize_text_field( (string) $store_data['name'] );
+            }
+
+            if ( isset( $store_data['description'] ) ) {
+                $store_data['description'] = wp_kses_post( (string) $store_data['description'] );
             }
 
             unset( $store_data['Name'], $store_data['Description'] );
@@ -345,6 +352,14 @@ class Stores extends \WP_REST_Controller {
             );
 
             $is_admin = Utill::current_user_has_capability( array( 'manage_options' ) );
+
+            // Registration status is decided here, server-side, from facts the
+            // client can't forge — never trust a client-supplied header for this.
+            // A logged-in user can self-register exactly one store (no id yet,
+            // not already a store owner); anything else needs manage_options.
+            $registrations = empty( $store_data['id'] )
+                && ! $is_admin
+                && ! in_array( 'store_owner', (array) $current_user->roles, true );
 
             // `create_stores` is granted to every logged-in user, so block a
             // direct, ownerless store create outside registration/self-edit.
