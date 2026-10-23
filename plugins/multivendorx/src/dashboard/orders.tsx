@@ -479,6 +479,20 @@ const Orders: React.FC = () => {
 			.replace(/\b\w/g, (char) => char.toUpperCase()),
 	}));
 
+	// The table folds order details into one info column, so the CSV export
+	// lists its columns explicitly (and flattens nested API fields) instead
+	// of reusing `headers`. Customer fields respect the privacy setting.
+	const csvHeaders = {
+		id: { label: __('Order ID', 'multivendorx') },
+		...(showCustomer && {
+			customer_name: { label: __('Customer', 'multivendorx') },
+			customer_email: { label: __('Email', 'multivendorx') },
+		}),
+		status: { label: __('Status', 'multivendorx') },
+		date_created: { label: __('Date', 'multivendorx') },
+		total: { label: __('Total', 'multivendorx') },
+	};
+
 	const downloadCSVByQuery = (query: QueryProps) => {
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
@@ -488,10 +502,17 @@ const Orders: React.FC = () => {
 				params: buildOrderQueryParams(query, false),
 			})
 			.then((response) => {
-				const rows = response.data || [];
+				const rows = (response.data || []).map((order: any) => ({
+					...order,
+					customer_name: order.billing?.first_name
+						? `${order.billing.first_name} ${order.billing.last_name || ''}`.trim()
+						: __('Guest', 'multivendorx'),
+					customer_email: order.billing?.email || '',
+					status: formatStatusLabel(order.status),
+				}));
 
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`order-${formatLocalDate(new Date())}.csv`
 				);

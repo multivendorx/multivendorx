@@ -4,7 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
-import { formatDate } from '@/services/commonFunction';
+import { formatDate, truncateText } from '@/services/commonFunction';
 
 interface LatestReviewProps {
 	store_id?: number;
@@ -65,7 +65,7 @@ const LatestReview: React.FC<LatestReviewProps> = ({ store_id }) => {
 			{
 				label: __('Content', 'multivendorx'),
 				icon: 'text',
-				value: row.review_content || '—',
+				value: truncateText(row.review_content, 20) || '—',
 			},
 		],
 		info_badges: [{ text: formatDate(row.date_created), color: 'blue' }],

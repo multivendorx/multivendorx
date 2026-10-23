@@ -389,6 +389,7 @@ const AllProduct: React.FC = () => {
 			label: __('Product Name', 'multivendorx'),
 			type: 'info',
 			iconKey: 'info_icon',
+			imageKey: 'info_image',
 			descriptionKey: 'info_descriptions',
 			badgesKey: 'info_badges',
 			width: '50%',
@@ -444,6 +445,7 @@ const AllProduct: React.FC = () => {
 		return {
 			...row,
 			info_icon: 'single-product',
+			info_image: row.images?.[0]?.src || '',
 			info_descriptions: [
 				...(badge ? [{ value: badge }] : []),
 				{

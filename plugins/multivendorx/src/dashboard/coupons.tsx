@@ -29,6 +29,7 @@ import {
 	formatDate,
 	formatStatusLabel,
 	toWcIsoDate,
+	truncateText,
 } from '@/services/commonFunction';
 
 const COUPON_STATUS_MAP: Record<string, string> = {
@@ -708,7 +709,7 @@ const AllCoupon: React.FC = () => {
 						{
 							label: __('Description', 'multivendorx'),
 							icon: 'text',
-							value: row.description,
+							value: truncateText(row.description, 20),
 						},
 					]
 				: []),

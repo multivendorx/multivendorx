@@ -11,6 +11,7 @@ import {
 	formatDate,
 	formatLocalDate,
 	formatStatusLabel,
+	truncateText,
 } from '../../../src/services/commonFunction';
 
 type Review = {
@@ -205,7 +206,7 @@ const StoreReviews: React.FC = () => {
 				{
 					label: __('Details', 'multivendorx'),
 					icon: 'text',
-					value: row.review_content || '—',
+					value: truncateText(row.review_content, 20) || '—',
 				},
 			],
 			info_badges: [

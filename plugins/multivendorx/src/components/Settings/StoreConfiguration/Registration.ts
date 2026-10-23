@@ -186,11 +186,10 @@ export default {
 		},
 		{
 			key: 'store_registration_from',
-			type: 'block-builder',
+			type: 'builderform',
             context: 'form',
 			classes: 'full-width',
 			blockGroups: REGISTRATION_BLOCK_GROUPS,
-			visibleGroups: ['registration', 'store'],
 			desc: 'Customise personalised store registration form for marketplace.',
 		},
 	],
