@@ -104,7 +104,10 @@ class Enrollment {
 
 		$query_parts = apply_filters(
 			'moowoodle_enrollment_query',
-			array( 'where' => $where, 'args' => $where_args ),
+			array(
+				'where' => $where,
+				'args'  => $where_args,
+            ),
 			$enrollment_args
 		);
 		$where       = $query_parts['where'];
