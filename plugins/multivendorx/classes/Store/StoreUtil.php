@@ -34,14 +34,27 @@ class StoreUtil {
 		$owners   = $args['users'] ?? array();
 
 		// Remove old users not in list.
-		$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-            $wpdb->prepare(
-                'DELETE FROM %i WHERE store_id = %d AND role_id = %s AND user_id NOT IN (' . esc_sql( implode( ',', $kept_user_ids ) ) . ')',
-                $table,
-                $store_id,
-                $role_id
-            )
-		);
+		$kept_user_ids = array_values( array_filter( array_map( 'absint', (array) $owners ) ) );
+
+		if ( empty( $kept_user_ids ) ) {
+			$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+				$wpdb->prepare(
+					'DELETE FROM %i WHERE store_id = %d AND role_id = %s',
+					$table,
+					$store_id,
+					$role_id
+				)
+			);
+		} else {
+			$placeholders = implode( ',', array_fill( 0, count( $kept_user_ids ), '%d' ) );
+
+			$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+				$wpdb->prepare(
+					"DELETE FROM %i WHERE store_id = %d AND role_id = %s AND user_id NOT IN ($placeholders)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+					array_merge( array( $table, $store_id, $role_id ), $kept_user_ids )
+				)
+			);
+		}
 
 		// Insert new users.
 		foreach ( $owners as $user_id ) {
