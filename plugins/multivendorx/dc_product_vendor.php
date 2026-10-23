@@ -4,7 +4,7 @@
  * Plugin URI: https://multivendorx.com/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx
  * Description: An AI-powered WooCommerce multivendor marketplace solution to build, manage, and scale your platform.
  * Author: MultiVendorX
- * Version: 5.0.20
+ * Version: 5.0.21
  * Author URI: https://multivendorx.com/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx
  * Requires at least: 6.4.0
  * WC requires at least: 8.2.0
