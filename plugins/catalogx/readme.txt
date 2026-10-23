@@ -227,7 +227,7 @@ Answer: Simply enable the 'Product Enquiry Button When Product is Out Of Stock' 
 
 == Changelog ==
 
-= 6.1.7 - 2026-10-20 =
+= 6.1.7 - 2026-10-22 =
 * Added     - Compatibility of WordPress 7.1.3.
 * Added     - Compatibility with WooCommerce 11.2.1.
 * Fixed     - Issue causing product details not to display on the My Quote page.
