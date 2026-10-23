@@ -37,14 +37,17 @@ class FrontEnd {
      * @return void
      */
     public function enqueue_frontend_scripts() {
-        if ( is_product() || has_shortcode( get_post()->post_content, 'notifima_subscription_form' ) ) {
+        $post = get_post();
+
+        if ( is_product() || has_shortcode( $post->post_content ?? '', 'notifima_subscription_form' ) ) {
             FrontendScripts::load_scripts();
             FrontendScripts::admin_load_scripts();
             FrontendScripts::enqueue_script( 'notifima-components-script' );
-			FrontendScripts::enqueue_style( 'notifima-components-style' );
-			FrontendScripts::enqueue_script( 'notifima-subscribe-form' );
+            FrontendScripts::enqueue_style( 'notifima-components-style' );
+            FrontendScripts::enqueue_script( 'notifima-subscribe-form' );
             FrontendScripts::localize_scripts( 'notifima-subscribe-form' );
         }
+
         FrontendScripts::enqueue_style( 'notifima-frontend-style' );
     }
 
@@ -79,19 +82,19 @@ class FrontEnd {
             return;
         }
 
-        echo $this->get_subscription_form( $product_obj );
+        echo wp_kses_post( $this->get_subscription_form( $product_obj ) );
     }
 
     /**
      * Display Request Stock Form for grouped product.
      *
-     * @param string $value default html.
+     * @param string $column_price_html Existing grouped product column price HTML.
      * @param object $child individual child of grouped product.
      */
-    public function append_grouped_product_subscription_form( $value, $child ) {
-        $value = $value . $this->get_subscription_form( $child );
+    public function append_grouped_product_subscription_form( $column_price_html, $child ) {
+        $column_price_html = $column_price_html . $this->get_subscription_form( $child );
 
-        return $value;
+        return $column_price_html;
     }
 
     /**

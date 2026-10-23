@@ -36,6 +36,7 @@ import {
 	dashNavigate,
 	formatCurrency,
 	formatDate,
+	formatStatusLabel,
 	formatTimeAgo,
 	truncateText,
 } from '@/services/commonFunction';
@@ -95,103 +96,100 @@ const Dashboard: React.FC = () => {
 
 	// Table headers
 	const recentOrderHeaders = {
-		id: {
+		order_title: {
 			label: __('Order ID', 'multivendorx'),
-			render: (row) => (
-				<span
-					onClick={() =>
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
+		},
+		action: {
+			type: 'action',
+			label: __('Action', 'multivendorx'),
+			actions: [
+				{
+					label: __('View', 'multivendorx'),
+					icon: 'eye',
+					onClick: (row) =>
 						dashNavigate(navigate, [
 							'orders',
 							'view',
 							String(row.id),
-						])
-					}
-					className="link-item"
-				>
-					#{row.id}
-				</span>
-			),
-		},
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
-		},
-		products: {
-			label: __('Product Name', 'multivendorx'),
-			width: 14,
-			render: (row) =>
-				row.line_items?.length
-					? row.line_items.map((item) => (
-							<InformationItemComponent
-								key={item.id}
-								title={item.name}
-								onClick={() =>
-									dashNavigate(navigate, [
-										'products',
-										'edit',
-										String(item.product_id),
-									])
-								}
-								avatar={{
-									image: item.image?.src || '',
-									iconClass: item.image?.src
-										? ''
-										: 'single-product',
-								}}
-								descriptions={[
-									{
-										label: __('Qty:', 'multivendorx'),
-										value: item.quantity,
-									},
-								]}
-							/>
-						))
-					: '-',
-		},
-		total: {
-			label: __('Total', 'multivendorx'),
-			type: 'currency',
-		},
-		status: {
-			label: __('Order Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
+						]),
+				},
+			],
 		},
 	};
+
+	const recentOrderInfoRows = recentOrderRows.map((row: any) => ({
+		...row,
+		order_title: `#${row.id}`,
+		info_icon: 'order',
+		info_descriptions: [
+			{
+				label: __('Product Name', 'multivendorx'),
+				icon: 'single-product',
+				value: row.line_items?.length
+					? row.line_items
+							.map((item) => `${item.name} × ${item.quantity}`)
+							.join(', ')
+					: '—',
+			},
+			{
+				label: __('Total', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.total),
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.date_created), color: 'blue' },
+		],
+	}));
 	const topProductHeaders = {
 		name: {
 			label: __('Product Name', 'multivendorx'),
-			width: 18,
-			render: (row) => {
-				return (
-					<InformationItemComponent
-						title={row.name}
-						onClick={() =>
-							dashNavigate(navigate, [
-								'products',
-								'edit',
-								String(row.id),
-							])
-						}
-						avatar={{
-							image: row.images?.[0]?.src || '',
-							iconClass: row.images?.[0]?.src
-								? ''
-								: 'single-product',
-						}}
-						descriptions={[
-							{
-								label: __('SKU', 'multivendorx'),
-								value: row.sku || '—',
-							},
-						]}
-					/>
-				);
-			},
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
 		},
-		total_sales: {
-			label: __('Sales', 'multivendorx'),
+		action: {
+			type: 'action',
+			label: __('Action', 'multivendorx'),
+			actions: [
+				{
+					label: __('Edit', 'multivendorx'),
+					icon: 'edit',
+					onClick: (row) =>
+						dashNavigate(navigate, [
+							'products',
+							'edit',
+							String(row.id),
+						]),
+				},
+			],
 		},
 	};
+
+	const topProductInfoRows = topProductRows.map((row: any) => ({
+		...row,
+		info_icon: 'single-product',
+		info_descriptions: [
+			{
+				label: __('SKU', 'multivendorx'),
+				icon: 'single-product',
+				value: row.sku || '—',
+			},
+			{
+				label: __('Sales', 'multivendorx'),
+				icon: 'cart',
+				value: row.total_sales ?? 0,
+			},
+		],
+	}));
 	// Helper function to get dynamic greeting
 	const getGreeting = () => {
 		const hour = new Date().getHours();
@@ -605,7 +603,11 @@ const Dashboard: React.FC = () => {
 				</ColumnComponent>
 
 				<ColumnComponent fullHeight grid={8}>
-					<CardComponent title={__('Sales Overview', 'multivendorx')}>
+					<CardComponent
+						title={__('Sales Overview', 'multivendorx')}
+						titleIcon="dollar"
+						desc="Track your earnings, orders, and sales over time."
+					>
 						{revenueData && revenueData.length > 0 ? (
 							<ResponsiveContainer height={250}>
 								<BarChart
@@ -666,7 +668,11 @@ const Dashboard: React.FC = () => {
 				</ColumnComponent>
 
 				<ColumnComponent fullHeight grid={4}>
-					<CardComponent title={__('Last Withdrawal', 'multivendorx')}>
+					<CardComponent
+						title={__('Last Withdrawal', 'multivendorx')}
+						titleIcon="wallet"
+						desc="View your most recent payout and transaction details."
+					>
 						<div className="top-customer-wrapper">
 							{lastWithdraws && lastWithdraws.length > 0 ? (
 								lastWithdraws.map((item) => (
@@ -725,7 +731,11 @@ const Dashboard: React.FC = () => {
 				</ColumnComponent>
 
 				<ColumnComponent fullHeight grid={4}>
-					<CardComponent title={__('Visitors Map', 'multivendorx')}>
+					<CardComponent
+						title={__('Visitors Map', 'multivendorx')}
+						titleIcon="global-community"
+						desc="See where your store visitors are located."
+					>
 						<VisitorsMap dateRange={dateRange} />
 					</CardComponent>
 				</ColumnComponent>
@@ -733,6 +743,8 @@ const Dashboard: React.FC = () => {
 				<ColumnComponent fullHeight grid={8}>
 					<CardComponent
 						title={__('Recent Orders', 'multivendorx')}
+						titleIcon="order"
+						desc="Monitor your latest orders and their current status."
 						iconName="external icon"
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
@@ -744,10 +756,10 @@ const Dashboard: React.FC = () => {
 						{recentOrderRows.length > 0 ? (
 							<TableCard
 								headers={recentOrderHeaders}
-								rows={recentOrderRows}
+								variant="transparent"
+								rows={recentOrderInfoRows}
 								isLoading={isLoading}
 								ids={recentOrderIds}
-								className="transparent-table"
 								showMenu={false}
 								showColumnToggleIcon={false}
 								format={appLocalizer.date_format}
@@ -778,6 +790,8 @@ const Dashboard: React.FC = () => {
 				<ColumnComponent fullHeight grid={6}>
 					<CardComponent
 						title={__('Best-Selling Products', 'multivendorx')}
+						titleIcon="single-product"
+						desc="Track your top products by sales volume."
 						iconName="external icon"
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
@@ -789,10 +803,10 @@ const Dashboard: React.FC = () => {
 						{topProductRows.length > 0 ? (
 							<TableCard
 								headers={topProductHeaders}
-								rows={topProductRows}
+								variant="transparent"
+								rows={topProductInfoRows}
 								isLoading={isLoading}
 								ids={topProductIds}
-								className="transparent-table"
 								showMenu={false}
 								showColumnToggleIcon={false}
 							/>
@@ -811,6 +825,8 @@ const Dashboard: React.FC = () => {
 				<ColumnComponent fullHeight grid={6}>
 					<CardComponent
 						title={__('Commission Overview', 'multivendorx')}
+						titleIcon="commission"
+						desc="Compare earned commissions, refunds, and total revenue.."
 						iconName="external icon"
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
@@ -867,6 +883,8 @@ const Dashboard: React.FC = () => {
 					<ColumnComponent fullHeight grid={4}>
 						<CardComponent
 							title={__('Admin Announcements', 'multivendorx')}
+							titleIcon="announcement"
+							desc="Stay updated with the latest marketplace announcements."
 							iconName="external icon"
 							onIconClick={() => {
 								const url = appLocalizer.permalink_structure
@@ -878,13 +896,17 @@ const Dashboard: React.FC = () => {
 							{Array.isArray(announcement) &&
 							announcement.length > 0 ? (
 								<ListComponent
-									className="notification-wrapper"
+									className="notification"
 									items={announcement.map((item, index) => ({
 										id: item.id || index,
 										title: item.title,
-										desc: item.content,
-										icon: `form-paypal-email admin-badge admin-color${index + 2}`,
-										value: formatTimeAgo(item.date_created),
+										desc: truncateText(item.content, 20),
+										icon: `announcement admin-badge admin-color${index + 2}`,
+										tags: (
+											<span className="admin-badge blue">
+												{formatTimeAgo(item.date_created)}
+											</span>
+										),
 									}))}
 								/>
 							) : (
@@ -902,6 +924,8 @@ const Dashboard: React.FC = () => {
 					<ColumnComponent fullHeight grid={4}>
 						<CardComponent
 							title={__('Pending Refunds', 'multivendorx')}
+							titleIcon="marketplace-refund"
+							desc="Review refund requests that need your attention."
 							iconName="external icon"
 							onIconClick={() => {
 								const url = appLocalizer.permalink_structure
@@ -910,37 +934,37 @@ const Dashboard: React.FC = () => {
 								window.open(url);
 							}}
 						>
-							<div className="top-customer-wrapper">
-								{pendingRefund && pendingRefund.length > 0 ? (
-									pendingRefund.map((customer) => (
-										<div
-											key={customer.id}
-											className="customer"
-										>
-											<div className="left-section">
-												<div className="details">
-													<div className="name">
-														{customer.name}
-													</div>
-													<div className="order-number">
-														{customer.reason} |{' '}
-														{formatDate(
-															customer.time
-														)}
-													</div>
-												</div>
-											</div>
-										</div>
-									))
-								) : (
-									<ModuleGuardComponent
-										title={__(
-											'Refund requests will appear here when submitted.',
-											'multivendorx'
-										)}
+							{pendingRefund && pendingRefund.length > 0 ? (
+								pendingRefund.map((customer) => (
+									<InformationItemComponent
+										key={customer.id}
+										title={customer.name}
+										avatar={{
+											text: String(customer.name ?? '')
+												.charAt(0)
+												.toUpperCase(),
+											iconClass: 'person',
+										}}
+										descriptions={[
+											{
+												label: __('Reason', 'multivendorx'),
+												value: customer.reason,
+											},
+											{
+												label: __('Date', 'multivendorx'),
+												value: formatDate(customer.time),
+											},
+										]}
 									/>
-								)}
-							</div>
+								))
+							) : (
+								<ModuleGuardComponent
+									title={__(
+										'Refund requests will appear here when submitted.',
+										'multivendorx'
+									)}
+								/>
+							)}
 						</CardComponent>
 					</ColumnComponent>
 				)}
@@ -948,7 +972,11 @@ const Dashboard: React.FC = () => {
 					Array.isArray(access) &&
 					access.includes('name') && (
 						<ColumnComponent fullHeight grid={4}>
-							<CardComponent title={__('Top Customers', 'multivendorx')}>
+							<CardComponent
+								title={__('Top Customers', 'multivendorx')}
+								titleIcon="person"
+								desc="Discover your highest-value customers by purchase activity."
+							>
 								{customers && customers.length > 0 ? (
 									customers.map((order, index) => {
 										const name =
@@ -985,7 +1013,11 @@ const Dashboard: React.FC = () => {
 						</ColumnComponent>
 					)}
 				<ColumnComponent fullHeight grid={4}>
-					<CardComponent title={__('Store Activity', 'multivendorx')}>
+					<CardComponent
+						title={__('Store Activity', 'multivendorx')}
+						titleIcon="notification"
+						desc="Keep track of important events and updates from your store."
+					>
 						<div className="activity-log">
 							{Array.isArray(activities) &&
 							activities.length > 0 ? (
@@ -1011,6 +1043,8 @@ const Dashboard: React.FC = () => {
 					<ColumnComponent fullHeight grid={4}>
 						<CardComponent
 							title={__('Latest Reviews', 'multivendorx')}
+							titleIcon="store-review"
+							desc="Read recent customer feedback on your products."
 							iconName="external icon"
 							onIconClick={() => {
 								const url = appLocalizer.permalink_structure

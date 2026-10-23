@@ -187,6 +187,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                 'multivendorx_product_attributes_title',
                 __('Attributes', 'multivendorx')
             )}
+            titleIcon="multi-select"
             desc={__(
                 'Define product attributes such as size, color, or material. These attributes can be used to create product variations and help customers choose the right option.',
                 'multivendorx'

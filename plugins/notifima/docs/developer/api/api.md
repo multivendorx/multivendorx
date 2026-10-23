@@ -38,7 +38,7 @@ public function register_rest_api_routes() {
         array(
             'methods'             => \WP_REST_Server::READABLE,
             'callback'            => array( $this, 'get_stock_notification_form' ),
-            'permission_callback' => array( $this, 'notifima_permission' ),
+            'permission_callback' => array( $this, 'notifima_permissions_check' ),
         )
     );
 }
@@ -60,13 +60,13 @@ class Settings extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'notifima_update_item_permissions_check' ),
                 ),
             )
         );
     }
 
-    public function update_item_permissions_check( $request ) {
+    public function notifima_update_item_permissions_check( $request ) {
         return current_user_can( 'manage_options' );
     }
 
@@ -90,8 +90,8 @@ Every callback pairs a `permission_callback` with an explicit in-body `Utill::va
 
 **Every `permission_callback` in this plugin — and in notifima-pro's controllers — funnels through one generic helper**, `Utill::current_user_has_capability( $capabilities )` (`classes/Utill.php`) — pass one capability or an array of them, and it returns `true` if the current user has any of them, otherwise a `WP_Error` (401 if not logged in, 403 if logged in but lacking the capability). This replaced each controller independently calling `current_user_can()` and hand-rolling its own pass/fail return, so the "who is allowed" decision and its error shape live in exactly one place. notifima-pro's controllers already `use Notifima\Utill;` for `validate_nonce()` (and `Subscribers::create_item()` calls `\Notifima\Subscriber::remove_subscriber()` directly), so reusing `Notifima\Utill::current_user_has_capability()` there doesn't add any new coupling:
 
-- `Settings::update_item_permissions_check()` and `Rest::notifima_permission()` (used for `/stock-notification-form`), plus notifima-pro's `Rest::get_items_permissions_check()` (`/mailchimps`), `Products::notifima_permissions_check()`, and `Subscribers::create_item_permissions_check()` (the admin bulk unsubscribe/delete action) all call `Utill::current_user_has_capability( 'manage_options' )` — admin-only.
-- `Subscribers::get_items_permissions_check()` (`classes/RestAPI/Controllers/Subscribers.php`) calls `Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) )` — the latter capability is a multivendor-marketplace concept (see the parent repo's `.claude/rules/woocommerce.md` on `current_user_can( 'edit_stores' )` usage elsewhere in this workspace), present here for `multivendorx` interop even though this plugin has no PHP-level coupling to that plugin.
+- `Settings::notifima_update_item_permissions_check()` and `Rest::notifima_permissions_check()` (used for `/stock-notification-form`), plus notifima-pro's `Rest::get_items_permissions_check()` (`/mailchimps`), `Products::notifima_permissions_check()`, and `Subscribers::create_item_permissions_check()` (the admin bulk unsubscribe/delete action) all call `Utill::current_user_has_capability( 'manage_options' )` — admin-only.
+- `Subscribers::notifima_get_items_permissions_check()` (`classes/RestAPI/Controllers/Subscribers.php`) calls `Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) )` — the latter capability is a multivendor-marketplace concept (see the parent repo's `.claude/rules/woocommerce.md` on `current_user_can( 'edit_stores' )` usage elsewhere in this workspace), present here for `multivendorx` interop even though this plugin has no PHP-level coupling to that plugin.
 - `Subscribers::update_item_permissions_check()` (`classes/RestAPI/Controllers/Subscribers.php`) is the single permission check shared by both the `subscribe` and `unsubscribe` actions on this route. It uses `Utill::current_user_has_capability()` directly for its two plain capability checks (the `manage_options` admin shortcut, and the base `read` check for any logged-in user) but layers an extra resource-ownership check on top — something a generic capability check can't express — because a capability alone can't tell you whether *this* user owns *this* subscriber record: admins (`manage_options`) may act on any record; a logged-out guest may act only when `is_guest_subscriptions_enable` allows it; a logged-in user (any role, since WordPress grants `read` to every logged-in role including `subscriber`) may freely `subscribe` an email — mirroring the guest opt-in flow — but may only `unsubscribe` a record whose email matches their own account email. Earlier versions of this check used `current_user_can( 'read' )` alone for both actions, which let any logged-in user unsubscribe *any other customer's* subscription by passing their email in the request body (IDOR / missing authorization, CWE-862 / CWE-639) — this was a real gap, not intended broad access; the email-ownership check on `unsubscribe` is what closes it.
 
 ## Errors

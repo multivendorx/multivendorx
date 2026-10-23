@@ -73,7 +73,7 @@ const ShopPolicies = () => {
 
 			<ContainerComponent>
 				<ColumnComponent>
-					<CardComponent title={__('Shipping Policy', 'multivendorx')}>
+					<CardComponent title={__('Shipping Policy', 'multivendorx')} titleIcon="shipping" desc="Describe shipping methods, delivery timelines, and shipping costs.">
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
 								label={__('Title', 'multivendorx')}
@@ -88,7 +88,7 @@ const ShopPolicies = () => {
 						</FormGroupWrapperComponent>
 					</CardComponent>
 
-					<CardComponent title={__('Refund Policy', 'multivendorx')}>
+					<CardComponent title={__('Refund Policy', 'multivendorx')} titleIcon="store-policy" desc="Outline refund eligibility, conditions, and processing timelines.">
 						<FormGroupWrapperComponent>
 							<TextAreaInput
 								name="refund_policy"
@@ -103,6 +103,8 @@ const ShopPolicies = () => {
 							'Cancellation / Return / Exchange Policy',
 							'multivendorx'
 						)}
+						titleIcon="store-policy"
+						desc="Define the rules for order cancellations, product returns, and exchanges."
 					>
 						<FormGroupWrapperComponent>
 							<TextAreaInput

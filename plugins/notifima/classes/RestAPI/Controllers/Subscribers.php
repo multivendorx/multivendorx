@@ -39,7 +39,7 @@ class Subscribers extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'notifima_get_items_permissions_check' ),
                 ),
             )
         );
@@ -51,7 +51,7 @@ class Subscribers extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'notifima_update_item_permissions_check' ),
                     'args'                => array(
                         'id' => array( 'required' => true ),
                     ),
@@ -65,7 +65,7 @@ class Subscribers extends \WP_REST_Controller {
      *
      * @param \WP_REST_Request $request The REST request object.
      */
-    public function get_items_permissions_check( $request ) {
+    public function notifima_get_items_permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'manage_options' ), 'get_subscribers' );
     }
 
@@ -75,7 +75,7 @@ class Subscribers extends \WP_REST_Controller {
      * @param \WP_REST_Request $request The REST request object.
      * @return bool|\WP_Error
      */
-    public function update_item_permissions_check( $request ) {
+    public function notifima_update_item_permissions_check( $request ) {
         // Site admins/store managers can always manage any subscriber record.
         if ( true === Utill::current_user_has_capability( 'manage_options' ) ) {
             return true;
@@ -320,7 +320,7 @@ class Subscribers extends \WP_REST_Controller {
      * @return WP_REST_Response
      */
     public function unsubscribe_user( $request ) {
-        $customer_email = sanitize_email( $request->get_param( 'customer_email' ) );
+        $customer_email = sanitize_email( (string) $request->get_param( 'customer_email' ) );
         $product_id     = absint( $request->get_param( 'product_id' ) );
         $variation_id   = absint( $request->get_param( 'variation_id' ) );
 

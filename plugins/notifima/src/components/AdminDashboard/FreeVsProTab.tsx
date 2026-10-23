@@ -255,6 +255,7 @@ const FreeVsProTab: React.FC<object> = () => {
 			<ColumnComponent grid={8}>
 				<CardComponent
 					title={__('Free vs Pro comparison', 'notifima')}
+					titleIcon="pro-tag"
 					desc={__(
 						'See what you get with notifima Pro',
 						'notifima'

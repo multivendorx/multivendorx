@@ -36,12 +36,12 @@ class Synchronization extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'permissions_check' ),
+                    'permission_callback' => array( $this, 'moowoodle_permissions_check' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'create_item' ),
-                    'permission_callback' => array( $this, 'permissions_check' ),
+                    'permission_callback' => array( $this, 'moowoodle_permissions_check' ),
                 ),
             )
         );
@@ -52,7 +52,7 @@ class Synchronization extends \WP_REST_Controller {
      *
      * @param \WP_REST_Request $request The REST request object.
      */
-    public function permissions_check( $request ) {
+    public function moowoodle_permissions_check( $request ) {
         return Util::current_user_has_capability( array( 'manage_options' ) );
     }
 
@@ -74,7 +74,7 @@ class Synchronization extends \WP_REST_Controller {
 			if ( 'course' === $sync_type ) {
 				$response = array(
 					'status'  => Util::get_sync_status( 'course' ),
-					'running' => get_transient( 'course_sync_running' ),
+					'running' => get_transient( 'moowoodle_course_sync_running' ),
 				);
             } else {
                 $response = apply_filters( 'moowoodle_sync_status', $request );
@@ -125,7 +125,7 @@ class Synchronization extends \WP_REST_Controller {
         // Flush course sync status before sync start.
         Util::flush_sync_status( 'course' );
 
-        set_transient( 'course_sync_running', true );
+        set_transient( 'moowoodle_course_sync_running', true );
 
         $sync_settings = MooWoodle()->setting->get_setting( 'sync_course_options', array() );
         // update course and product categories.
@@ -178,7 +178,7 @@ class Synchronization extends \WP_REST_Controller {
          */
         do_action( 'moowoodle_after_sync_course' );
 
-        delete_transient( 'course_sync_running' );
+        delete_transient( 'moowoodle_course_sync_running' );
 
         return rest_ensure_response( true );
     }

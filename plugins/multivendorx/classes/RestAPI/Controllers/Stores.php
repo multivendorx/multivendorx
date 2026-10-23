@@ -49,7 +49,7 @@ class Stores extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'create_item' ),
-                    'permission_callback' => array( $this, 'create_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'multivendorx_create_item_permissions_check' ),
                 ),
             )
         );
@@ -61,7 +61,7 @@ class Stores extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'multivendorx_get_items_permissions_check' ),
                     'args'                => array(
                         'id' => array( 'required' => true ),
                     ),
@@ -69,7 +69,7 @@ class Stores extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'multivendorx_update_item_permissions_check' ),
                 ),
             )
         );
@@ -90,7 +90,7 @@ class Stores extends \WP_REST_Controller {
      *
      * @param object $request Request data.
      */
-    public function get_items_permissions_check( $request ) {
+    public function multivendorx_get_items_permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
     }
 
@@ -100,7 +100,7 @@ class Stores extends \WP_REST_Controller {
      * @param object $request Request data.
      * @return true|\WP_Error
      */
-    public function create_item_permissions_check( $request ) {
+    public function multivendorx_create_item_permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'create_stores' ) );
     }
 
@@ -110,7 +110,7 @@ class Stores extends \WP_REST_Controller {
      * @param object $request Request data.
      * @return true|\WP_Error
      */
-    public function update_item_permissions_check( $request ) {
+    public function multivendorx_update_item_permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'edit_stores' ) );
     }
 
@@ -826,6 +826,9 @@ class Stores extends \WP_REST_Controller {
                 return;
             }
 
+            $previous_status = $store->get( Utill::STORE_SETTINGS_KEYS['status'] );
+            $current_status  = $data['status'] ?? '';
+
             $data = apply_filters( 'multivendorx_before_store_update', $data, $store, $request );
 
             $is_admin = Utill::current_user_has_capability( array( 'manage_options' ) );
@@ -1145,7 +1148,7 @@ class Stores extends \WP_REST_Controller {
 
             $store->save();
 
-            if ( 'active' === $store->get( Utill::STORE_SETTINGS_KEYS['status'] ) ) {
+            if ( 'active' !== $previous_status && 'active' === $current_status ) {
                 do_action( 'multivendorx_after_store_active', $id );
                 MultiVendorX()->notifications->send_notification_helper(
                     'store_activated',
@@ -1159,7 +1162,7 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
-            if ( 'rejected' === ( $data['status'] ?? '' ) ) {
+            if ( 'rejected' !== $previous_status && 'rejected' === $current_status ) {
                 MultiVendorX()->notifications->send_notification_helper(
                     'store_rejected',
                     $store,
@@ -1172,7 +1175,7 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
-            if ( 'under_review' === ( $data['status'] ?? '' ) ) {
+            if ( 'under_review' !== $previous_status && 'under_review' === $current_status ) {
                 MultiVendorX()->notifications->send_notification_helper(
                     'store_under_review',
                     $store,
@@ -1185,7 +1188,7 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
-            if ( 'suspended' === ( $data['status'] ?? '' ) ) {
+            if ( 'suspended' !== $previous_status && 'suspended' === $current_status ) {
                 MultiVendorX()->notifications->send_notification_helper(
                     'store_suspended',
                     $store,
@@ -1198,7 +1201,7 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
-            if ( 'deactivated' === ( $data['status'] ?? '' ) ) {
+            if ( 'deactivated' !== $previous_status && 'deactivated' === $current_status ) {
                 // Only clear the active store for users of this store.
                 delete_metadata(
                     'user',

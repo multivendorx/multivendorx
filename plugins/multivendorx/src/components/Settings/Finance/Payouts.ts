@@ -9,8 +9,16 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'dollar',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'dollar',
+			title: __('Payout Schedule', 'multivendorx'),
+		},
 		{
 			key: 'store_rating_page',
 			type: 'notice',
@@ -455,6 +463,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'withdraw',
 			title: __('Withdrawal Rules & Limits', 'multivendorx'),
 		},
 		{

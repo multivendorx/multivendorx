@@ -20,6 +20,7 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 	return (
 		<CardComponent
 			title={__('Stock & inventory', 'multivendorx')}
+			titleIcon="out-of-stock"
 			desc={__(
 				"Track your available quantity and let customers know what's in stock.",
 				'multivendorx'
@@ -62,6 +63,23 @@ const Inventory = ({ product, setProduct, handleChange }) => {
 						onChange={(value) => handleChange('sku', value)}
 					/>
 				</FormGroupComponent>
+				<FormGroupComponent
+					cols={6}
+					label={__('GTIN, UPC, EAN, or ISBN', 'multivendorx')}
+					desc={__(
+						'Enter the product identifier (GTIN, UPC, EAN, or ISBN).',
+						'multivendorx'
+					)}
+				>
+					<TextInput
+						name="global_unique_id"
+						value={product.global_unique_id || ''}
+						onChange={(value) =>
+							handleChange('global_unique_id', value)
+						}
+					/>
+				</FormGroupComponent>
+
 				{!product.manage_stock && (
 					<FormGroupComponent
 						cols={6}

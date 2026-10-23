@@ -63,7 +63,7 @@ const Course: React.FC = () => {
 	const headers = {
 		course_name: {
 			label: __('Course', 'moowoodle'),
-			width:'50%',
+			width: '50%',
 			render: (row: CourseRow) => (
 				<InformationItemComponent
 					title={row.course_name}
@@ -136,6 +136,7 @@ const Course: React.FC = () => {
 				{
 					label: __('Sync Course Data', 'moowoodle'),
 					icon: 'refresh',
+					// eslint-disable-next-line no-unused-vars -- row param required by the action button's callback signature.
 					onClick: (row) => {
 						setopenPopup(true);
 					},
@@ -145,9 +146,9 @@ const Course: React.FC = () => {
 					label: (row: CourseRow) => {
 						return row?.product_name
 							? __(
-								'Sync Course Data & Update Product',
-								'moowoodle'
-							)
+									'Sync Course Data & Update Product',
+									'moowoodle'
+								)
 							: __('Create Product', 'moowoodle');
 					},
 					icon: (row: CourseRow) => {
@@ -155,6 +156,7 @@ const Course: React.FC = () => {
 							? 'update-product'
 							: 'add-product';
 					},
+					// eslint-disable-next-line no-unused-vars -- row param required by the action button's callback signature.
 					onClick: (row) => {
 						setopenPopup(true);
 					},

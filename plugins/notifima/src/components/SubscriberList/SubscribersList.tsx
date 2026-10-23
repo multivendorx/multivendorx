@@ -13,7 +13,7 @@ import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import { defaultCategoryCounts, subscriptions } from './SubscribersListUtil';
+import { csvHeaders, defaultCategoryCounts, subscriptions } from './SubscribersListUtil';
 import axios from 'axios';
 
 interface HeaderColumn {
@@ -29,6 +29,7 @@ interface HeaderConfig {
 interface RowData {
     [key: string]: string | number | boolean | null | undefined;
 }
+
 export const formatLocalDate = (date?: Date) =>
     date ? date.toISOString().split('T')[0] : '';
 
@@ -41,20 +42,21 @@ export const downloadCSV = (
         return;
     }
 
-    // Only include headers with csv: true
+    // Exclude columns explicitly hidden from CSV.
     const csvColumns = Object.entries(headers)
-        .filter(([_, h]) => h.csvDisplay !== false)
+        .filter(([, h]) => h.csvDisplay !== false)
         .map(([key, h]) => ({ key, label: h.label }));
 
-    // Header row
-    const csvRows = [csvColumns.map((c) => `"${c.label}"`).join(',')];
 
+    // Header row
+    const csvRows = [csvColumns.map((column) => column.label).join(',')];
+    
     // Data rows
     rows.forEach((row) => {
         const rowData = csvColumns
             .map((col) => {
                 const value = row[col.key];
-                return `"${value != null ? value : ''}"`;
+                return String(value ?? '');
             })
             .join(',');
         csvRows.push(rowData);
@@ -95,12 +97,12 @@ const SubscribersList = () => {
                             label: __('Email', 'notifima'),
                             value: row.email,
                         },
-                         {
+                        {
                             label: __('Phone', 'notifima'),
                             value: row.phone,
                         },
                     ]}
-                     badges={[
+                    badges={[
                         {
                             text: row.status,
                             className: `badge-${row.status_key}`,
@@ -110,18 +112,18 @@ const SubscribersList = () => {
             ),
         },
         date: {
-			label: __('Date', 'notifima'),
-			render: (row) => {
-				return (
-					<>
-						<div className='table-details'>
-							<span className='label'>{__('Date:', 'notifima')}</span>
-							{row.date || '-'}
-						</div>
-					</>
-				);
-			},
-		},
+            label: __('Date', 'notifima'),
+            render: (row) => {
+                return (
+                    <>
+                        <div className='table-details'>
+                            <span className='label'>{__('Date:', 'notifima')}</span>
+                            {row.date || '-'}
+                        </div>
+                    </>
+                );
+            },
+        },
     };
 
     const downloadCSVByQuery = () => {
@@ -134,7 +136,7 @@ const SubscribersList = () => {
                 const rows = response.data || [];
 
                 downloadCSV(
-                    headers,
+                    csvHeaders,
                     rows,
                     'subscriber.csv'
                 );

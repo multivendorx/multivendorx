@@ -13,6 +13,7 @@ import EventRules from './Notification/EventRules.tsx';
 import StoreStatus from './StoreConfiguration/StoreStatus.tsx';
 import Invoice from './StoreConfiguration/Invoice';
 import ProductCompliance from './Privacy & Compliance/ProductCompliance.tsx';
+import PluginModules from '../Modules/Modules.tsx';
 
 interface SettingsProps {
 	id: string;
@@ -95,6 +96,15 @@ const Settings: React.FC<SettingsProps> = () => {
 		if (currentTab === 'invoices') {
 			return <Invoice />;
 		}
+		if (currentTab === 'modules') {
+			return <PluginModules />;
+		}
+
+		// A subtab id with no matching settings file (stale bookmark, a
+		// renamed setting id) has nothing to render.
+		if (!settingModal) {
+			return <>{__('Settings not found.', 'multivendorx')}</>;
+		}
 
 		return (
 			<>
@@ -108,6 +118,7 @@ const Settings: React.FC<SettingsProps> = () => {
 						modules={modules}
 						Popup={ShowProPopup}
 						storeTabSetting={storeTabSetting}
+						groupBySections={settingModal.groupBySections}
 					/>
 				) : (
 					<>{__('Loading...', 'multivendorx')}</>

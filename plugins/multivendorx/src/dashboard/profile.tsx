@@ -69,7 +69,7 @@ const ProfileUpdate: React.FC = () => {
 			<ContainerComponent>
 				<ColumnComponent row>
 
-					<CardComponent title={__('Personal Information', 'multivendorx')}>
+					<CardComponent title={__('Personal Information', 'multivendorx')} titleIcon="profile" desc="Manage your profile details and public information.">
 						<FormGroupWrapperComponent>
 
 							<FormGroupComponent label={__('First Name', 'multivendorx')}>
@@ -122,7 +122,7 @@ const ProfileUpdate: React.FC = () => {
 					</CardComponent>
 
 
-					<CardComponent title={__('Change Password', 'multivendorx')}>
+					<CardComponent title={__('Change Password', 'multivendorx')} titleIcon="lock" desc="Update your password to keep your account secure.">
 						<FormGroupWrapperComponent>
 
 							<FormGroupComponent label={__('New Password', 'multivendorx')}>

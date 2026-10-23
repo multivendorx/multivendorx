@@ -30,6 +30,7 @@ const staticOptions = [
 	{
 		key: 'section',
 		type: 'section',
+		icon: 'wholesale',
 		title: __('What stores can change after approval', 'multivendorx'),
 	},
 	{
@@ -71,7 +72,14 @@ const staticOptions = [
 	},
 ];
 
-const modalOptions = [...capabilityOptions, ...staticOptions];
+const leadingSection = {
+	key: 'section',
+	type: 'section',
+	icon: 'wholesale',
+	title: __('Store role capabilities', 'multivendorx'),
+};
+
+const modalOptions = [leadingSection, ...capabilityOptions, ...staticOptions];
 
 export default {
 	id: 'store-permissions',
@@ -82,6 +90,8 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'wholesale',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: modalOptions,
 };

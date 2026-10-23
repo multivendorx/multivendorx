@@ -29,6 +29,7 @@
         background-color: #e8efff;
     }
 }
+
 // for form error text
 .error-text{
     font-size: 0.875rem;
@@ -41,7 +42,7 @@
     display: inline-block;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(90deg, #dbdbdb 25%, #ffffff 37%, #dbdbdb 63%);
+    background: linear-gradient(90deg, #dbdbdb 25%, #fff 37%, #dbdbdb 63%);
     background-size: 400% 100%;
     animation: skeleton-loading 1.4s ease infinite;
     font-size: inherit;
@@ -65,10 +66,12 @@
     0% {
         background-position: 100% 0;
     }
+
     100% {
         background-position: -100% 0;
     }
 }
+
 // common style end
 
 
@@ -162,6 +165,7 @@
             border-bottom: .063rem solid #00000038;
             padding: 0.25rem 0.625rem;
         }
+
         .qty-option:last-child{
             border-bottom: none;
         }
@@ -189,14 +193,15 @@
             padding: 0.625rem;
             border-radius: 0.313rem;
             text-align: center;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 10%);
             position: relative;
 
             h3 {
-                margin: 1.45rem 0 0.313rem; //for overwrite theme style
+                margin: 1.45rem 0 0.313rem; // for overwrite theme style
             }
+
             h4{
-                margin: 0 !important; //for overwrite theme style
+                margin: 0 !important; // for overwrite theme style
             }
 
             .discounted-amount {

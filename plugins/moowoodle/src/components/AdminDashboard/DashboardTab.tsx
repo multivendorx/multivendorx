@@ -254,6 +254,7 @@ const DashboardTab: React.FC<object> = () => {
 							'Build a smarter eLearning platform',
 							'moowoodle'
 						)}
+						titleIcon="form"
 						badge={[
 							{
 								text: 'Starting at $299/year',
@@ -303,7 +304,11 @@ const DashboardTab: React.FC<object> = () => {
 
 			{/* Right Side */}
 			<ColumnComponent grid={4}>
-				<CardComponent title={__('Extend your website', 'moowoodle')}>
+				<CardComponent
+					title={__('Extend your website', 'moowoodle')}
+					titleIcon="section"
+					desc="Discover more tools to grow your marketplace."
+				>
 					<ColumnComponent row>
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
 							<ListComponent
@@ -311,7 +316,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('CatalogX Pro', 'moowoodle'),
+										title: 'CatalogX Pro',
 										desc: __(
 											'Advanced product catalog with enhanced enquiry features and premium templates',
 											'moowoodle'
@@ -341,7 +346,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('CatalogX', 'moowoodle'),
+										title: 'CatalogX',
 										desc: __(
 											'Turn your store into a product catalog with enquiry-based sales',
 											'moowoodle'
@@ -398,7 +403,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('Notifima Pro', 'moowoodle'),
+										title: 'Notifima Pro',
 										desc: __(
 											'Advanced stock alerts, wishlist features, and premium notification system',
 											'moowoodle'
@@ -428,7 +433,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('Notifima', 'moowoodle'),
+										title: 'Notifima',
 										desc: __(
 											'Advanced stock alerts and wishlist features for WooCommerce',
 											'moowoodle'
@@ -482,7 +487,11 @@ const DashboardTab: React.FC<object> = () => {
 				</CardComponent>
 
 				{/* Quick Links */}
-				<CardComponent title={__('Need help getting started?', 'moowoodle')}>
+				<CardComponent
+					title={__('Need help getting started?', 'moowoodle')}
+					titleIcon="help"
+					desc="Find the guides and support you need to build your marketplace."
+				>
 					<div className="quick-link">
 						{resources.map((res) => (
 							<ListComponent

@@ -112,7 +112,7 @@
         }
     }
 
-    .details-wrapper {
+    .store-details-wrapper {
         display: flex;
         justify-content: space-between;
         padding: 1.5rem;
@@ -383,7 +383,8 @@
         .banner::after{
             font-size: 4rem;
         }
-        .details-wrapper{
+
+        .store-details-wrapper{
             flex-direction: column;
             align-items: start;
             

@@ -50,7 +50,7 @@ class Notifima {
         require_once trailingslashit( dirname( $file ) ) . '/config.php';
 
         $this->file                     = $file;
-        $this->container['plugin_url']  = trailingslashit( plugins_url( '', $plugin = $file ) );
+        $this->container['plugin_url']  = trailingslashit( plugins_url( '', $file ) );
         $this->container['plugin_path'] = trailingslashit( dirname( $file ) );
         $this->container['plugin_base'] = plugin_basename( $file );
 
@@ -81,7 +81,7 @@ class Notifima {
      * @return void
      */
     public function set_default_value() {
-        $default_value                    = array(
+        $default_values                   = array(
             'double_opt_in_success'     => __( 'Kindly check your inbox to confirm the subscription.', 'notifima' ),
             'shown_interest_text'       => __( 'Kindly check your inbox to confirm the subscription.', 'notifima' ),
             'email_placeholder_text'    => __( 'Enter your email', 'notifima' ),
@@ -97,7 +97,7 @@ class Notifima {
             'ban_email_domain_text'     => __( 'This email domain is baned in our site, kindly use another email domain.', 'notifima' ),
             'ban_email_address_text'    => __( 'This email address is baned in our site, kindly use another email address.', 'notifima' ),
         );
-        $this->container['default_value'] = $default_value;
+        $this->container['default_value'] = $default_values;
     }
 
     /**
@@ -226,7 +226,7 @@ class Notifima {
      * @return void
      */
     public function load_plugin_textdomain() {
-        if ( version_compare( $GLOBALS['wp_version'], '6.7', '<' ) ) {
+        if ( version_compare( get_bloginfo( 'version' ), '6.7', '<' ) ) {
             load_plugin_textdomain( 'notifima', false, plugin_basename( dirname( __DIR__ ) ) . '/languages' );
         } else {
             load_textdomain( 'notifima', WP_LANG_DIR . '/plugins/notifima-' . determine_locale() . '.mo' );

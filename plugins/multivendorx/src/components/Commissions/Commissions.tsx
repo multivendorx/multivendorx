@@ -5,13 +5,20 @@ import { __ } from '@wordpress/i18n';
 
 
 import { getApiLink, useModules } from '@zyra/core';
-import { ContainerComponent, ColumnComponent, ListComponent, NavigatorHeaderComponent } from '@zyra/components';
+import {
+	ContainerComponent,
+	ColumnComponent,
+	ListComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import ViewCommission from './ViewCommission';
 import {
 	downloadCSV,
 	formatCurrency,
+	formatDate,
 	formatLocalDate,
+	formatStatusLabel,
 	getUrl,
 } from '../../services/commonFunction';
 type StoreOption = {
@@ -92,44 +99,13 @@ const Commission: React.FC = () => {
 	}, []);
 
 	const rawHeaders = {
-		id: {
-			label: __('ID', 'multivendorx'),
-			type: 'id',
-			isSortable: true,
-			render: (row) => (
-				<span
-					onClick={() => {
-						setSelectedCommissionId(row.id ?? null);
-						setViewCommission(true);
-					}}
-					className="link-item"
-				>
-					#{row.id}
-				</span>
-			),
-		},
-		order_id: {
+		order_info: {
 			label: __('Order', 'multivendorx'),
-			isSortable: true,
-			render: (row) => (
-				<a
-					href={getUrl(row.order_id, 'order')}
-					target="_blank"
-					rel="noopener noreferrer"
-					className="link-item"
-				>
-					#{row.order_id} - {row.store_name || '-'}
-				</a>
-			),
-		},
-		store_name: {
-			label: __('Store Name', 'multivendorx'),
-			tableDisplay: false,
-		},
-		total_order_amount: {
-			label: __('Order Amount', 'multivendorx'),
-			isSortable: true,
-			type: 'currency',
+			type: 'info',
+			width: 40,
+			titleLinkKey: 'order_link',
+			descriptionKey: 'order_descriptions',
+			badgesKey: 'order_badges',
 		},
 		commission_summary: {
 			label: __('Commission Summary', 'multivendorx'),
@@ -174,59 +150,25 @@ const Commission: React.FC = () => {
 				].filter((item) => item.display !== false);
 
 				return (
-					<ListComponent className="price-list" items={earningItems} />
+					// Same markup zyra's `type: 'labeled'` cell renders, for a
+					// value that needs a custom component.
+					<div className="admin-labeled-cell">
+						<span className="admin-labeled-cell-label">
+							{__('Commission Summary', 'multivendorx')}
+						</span>
+						<ListComponent
+							className="price-list"
+							items={earningItems}
+						/>
+					</div>
 				);
 			},
-			csvDisplay: false
 		},
-		store_payable: {
-			label: __('Store Earning', 'multivendorx'),
+		total_order_amount: {
+			label: __('Order Amount', 'multivendorx'),
 			isSortable: true,
-			type: 'currency',
-		},
-		marketplace_payable: {
-			label: __('Marketplace Earning', 'multivendorx'),
-			isSortable: true,
-			type: 'currency',
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status', statusClass: (row) => `${row.status}`,
-		},
-		tax_amount: {
-			label: __('Tax Amount', 'multivendorx'),
-			tableDisplay: false,
-			condition: appLocalizer.taxes_enabled === 'yes',
-		},
-		shipping_tax_amount: {
-			label: __('Shipping Tax', 'multivendorx'),
-			tableDisplay: false,
-			condition: modules.includes('store-shipping'),
-		},
-		shipping_amount: {
-			label: __('Shipping Amount', 'multivendorx'),
-			tableDisplay: false,
-			condition: modules.includes('store-shipping'),
-		},
-		platform_fee: {
-			label: __('Platform Fee', 'multivendorx'),
-			tableDisplay: false,
-			condition: modules.includes('marketplace-fee'),
-		},
-		facilitator_fee: {
-			label: __('Facilitator Fee', 'multivendorx'),
-			tableDisplay: false,
-			condition: modules.includes('facilitator'),
-		},
-		gateway_fee: {
-			label: __('Gateway Fee', 'multivendorx'),
-			tableDisplay: false,
-			condition: modules.includes('payment-gateway-charge'),
-		},
-		created_at: {
-			label: __('Date', 'multivendorx'),
-			isSortable: true,
-			type: 'date',
+			type: 'labeled',
+			valueType: 'currency',
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
@@ -248,12 +190,59 @@ const Commission: React.FC = () => {
 					},
 				},
 			],
-			csvDisplay: false
 		}
 	};
 
 	const headers = Object.fromEntries(
 		Object.entries(rawHeaders).filter(
+			([_, config]) => config.condition !== false
+		)
+	);
+
+	// The table folds most fields into the `order_info`/`commission_summary`
+	// info columns, so CSV export lists its columns explicitly instead of
+	// reusing `headers` — anything with `tableDisplay: false` here would
+	// still render an (unfiltered) extra <td> in every table row, since
+	// zyra's Table only applies that flag to the <thead>, not the body.
+	const rawCsvHeaders = {
+		id: { label: __('ID', 'multivendorx') },
+		order_id: { label: __('Order', 'multivendorx') },
+		store_name: { label: __('Store Name', 'multivendorx') },
+		total_order_amount: { label: __('Order Amount', 'multivendorx') },
+		store_payable: { label: __('Store Earning', 'multivendorx') },
+		marketplace_payable: {
+			label: __('Marketplace Earning', 'multivendorx'),
+		},
+		status: { label: __('Status', 'multivendorx') },
+		tax_amount: {
+			label: __('Tax Amount', 'multivendorx'),
+			condition: appLocalizer.taxes_enabled === 'yes',
+		},
+		shipping_tax_amount: {
+			label: __('Shipping Tax', 'multivendorx'),
+			condition: modules.includes('store-shipping'),
+		},
+		shipping_amount: {
+			label: __('Shipping Amount', 'multivendorx'),
+			condition: modules.includes('store-shipping'),
+		},
+		platform_fee: {
+			label: __('Platform Fee', 'multivendorx'),
+			condition: modules.includes('marketplace-fee'),
+		},
+		facilitator_fee: {
+			label: __('Facilitator Fee', 'multivendorx'),
+			condition: modules.includes('facilitator'),
+		},
+		gateway_fee: {
+			label: __('Gateway Fee', 'multivendorx'),
+			condition: modules.includes('payment-gateway-charge'),
+		},
+		created_at: { label: __('Date', 'multivendorx') },
+	};
+
+	const csvHeaders = Object.fromEntries(
+		Object.entries(rawCsvHeaders).filter(
 			([_, config]) => config.condition !== false
 		)
 	);
@@ -359,7 +348,7 @@ const Commission: React.FC = () => {
 			.then((response) => {
 				const rows = response.data || [];
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`selected-commissions-${formatLocalDate(new Date())}.csv`
 				);
@@ -379,7 +368,7 @@ const Commission: React.FC = () => {
 				const rows = response.data || [];
 
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`commissions-${formatLocalDate(new Date())}.csv`
 				);
@@ -423,6 +412,39 @@ const Commission: React.FC = () => {
 		},
 	];
 
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		order_info: `#${row.order_id} - ${row.store_name || '-'}`,
+		order_link: getUrl(row.order_id, 'order'),
+		order_badges: [
+			{
+				text: `#${row.id}`,
+				color: 'blue',
+				onClick: () => {
+					setSelectedCommissionId(row.id ?? null);
+					setViewCommission(true);
+				},
+			},
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.created_at), color: 'blue' },
+		],
+		order_descriptions: [
+			{
+				label: __('Store Earning', 'multivendorx'),
+				icon: 'wallet-in',
+				value: formatCurrency(row.store_payable),
+			},
+			{
+				label: __('Marketplace Earning', 'multivendorx'),
+				icon: 'commission',
+				value: formatCurrency(row.marketplace_payable),
+			},
+		],
+	}));
+
 	return (
 		<>
 			<NavigatorHeaderComponent
@@ -437,7 +459,8 @@ const Commission: React.FC = () => {
 				<ColumnComponent>
 					<TableCard
 						headers={headers}
-						rows={rows}
+						rows={infoRows}
+						hideHeader
 						totalRows={totalRows}
 						isLoading={isLoading}
 						onQueryUpdate={doRefreshTableData}

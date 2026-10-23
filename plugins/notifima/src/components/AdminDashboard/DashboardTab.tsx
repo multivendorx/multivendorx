@@ -238,6 +238,7 @@ const DashboardTab: React.FC<object> = () => {
 							'Recover lost sales automatically',
 							'notifima'
 						)}
+						titleIcon="sales"
 						desc={__(
 							'Keep customers engaged even when products are unavailable and notify them the moment items are back in stock.',
 							'notifima'
@@ -284,7 +285,7 @@ const DashboardTab: React.FC<object> = () => {
 
 			{/* Right Side */}
 			<ColumnComponent grid={4}>
-				<CardComponent title={__('Extend your website', 'notifima')}>
+				<CardComponent title={__('Extend your website', 'notifima')} titleIcon="section" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 					<ColumnComponent row>
 						{/* notifima */}
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
@@ -293,7 +294,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('Catalogx Pro', 'notifima'),
+										title: 'CatalogX Pro',
 										desc: __(
 											'Advanced product catalog, quotation, and enquiry features with premium templates.',
 											'notifima'
@@ -323,7 +324,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('Catalogx', 'notifima'),
+										title: 'CatalogX',
 										desc: __(
 											'Turn your WooCommerce store into a product catalog with enquiry and quotation features.',
 											'notifima'
@@ -412,7 +413,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('MultiVendorX', 'notifima'),
+										title: 'MultiVendorX',
 										desc: __(
 											'Build and manage a multivendor marketplace with powerful vendor management features.',
 											'notifima'
@@ -464,7 +465,7 @@ const DashboardTab: React.FC<object> = () => {
 				</CardComponent>
 
 				{/* Quick Links */}
-				<CardComponent title={__('Need help getting started?', 'notifima')}>
+				<CardComponent title={__('Need help getting started?', 'notifima')} titleIcon="help" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
 					<div className="quick-link">
 						{resources.map((res) => (
 							<ListComponent

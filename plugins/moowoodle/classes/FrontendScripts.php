@@ -43,14 +43,17 @@ class FrontendScripts {
     /**
 	 * Get the build path for assets based on environment.
 	 *
+	 * @param string $path_type   Either 'url' or 'file'.
+	 * @param string $plugin_path Optional plugin path override.
+	 * @param string $plugin_url  Optional plugin URL override.
 	 * @return string Relative path to the build directory.
 	 */
     public static function get_asset_path( $path_type = 'url', $plugin_path = '', $plugin_url = '' ) {
         $build_path = 'assets/';
-        if ( $plugin_path === '' ) {
+        if ( empty( $plugin_path ) ) {
             $plugin_path = MooWoodle()->plugin_path;
         }
-        if ( $plugin_url === '' ) {
+        if ( empty( $plugin_url ) ) {
             $plugin_url = MooWoodle()->plugin_url;
         }
 
@@ -236,8 +239,13 @@ class FrontendScripts {
 		}
 	}
 
+    /**
+     * Get all MooWoodle admin settings, keyed by tab, with in-request caching.
+     *
+     * @return array Settings keyed by tab name.
+     */
     public static function get_admin_settings() {
-        if ( null !== self::$settings_cache ) {
+        if ( ! empty( self::$settings_cache ) ) {
             return self::$settings_cache;
         }
 
@@ -257,8 +265,13 @@ class FrontendScripts {
         return self::$settings_cache;
     }
 
+    /**
+     * Get the WooCommerce My Account menu items with MooWoodle's adjustments applied, with in-request caching.
+     *
+     * @return array Account menu items.
+     */
     public static function get_account_menu() {
-        if ( null !== self::$account_menu_cache ) {
+        if ( ! empty( self::$account_menu_cache ) ) {
             return self::$account_menu_cache;
         }
 

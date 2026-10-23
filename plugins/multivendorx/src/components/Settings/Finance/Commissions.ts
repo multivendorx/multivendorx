@@ -76,8 +76,16 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'commission',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'commission',
+			title: __('Marketplace commission', 'multivendorx'),
+		},
 		{
 			key: 'commission_migration_notice',
 			type: 'notice',
@@ -296,6 +304,7 @@ export default {
 		{
 			key: 'separator_content',
 			type: 'section',
+			icon: 'delivery',
 			title: __(
 				'Shipping & tax distribution in store earnings',
 				'multivendorx'
@@ -370,6 +379,7 @@ export default {
 		{
 			key: 'separator_content',
 			type: 'section',
+			icon: 'wallet',
 			title: __('Fees deducted from store earnings', 'multivendorx'),
 			desc: __(
 				'Determine which fees to deduct from the store earning.',

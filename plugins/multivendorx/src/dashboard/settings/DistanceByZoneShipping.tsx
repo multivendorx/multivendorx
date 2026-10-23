@@ -104,34 +104,25 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 		});
 	};
 
-	const handleEdit = async (method: ShippingMethod) => {
+	const handleEdit = async (method: ShippingMethod, zone: Zone) => {
 		setIsEditing(true);
 		setEditingMethod(method);
 
-		const zoneWithMethod = data.find((zone) => {
-			const methods = Object.values(zone.shipping_methods || {});
-			return methods.some((m: ShippingMethod) => m.id === method.id);
-		});
-
-		setSelectedZone(zoneWithMethod || null);
+		setSelectedZone(zone);
 		setIsLoadingShipping(true);
-
-		if (!zoneWithMethod) {
-			return;
-		}
 
 		try {
 			const response = await axios({
 				method: 'GET',
 				url: getApiLink(
 					appLocalizer,
-					`zone-shipping/${zoneWithMethod.zone_id}`
+					`zone-shipping/${zone.zone_id}`
 				),
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: {
 					store_id: store_id,
 					method_id: method.id,
-					zone_id: zoneWithMethod.zone_id,
+					zone_id: zone.zone_id,
 				},
 			});
 			if (response.data && response.data.settings) {
@@ -312,358 +303,370 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 	const headers = {
 		zone_name: {
 			label: __('Zone Name', 'multivendorx'),
-			render: (row: TableRow) => row.zone_name || '—',
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
 		},
-		formatted_zone_location: {
-			label: __('Region(s)', 'multivendorx'),
-			render: (row: TableRow) => row.formatted_zone_location || '—',
-		},
-		shipping_methods: {
+		// Own key so the zone's raw `shipping_methods` stays untouched on
+		// the row; with no `valueType`, the labeled cell renders the node
+		// as-is under the column label.
+		shipping_methods_cell: {
 			label: __('Shipping Method(s)', 'multivendorx'),
-			render: (row: TableRow) => {
-				const zone = row as Zone;
-				const methodsObj = zone.shipping_methods || {};
-				const methodsArray = Object.values(methodsObj);
-
-				if (methodsArray.length === 0) {
-					return (
-						<div>
-							<div>No shipping methods</div>
-							<button
-								className="admin-btn btn-purple"
-								onClick={() => handleAdd(zone)}
-							>
-								<i className="adminfont-plus"></i>{' '}
-								{__('Add Shipping Method', 'multivendorx')}
-							</button>
-						</div>
-					);
-				}
-				return (
-					<div className="shipping-method-wrapper">
-						{methodsArray.map((method: ShippingMethod) => (
-							<div
-								key={method.instance_id}
-								className="shipping-method"
-							>
-								<div className="admin-badge yellow">
-									{method.title}
-								</div>
-								<i
-									onClick={() => handleEdit(method)}
-									className="admin-badge blue adminfont-edit"
-								></i>
-								<i
-									onClick={() => handleDelete(method, zone)}
-									className="admin-badge red adminfont-delete"
-								></i>
-							</div>
-						))}
-
-						<button
-							className="admin-btn btn-purple"
-							onClick={() => handleAdd(zone)}
-							style={{ marginTop: '10px' }}
-						>
-							<i className="adminfont-plus"></i>{' '}
-							{__('Add New Method', 'multivendorx')}
-						</button>
-					</div>
-				);
-			},
+			type: 'labeled',
 		},
+	};
+
+	const renderShippingMethods = (zone: Zone) => {
+		const methodsArray = Object.values(zone.shipping_methods || {});
+
+		if (methodsArray.length === 0) {
+			return (
+				<div>
+					<div>No shipping methods</div>
+					<button
+						className="admin-btn btn-purple"
+						onClick={() => handleAdd(zone)}
+					>
+						<i className="adminfont-plus"></i>{' '}
+						{__('Add Shipping Method', 'multivendorx')}
+					</button>
+				</div>
+			);
+		}
+
+		return (
+			<div className="shipping-method-wrapper">
+				{methodsArray.map((method: ShippingMethod) => (
+					<div key={method.instance_id} className="shipping-method">
+						<div className="admin-badge yellow">{method.title}</div>
+						<i
+							onClick={() => handleEdit(method, zone)}
+							className="admin-badge blue adminfont-edit"
+						></i>
+						<i
+							onClick={() => handleDelete(method, zone)}
+							className="admin-badge red adminfont-delete"
+						></i>
+					</div>
+				))}
+
+				<button
+					className="admin-btn btn-purple"
+					onClick={() => handleAdd(zone)}
+					style={{ marginTop: '10px' }}
+				>
+					<i className="adminfont-plus"></i>{' '}
+					{__('Add New Method', 'multivendorx')}
+				</button>
+			</div>
+		);
 	};
 
 	const rows: TableRow[] = data.map((zone) => ({
 		...zone,
+		zone_name: zone.zone_name || '—',
+		info_icon: 'zone-wise-shipping',
+		info_descriptions: [
+			{
+				label: __('Region(s)', 'multivendorx'),
+				icon: 'global-community',
+				value: zone.formatted_zone_location || '—',
+			},
+		],
+		shipping_methods_cell: renderShippingMethods(zone),
 	}));
 
 	return (
 		<>
-			<SectionComponent
-				title={__('Zone-wise Shipping Configuration', 'multivendorx')}
-			/>
-			<FormGroupComponent>
-				<TableCard
-					headers={headers}
-					rows={rows}
-					isLoading={false}
-					showMenu={false}
-					onQueryUpdate={() => { }}
-					emptyMessage={__('No shipping zones found', 'multivendorx')}
-				/>
-			</FormGroupComponent>
-			{addShipping && selectedZone && (
-				<PopupComponent
-					open={addShipping}
-					width='80%'
-					height="90%"
-					onClose={handleClosePopup}
-					header={{
-						icon: 'shipping',
-						title: `${isEditing
-							? __('Edit Shipping', 'multivendorx')
-							: __('Add Shipping', 'multivendorx')
-							} - ${selectedZone.zone_name}`,
-					}}
-					footer={
-						<ButtonInput
-							buttons={[
-								{
-									icon: 'close',
-									text: __('Cancel', 'multivendorx'),
-									color: 'red',
-									onClick: () => setAddShipping(false),
-								},
-								{
-									icon: 'save',
-									text: isEditing
-										? __('Update', 'multivendorx')
-										: __('Save', 'multivendorx'),
-									onClick: handleSave,
-								},
-							]}
+			<div className="settings-section-group">
+				<div className="settings-left-section">
+					<SectionComponent icon='zone-wise-shipping' title={__('Zone-wise Shipping Configuration', 'multivendorx')} />
+				</div>
+				<div className="settings-right-section">
+					<FormGroupComponent>
+						<TableCard
+							headers={headers}
+							variant="transparent"
+							rows={rows}
+							isLoading={false}
+							showMenu={false}
+							onQueryUpdate={() => { }}
+							emptyMessage={__('No shipping zones found', 'multivendorx')}
 						/>
-					}
-				>
-					<FormGroupWrapperComponent>
-						<FormGroupComponent
-							label={__('Shipping Method', 'multivendorx')}
+					</FormGroupComponent>
+					{addShipping && selectedZone && (
+						<PopupComponent
+							open={addShipping}
+							width={32}
+							height="90%"
+							onClose={handleClosePopup}
+							header={{
+								icon: 'shipping',
+								title: `${isEditing
+									? __('Edit Shipping', 'multivendorx')
+									: __('Add Shipping', 'multivendorx')
+									} - ${selectedZone.zone_name}`,
+							}}
+							footer={
+								<ButtonInput
+									buttons={[
+										{
+											icon: 'close',
+											text: __('Cancel', 'multivendorx'),
+											color: 'red',
+											onClick: () => setAddShipping(false),
+										},
+										{
+											icon: 'save',
+											text: isEditing
+												? __('Update', 'multivendorx')
+												: __('Save', 'multivendorx'),
+											onClick: handleSave,
+										},
+									]}
+								/>
+							}
 						>
-							<ToggleInput
-								value={formData.shippingMethod}
-								onChange={(val: string) => {
-									if (!isEditing) {
-										handleChange('shippingMethod', val);
-									}
-								}}
-								options={
-									isEditing
-										? [
-											{
-												key: formData.shippingMethod,
-												value: formData.shippingMethod,
-												label: __(
-													formData.shippingMethod
-														.replace('_', ' ')
-														.replace(
-															/\b\w/g,
-															(c) =>
-																c.toUpperCase()
-														),
-													'multivendorx'
-												),
-											},
-										]
-										: applyFilters(
-											'multivendorx_zone_shipping_methods',
-											[
-												{
-													key: 'local_pickup',
-													value: 'local_pickup',
-													label: __(
-														'Local pickup',
-														'multivendorx'
-													),
-												},
-												{
-													key: 'free_shipping',
-													value: 'free_shipping',
-													label: __(
-														'Free shipping',
-														'multivendorx'
-													),
-												},
-												{
-													key: 'flat_rate',
-													value: 'flat_rate',
-													label: __(
-														'Flat Rate',
-														'multivendorx'
-													),
-												},
-											],
-											modules
-										)
-								}
-								disabled={isEditing}
-							/>
-						</FormGroupComponent>
-
-						{/* Local Pickup */}
-						{formData.shippingMethod === 'local_pickup' && (
-							<FormGroupComponent label={__('Cost', 'multivendorx')}>
-								<TextInput
-									type="number"
-									name="localPickupCost"
-									placeholder={__("Enter cost", 'multivendorx')}
-									value={formData.localPickupCost}
-									onChange={(val: string) =>
-										handleChange('localPickupCost', val)
-									}
-								/>
-								<NoticeComponent
-									type="info"
-									displayPosition="inline-notice"
-									message={__(
-										'Set the fee customers need to pay when choosing Local Pickup.',
-										'multivendorx'
-									)}
-								/>
-							</FormGroupComponent>
-						)}
-
-						{/* Free Shipping */}
-						{formData.shippingMethod === 'free_shipping' && (
-							<>
-								<div className="form-group">
+							<FormGroupWrapperComponent>
+								<FormGroupComponent
+									label={__('Shipping Method', 'multivendorx')}
+								>
 									<ToggleInput
-										value={formData.freeShippingType}
-										onChange={(val: string) =>
-											handleChange(
-												'freeShippingType',
-												val
-											)
+										value={formData.shippingMethod}
+										onChange={(val: string) => {
+											if (!isEditing) {
+												handleChange('shippingMethod', val);
+											}
+										}}
+										options={
+											isEditing
+												? [
+													{
+														key: formData.shippingMethod,
+														value: formData.shippingMethod,
+														label: __(
+															formData.shippingMethod
+																.replace('_', ' ')
+																.replace(
+																	/\b\w/g,
+																	(c) =>
+																		c.toUpperCase()
+																),
+															'multivendorx'
+														),
+													},
+												]
+												: applyFilters(
+													'multivendorx_zone_shipping_methods',
+													[
+														{
+															key: 'local_pickup',
+															value: 'local_pickup',
+															label: __(
+																'Local pickup',
+																'multivendorx'
+															),
+														},
+														{
+															key: 'free_shipping',
+															value: 'free_shipping',
+															label: __(
+																'Free shipping',
+																'multivendorx'
+															),
+														},
+														{
+															key: 'flat_rate',
+															value: 'flat_rate',
+															label: __(
+																'Flat Rate',
+																'multivendorx'
+															),
+														},
+													],
+													modules
+												)
 										}
-										options={[
-											{
-												key: 'min_order',
-												value: 'min_order',
-												label: __(
-													'Min Order',
-													'multivendorx'
-												),
-											},
-											{
-												key: 'coupon',
-												value: 'coupon',
-												label: __(
-													'Coupon',
-													'multivendorx'
-												),
-											},
-										]}
+										disabled={isEditing}
 									/>
-								</div>
-								{formData.freeShippingType === 'min_order' && (
-									<div className="form-group">
-										<label className="font-medium">
-											{__(
-												'Minimum Order Cost',
-												'multivendorx'
-											)}
-										</label>
+								</FormGroupComponent>
+
+								{/* Local Pickup */}
+								{formData.shippingMethod === 'local_pickup' && (
+									<FormGroupComponent label={__('Cost', 'multivendorx')}>
 										<TextInput
 											type="number"
-											name="minOrderCost"
-											placeholder="Enter minimum order cost"
-											value={formData.minOrderCost}
-											onChange={(value) =>
-												handleChange(
-													'minOrderCost',
-													value
-												)
+											name="localPickupCost"
+											placeholder={__("Enter cost", 'multivendorx')}
+											value={formData.localPickupCost}
+											onChange={(val: string) =>
+												handleChange('localPickupCost', val)
 											}
 										/>
-									</div>
-								)}
-								<NoticeComponent
-									type="info"
-									displayPosition="inline-notice"
-									message={__(
-										'Free shipping is applied when the order reaches a minimum amount. Enter that value in the Minimum Order Amount field.',
-										'multivendorx'
-									)}
-								/>
-							</>
-						)}
-
-						{/* Flat Rate */}
-						{formData.shippingMethod === 'flat_rate' && (
-							<>
-								<FormGroupComponent label={__('Cost', 'multivendorx')}>
-									<TextInput
-										type="number"
-										name="flatRateCost"
-										placeholder={__("Enter cost", 'multivendorx')}
-										value={formData.flatRateCost}
-										onChange={(value) =>
-											handleChange('flatRateCost', value)
-										}
-									/>
-									<div className="desc">
-										{__('Enter a ', 'multivendorx')}
-										<b>
-											{__('fixed amount', 'multivendorx')}
-										</b>
-										{__(' or use a ', 'multivendorx')}
-										<b>{__('formula', 'multivendorx')}</b>
-										{__(
-											' if you want shipping to change based on the number of items or order value.',
-											'multivendorx'
-										)}
-									</div>
-									<NoticeComponent
-										type="info"
-										displayPosition="inline-notice"
-										message={__(
-											"Base shipping cost: <b>$10</b> + Heavy item adjustment: <b>$20</b>  Total shipping: <b>$30</b> <br> Leave empty if no additional cost is needed for this shipping class.",
-											'multivendorx'
-										)}
-									/>
-								</FormGroupComponent>
-
-								<FormGroupComponent
-									label={__(
-										'Cost of Shipping Class',
-										'multivendorx'
-									)}
-								>
-									<TextInput
-										type="text"
-										name="flatRateClassCost"
-										placeholder={__("Enter class cost", 'multivendorx')}
-										value={formData.flatRateClassCost}
-										onChange={(value) =>
-											handleChange(
-												'flatRateClassCost',
-												value
-											)
-										}
-									/>
-									<div className="desc">
-										{__('This amount is ', 'multivendorx')}
-										<b>
-											{__(
-												'added to the base shipping cost.',
+										<NoticeComponent
+											type="info"
+											displayPosition="inline-notice"
+											message={__(
+												'Set the fee customers need to pay when choosing Local Pickup.',
 												'multivendorx'
 											)}
-										</b>
-									</div>
-									<NoticeComponent
-										type="info"
-										displayPosition="inline-notice"
-										message={__(
-											"<b>10 </b> Fixed base shipping cost <br><b> 10 + (2 × [qty]) </b> Base cost + $2 per item <br><b>10 + [fee percent='10'] - </b>  Base cost + 10% of order value <br>  Use <b>[qty]</b> for item count and <b>[fee percent='x']</b> for percentage-based fees. You can also set <b>min_fee or max_fee.</b> <br> If you're unsure, simply enter a <b>fixed amount like 10.</b>",
-											'multivendorx'
-										)}
-									/>
-								</FormGroupComponent>
-							</>
-						)}
+										/>
+									</FormGroupComponent>
+								)}
 
-						{applyFilters(
-							'multivendorx_after_zone_shipping_fields',
-							null,
-							{
-								zone: selectedZone,
-								shippingMethod: formData.shippingMethod,
-								storeId: id,
-							}
-						)}
-					</FormGroupWrapperComponent>
-				</PopupComponent>
-			)}
+								{/* Free Shipping */}
+								{formData.shippingMethod === 'free_shipping' && (
+									<>
+										<div className="form-group">
+											<ToggleInput
+												value={formData.freeShippingType}
+												onChange={(val: string) =>
+													handleChange(
+														'freeShippingType',
+														val
+													)
+												}
+												options={[
+													{
+														key: 'min_order',
+														value: 'min_order',
+														label: __(
+															'Min Order',
+															'multivendorx'
+														),
+													},
+													{
+														key: 'coupon',
+														value: 'coupon',
+														label: __(
+															'Coupon',
+															'multivendorx'
+														),
+													},
+												]}
+											/>
+										</div>
+										{formData.freeShippingType === 'min_order' && (
+											<div className="form-group">
+												<label className="font-medium">
+													{__(
+														'Minimum Order Cost',
+														'multivendorx'
+													)}
+												</label>
+												<TextInput
+													type="number"
+													name="minOrderCost"
+													placeholder="Enter minimum order cost"
+													value={formData.minOrderCost}
+													onChange={(value) =>
+														handleChange(
+															'minOrderCost',
+															value
+														)
+													}
+												/>
+											</div>
+										)}
+										<NoticeComponent
+											type="info"
+											displayPosition="inline-notice"
+											message={__(
+												'Free shipping is applied when the order reaches a minimum amount. Enter that value in the Minimum Order Amount field.',
+												'multivendorx'
+											)}
+										/>
+									</>
+								)}
+
+								{/* Flat Rate */}
+								{formData.shippingMethod === 'flat_rate' && (
+									<>
+										<FormGroupComponent label={__('Cost', 'multivendorx')}>
+											<TextInput
+												type="number"
+												name="flatRateCost"
+												placeholder={__("Enter cost", 'multivendorx')}
+												value={formData.flatRateCost}
+												onChange={(value) =>
+													handleChange('flatRateCost', value)
+												}
+											/>
+											<div className="desc">
+												{__('Enter a ', 'multivendorx')}
+												<b>
+													{__('fixed amount', 'multivendorx')}
+												</b>
+												{__(' or use a ', 'multivendorx')}
+												<b>{__('formula', 'multivendorx')}</b>
+												{__(
+													' if you want shipping to change based on the number of items or order value.',
+													'multivendorx'
+												)}
+											</div>
+											<NoticeComponent
+												type="info"
+												displayPosition="inline-notice"
+												message={__(
+													"Base shipping cost: <b>$10</b> + Heavy item adjustment: <b>$20</b>  Total shipping: <b>$30</b> <br> Leave empty if no additional cost is needed for this shipping class.",
+													'multivendorx'
+												)}
+											/>
+										</FormGroupComponent>
+
+										<FormGroupComponent
+											label={__(
+												'Cost of Shipping Class',
+												'multivendorx'
+											)}
+										>
+											<TextInput
+												type="text"
+												name="flatRateClassCost"
+												placeholder={__("Enter class cost", 'multivendorx')}
+												value={formData.flatRateClassCost}
+												onChange={(value) =>
+													handleChange(
+														'flatRateClassCost',
+														value
+													)
+												}
+											/>
+											<div className="desc">
+												{__('This amount is ', 'multivendorx')}
+												<b>
+													{__(
+														'added to the base shipping cost.',
+														'multivendorx'
+													)}
+												</b>
+											</div>
+											<NoticeComponent
+												type="info"
+												displayPosition="inline-notice"
+												message={__(
+													"<b>10 </b> Fixed base shipping cost <br><b> 10 + (2 × [qty]) </b> Base cost + $2 per item <br><b>10 + [fee percent='10'] - </b>  Base cost + 10% of order value <br>  Use <b>[qty]</b> for item count and <b>[fee percent='x']</b> for percentage-based fees. You can also set <b>min_fee or max_fee.</b> <br> If you're unsure, simply enter a <b>fixed amount like 10.</b>",
+													'multivendorx'
+												)}
+											/>
+										</FormGroupComponent>
+									</>
+								)}
+
+								{applyFilters(
+									'multivendorx_after_zone_shipping_fields',
+									null,
+									{
+										zone: selectedZone,
+										shippingMethod: formData.shippingMethod,
+										storeId: id,
+									}
+								)}
+							</FormGroupWrapperComponent>
+						</PopupComponent>
+					)}
+				</div>
+			</div>
 		</>
 	);
 };

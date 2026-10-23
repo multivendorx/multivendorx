@@ -60,7 +60,7 @@ class Session extends \WC_Session {
             define(
                 'COOKIEHASH',
                 md5(
-                    $siteurl ?: wp_guess_url()
+                    $siteurl ? $siteurl : wp_guess_url()
                 )
             );
         }
@@ -130,7 +130,7 @@ class Session extends \WC_Session {
      * @return bool
      */
     public function has_session() {
-        return isset( $_COOKIE[ $this->cookie_name ] ) || $this->is_cookie_set || is_user_logged_in();
+        return ! empty( filter_input( INPUT_COOKIE, $this->cookie_name ) ) || $this->is_cookie_set || is_user_logged_in();
     }
 
     /**
@@ -163,11 +163,13 @@ class Session extends \WC_Session {
      * @return bool|array
      */
     public function get_session_cookie() {
-        if ( empty( $_COOKIE[ $this->cookie_name ] ) ) {
+        $cookie_value = filter_input( INPUT_COOKIE, $this->cookie_name );
+
+        if ( empty( $cookie_value ) ) {
             return false;
         }
 
-        list( $customer_id, $session_expiration, $session_expiring, $cookie_hash ) = explode( '||', $_COOKIE[ $this->cookie_name ] );
+        list( $customer_id, $session_expiration, $session_expiring, $cookie_hash ) = explode( '||', $cookie_value );
 
         // Validate hash.
         $cookie_signature = $customer_id . '|' . $session_expiration;
@@ -232,30 +234,34 @@ class Session extends \WC_Session {
             return;
         }
 
-            $now              = time();
-            $expired_sessions = array();
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-            $wc_session_expires = $wpdb->get_col( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE '\_wcce\_session\_expires\_%' AND option_value < '$now'" );
+            $now                = time();
+            $wc_session_expires = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- $wpdb->options is WordPress core's own table name, not user input.
+                $wpdb->prepare(
+                    'SELECT option_name FROM %i WHERE option_name LIKE %s AND option_value < %d',
+                    $wpdb->options,
+                    $wpdb->esc_like( '_wcce_session_expires_' ) . '%',
+                    $now
+                )
+            );
 
 		foreach ( $wc_session_expires as $option_name ) {
-			$session_id         = substr( $option_name, 20 );
-			$expired_sessions[] = $option_name;  // Expires key.
-			$expired_sessions[] = "_catalogx_session_$session_id"; // Session key.
-		}
+			$session_key = '_catalogx_session_' . substr( $option_name, 20 );
 
-                $expired_sessions_chunked = array_chunk( $expired_sessions, 100 );
-		foreach ( $expired_sessions_chunked as $session_option_batch ) {
 			if ( wp_using_ext_object_cache() ) {
 				// delete from object cache first, to avoid cached but deleted options.
-				foreach ( $session_option_batch as $option_name ) {
-					wp_cache_delete( $option_name, 'options' );
-				}
+				wp_cache_delete( $option_name, 'options' );
+				wp_cache_delete( $session_key, 'options' );
 			}
 
-			// delete from options table.
-			$option_names = implode( "','", $session_option_batch );
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$wpdb->query( "DELETE FROM $wpdb->options WHERE option_name IN ('$option_names')" );
+			// delete the expires key and its session key from options table.
+			$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- $wpdb->options is WordPress core's own table name, not user input.
+				$wpdb->prepare(
+					'DELETE FROM %i WHERE option_name IN (%s, %s)',
+					$wpdb->options,
+					$option_name,
+					$session_key
+				)
+			);
 		}
     }
 

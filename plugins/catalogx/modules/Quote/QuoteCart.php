@@ -13,7 +13,7 @@ use CatalogX\Utill;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * catalogx REST API Quote Cart controller.
+ * CatalogX REST API Quote Cart controller.
  *
  * @class       Module class
  * @version     PRODUCT_VERSION
@@ -39,7 +39,7 @@ class QuoteCart extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'catalogx_permissions_check' ),
+                    'permission_callback' => array( $this, 'check_quote_cart_permission' ),
                 ),
             )
         );
@@ -51,17 +51,17 @@ class QuoteCart extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'catalogx_permissions_check' ),
+                    'permission_callback' => array( $this, 'check_quote_cart_permission' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
                     'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'catalogx_permissions_check' ),
+                    'permission_callback' => array( $this, 'check_quote_cart_permission' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::DELETABLE,
                     'callback'            => array( $this, 'delete_item' ),
-                    'permission_callback' => array( $this, 'catalogx_permissions_check' ), // Only admins can delete.
+                    'permission_callback' => array( $this, 'check_quote_cart_permission' ),
                 ),
             )
         );
@@ -72,21 +72,14 @@ class QuoteCart extends \WP_REST_Controller {
      *
      * @param object $request The request object.
      */
-    public function catalogx_permissions_check( $request ) {
-        $user_id = CatalogX()->current_user_id;
+    public function check_quote_cart_permission( $request ) {
         $method  = $request->get_method();
 
         // For non-logged-in users, allow read-only access.
-        if ( 0 === $user_id ) {
+        if ( ! is_user_logged_in() ) {
             return in_array( $method, array( 'GET', 'HEAD' ), true );
         }
 
-        // Only admins can delete.
-        if ( 'DELETE' === $method ) {
-            return Utill::current_user_has_capability( 'manage_options' );
-        }
-
-        // Check if user is customer, wholesale user, or admin.
         return Utill::current_user_has_capability( array( 'customer', 'wholesale_user', 'manage_options' ) );
     }
 
@@ -251,8 +244,7 @@ class QuoteCart extends \WP_REST_Controller {
         }
 
         try {
-            $product_id = $request->get_param( 'productId' );
-            $key        = $request->get_param( 'key' );
+            $key = $request->get_param( 'key' );
 
             if ( ! isset( $key ) || '' === (string) $key ) {
                 return new \WP_Error(
