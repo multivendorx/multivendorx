@@ -53,7 +53,7 @@ class BankTransfer {
                     'key'            => 'bank_details',
                     'type'           => 'checkbox',
                     'selectDeselect' => true,
-
+                    'addNewBtnText'  => __( 'Add custom bank detail', 'multivendorx' ),
                     'label'          => __( 'Bank details required from the store', 'multivendorx' ),
                     'options'        => array(
                         array(
@@ -126,9 +126,16 @@ class BankTransfer {
                 ),
             );
 
-            $bank_details = $settings['bank_details'] ?? array();
+            $withdrawal_settings = MultiVendorX()->setting->get_option( \MultiVendorX\Utill::MULTIVENDORX_SETTINGS['withdrawal-methods'] );
+            $bank_details        = is_array( $withdrawal_settings ) && isset( $withdrawal_settings['bank_details'] )
+                ? $withdrawal_settings['bank_details']
+                : ( $settings['bank_details'] ?? array() );
+            $custom_options      = is_array( $withdrawal_settings ) && isset( $withdrawal_settings['bank_details_options'] )
+                ? $withdrawal_settings['bank_details_options']
+                : ( $settings['bank_details_options'] ?? array() );
+            $bank_details        = is_array( $bank_details ) ? $bank_details : array();
 
-            if ( in_array( 'bank_name', $bank_details ) ) {
+            if ( in_array( 'bank_name', $bank_details, true ) ) {
                 $fields[] = array(
                     'key'   => 'bank_name',
                     'type'  => 'text',
@@ -136,7 +143,7 @@ class BankTransfer {
                 );
             }
 
-            if ( in_array( 'account_holder_name', $bank_details ) ) {
+            if ( in_array( 'account_holder_name', $bank_details, true ) ) {
                 $fields[] = array(
                     'key'   => 'account_holder_name',
                     'type'  => 'text',
@@ -144,7 +151,7 @@ class BankTransfer {
                 );
             }
 
-            if ( in_array( 'account_number', $bank_details ) ) {
+            if ( in_array( 'account_number', $bank_details, true ) ) {
                 $fields[] = array(
                     'key'   => 'account_number',
                     'type'  => 'text',
@@ -152,7 +159,7 @@ class BankTransfer {
                 );
             }
 
-            if ( in_array( 'bank_address', $bank_details ) ) {
+            if ( in_array( 'bank_address', $bank_details, true ) ) {
                 $fields[] = array(
                     'key'   => 'bank_address',
                     'type'  => 'textarea',
@@ -160,7 +167,7 @@ class BankTransfer {
                 );
             }
 
-            if ( in_array( 'routing_number', $bank_details ) ) {
+            if ( in_array( 'routing_number', $bank_details, true ) ) {
                 $fields[] = array(
                     'key'   => 'routing_number',
                     'type'  => 'text',
@@ -168,7 +175,7 @@ class BankTransfer {
                 );
             }
 
-            if ( in_array( 'iban', $bank_details ) ) {
+            if ( in_array( 'iban', $bank_details, true ) ) {
                 $fields[] = array(
                     'key'   => 'iban',
                     'type'  => 'text',
@@ -176,12 +183,42 @@ class BankTransfer {
                 );
             }
 
-            if ( in_array( 'destination_currency', $bank_details ) ) {
+            if ( in_array( 'destination_currency', $bank_details, true ) ) {
                 $fields[] = array(
                     'key'   => 'destination_currency',
                     'type'  => 'text',
                     'label' => 'Destination currency',
                 );
+            }
+
+            if ( is_array( $custom_options ) ) {
+                $existing_field_keys = array_column( $fields, 'key' );
+                foreach ( $custom_options as $custom_option ) {
+                    if ( ! is_array( $custom_option ) || ! isset( $custom_option['value'], $custom_option['label'] ) || ! is_scalar( $custom_option['value'] ) || ! is_scalar( $custom_option['label'] ) ) {
+                        continue;
+                    }
+
+                    $custom_key   = sanitize_key( (string) $custom_option['value'] );
+                    $custom_label = sanitize_text_field( (string) $custom_option['label'] );
+                    $field_key    = 'custom_' . $custom_key;
+
+                    if (
+                        empty( $custom_key ) ||
+                        empty( $custom_label ) ||
+                        ! in_array( $custom_key, $bank_details, true ) ||
+                        in_array( $custom_key, $existing_field_keys, true ) ||
+                        in_array( $field_key, $existing_field_keys, true )
+                    ) {
+                        continue;
+                    }
+
+                    $existing_field_keys[] = $field_key;
+                    $fields[]              = array(
+                        'key'   => $field_key,
+                        'type'  => 'text',
+                        'label' => $custom_label,
+                    );
+                }
             }
 
             return array(
@@ -200,6 +237,7 @@ class BankTransfer {
      * @param int    $order_id Order id.
      * @param string $transaction_id Transaction id.
      * @param string $note Payment note.
+     * @param int    $additional_receiver Additional receiver id.
      */
     public function process_payment( $store_id, $amount, $order_id = null, $transaction_id = null, $note = null, $additional_receiver = 0 ) {
 
