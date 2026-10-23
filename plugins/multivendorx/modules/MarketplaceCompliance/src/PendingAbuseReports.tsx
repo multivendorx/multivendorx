@@ -6,7 +6,7 @@ import { getApiLink } from '@zyra/core';
 import { PopupComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import Popup from '../../../src/components/Popup/Popup';
-import { formatDate, getUrl } from '../../../src/services/commonFunction';
+import { formatDate, getUrl, truncateText } from '../../../src/services/commonFunction';
 
 interface StoreOption {
 	label: string;
@@ -133,7 +133,7 @@ const PendingReportAbuse: React.FC<object> = () => {
 			{
 				label: __('Reason', 'multivendorx'),
 				icon: 'question',
-				value: row.reason || '—',
+				value: truncateText(row.reason, 20) || '—',
 			},
 		],
 		info_badges: [{ text: formatDate(row.created_at), color: 'blue' }],

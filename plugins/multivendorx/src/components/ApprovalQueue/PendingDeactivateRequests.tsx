@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import { ButtonInput } from '@zyra/inputs';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
-import { formatDate, getUrl } from '@/services/commonFunction';
+import { formatDate, getUrl, truncateText } from '@/services/commonFunction';
 
 const PendingDeactivateRequests: React.FC<object> = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -110,7 +110,7 @@ const PendingDeactivateRequests: React.FC<object> = () => {
 			{
 				label: __('Reason', 'multivendorx'),
 				icon: 'question',
-				value: row.reason || '—',
+				value: truncateText(row.reason, 20) || '—',
 			},
 		],
 		info_badges: [{ text: formatDate(row.date), color: 'blue' }],
