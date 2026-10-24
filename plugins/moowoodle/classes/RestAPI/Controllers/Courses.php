@@ -98,132 +98,201 @@ class Courses extends \WP_REST_Controller {
         }
     }
 
-	/**
-	 * Retrieves and formats a paginated list of courses with associated products,
-	 * categories, enrollment counts, and metadata.
-	 *
-	 * @param array $args {
-	 *     Optional arguments for filtering and pagination.
-	 *
-	 *     @type int    $limit        Number of items to retrieve per page. Default 10.
-	 *     @type int    $page         Current page number. Default 1.
-	 *     @type string $category     Category ID to filter courses by.
-	 *     @type string $searchaction Search type action ('course' or 'shortname').
-	 *     @type string $search       Search keyword/field value.
-	 * }
-	 * @return array Formatted array containing course items and total count.
-	 */
-	public function get_courses_records( $args = array() ) {
 
-		$limit         = (int) ( $args['limit'] ?? 10 );
-		$page          = max( (int) ( $args['page'] ?? 1 ), 1 );
-		$category_id   = $args['category'] ?? '';
-		$search_action = $args['searchaction'] ?? '';
-		$search_field  = $args['search'] ?? '';
+    /**
+     * Retrieves a paginated list of courses with associated products,
+     * categories, enrollment counts, and metadata.
+     *
+     * @param array $args {
+     *     Optional arguments for filtering and pagination.
+     *
+     *     @type int    $limit        Number of courses per page. Default 10.
+     *     @type int    $page         Current page number. Default 1.
+     *     @type int    $category     Category ID to filter courses by.
+     *     @type string $searchaction Search type: 'course' or 'shortname'.
+     *     @type string $search       Search keyword.
+     * }
+     * @return WP_REST_Response REST response containing formatted courses
+     *                          and pagination headers.
+     */
+    public function get_courses_records( $args = array() ) {
+        $args = wp_parse_args(
+            $args,
+            array(
+                'limit'        => 10,
+                'page'         => 1,
+                'category'     => 0,
+                'searchaction' => '',
+                'search'       => '',
+            )
+        );
 
-		$offset = ( $page - 1 ) * $limit;
+        $limit         = min( max( absint( $args['limit'] ), 1 ), 100 );
+        $page          = max( absint( $args['page'] ), 1 );
+        $offset        = ( $page - 1 ) * $limit;
+        $category_id   = absint( $args['category'] );
+        $search_action = sanitize_key( $args['searchaction'] );
+        $search_field  = sanitize_text_field( $args['search'] );
 
-		// Base filter array.
-		$filters = array(
-			'limit'  => $limit,
-			'offset' => $offset,
-		);
+        // Build course filters.
+        $filters = array(
+            'limit'  => $limit,
+            'offset' => $offset,
+        );
 
-		// Add category filter if provided.
-		if ( ! empty( $category_id ) ) {
-			$filters['category_id'] = $category_id;
-		}
+        if ( 0 < $category_id ) {
+            $filters['category_id'] = $category_id;
+        }
 
-		// Add search filter based on search action.
-		if ( 'course' === $search_action ) {
-			$filters['fullname'] = $search_field;
-		} elseif ( 'shortname' === $search_action ) {
-			$filters['shortname'] = $search_field;
-		}
+        if ( '' !== $search_field ) {
+            if ( 'course' === $search_action ) {
+                $filters['fullname'] = $search_field;
+            } elseif ( 'shortname' === $search_action ) {
+                $filters['shortname'] = $search_field;
+            }
+        }
 
-		// Get paginated courses from database.
-		$courses = MooWoodle()->course->get_courses( $filters );
+        // Retrieve paginated courses.
+        $courses = MooWoodle()->course->get_courses( $filters );
 
-		if ( empty( $courses ) ) {
-			return rest_ensure_response( array() );
-		}
+        // Count courses matching the same filters.
+        $count_filters = $filters;
+        unset( $count_filters['limit'], $count_filters['offset'] );
+        $count_filters['count'] = true;
 
-		$formatted_courses = array();
-		$moodle_base_url   = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) );
+        $total_courses = (int) MooWoodle()->course->get_courses( $count_filters );
 
-		foreach ( $courses as $course ) {
-			$product_image = '';
-			$product_name  = '';
-			$product_url   = '';
+        if ( empty( $courses ) ) {
+            $response = rest_ensure_response( array() );
+            $response->header( 'X-WP-Total', (string) $total_courses );
+            $response->header(
+                'X-WP-TotalPages',
+                (string) (int) ceil( $total_courses / $limit )
+            );
 
-			// Fetch associated WooCommerce product details if available.
-			if ( ! empty( $course['product_id'] ) ) {
-				$product = wc_get_product( (int) $course['product_id'] );
-				if ( $product ) {
-					$product_name  = $product->get_name();
-					$product_url   = esc_url_raw( admin_url( 'post.php?post=' . $product->get_id() . '&action=edit' ) );
-					$product_image = wp_get_attachment_url( $product->get_image_id() );
-				}
-			}
+            return $response;
+        }
 
-			// Format course duration and start/end dates.
-			$start           = ! empty( $course['startdate'] ) ? wp_date( 'M j, Y', $course['startdate'] ) : __( 'Not Set', 'moowoodle' );
-			$end             = ! empty( $course['enddate'] ) ? wp_date( 'M j, Y', $course['enddate'] ) : __( 'Not Set', 'moowoodle' );
-			$course_duration = ( ! empty( $course['startdate'] ) || ! empty( $course['enddate'] ) )
-                            ? sprintf(
-                                /* translators: 1: Start date, 2: End date */
-                                __( '%1$s - %2$s', 'moowoodle' ),
-                                $start,
-                                $end
-                            ) : 'NA';
+        $formatted_courses = array();
+        $moodle_base_url   = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) );
 
-			$moodle_url    = $moodle_base_url . "course/edit.php?id={$course['moodle_course_id']}";
-			$view_user_url = $moodle_base_url . "user/index.php?id={$course['moodle_course_id']}";
+        foreach ( $courses as $course ) {
+            $product_name  = '';
+            $product_url   = '';
+            $product_image = '';
 
-			// Get course categories.
-			$categories = MooWoodle()->category->get_course_categories( (int) $course['category_id'] );
-			$categories = reset( $categories );
+            // Retrieve the associated WooCommerce product.
+            if ( ! empty( $course['product_id'] ) ) {
+                $product = wc_get_product( absint( $course['product_id'] ) );
 
-			// Get enrolled users count for the course.
-			$enrolled_users = MooWoodle()->enrollment->get_enrollments(
-				array(
-					'course_id' => $course['id'],
-					'count'     => true,
+                if ( $product ) {
+                    $product_name = $product->get_name();
+                    $product_url  = esc_url_raw(
+                        add_query_arg(
+                            array(
+                                'post'   => $product->get_id(),
+                                'action' => 'edit',
+                            ),
+                            admin_url( 'post.php' )
+                        )
+                    );
+
+                    $image_id = $product->get_image_id();
+
+                    if ( 0 < $image_id ) {
+                        $product_image = wp_get_attachment_image_url( $image_id, 'full' );
+                        $product_image = $product_image ? esc_url_raw( $product_image ) : '';
+                    }
+                }
+            }
+
+            // Format course dates.
+            $start_date = ! empty( $course['startdate'] )
+                ? wp_date( 'M j, Y', (int) $course['startdate'] )
+                : __( 'Not Set', 'moowoodle' );
+
+            $end_date = ! empty( $course['enddate'] )
+                ? wp_date( 'M j, Y', (int) $course['enddate'] )
+                : __( 'Not Set', 'moowoodle' );
+
+            $course_duration = (
+                ! empty( $course['startdate'] )
+                || ! empty( $course['enddate'] )
+            )
+                ? sprintf(
+                    /* translators: 1: Start date, 2: End date. */
+                    __( '%1$s - %2$s', 'moowoodle' ),
+                    $start_date,
+                    $end_date
                 )
-			);
+                : 'NA';
 
-			// Build the formatted course structure.
-			$formatted_courses[] = apply_filters(
-				'moowoodle_formatted_course',
-				array(
-					'id'                => (int) $course['id'],
-					'moodle_url'        => $moodle_url,
-					'moodle_course_id'  => $course['moodle_course_id'],
-					'course_short_name' => $course['shortname'],
-					'course_name'       => $course['fullname'],
-					'product_name'      => $product_name,
-					'product_url'       => $product_url,
-					'product_image'     => $product_image,
-					'category_name'     => $categories['name'] ?? '',
-					'enrolled_user'     => $enrolled_users,
-					'view_users_url'    => $view_user_url,
-					'date'              => $course_duration,
+            // Build Moodle URLs.
+            $moodle_course_id = absint( $course['moodle_course_id'] ?? 0 );
+
+            $moodle_url = add_query_arg(
+                'id',
+                $moodle_course_id,
+                $moodle_base_url . 'course/edit.php'
+            );
+
+            $view_users_url = add_query_arg(
+                'id',
+                $moodle_course_id,
+                $moodle_base_url . 'user/index.php'
+            );
+
+            // Retrieve course category.
+            $categories = MooWoodle()->category->get_course_categories(
+                absint( $course['category_id'] ?? 0 )
+            );
+
+            $category = (
+                ! empty( $categories )
+                && is_array( $categories )
+            )
+                ? reset( $categories )
+                : array();
+
+            // Retrieve enrollment count.
+            $enrolled_users = MooWoodle()->enrollment->get_enrollments(
+                array(
+                    'course_id' => absint( $course['id'] ),
+                    'count'     => true,
                 )
-			);
-		}
+            );
 
-		// Get total count of courses matching filters.
-		$total_courses = MooWoodle()->course->get_courses(
-            array( 'count' => true )
-		);
+            // Format the course record.
+            $formatted_courses[] = apply_filters(
+                'moowoodle_formatted_course',
+                array(
+                    'id'                => absint( $course['id'] ),
+                    'moodle_url'        => esc_url_raw( $moodle_url ),
+                    'moodle_course_id'  => $moodle_course_id,
+                    'course_short_name' => $course['shortname'] ?? '',
+                    'course_name'       => $course['fullname'] ?? '',
+                    'product_name'      => $product_name,
+                    'product_url'       => $product_url,
+                    'product_image'     => $product_image,
+                    'category_name'     => $category['name'] ?? '',
+                    'enrolled_user'     => (int) $enrolled_users,
+                    'view_users_url'    => esc_url_raw( $view_users_url ),
+                    'date'              => $course_duration,
+                )
+            );
+        }
 
-        // Create REST response with items.
+        // Return the REST response with pagination headers.
         $response = rest_ensure_response( $formatted_courses );
-        // Set the total count header for pagination support.
-        $response->header( 'X-WP-Total', $total_courses );
 
-		return $response;
-	}
+        $response->header( 'X-WP-Total', (string) $total_courses );
+        $response->header(
+            'X-WP-TotalPages',
+            (string) (int) ceil( $total_courses / $limit )
+        );
+
+        return $response;
+    }
 
     /**
      * Get course and category filter items.
