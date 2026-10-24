@@ -225,6 +225,7 @@ const Course: React.FC = () => {
 		rows,
 		totalRows,
 		isLoading,
+		setIsLoading,
 
 		onQueryUpdate: doRefreshTableData,
 
