@@ -29,7 +29,7 @@ class Promotions {
             return;
         }
 
-        $install_url = wp_nonce_url( self_admin_url( MOOWOODLE_VULOMAIL_INSTALL_URL ), 'install-plugin_vulomail' );
+        $install_url = wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=vulomail' ), 'install-plugin_vulomail' );
         ?>
         <div class="notice notice-info is-dismissible">
             <h2><?php esc_html_e( 'Track enrollment emails with VuloMail', 'moowoodle' ); ?></h2>
