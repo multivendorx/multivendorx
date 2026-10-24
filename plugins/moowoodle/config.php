@@ -12,4 +12,3 @@ define( 'MOOWOODLE_PRO_SHOP_URL', 'https://dualcube.com/product/moowoodle-pro/?u
 define( 'MOOWOODLE_PLUGIN_SLUG', 'moowoodle' );
 define( 'MOOWOODLE_YOUTUBE_VIDEO_URL', 'https://www.youtube.com/embed/fL7wPVYopTU?si=BZeP1WwCxBSSoM7h' );
 define( 'MOOWOODLE_CHAT_URL', 'https://tawk.to/chat/6504346eb1aaa13b7a77026c/1hac6pkpm' );
-define( 'MOOWOODLE_VULOMAIL_URL', 'https://vulomail.com/' );

@@ -43,7 +43,7 @@ class Promotions {
                     <?php esc_html_e( 'Install VuloMail', 'moowoodle' ); ?>
                 </a>
 
-                <a href="<?php echo esc_url( MOOWOODLE_VULOMAIL_URL ); ?>" target="_blank" rel="noopener noreferrer">
+                <a href="<?php echo esc_url( 'https://vulomail.com/' ); ?>" target="_blank" rel="noopener noreferrer">
                     <?php esc_html_e( 'Learn more', 'moowoodle' ); ?>
                 </a>
             </p>
