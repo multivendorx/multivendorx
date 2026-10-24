@@ -103,7 +103,7 @@ class Synchronization extends \WP_REST_Controller {
 
             switch ( $sync_type ) {
                 case 'course':
-                    return $this->course_synchronization( $request );
+                    return $this->course_synchronization();
 
                 default:
                     return apply_filters(
@@ -119,10 +119,9 @@ class Synchronization extends \WP_REST_Controller {
     /**
      * Save the setting set in react's admin setting page.
      *
-     * @param mixed $request rest api request object.
      * @return \WP_Error | \WP_REST_Response
      */
-    public function course_synchronization( $request ) {
+    public function course_synchronization() {
         // Flush course sync status before sync start.
         Util::flush_sync_status( 'course' );
 

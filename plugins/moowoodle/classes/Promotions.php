@@ -14,6 +14,57 @@ class Promotions {
     public function __construct() {
         $this->pro_upgrade_url = MOOWOODLE_PRO_SHOP_URL;
         add_action( 'admin_notices', array( $this, 'display_unsupported_extension_notice' ) );
+        add_action( 'admin_notices', array( $this, 'display_vulomail_promotion_notice' ) );
+    }
+
+    /**
+     * Display the VuloMail promotion to administrators who have not activated it.
+     *
+     * This notice is independent of the MooWoodle Pro license state.
+     *
+     * @return void
+     */
+    public function display_vulomail_promotion_notice() {
+        if ( $this->is_vulomail_active() ) {
+            return;
+        }
+
+        $install_url = wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=vulomail' ), 'install-plugin_vulomail' );
+        ?>
+        <div class="notice notice-info is-dismissible">
+            <h2><?php esc_html_e( 'Track enrollment emails with VuloMail', 'moowoodle' ); ?></h2>
+
+            <p>
+                <?php esc_html_e( 'See which enrollment emails were sent to students and quickly identify emails that failed to send.', 'moowoodle' ); ?>
+            </p>
+
+            <p>
+                <a class="button button-secondary" href="<?php echo esc_url( $install_url ); ?>">
+                    <?php esc_html_e( 'Install VuloMail', 'moowoodle' ); ?>
+                </a>
+
+                <a href="<?php echo esc_url( 'https://vulomail.com/' ); ?>" target="_blank" rel="noopener noreferrer">
+                    <?php esc_html_e( 'Learn more', 'moowoodle' ); ?>
+                </a>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Check whether VuloMail is active on this site or network.
+     *
+     * @return bool
+     */
+    private function is_vulomail_active() {
+        $active_plugins = (array) get_option( 'active_plugins', array() );
+
+        if ( is_multisite() ) {
+            $network_plugins = array_keys( (array) get_site_option( 'active_sitewide_plugins', array() ) );
+            $active_plugins  = array_merge( $active_plugins, $network_plugins );
+        }
+
+        return in_array( 'vulomail/vulomail.php', $active_plugins, true );
     }
 
     /**
