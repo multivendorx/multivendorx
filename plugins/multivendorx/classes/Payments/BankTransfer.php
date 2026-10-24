@@ -53,7 +53,7 @@ class BankTransfer {
                     'key'            => 'bank_details',
                     'type'           => 'checkbox',
                     'selectDeselect' => true,
-                    'addNewBtnText'  => __( 'Add custom bank detail', 'multivendorx' ),
+                    // 'addNewBtnText'  => __( 'Add custom bank detail', 'multivendorx' ),
                     'label'          => __( 'Bank details required from the store', 'multivendorx' ),
                     'options'        => array(
                         array(

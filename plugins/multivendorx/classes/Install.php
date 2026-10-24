@@ -304,7 +304,7 @@ class Install {
 
             $settings['payment_methods']['bank-transfer']['bank_details_options'] = $options;
 
-            update_option( Utill::MULTIVENDORX_SETTINGS['withdrawal-methods'], $settings );
+            // update_option( Utill::MULTIVENDORX_SETTINGS['withdrawal-methods'], $settings );
         }
 
     }
@@ -1049,50 +1049,50 @@ class Install {
                     'enable' => true,
                     'bank_details' => array( 'bank_name',  'account_number','destination_currency'),
 
-                    'bank_details_options' => array(
-                        array(
-                            'key'   => 'bank_name',
-                            'label' => __( 'Bank name', 'multivendorx' ),
-                            'value' => 'bank_name',
-                            'edit'  => true,
-                        ),
-                        array(
-                            'key'   => 'account_holder_name',
-                            'label' => __( 'Account holder Name', 'multivendorx' ),
-                            'value' => 'account_holder_name',
-                            'edit'  => true,
-                        ),
-                        array(
-                            'key'   => 'account_number',
-                            'label' => __( 'Account number', 'multivendorx' ),
-                            'value' => 'account_number',
-                            'edit'  => true,
-                        ),
-                        array(
-                            'key'   => 'routing_number',
-                            'label' => __( 'ABA routing number', 'multivendorx' ),
-                            'value' => 'routing_number',
-                            'edit'  => true,
-                        ),
-                        array(
-                            'key'   => 'destination_currency',
-                            'label' => __( 'Destination currency', 'multivendorx' ),
-                            'value' => 'destination_currency',
-                            'edit'  => true,
-                        ),
-                        array(
-                            'key'   => 'bank_address',
-                            'label' => __( 'Bank address', 'multivendorx' ),
-                            'value' => 'bank_address',
-                            'edit'  => true,
-                        ),
-                        array(
-                            'key'   => 'iban',
-                            'label' => __( 'IBAN', 'multivendorx' ),
-                            'value' => 'iban',
-                            'edit'  => true,
-                        ),
-                    ),
+                    // 'bank_details_options' => array(
+                    //     array(
+                    //         'key'   => 'bank_name',
+                    //         'label' => __( 'Bank name', 'multivendorx' ),
+                    //         'value' => 'bank_name',
+                    //         'edit'  => true,
+                    //     ),
+                    //     array(
+                    //         'key'   => 'account_holder_name',
+                    //         'label' => __( 'Account holder Name', 'multivendorx' ),
+                    //         'value' => 'account_holder_name',
+                    //         'edit'  => true,
+                    //     ),
+                    //     array(
+                    //         'key'   => 'account_number',
+                    //         'label' => __( 'Account number', 'multivendorx' ),
+                    //         'value' => 'account_number',
+                    //         'edit'  => true,
+                    //     ),
+                    //     array(
+                    //         'key'   => 'routing_number',
+                    //         'label' => __( 'ABA routing number', 'multivendorx' ),
+                    //         'value' => 'routing_number',
+                    //         'edit'  => true,
+                    //     ),
+                    //     array(
+                    //         'key'   => 'destination_currency',
+                    //         'label' => __( 'Destination currency', 'multivendorx' ),
+                    //         'value' => 'destination_currency',
+                    //         'edit'  => true,
+                    //     ),
+                    //     array(
+                    //         'key'   => 'bank_address',
+                    //         'label' => __( 'Bank address', 'multivendorx' ),
+                    //         'value' => 'bank_address',
+                    //         'edit'  => true,
+                    //     ),
+                    //     array(
+                    //         'key'   => 'iban',
+                    //         'label' => __( 'IBAN', 'multivendorx' ),
+                    //         'value' => 'iban',
+                    //         'edit'  => true,
+                    //     ),
+                    // ),
                 ),
             ),
         );
