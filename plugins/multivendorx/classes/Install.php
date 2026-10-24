@@ -261,7 +261,6 @@ class Install {
             }
         }
 
-
         if ( version_compare( $previous_version, '5.0.21', '<' ) ) {
             $events_delivery_settings = get_option( Utill::MULTIVENDORX_SETTINGS['events-delivery'], array() );
             $has_email_recipient      = ! empty( $events_delivery_settings['receiver_email_address'] );
@@ -271,42 +270,7 @@ class Install {
                 update_option( 'multivendorx_vulomail_migration_status', 'pending' );
                 update_option( 'multivendorx_vulomail_migration_reason', 'migrate' );
             }
-
-            // Migrate bank transfer options.
-            $settings = get_option( Utill::MULTIVENDORX_SETTINGS['withdrawal-methods'], array() );
-
-            $bank_details = array(
-                'bank_name'            => __( 'Bank name', 'multivendorx' ),
-                'account_holder_name'  => __( 'Account holder Name', 'multivendorx' ),
-                'account_number'       => __( 'Account number', 'multivendorx' ),
-                'routing_number'       => __( 'ABA routing number', 'multivendorx' ),
-                'destination_currency' => __( 'Destination currency', 'multivendorx' ),
-                'bank_address'         => __( 'Bank address', 'multivendorx' ),
-                'iban'                 => __( 'IBAN', 'multivendorx' ),
-            );
-
-            $options = $settings['payment_methods']['bank-transfer']['bank_details_options'] ?? array();
-
-            $existing_keys = array_column( $options, 'key' );
-
-            foreach ( $bank_details as $key => $label ) {
-                if ( in_array( $key, $existing_keys, true ) ) {
-                    continue;
-                }
-
-                $options[] = array(
-                    'key'   => $key,
-                    'label' => $label,
-                    'value' => $key,
-                    'edit'  => true,
-                );
-            }
-
-            $settings['payment_methods']['bank-transfer']['bank_details_options'] = $options;
-
-            // update_option( Utill::MULTIVENDORX_SETTINGS['withdrawal-methods'], $settings );
         }
-
     }
 
     /**
@@ -1002,36 +966,42 @@ class Install {
                     'value' => 'canada_post',
                     'edit'  => true,
                 ),
+
                 array(
                     'key'   => 'city_link',
                     'label' => 'City link',
                     'value' => 'city_link',
                     'edit'  => true,
                 ),
+
                 array(
                     'key'   => 'dhl',
                     'label' => 'DHL',
                     'value' => 'dhl',
                     'edit'  => true,
                 ),
+
                 array(
                     'key'   => 'fastway_south_africa',
                     'label' => 'Fastway South Africa',
                     'value' => 'fastway_south_africa',
                     'edit'  => true,
                 ),
+
                 array(
                     'key'   => 'fedex',
                     'label' => 'FedEx',
                     'value' => 'fedex',
                     'edit'  => true,
                 ),
+
                 array(
                     'key'   => 'ontrac',
                     'label' => 'OnTrac',
                     'value' => 'ontrac',
                     'edit'  => true,
                 ),
+
                 array(
                     'key'   => 'polish_shipping',
                     'label' => 'Polish shipping providers',
@@ -1046,53 +1016,8 @@ class Install {
         $payment_settings = array(
             'payment_methods' => array(
                 'bank-transfer' => array(
-                    'enable' => true,
-                    'bank_details' => array( 'bank_name',  'account_number','destination_currency'),
-
-                    // 'bank_details_options' => array(
-                    //     array(
-                    //         'key'   => 'bank_name',
-                    //         'label' => __( 'Bank name', 'multivendorx' ),
-                    //         'value' => 'bank_name',
-                    //         'edit'  => true,
-                    //     ),
-                    //     array(
-                    //         'key'   => 'account_holder_name',
-                    //         'label' => __( 'Account holder Name', 'multivendorx' ),
-                    //         'value' => 'account_holder_name',
-                    //         'edit'  => true,
-                    //     ),
-                    //     array(
-                    //         'key'   => 'account_number',
-                    //         'label' => __( 'Account number', 'multivendorx' ),
-                    //         'value' => 'account_number',
-                    //         'edit'  => true,
-                    //     ),
-                    //     array(
-                    //         'key'   => 'routing_number',
-                    //         'label' => __( 'ABA routing number', 'multivendorx' ),
-                    //         'value' => 'routing_number',
-                    //         'edit'  => true,
-                    //     ),
-                    //     array(
-                    //         'key'   => 'destination_currency',
-                    //         'label' => __( 'Destination currency', 'multivendorx' ),
-                    //         'value' => 'destination_currency',
-                    //         'edit'  => true,
-                    //     ),
-                    //     array(
-                    //         'key'   => 'bank_address',
-                    //         'label' => __( 'Bank address', 'multivendorx' ),
-                    //         'value' => 'bank_address',
-                    //         'edit'  => true,
-                    //     ),
-                    //     array(
-                    //         'key'   => 'iban',
-                    //         'label' => __( 'IBAN', 'multivendorx' ),
-                    //         'value' => 'iban',
-                    //         'edit'  => true,
-                    //     ),
-                    // ),
+                    'enable'       => true,
+                    'bank_details' => array( 'bank_name', 'account_number' ),
                 ),
             ),
         );
