@@ -21,8 +21,8 @@ use MooWoodle\FrontendScripts;
  */
 class Course {
 	/**
-     * Course constructor.
-     */
+	 * Course constructor.
+	 */
 	public function __construct() {
 		// Add Link Moodle Course in WooCommerce edit product tab.
 		add_action( 'add_meta_boxes', array( $this, 'add_additional_metabox' ) );
@@ -30,10 +30,10 @@ class Course {
 	}
 
 	/**
-     * Enqueues all assets for admin.
-     *
-     * @return void
-     */
+	 * Enqueues all assets for admin.
+	 *
+	 * @return void
+	 */
 	public function enqueue_admin_assets() {
 		$screen = get_current_screen();
 		if ( ! empty( $screen ) && 'product' === $screen->post_type ) {
@@ -163,7 +163,7 @@ class Course {
 	 * Insert or update a course record by Moodle course ID.
 	 *
 	 * @param array $course_data Course data. Must include 'moodle_course_id'.
-	 * @return int|false Rows affected or false on failure.
+	 * @return int|false Course ID on success, false on failure.
 	 */
 	public static function update_course( $course_data ) {
 		global $wpdb;
@@ -212,31 +212,33 @@ class Course {
 		}
 
 		$synced_course_ids = array();
-        foreach ( $moodle_courses as $course ) {
-            if ( empty( $course['format'] ) || 'site' === $course['format'] ) {
-                continue;
-            }
+		foreach ( $moodle_courses as $course ) {
+			if ( empty( $course['format'] ) || 'site' === $course['format'] ) {
+				continue;
+			}
 
-            $course_data = array(
-                'moodle_course_id' => (int) $course['id'],
-                'shortname'        => sanitize_text_field( $course['shortname'] ?? '' ),
-                'category_id'      => (int) ( $course['categoryid'] ?? 0 ),
-                'fullname'         => sanitize_text_field( $course['fullname'] ?? '' ),
-                'startdate'        => (int) ( $course['startdate'] ?? 0 ),
-                'enddate'          => (int) ( $course['enddate'] ?? 0 ),
-            );
+			$course_data = array(
+				'moodle_course_id' => (int) $course['id'],
+				'shortname'        => sanitize_text_field( $course['shortname'] ?? '' ),
+				'category_id'      => (int) ( $course['categoryid'] ?? 0 ),
+				'fullname'         => sanitize_text_field( $course['fullname'] ?? '' ),
+				'startdate'        => (int) ( $course['startdate'] ?? 0 ),
+				'enddate'          => (int) ( $course['enddate'] ?? 0 ),
+			);
 
-            $synced_course_ids[] = self::update_course( $course_data );
+			$synced_course_ids[] = self::update_course( $course_data );
 
-            Util::increment_sync_count( 'course' );
-        }
+			Util::increment_sync_count( 'course' );
+		}
 		if ( $force_delete ) {
 			self::cleanup_courses( $synced_course_ids );
 		}
-    }
+	}
 
 	/**
-	 * Creates custom tab for product types.
+	 * Add the "Moodle Enrollment Mapping" meta box to the product edit screen.
+	 *
+	 * @return void
 	 */
 	public function add_additional_metabox() {
 		add_meta_box(
@@ -249,25 +251,25 @@ class Course {
 		);
 	}
 
-    /**
-     * Add meta box panel.
-     *
-     * @return void
-     */
+	/**
+	 * Add meta box panel.
+	 *
+	 * @return void
+	 */
 	public function render_product_metabox() {
 		echo '<div id="moodle-enrollment-mapping-tab"></div>';
 	}
 
 	/**
-     * Delete all courses whose IDs are not present in $exclude_ids array.
-     *
-     * @param array $exclude_ids course ids.
-     * @return void
-     */
-    public static function cleanup_courses( $exclude_ids ) {
-        global $wpdb;
+	 * Delete all courses whose IDs are not present in $exclude_ids array.
+	 *
+	 * @param array $exclude_ids course ids.
+	 * @return void
+	 */
+	public static function cleanup_courses( $exclude_ids ) {
+		global $wpdb;
 
-        $exclude_ids = array_map( 'intval', (array) $exclude_ids );
+		$exclude_ids = array_map( 'intval', (array) $exclude_ids );
 		if ( empty( $exclude_ids ) ) {
 			return;
 		}
@@ -278,12 +280,12 @@ class Course {
 		);
 
 		$existing_ids  = wp_list_pluck( $existing_ids, 'id' );
-        $ids_to_delete = array_diff( $existing_ids, $exclude_ids );
-        $table_name    = $wpdb->prefix . Util::TABLES['course'];
+		$ids_to_delete = array_diff( $existing_ids, $exclude_ids );
+		$table_name    = $wpdb->prefix . Util::TABLES['course'];
 
-        foreach ( $ids_to_delete as $course_id ) {
+		foreach ( $ids_to_delete as $course_id ) {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            $wpdb->delete( $table_name, array( 'id' => $course_id ) );
-        }
-    }
+			$wpdb->delete( $table_name, array( 'id' => $course_id ) );
+		}
+	}
 }

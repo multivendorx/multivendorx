@@ -20,13 +20,13 @@ class ExternalService {
 
 	/**
 	 * Get moodle core function
-     *
+	 *
 	 * @return string[] core functions
 	 */
 	public function get_registered_core_functions() {
 		return apply_filters(
-            'moowoodle_registered_core_functions',
-            array(
+			'moowoodle_registered_core_functions',
+			array(
 				'get_site_info'    => 'core_webservice_get_site_info',
 				'get_categories'   => 'core_course_get_categories',
 				'get_courses'      => 'core_course_get_courses',
@@ -37,7 +37,7 @@ class ExternalService {
 				'enrol_users'      => 'enrol_manual_enrol_users',
 				'unenrol_users'    => 'enrol_manual_unenrol_users',
 			)
-        );
+		);
 	}
 
 	/**
@@ -93,14 +93,15 @@ class ExternalService {
 	}
 
 	/**
-	 * Check server response result .
-     *
-	 * @param object | null $response response.
-	 * @return array $response
+	 * Normalise a Moodle HTTP response into `array( 'data' => …, 'success' => true )`
+	 * or `array( 'error' => message )`.
+	 *
+	 * @param array|\WP_Error|null $response Response from wp_remote_post().
+	 * @return array
 	 */
 	private function parse_moodle_response( $response ) {
 		if ( empty( $response ) ) {
-			return array( 'error' => 'Response is not available' );
+			return array( 'error' => __( 'Response is not available', 'moowoodle' ) );
 		}
 
 		// if server response contains error.
@@ -128,13 +129,15 @@ class ExternalService {
 
 		// if moodle response contains error.
 		if ( $response && ! empty( $response['exception'] ) ) {
-			if ( false !== strpos( $response['message'], 'Access control exception' ) ) {
-				return array( 'error' => $response['message'] . ' <a href="' . MooWoodle()->setting->get_setting( 'moodle_url' ) . '/admin/settings.php?section=externalservices">Link</a>' );
-			}
-			if ( false !== strpos( $response['message'], 'Invalid moodle_access_token' ) ) {
-				return array( 'error' => $response['message'] . ' <a href="' . MooWoodle()->setting->get_setting( 'moodle_url' ) . '/admin/webservice/tokens.php">Link</a>' );
-			}
-			return array( 'error' => $response['message'] . ' <a href="' . MooWoodle()->setting->get_setting( 'moodle_url' ) . '/admin/webservice/tokens.php">Link</a>' );
+			// Point the admin at the Moodle screen that fixes the error: external services for
+			// access-control errors, the token screen for everything else.
+			$fix_path = false !== strpos( $response['message'], 'Access control exception' )
+				? '/admin/settings.php?section=externalservices'
+				: '/admin/webservice/tokens.php';
+
+			return array(
+				'error' => esc_html( $response['message'] ) . ' <a href="' . esc_url( untrailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) ) . $fix_path ) . '">' . esc_html__( 'Link', 'moowoodle' ) . '</a>',
+			);
 		}
 
 		// success.

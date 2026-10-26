@@ -44,15 +44,22 @@ const MyCourse: React.FC = () => {
 			},
 		})
 			.then((response) => {
-				setCourses(response.data || []);
-				setTotalRows(Number(response.headers['x-wp-total']) || 0);
-				setStatusCounts({
+				const counts = {
 					all: Number(response.headers['x-wp-total']) || 0,
 					enrolled: Number(response.headers['x-wp-enrolled']) || 0,
 					expired: Number(response.headers['x-wp-expired']) || 0,
 					unenrolled:
 						Number(response.headers['x-wp-unenrolled']) || 0,
-				});
+				};
+
+				setCourses(response.data || []);
+				// X-WP-Total counts every status, so page through the selected tab's own count.
+				setTotalRows(
+					statusFilter
+						? counts[statusFilter as keyof typeof counts] || 0
+						: counts.all
+				);
+				setStatusCounts(counts);
 			})
 			.catch(() => {
 				setError(__('Failed to fetch courses.', 'moowoodle'));

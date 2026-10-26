@@ -25,51 +25,51 @@ defined( 'ABSPATH' ) || exit;
  */
 class Rest {
 
-    /**
-     * Container for all our classes
-     *
-     * @var array
-     */
-    private $container = array();
-    /**
-     * Constructor
-     */
-    public function __construct() {
-        $this->init_classes();
-        add_action( 'rest_api_init', array( $this, 'register_rest_api_routes' ), 10 );
-    }
+	/**
+	 * Container for all our classes
+	 *
+	 * @var array
+	 */
+	private $container = array();
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$this->init_classes();
+		add_action( 'rest_api_init', array( $this, 'register_rest_api_routes' ), 10 );
+	}
 
-    /**
-     * Initialize all REST API controller classes.
-     */
-    public function init_classes() {
-        $this->container = array(
-            'settings'        => new Settings(),
-            'logs'            => new Logs(),
-            'synchronization' => new Synchronization(),
-            'courses'         => new Courses(),
-            'my_courses'      => new MyCourses(),
-            'test_connection' => new TestConnection(),
-        );
-    }
-    /**
-     * Register REST API routes.
-     */
-    public function register_rest_api_routes() {
-        foreach ( $this->container as $controller ) {
-            if ( method_exists( $controller, 'register_routes' ) ) {
-                $controller->register_routes();
-            }
-        }
-    }
+	/**
+	 * Initialize all REST API controller classes.
+	 */
+	public function init_classes() {
+		$this->container = array(
+			'settings'        => new Settings(),
+			'logs'            => new Logs(),
+			'synchronization' => new Synchronization(),
+			'courses'         => new Courses(),
+			'my_courses'      => new MyCourses(),
+			'test_connection' => new TestConnection(),
+		);
+	}
+	/**
+	 * Register REST API routes.
+	 */
+	public function register_rest_api_routes() {
+		foreach ( $this->container as $controller ) {
+			if ( method_exists( $controller, 'register_routes' ) ) {
+				$controller->register_routes();
+			}
+		}
+	}
 
-    /**
-     * Get REST API controller.
-     *
-     * @param string $service_key Service key.
-     * @return object|null
-     */
-    public function get_service( $service_key ) {
-        return $this->container[ $service_key ] ?? null;
-    }
+	/**
+	 * Get REST API controller.
+	 *
+	 * @param string $service_key Service key.
+	 * @return object|null
+	 */
+	public function get_service( $service_key ) {
+		return $this->container[ $service_key ] ?? null;
+	}
 }

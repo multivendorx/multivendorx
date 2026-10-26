@@ -20,10 +20,10 @@ use MooWoodle\Util;
  */
 class Product {
 
-    /**
-     * Product class constructor.
-     */
-    public function __construct() {
+	/**
+	 * Product class constructor.
+	 */
+	public function __construct() {
 		// Course meta save with WooCommerce product save.
 		add_action( 'woocommerce_process_product_meta', array( $this, 'save_product_meta_data' ) );
 
@@ -35,7 +35,7 @@ class Product {
 		add_action( 'wp_trash_post', array( $this, 'handle_woocommerce_product_trash' ), 10, 1 );
 
 		add_action( 'untrash_post', array( $this, 'handle_woocommerce_product_restore' ), 10, 1 );
-    }
+	}
 
 	/**
 	 * Retrieves a WooCommerce product associated with a Moodle course ID.
@@ -47,7 +47,7 @@ class Product {
 
 		// Query products with matching moodle_course_id.
 		$matched_products = wc_get_products(
-            array(
+			array(
 				'meta_query' => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 					array(
 						'key'     => Util::MOOWOODLE_PRODUCT_META['moodle_course_id'],
@@ -56,8 +56,8 @@ class Product {
 					),
 				),
 				'limit'      => 1,
-            )
-        );
+			)
+		);
 
 		return $matched_products[0] ?? null;
 	}
@@ -89,19 +89,19 @@ class Product {
 			$product = new \WC_Product_Simple();
 		}
 
-        // Retrieve mapped WooCommerce product category.
-        $product_category = MooWoodle()->category->get_product_category( $course['categoryid'], 'product_cat' );
+		// Retrieve mapped WooCommerce product category.
+		$product_category = MooWoodle()->category->get_product_category( $course['categoryid'], 'product_cat' );
 
-        // Query products with matching moodle_course_id.
+		// Query products with matching moodle_course_id.
 		$product->set_name( sanitize_text_field( $course['fullname'] ?? '' ) );
 		$product->set_slug( sanitize_title( $course['shortname'] ?? '' ) );
 		$product->set_description( wp_kses_post( $course['summary'] ?? '' ) );
-        $product->set_status( 'publish' );
+		$product->set_status( 'publish' );
 		if ( $product_category && ! is_wp_error( $product_category ) ) {
 			$product->set_category_ids( array( $product_category->term_id ) );
 		}
-        $product->set_virtual( true );
-        $product->set_catalog_visibility( ! empty( $course['visible'] ) ? 'visible' : 'hidden' );
+		$product->set_virtual( true );
+		$product->set_catalog_visibility( ! empty( $course['visible'] ) ? 'visible' : 'hidden' );
 
 		// Set product's sku.
 		try {
@@ -111,11 +111,11 @@ class Product {
 		}
 
 		// Retrieve linked WordPress course from Moodle course ID.
-        $wordpress_course = MooWoodle()->course->get_courses(
-            array(
+		$wordpress_course = MooWoodle()->course->get_courses(
+			array(
 				'moodle_course_id' => $course['id'],
-            )
-        );
+			)
+		);
 
 		$wordpress_course = $wordpress_course[0] ?? array();
 
@@ -130,7 +130,7 @@ class Product {
 			$product->update_meta_data( $key, $value );
 		}
 
-        $product->save();
+		$product->save();
 
 		MooWoodle()->course->update_course(
 			array(
@@ -141,12 +141,12 @@ class Product {
 		return $product->get_id();
 	}
 
-    /**
+	/**
 	 * Sync multiple Moodle courses with WooCommerce products.
-     *
-     * @param mixed $courses all courses.
-     * @return void
-     */
+	 *
+	 * @param array $courses Courses returned by Moodle's core_course_get_courses.
+	 * @return void
+	 */
 	public static function update_products( $courses ) {
 		$synced_product_ids = array();
 
@@ -163,12 +163,12 @@ class Product {
 
 		// Update all products.
 		Util::set_sync_status(
-            array(
+			array(
 				'action' => __( 'Update Product', 'moowoodle' ),
 				'total'  => max( 0, count( $courses ) - 1 ),
-            ),
-            'course'
-        );
+			),
+			'course'
+		);
 
 		foreach ( $courses as $course ) {
 
@@ -295,6 +295,7 @@ class Product {
 	 * effectively removing the product-course relationship.
 	 *
 	 * @param int $product_id The ID of the trashed product.
+	 * @return void
 	 */
 	public function handle_woocommerce_product_trash( $product_id ) {
 		if ( 'product' !== get_post_type( $product_id ) ) {
@@ -320,6 +321,7 @@ class Product {
 	 * to the course record, restoring the relationship.
 	 *
 	 * @param int $product_id The ID of the restored product.
+	 * @return void
 	 */
 	public function handle_woocommerce_product_restore( $product_id ) {
 		if ( 'product' !== get_post_type( $product_id ) ) {
@@ -340,14 +342,14 @@ class Product {
 
 	/**
 	 * Draft published products that are no longer linked to synced courses.
-     *
+	 *
 	 * @param array $excluded_product_ids product ids.
 	 * @return void
 	 */
 	public static function draft_missing_products( $excluded_product_ids ) {
-        // get all product except $excluded_product_ids array.
+		// get all product except $excluded_product_ids array.
 		$draft_product_ids = \wc_get_products(
-            array(
+			array(
 				'exclude'    => $excluded_product_ids,
 				'status'     => 'publish',
 				'return'     => 'ids',
@@ -357,8 +359,8 @@ class Product {
 						'compare' => 'EXISTS',
 					),
 				),
-            )
-        );
+			)
+		);
 
 		foreach ( $draft_product_ids as $product_id ) {
 			wp_update_post(
