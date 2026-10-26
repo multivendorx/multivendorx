@@ -18,17 +18,17 @@ defined( 'ABSPATH' ) || exit;
  */
 class Admin {
 	/**
-     * Admin constructor.
-     */
+	 * Admin constructor.
+	 */
 	public function __construct() {
-        add_action( 'admin_menu', array( $this, 'add_menus' ) );
+		add_action( 'admin_menu', array( self::class, 'add_menus' ) );
 		// enqueue scripts in admin panel.
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ), 20 );
 
 		// Allow URL.
-        add_filter( 'allowed_redirect_hosts', array( $this, 'allow_moowoodle_redirect_host' ) );
+		add_filter( 'allowed_redirect_hosts', array( $this, 'allow_moowoodle_redirect_host' ) );
 		// For loco translation.
-        add_action( 'load_script_textdomain_relative_path', array( $this, 'textdomain_relative_path' ), 10, 2 );
+		add_filter( 'load_script_textdomain_relative_path', array( $this, 'textdomain_relative_path' ), 10, 2 );
 		// Style the "Upgrade to Pro" submenu label (rendered in every admin page's sidebar).
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_upgrade_menu_style' ) );
 	}
@@ -51,10 +51,10 @@ class Admin {
 
 	/**
 	 * Add moowoodle menu in admin dashboard.
-     *
+	 *
 	 * @return void
 	 */
-    public static function add_menus() {
+	public static function add_menus() {
 		add_menu_page(
 			'MooWoodle',
 			'MooWoodle',
@@ -131,13 +131,13 @@ class Admin {
 		}
 
 		remove_submenu_page( 'moowoodle', 'moowoodle' );
-    }
+	}
 
 	/**
-     * Enqueue JavaScript for admin fronend page and localize script.
-     *
-     * @return void
-     */
+	 * Enqueue and localize the React admin app on the MooWoodle admin page.
+	 *
+	 * @return void
+	 */
 	public function enqueue_admin_scripts() {
 		$screen = get_current_screen();
 
@@ -152,18 +152,17 @@ class Admin {
 	}
 
 	/**
-     * Admin frontend react page.
-	 * If plugin is not active it render activation page.
-     *
-     * @return void
-     */
+	 * Render the mount point for the React admin app.
+	 *
+	 * @return void
+	 */
 	public static function create_settings_page() {
-        echo '<div id="admin-main-wrapper" class="admin-main-wrapper"></div>';
-    }
+		echo '<div id="admin-main-wrapper" class="admin-main-wrapper"></div>';
+	}
 
 	/**
-	 * Redirct to pro shop url.
-     *
+	 * Redirect to the MooWoodle Pro shop URL.
+	 *
 	 * @return never
 	 */
 	public static function handle_external_redirects() {
@@ -172,44 +171,44 @@ class Admin {
 	}
 
 	/**
-     * Allow Moowoodle domain for safe redirection using wp_safe_redirect().
-     *
-     * @param string[] $allowed_hosts List of allowed hosts.
-     * @return string[] Modified list with Moowoodle domain included.
-     */
-    public function allow_moowoodle_redirect_host( $allowed_hosts ) {
-        $shop_url_parts = wp_parse_url( MOOWOODLE_PRO_SHOP_URL );
+	 * Allow Moowoodle domain for safe redirection using wp_safe_redirect().
+	 *
+	 * @param string[] $allowed_hosts List of allowed hosts.
+	 * @return string[] Modified list with Moowoodle domain included.
+	 */
+	public function allow_moowoodle_redirect_host( $allowed_hosts ) {
+		$shop_url_parts = wp_parse_url( MOOWOODLE_PRO_SHOP_URL );
 
-        if ( isset( $shop_url_parts['host'] ) ) {
-            $allowed_hosts[] = $shop_url_parts['host'];
-        }
+		if ( isset( $shop_url_parts['host'] ) ) {
+			$allowed_hosts[] = $shop_url_parts['host'];
+		}
 
-        return $allowed_hosts;
-    }
+		return $allowed_hosts;
+	}
 
 	/**
-     * Filters the relative path for the plugin's textdomain.
-     *
-     * This method can be used to adjust the location where translation files are loaded from.
-     *
-     * @param string $path Relative path to the .mo file.
-     * @param string $url  URL to the .mo file.
-     * @return string Modified path.
-     */
-    public function textdomain_relative_path( $path, $url ) {
+	 * Filters the relative path for the plugin's textdomain.
+	 *
+	 * This method can be used to adjust the location where translation files are loaded from.
+	 *
+	 * @param string $path Relative path to the .mo file.
+	 * @param string $url  URL to the .mo file.
+	 * @return string Modified path.
+	 */
+	public function textdomain_relative_path( $path, $url ) {
 
-        if ( false !== strpos( $url, 'moowoodle' ) ) {
+		if ( false !== strpos( $url, 'moowoodle' ) ) {
 			foreach ( MooWoodle()->block_paths as $block_path_key => $relative_path ) {
-                if ( false !== strpos( $url, $block_path_key ) ) {
-                    $path = $relative_path;
-                }
-            }
+				if ( false !== strpos( $url, $block_path_key ) ) {
+					$path = $relative_path;
+				}
+			}
 
-            if ( false === strpos( $url, 'block' ) ) {
-                $path = 'assets/js/vendors.js';
-            }
-        }
+			if ( false === strpos( $url, 'block' ) ) {
+				$path = 'assets/js/vendors.js';
+			}
+		}
 
-        return $path;
-    }
+		return $path;
+	}
 }

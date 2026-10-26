@@ -25,50 +25,50 @@ class Synchronization extends \WP_REST_Controller {
 	 */
 	protected $rest_base = 'synchronization';
 
-    /**
-     * Register the routes for the objects of the controller.
-     */
-    public function register_routes() {
-        register_rest_route(
-            MooWoodle()->rest_namespace,
-            '/' . $this->rest_base,
-            array(
-                array(
-                    'methods'             => \WP_REST_Server::READABLE,
-                    'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'moowoodle_permissions_check' ),
-                ),
-                array(
-                    'methods'             => \WP_REST_Server::CREATABLE,
-                    'callback'            => array( $this, 'create_item' ),
-                    'permission_callback' => array( $this, 'moowoodle_permissions_check' ),
-                ),
-            )
-        );
-    }
+	/**
+	 * Register the routes for the objects of the controller.
+	 */
+	public function register_routes() {
+		register_rest_route(
+			MooWoodle()->rest_namespace,
+			'/' . $this->rest_base,
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_items' ),
+					'permission_callback' => array( $this, 'moowoodle_permissions_check' ),
+				),
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'create_item' ),
+					'permission_callback' => array( $this, 'moowoodle_permissions_check' ),
+				),
+			)
+		);
+	}
 
-    /**
-     * Check if a given request has access to get items.
-     *
-     * @param \WP_REST_Request $request The REST request object.
-     */
-    public function moowoodle_permissions_check( $request ) {
-        return Util::current_user_has_capability( array( 'manage_options' ) );
-    }
+	/**
+	 * Check if a given request has access to get items.
+	 *
+	 * @param \WP_REST_Request $request The REST request object.
+	 */
+	public function moowoodle_permissions_check( $request ) {
+		return Util::current_user_has_capability( array( 'manage_options' ) );
+	}
 
-    /**
-     * Synchronization.
-     *
-     * @param \WP_REST_Request $request The request object.
-     */
-    public function get_items( $request ) {
-        $nonce_check = Util::validate_nonce( $request );
+	/**
+	 * Synchronization.
+	 *
+	 * @param \WP_REST_Request $request The request object.
+	 */
+	public function get_items( $request ) {
+		$nonce_check = Util::validate_nonce( $request );
 
-        if ( is_wp_error( $nonce_check ) ) {
-            return $nonce_check;
-        }
+		if ( is_wp_error( $nonce_check ) ) {
+			return $nonce_check;
+		}
 
-        try {
+		try {
 			$sync_type = $request->get_param( 'parameter' );
 
 			if ( 'course' === $sync_type ) {
@@ -76,110 +76,137 @@ class Synchronization extends \WP_REST_Controller {
 					'status'  => Util::get_sync_status( 'course' ),
 					'running' => get_transient( 'moowoodle_course_sync_running' ),
 				);
-            } else {
-                $response = apply_filters( 'moowoodle_sync_status', $request );
-            }
+			} else {
+				$response = apply_filters( 'moowoodle_sync_status', $request );
+			}
 
 			return rest_ensure_response( $response );
-        } catch ( \Exception $e ) {
-            return Util::server_error( $e );
-        }
-    }
+		} catch ( \Exception $e ) {
+			return Util::server_error( $e );
+		}
+	}
 
-    /**
-     * Synchronization.
-     *
-     * @param \WP_REST_Request $request Full data about the request.
-     */
-    public function create_item( $request ) {
-        $nonce_check = Util::validate_nonce( $request );
+	/**
+	 * Synchronization.
+	 *
+	 * @param \WP_REST_Request $request Full data about the request.
+	 */
+	public function create_item( $request ) {
+		$nonce_check = Util::validate_nonce( $request );
 
-        if ( is_wp_error( $nonce_check ) ) {
-            return $nonce_check;
-        }
+		if ( is_wp_error( $nonce_check ) ) {
+			return $nonce_check;
+		}
 
-        try {
-            $sync_type = $request->get_param( 'parameter' );
+		try {
+			$sync_type = $request->get_param( 'parameter' );
 
-            switch ( $sync_type ) {
-                case 'course':
-                    return $this->course_synchronization();
+			switch ( $sync_type ) {
+				case 'course':
+					return $this->course_synchronization();
 
-                default:
-                    return apply_filters(
-                        "moowoodle_process_{$sync_type}_synchronization",
-                        $request
-                    );
-            }
-        } catch ( \Exception $e ) {
-            return Util::server_error( $e );
-        }
-    }
+				default:
+					return apply_filters(
+						"moowoodle_process_{$sync_type}_synchronization",
+						$request
+					);
+			}
+		} catch ( \Exception $e ) {
+			return Util::server_error( $e );
+		}
+	}
 
-    /**
-     * Save the setting set in react's admin setting page.
-     *
-     * @return \WP_Error | \WP_REST_Response
-     */
-    public function course_synchronization() {
-        // Flush course sync status before sync start.
-        Util::flush_sync_status( 'course' );
+	/**
+	 * Sync Moodle categories and courses into MooWoodle and their WooCommerce products.
+	 *
+	 * @return \WP_Error | \WP_REST_Response
+	 */
+	public function course_synchronization() {
+		// Flush course sync status before sync start.
+		Util::flush_sync_status( 'course' );
 
-        set_transient( 'moowoodle_course_sync_running', true );
+		// Expiry stops the flag staying set forever if the request dies mid-sync.
+		set_transient( 'moowoodle_course_sync_running', true, HOUR_IN_SECONDS );
 
-        $sync_settings = MooWoodle()->setting->get_setting( 'sync_course_options', array() );
-        // update course and product categories.
-        if ( in_array( 'sync_courses_category', $sync_settings, true ) ) {
+		$sync_settings = (array) MooWoodle()->setting->get_setting( 'sync_course_options', array() );
+		// update course and product categories.
+		if ( in_array( 'sync_courses_category', $sync_settings, true ) ) {
 
-            // get all category from moodle.
-            $response   = MooWoodle()->external_service->do_request( 'get_categories' );
-            $categories = $response['data'];
+			// get all category from moodle.
+			$response = MooWoodle()->external_service->do_request( 'get_categories' );
 
-            Util::set_sync_status(
-                array(
+			if ( ! empty( $response['error'] ) || ! is_array( $response['data'] ?? null ) ) {
+				return $this->course_sync_failed( $response );
+			}
+
+			$categories = $response['data'];
+
+			Util::set_sync_status(
+				array(
 					'action' => __( 'Update Course Category', 'moowoodle' ),
 					'total'  => count( $categories ),
-                ),
-                'course'
-            );
+				),
+				'course'
+			);
 
-            MooWoodle()->category->update_course_categories( $categories );
+			MooWoodle()->category->update_course_categories( $categories );
 
-            Util::set_sync_status(
-                array(
+			Util::set_sync_status(
+				array(
 					'action' => __( 'Update Product Category', 'moowoodle' ),
 					'total'  => count( $categories ),
-                ),
-                'course'
-            );
+				),
+				'course'
+			);
 
-            MooWoodle()->category->update_product_categories( $categories, 'product_cat' );
-        }
+			MooWoodle()->category->update_product_categories( $categories, 'product_cat' );
+		}
 
 		// get all courses from moodle.
 		$response = MooWoodle()->external_service->do_request( 'get_courses' );
-        $courses  = $response['data'];
 
-        // Update all course.
-        Util::set_sync_status(
-            array(
+		if ( ! empty( $response['error'] ) || ! is_array( $response['data'] ?? null ) ) {
+			return $this->course_sync_failed( $response );
+		}
+
+		$courses = $response['data'];
+
+		// Update all course.
+		Util::set_sync_status(
+			array(
 				'action' => __( 'Update Course', 'moowoodle' ),
 				'total'  => max( 0, count( $courses ) - 1 ),
-            ),
-            'course'
-        );
+			),
+			'course'
+		);
 
-        MooWoodle()->course->update_courses( $courses );
+		MooWoodle()->course->update_courses( $courses );
 
-        MooWoodle()->product->update_products( $courses );
+		MooWoodle()->product->update_products( $courses );
 
-        /**
-         * Action hook after moowoodle course sync.
-         */
-        do_action( 'moowoodle_after_sync_course' );
+		/**
+		 * Action hook after moowoodle course sync.
+		 */
+		do_action( 'moowoodle_after_sync_course' );
 
-        delete_transient( 'moowoodle_course_sync_running' );
+		delete_transient( 'moowoodle_course_sync_running' );
 
-        return rest_ensure_response( true );
-    }
+		return rest_ensure_response( true );
+	}
+
+	/**
+	 * Clear the running flag and turn a failed Moodle response into a WP_Error.
+	 *
+	 * @param mixed $response Response from ExternalService::do_request().
+	 * @return \WP_Error
+	 */
+	private function course_sync_failed( $response ) {
+		delete_transient( 'moowoodle_course_sync_running' );
+
+		return new \WP_Error(
+			'moodle_request_failed',
+			! empty( $response['error'] ) ? $response['error'] : __( 'Unable to fetch data from Moodle.', 'moowoodle' ),
+			array( 'status' => 502 )
+		);
+	}
 }

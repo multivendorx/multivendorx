@@ -12,21 +12,21 @@ defined( 'ABSPATH' ) || exit;
 /**
  * MooWoodle Endpoint class
  *
- * @class       Emails class
+ * @class       Endpoint class
  * @version     3.3.0
  * @author      DualCube
  */
 class Endpoint {
 	/**
-     * Holds the endpoint name.
-     *
-     * @var string
-     */
+	 * Holds the endpoint name.
+	 *
+	 * @var string
+	 */
 	private $endpoint_slug = 'my-courses';
 
 	/**
-     * Endpoint constructor.
-     */
+	 * Endpoint constructor.
+	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_endpoint' ) );
 		add_filter( 'woocommerce_account_menu_items', array( $this, 'add_account_menu_item' ) );
@@ -35,8 +35,10 @@ class Endpoint {
 	}
 
 	/**
-     * Register the endpoint.
-     */
+	 * Register the My Account `my-courses` rewrite endpoint.
+	 *
+	 * @return void
+	 */
 	public function register_endpoint() {
 		add_rewrite_endpoint( $this->endpoint_slug, EP_ROOT | EP_PAGES );
 	}
@@ -78,10 +80,10 @@ class Endpoint {
 	}
 
 	/**
-     * Enqueues all frontend assets for this endpoint.
-     *
-     * @return void
-     */
+	 * Enqueues all frontend assets for this endpoint.
+	 *
+	 * @return void
+	 */
 	public function enqueue_assets() {
 		if ( is_account_page() && Util::current_user_has_capability( array( 'customer', 'manage_options' ) ) ) {
 			FrontendScripts::enqueue_script( 'moowoodle-vendor' );

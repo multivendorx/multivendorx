@@ -13,18 +13,18 @@ defined( 'ABSPATH' ) || exit;
  * MooWoodle Cron class
  *
  * @class       Cron class
- * @version     PRODUCT_VERSION
+ * @version     3.4.3
  * @author      DualCube
  */
 class Cron {
 	/**
-	 * Cron class constructor function
+	 * Cron constructor. Hooks the expiry handler and makes sure the event is scheduled.
 	 */
-    public function __construct() {
+	public function __construct() {
 		add_action( 'moowoodle_process_course_expiry', array( $this, 'process_expired_courses' ) );
 
 		$this->schedule_course_expired_cron();
-    }
+	}
 
 	/**
 	 * Process expired courses and draft their associated products.

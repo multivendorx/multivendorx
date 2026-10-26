@@ -9,7 +9,6 @@ namespace MooWoodle;
 
 defined( 'ABSPATH' ) || exit;
 
-use MooWoodle\Util;
 /**
  * MooWoodle Enrollment class
  *
@@ -20,8 +19,8 @@ use MooWoodle\Util;
 class Enrollment {
 
 	/**
-     * Enrollment constructor.
-     */
+	 * Enrollment constructor.
+	 */
 	public function __construct() {
 		add_action( 'woocommerce_order_status_completed', array( $this, 'process_completed_order' ), 10, 1 );
 		add_action( 'woocommerce_thankyou', array( $this, 'render_enrollment_notice' ) );
@@ -104,7 +103,10 @@ class Enrollment {
 
 		$query_parts = apply_filters(
 			'moowoodle_enrollment_query',
-			array( 'where' => $where, 'args' => $where_args ),
+			array(
+				'where' => $where,
+				'args'  => $where_args,
+			),
 			$enrollment_args
 		);
 		$where       = $query_parts['where'];
@@ -176,6 +178,7 @@ class Enrollment {
 	 * Enrolls the user into Moodle courses based on the products in the order.
 	 *
 	 * @param int $order_id WooCommerce order ID.
+	 * @return void
 	 */
 	public function process_completed_order( $order_id ) {
 		$order = wc_get_order( $order_id );
@@ -226,7 +229,7 @@ class Enrollment {
 					'course_id'        => $wordpress_course_id,
 					'moodle_course_id' => $moodle_course_id,
 				)
-            );
+			);
 
 			if ( $response ) {
 				$email_payload['course'][ $product->get_id() ] = $product->get_name();
@@ -267,7 +270,7 @@ class Enrollment {
 
 		$role_id = apply_filters( 'moowoodle_enrolled_user_role_id', 5 );
 
-	    $response = MooWoodle()->external_service->do_request(
+		$response = MooWoodle()->external_service->do_request(
 			'enrol_users',
 			array(
 				'enrolments' => array(
@@ -415,9 +418,9 @@ class Enrollment {
 	}
 
 
-    /**
-	 * Display WC order thankyou page containt.
-     *
+	/**
+	 * Show the enrollment notice on the WooCommerce thank-you page.
+	 *
 	 * @param int $order_id order id.
 	 * @return void
 	 */
@@ -442,7 +445,7 @@ class Enrollment {
 
 	/**
 	 * Display course start and end date.
-     *
+	 *
 	 * @return void
 	 */
 	public function render_course_availability_dates() {
@@ -480,6 +483,8 @@ class Enrollment {
 
 	/**
 	 * Restrict quantity to 1 for Moodle products only.
+	 *
+	 * @return void
 	 */
 	public function restrict_cart_quantity_on_update() {
 		foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {

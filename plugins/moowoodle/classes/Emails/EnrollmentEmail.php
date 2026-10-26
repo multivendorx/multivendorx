@@ -24,15 +24,15 @@ class EnrollmentEmail extends \WC_Email {
 	 */
 	public $recipient = '';
 	/**
-     * Holds the all email data.
-     *
-     * @var array
-     */
+	 * Holds the all email data.
+	 *
+	 * @var array
+	 */
 	public $enrollment_details;
 
 	/**
-     * EnrollmentEmail constructor.
-     */
+	 * EnrollmentEmail constructor.
+	 */
 	public function __construct() {
 		$this->id             = 'new_moodle_enrollment';
 		$this->title          = __( 'New Moodle Enrollment', 'moowoodle' );
@@ -61,7 +61,7 @@ class EnrollmentEmail extends \WC_Email {
 			return;
 		}
 
-        $this->send(
+		$this->send(
 			$this->get_recipient(),
 			$this->get_subject(),
 			$this->get_content(),
@@ -104,9 +104,9 @@ class EnrollmentEmail extends \WC_Email {
 	public function get_content_html() {
 		ob_start();
 		MooWoodle()->util->get_template(
-            $this->template_html,
-            $this->get_template_args()
-        );
+			$this->template_html,
+			$this->get_template_args()
+		);
 
 		return ob_get_clean();
 	}
@@ -119,9 +119,9 @@ class EnrollmentEmail extends \WC_Email {
 	public function get_content_plain() {
 		ob_start();
 		MooWoodle()->util->get_template(
-            $this->template_plain,
-            $this->get_template_args( true )
-        );
+			$this->template_plain,
+			$this->get_template_args( true )
+		);
 		return ob_get_clean();
 	}
 

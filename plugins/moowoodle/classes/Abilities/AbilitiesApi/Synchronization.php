@@ -7,44 +7,28 @@
 
 namespace MooWoodle\Abilities\AbilitiesApi;
 
+use MooWoodle\Abilities\Abilities;
 use MooWoodle\Util;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * MooWoodle Synchronization Abilities controller.
+ * Exposes Moodle course synchronization through the Abilities API.
  */
 class Synchronization {
 
 	/**
-	 * Register synchronization abilities.
+	 * Register the synchronization abilities.
+	 *
+	 * @return void
 	 */
 	public function register_abilities() {
-
-		/**
-		 * Get synchronization status.
-		 */
 		wp_register_ability(
 			'moowoodle/get-sync-status',
 			array(
 				'label'               => __( 'Get Sync Status', 'moowoodle' ),
 				'description'         => __( 'Check the current MooWoodle course synchronization status.', 'moowoodle' ),
-				'category'            => 'moowoodle',
-
-				'input_schema'        => array(
-					'type'       => 'object',
-					'properties' => array(
-						'type' => array(
-							'type'        => 'string',
-							'description' => __( 'Synchronization type.', 'moowoodle' ),
-							'enum'        => array(
-								'course',
-							),
-							'default'     => 'course',
-						),
-					),
-				),
-
+				'category'            => Abilities::CATEGORY,
 				'output_schema'       => array(
 					'type'       => 'object',
 					'properties' => array(
@@ -52,112 +36,61 @@ class Synchronization {
 							'type'        => 'object',
 							'description' => __( 'Current course synchronization progress.', 'moowoodle' ),
 						),
-
 						'running' => array(
 							'type'        => 'boolean',
 							'description' => __( 'Whether course synchronization is currently running.', 'moowoodle' ),
 						),
 					),
 				),
-
-				'execute_callback'    => array(
-					$this,
-					'get_sync_status',
-				),
-
-				'permission_callback' => array(
-					$this,
-					'permissions_check',
-				),
-
+				'execute_callback'    => array( $this, 'get_course_sync_status' ),
+				'permission_callback' => array( Abilities::class, 'current_user_can_manage' ),
 				'meta'                => array(
-					'mcp' => array(
-						'public' => true,
-					),
+					'annotations' => array( 'readonly' => true ),
+					'mcp'         => array( 'public' => true ),
 				),
 			)
 		);
 
-		/**
-		 * Start course synchronization.
-		 */
 		wp_register_ability(
 			'moowoodle/sync-courses',
 			array(
 				'label'               => __( 'Sync Courses', 'moowoodle' ),
 				'description'         => __( 'Synchronize Moodle courses and related WooCommerce products with MooWoodle.', 'moowoodle' ),
-				'category'            => 'moowoodle',
-
-				'input_schema'        => array(
-					'type' => 'object',
-				),
-
+				'category'            => Abilities::CATEGORY,
 				'output_schema'       => array(
 					'type'       => 'object',
 					'properties' => array(
-						'success' => array(
-							'type' => 'boolean',
-						),
-
-						'message' => array(
-							'type' => 'string',
-						),
+						'success' => array( 'type' => 'boolean' ),
+						'message' => array( 'type' => 'string' ),
 					),
 				),
-
-				'execute_callback'    => array(
-					$this,
-					'sync_courses',
-				),
-
-				'permission_callback' => array(
-					$this,
-					'permissions_check',
-				),
-
+				'execute_callback'    => array( $this, 'sync_courses' ),
+				'permission_callback' => array( Abilities::class, 'current_user_can_manage' ),
 				'meta'                => array(
-					'mcp' => array(
-						'public' => true,
-					),
+					'mcp' => array( 'public' => true ),
 				),
 			)
 		);
 	}
 
 	/**
-	 * Check permission.
+	 * Get the course synchronization progress and running flag.
 	 *
-	 * @return bool
-	 */
-	public function permissions_check() {
-
-		return Util::current_user_has_capability(
-			array( 'manage_options' )
-		);
-	}
-
-	/**
-	 * Get course synchronization status.
-	 *
-	 * @param array $input Ability input.
 	 * @return array
 	 */
-	public function get_sync_status( $input ) {
-
+	public function get_course_sync_status() {
 		return array(
-			'status'  => Util::get_sync_status( 'course' ),
-			'running' => (bool) get_transient( 'course_sync_running' ),
+			'status'  => (object) Util::get_sync_status( 'course' ),
+			'running' => (bool) get_transient( 'moowoodle_course_sync_running' ),
 		);
 	}
 
 	/**
-	 * Synchronize Moodle courses.
+	 * Run a full Moodle course synchronization.
 	 *
-	 * @param array $input Ability input.
 	 * @return array
 	 */
-	public function sync_courses( $input ) {
-
+	public function sync_courses() {
 		try {
 			$response = MooWoodle()->rest->get_service( 'synchronization' )->course_synchronization();
 
@@ -173,6 +106,9 @@ class Synchronization {
 				'message' => __( 'Course synchronization completed successfully.', 'moowoodle' ),
 			);
 		} catch ( \Exception $e ) {
+			// Make sure a failed run doesn't leave the "running" flag stuck.
+			delete_transient( 'moowoodle_course_sync_running' );
+
 			return array(
 				'success' => false,
 				'message' => $e->getMessage(),
