@@ -15,6 +15,9 @@ class Promotions {
         $this->pro_upgrade_url = MOOWOODLE_PRO_SHOP_URL;
         add_action( 'admin_notices', array( $this, 'display_unsupported_extension_notice' ) );
         add_action( 'admin_notices', array( $this, 'display_vulomail_promotion_notice' ) );
+        add_action( 'wp_ajax_moowoodle_admin_notice_action', array( $this, 'dismiss_vulomail_notice' ) );
+        add_filter( 'moowoodle_admin_scripts', array( $this, 'register_notice_script' ) );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_notice_script' ) );
     }
 
     /**
@@ -25,13 +28,13 @@ class Promotions {
      * @return void
      */
     public function display_vulomail_promotion_notice() {
-        if ( $this->is_vulomail_active() ) {
+        if ( $this->is_vulomail_active() || ! $this->should_display_vulomail_notice() ) {
             return;
         }
 
         $install_url = wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=vulomail' ), 'install-plugin_vulomail' );
         ?>
-        <div class="notice notice-info is-dismissible">
+        <div class="notice notice-info is-dismissible moowoodle-vulomail-notice" >
             <h2><?php esc_html_e( 'Track enrollment emails with VuloMail', 'moowoodle' ); ?></h2>
 
             <p>
@@ -49,6 +52,58 @@ class Promotions {
             </p>
         </div>
         <?php
+    }
+    /**
+     * Save the VuloMail notice dismissal timestamp.
+     *
+     * @return void
+     */
+    public function dismiss_vulomail_notice() {
+        check_ajax_referer( 'dismiss_vulomail_notice', 'nonce' );
+
+        update_option( Util::MOOWOODLE_OTHER_SETTINGS['vulomail_notice'], time(), false );
+
+        wp_send_json_success();
+    }
+
+        /**
+     * Register the admin-notice dismiss/action handling script.
+     *
+     * @param array $scripts Existing admin scripts.
+     * @return array
+     */
+    public function register_notice_script( $scripts ) {
+        $scripts['moowoodle-admin-notices'] = array(
+            'src'  => FrontendScripts::get_asset_path() . 'js/public/' . MOOWOODLE_PLUGIN_SLUG . '-admin-notices.min.js',
+            'deps' => array( 'jquery' ),
+        );
+        return $scripts;
+    }
+
+    /**
+     * Enqueue the admin-notice dismiss/action handling script.
+     */
+    public function enqueue_notice_script() {
+        FrontendScripts::enqueue_script( 'moowoodle-admin-notices' );
+        FrontendScripts::localize_script(
+            'moowoodle-admin-notices',
+            'moowoodleAdminNotices',
+            array(
+                'action' => 'moowoodle_admin_notice_action',
+                'nonce'  => wp_create_nonce( 'dismiss_vulomail_notice' ),
+            )
+        );
+    }
+
+    /**
+     * Check whether the VuloMail notice should be displayed.
+     *
+     * @return bool
+     */
+    private function should_display_vulomail_notice() {
+        $dismissed_at = (int) get_option( Util::MOOWOODLE_OTHER_SETTINGS['vulomail_notice'], 0 );
+
+        return ! $dismissed_at || ( time() - $dismissed_at ) >= YEAR_IN_SECONDS;
     }
 
     /**
