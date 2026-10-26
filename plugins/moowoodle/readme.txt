@@ -5,7 +5,7 @@ Donate link: https://dualcube.com/?utm_source=wporg&utm_medium=plugindescription
 Requires at least: 6.0.0
 Tested up to: 7.1.3
 Requires PHP: 8.0
-Stable tag: 3.4.12
+Stable tag: 3.4.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -230,6 +230,11 @@ This project might have bugs and may be lacking certain features. If you'd like 
 11. View the log file to detect any errors related to MooWoodle configuration.
 
 == Changelog ==
+
+= 3.4.13 - 2026-10-27 =
+* Added     - Compatibility of WooCommerce 11.2.1.
+* Added     - MCP (Model Context Protocol) support for enhanced integration and interoperability.
+* Updated   - Language file.
 
 = 3.4.12 - 2026-10-13 =
 * Added     - Compatibility with WordPress 7.1.3.

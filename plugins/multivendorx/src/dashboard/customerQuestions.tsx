@@ -135,7 +135,7 @@ const CustomerQuestions: React.FC = () => {
 					</div>
 				</div>
 			),
-			width: '50%',
+			width: '40%',
 		},
 		action: {
 			key: 'action',

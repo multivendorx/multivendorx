@@ -13,6 +13,7 @@ import {
 	formatDate,
 	formatLocalDate,
 	formatStatusLabel,
+	truncateText,
 } from '@/services/commonFunction';
 import { useNavigate } from 'react-router-dom';
 
@@ -81,7 +82,7 @@ const Refund: React.FC = () => {
 			{
 				label: __('Refund Reason', 'multivendorx'),
 				icon: 'question',
-				value: row.customer_reason || '—',
+				value: truncateText(row.customer_reason, 20) || '—',
 			},
 		],
 		info_badges: [

@@ -315,8 +315,6 @@ class FrontendScripts {
 					'data'         => array(
 						'khali_dabba'     => Util::is_khali_dabba(),
 						'shop_url'        => MOOWOODLE_PRO_SHOP_URL,
-						'video_url'       => MOOWOODLE_YOUTUBE_VIDEO_URL,
-						'chat_url'        => MOOWOODLE_CHAT_URL,
 						'account_menu'    => self::get_account_menu(),
 						'tab_name'        => __( 'MooWoodle', 'moowoodle' ),
 						'wc_email_url'    => admin_url( '/admin.php?page=wc-settings&tab=email&section=enrollmentemail' ),

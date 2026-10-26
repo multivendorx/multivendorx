@@ -8,6 +8,7 @@ import {
 	formatCurrency,
 	formatDate,
 	formatStatusLabel,
+	truncateText,
 } from '@/services/commonFunction';
 
 interface LatestRefundRequestProps {
@@ -78,7 +79,7 @@ const LatestRefundRequest: React.FC<LatestRefundRequestProps> = ({
 			{
 				label: __('Refund Reason', 'multivendorx'),
 				icon: 'question',
-				value: row.reason || '—',
+				value: truncateText(row.reason, 20) || '—',
 			},
 		],
 		info_badges: [

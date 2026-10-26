@@ -39,7 +39,8 @@ class Util {
     );
 
     public const MOOWOODLE_OTHER_SETTINGS = array(
-        'log_file' => 'moowoodle_log_file',
+        'log_file'        => 'moowoodle_log_file',
+        'vulomail_notice' => 'moowoodle_vulomail_notice_dismissed_at'
     );
 
     public const MOOWOODLE_PRODUCT_META = array(

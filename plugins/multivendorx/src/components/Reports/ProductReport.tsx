@@ -342,6 +342,19 @@ const ProductReport: React.FC = () => {
 		},
 	];
 
+	// The table folds product details into one info column, so the CSV
+	// export lists its columns explicitly instead of reusing `headers`.
+	const csvHeaders = {
+		id: { label: __('ID', 'multivendorx') },
+		name: { label: __('Product', 'multivendorx') },
+		sku: { label: __('SKU', 'multivendorx') },
+		total_sales: { label: __('Items Sold', 'multivendorx') },
+		category_names: { label: __('Categories', 'multivendorx') },
+		store_name: { label: __('Store', 'multivendorx') },
+		price: { label: __('Net sales', 'multivendorx') },
+		date_created: { label: __('Date Created', 'multivendorx') },
+	};
+
 	const downloadCSVByQuery = (query: QueryProps) => {
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
@@ -351,10 +364,15 @@ const ProductReport: React.FC = () => {
 				params: buildProductQueryParams(query, false),
 			})
 			.then((response) => {
-				const rows = response.data || [];
+				const rows = (response.data || []).map((product: any) => ({
+					...product,
+					category_names: (product.categories || [])
+						.map((cat: { name: string }) => cat.name)
+						.join(', '),
+				}));
 
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`product-${formatLocalDate(new Date())}.csv`
 				);

@@ -62,4 +62,14 @@ class Rest {
             }
         }
     }
+
+    /**
+     * Get REST API controller.
+     *
+     * @param string $service_key Service key.
+     * @return object|null
+     */
+    public function get_service( $service_key ) {
+        return $this->container[ $service_key ] ?? null;
+    }
 }

@@ -921,7 +921,7 @@ const EditStore = () => {
 												</b>{' '}
 												{
 													data.primary_owner_info
-														?.data?.display_name
+														?.display_name
 												}
 											</div>
 										</div>
