@@ -107,6 +107,7 @@ class Courses extends \WP_REST_Controller {
 	 *     Optional arguments for filtering and pagination.
 	 *
 	 *     @type int    $limit        Number of courses per page. Default 10.
+	 *     @type int    $row          Alias of $limit used by the admin Courses table.
 	 *     @type int    $page         Current page number. Default 1.
 	 *     @type int    $category     Category ID to filter courses by.
 	 *     @type string $searchaction Search type: 'course' or 'shortname'.
@@ -116,6 +117,9 @@ class Courses extends \WP_REST_Controller {
 	 *                          and pagination headers.
 	 */
 	public function get_courses_records( $args = array() ) {
+		// The admin Courses table sends its page size as `row` (like the other tables); `limit` is the internal name.
+		$args['limit'] = $args['limit'] ?? $args['row'] ?? 10;
+
 		$args = wp_parse_args(
 			$args,
 			array(
