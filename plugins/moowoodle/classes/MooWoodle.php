@@ -8,6 +8,7 @@
 namespace MooWoodle;
 
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
+use MooWoodle\Abilities\Abilities;
 use MooWoodle\RestAPI\Rest;
 
 defined( 'ABSPATH' ) || exit;
@@ -142,6 +143,7 @@ final class MooWoodle {
 		$this->services['util']             = new Util();
         $this->services['setting']          = new Setting();
 		$this->services['rest']             = new Rest();
+        $this->services['abilities']        = new Abilities();
 		$this->services['course']           = new Core\Course();
 		$this->services['category']         = new Core\Category();
 		$this->services['product']          = new Core\Product();
