@@ -83,13 +83,9 @@ class Frontend {
         if ( ! $product ) {
             return;
         }
-        $who_can_report = MultiVendorX()->setting->get_setting( 'who_can_report', array() );
+        $who_can_report = MultiVendorX()->setting->get_setting( 'who_can_report', 'logged_in' );
 
-        if (
-            ( 'logged_in' === $who_can_report && ! is_user_logged_in() ) ||
-            ( 'guests' === $who_can_report && is_user_logged_in() )
-        ) {
-            // Do not show link.
+        if ( ( 'logged_in' === $who_can_report && ! is_user_logged_in() ) || ( 'anyone' === $who_can_report && is_user_logged_in() ) ) {
             return;
         }
 

@@ -813,9 +813,9 @@ const EditStore = () => {
 												) : data?.description ? (
 													<div>
 														<span>
-															<span
-																dangerouslySetInnerHTML={{ __html: displayText }}
-															/>
+															<span>
+																{displayText}
+															</span>
 															{shouldTruncate &&
 																!expanded
 																? '...'

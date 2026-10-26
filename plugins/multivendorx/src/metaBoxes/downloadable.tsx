@@ -26,7 +26,9 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 				onClick: ({ row, rowIndex, updateRow }) => {
 					const frame = wp.media({
 						title: __('Select or Upload File', 'multivendorx'),
-						button: __('Use this file', 'multivendorx'),
+						button: {
+							text: __('Use this file', 'multivendorx'),
+						},
 						multiple: false,
 					});
 

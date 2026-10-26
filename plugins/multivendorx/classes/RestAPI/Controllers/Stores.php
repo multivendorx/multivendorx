@@ -322,10 +322,9 @@ class Stores extends \WP_REST_Controller {
         }
 
         try {
-            $registrations = (bool) $request->get_header( 'registrations' );
-            $store_data    = (array) $request->get_param( 'formData' );
-            $file_data     = $request->get_file_params();
-            $current_user  = MultiVendorX()->current_user;
+            $store_data   = (array) $request->get_param( 'formData' );
+            $file_data    = $request->get_file_params();
+            $current_user = MultiVendorX()->current_user;
 
             if ( ! empty( $store_data['Name'] ) && empty( $store_data['name'] ) ) {
                 $store_data['name'] = $store_data['Name'];
@@ -333,6 +332,14 @@ class Stores extends \WP_REST_Controller {
 
             if ( ! empty( $store_data['Description'] ) && empty( $store_data['description'] ) ) {
                 $store_data['description'] = $store_data['Description'];
+            }
+
+            if ( array_key_exists( 'name', $store_data ) ) {
+                $store_data['name'] = sanitize_text_field( (string) $store_data['name'] );
+            }
+
+            if ( array_key_exists( 'description', $store_data ) ) {
+                $store_data['description'] = wp_kses_post( (string) $store_data['description'] );
             }
 
             unset( $store_data['Name'], $store_data['Description'] );
@@ -345,6 +352,11 @@ class Stores extends \WP_REST_Controller {
             );
 
             $is_admin = Utill::current_user_has_capability( array( 'manage_options' ) );
+
+            $is_store_owner = in_array( 'store_owner', (array) $current_user->roles, true );
+
+            // Decide registration status ourselves - never trust a client header for this.
+            $registrations = empty( $store_data['id'] ) && ! $is_admin && ! $is_store_owner;
 
             // `create_stores` is granted to every logged-in user, so block a
             // direct, ownerless store create outside registration/self-edit.
