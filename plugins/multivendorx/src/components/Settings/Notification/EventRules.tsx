@@ -119,6 +119,8 @@ const EventRules: React.FC = () => {
 	}>({ start: 0, end: 0, field: null });
 	const [isLoading, setIsLoading] = useState(true);
 	const [useTemplate, setUseTemplate] = useState(false);
+	const [tablePage, setTablePage] = useState(1);
+	const [tablePerPage, setTablePerPage] = useState(10);
 
 	// Fetch notifications on mount
 	useEffect(() => {
@@ -170,6 +172,17 @@ const EventRules: React.FC = () => {
 		return notifications.filter((n) => n.tag === activeTag);
 	}, [notifications, activeTag]);
 
+	// The events endpoint returns every rule at once, so the table pages them
+	// client-side.
+	const pagedNotifications = useMemo(
+		() =>
+			filteredNotifications.slice(
+				(tablePage - 1) * tablePerPage,
+				tablePage * tablePerPage
+			),
+		[filteredNotifications, tablePage, tablePerPage]
+	);
+
 	const editNotification = notifications.find(
 		(item) => item.id === notificationId
 	);
@@ -179,6 +192,8 @@ const EventRules: React.FC = () => {
 
 	// Fetch notifications function for TableCard
 	const fetchNotifications = (query: QueryProps) => {
+		setTablePage(Number(query.paged) || 1);
+		setTablePerPage(Number(query.per_page) || 10);
 		setIsLoading(true);
 
 		apiRequest('GET', 'notifications', undefined, {
@@ -450,7 +465,9 @@ const EventRules: React.FC = () => {
 				<ColumnComponent>
 					<TableCard
 						headers={headers}
-						rows={filteredNotifications}
+						rows={pagedNotifications}
+						totalRows={filteredNotifications.length}
+						ids={pagedNotifications.map((notif) => notif.id)}
 						showMenu={false}
 						isLoading={isLoading}
 						onQueryUpdate={fetchNotifications}

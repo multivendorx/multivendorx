@@ -644,9 +644,9 @@ class Stores extends \WP_REST_Controller {
             $primary_owner_id   = StoreUtil::get_primary_owner( $id );
             $owner              = get_userdata( $primary_owner_id );
             $primary_owner_info = array(
-                'id'           => $owner->ID,
-                'display_name' => $owner->display_name,
-                'user_email'   => $owner->user_email,
+                'id'           => $owner ? $owner->ID : 0,
+                'display_name' => $owner ? $owner->display_name : '',
+                'user_email'   => $owner ? $owner->user_email : '',
             );
 
             if ( $fetch_user ) {

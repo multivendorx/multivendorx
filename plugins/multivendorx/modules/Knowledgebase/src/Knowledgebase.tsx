@@ -23,7 +23,6 @@ import Popup from '../../../src/components/Popup/Popup';
 import {
 	formatDate,
 	formatLocalDate,
-	truncateText,
 } from '../../../src/services/commonFunction';
 
 type KBForm = {
@@ -226,14 +225,19 @@ export const KnowledgeBase: React.FC = () => {
 		},
 	};
 
+	const truncateChars = (text: string, limit: number) => {
+		const plain = (text || '').replace(/<[^>]*>/g, '').trim();
+		return plain.length > limit ? `${plain.slice(0, limit)}...` : plain;
+	};
+
 	const infoRows = rows.map((row: any) => ({
 		...row,
+		title: truncateChars(row.title, 15),
 		info_icon: 'knowledgebase',
 		info_descriptions: [
 			{
-				label: __('Content', 'multivendorx'),
 				icon: 'text',
-				value: truncateText(row.content, 30) || '—',
+				value: truncateChars(row.content, 30) || '—',
 			},
 		],
 		info_badges: [
