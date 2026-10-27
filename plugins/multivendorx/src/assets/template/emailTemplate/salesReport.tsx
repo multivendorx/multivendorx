@@ -1,286 +1,277 @@
 import { __ } from '@wordpress/i18n';
 
+// Every `{tag}` below is replaced with a real value when the email is sent
+// (see the tag list in the builder's "Insert a tag" picker).
+const stat = (
+	idBase: number,
+	valueTag: string,
+	label: string,
+	color = '#2d3748'
+) => [
+	{
+		id: idBase,
+		type: 'heading',
+		name: 'email-stat-value',
+		text: valueTag,
+		level: 2,
+		style: {
+			fontSize: 22,
+			lineHeight: 1.2,
+			textAlign: 'center',
+			color,
+			paddingTop: 18,
+		},
+	},
+	{
+		id: idBase + 1,
+		type: 'richtext',
+		name: 'email-stat-label',
+		html: label,
+		style: {
+			color: '#718096',
+			fontSize: 13,
+			textAlign: 'center',
+			paddingBottom: 18,
+		},
+	},
+];
+
+const breakdownRow = (
+	idBase: number,
+	label: string,
+	valueTag: string,
+	valueColor = '#2d3748',
+	bold = false
+) => ({
+	id: idBase,
+	type: 'columns',
+	name: 'email-breakdown-row',
+	layout: '2',
+	style: {
+		paddingTop: 12,
+		paddingBottom: 12,
+		paddingLeft: 24,
+		paddingRight: 24,
+	},
+	columns: [
+		[
+			{
+				id: idBase + 1,
+				type: 'richtext',
+				name: 'email-breakdown-label',
+				html: label,
+				style: {
+					color: '#4a5568',
+					fontSize: 15,
+					fontWeight: bold ? 600 : 400,
+				},
+			},
+		],
+		[
+			{
+				id: idBase + 2,
+				type: 'richtext',
+				name: 'email-breakdown-value',
+				html: valueTag,
+				style: {
+					color: valueColor,
+					fontSize: 15,
+					fontWeight: 600,
+					textAlign: 'right',
+				},
+			},
+		],
+	],
+});
+
 export const salesReport = {
 	id: 'store-registration',
 	name: __('Sales Report', 'multivendorx'),
-	// previewText: __(
-	// 	'Welcome to our marketplace! Complete your store setup to get started.',
-	// 	'multivendorx'
-	// ),
+	previewText: __(
+		'Your weekly sales summary from {siteName}',
+		'multivendorx'
+	),
 	blocks: [
+		// Header banner
 		{
 			id: 1,
 			type: 'heading',
-			name: 'email-heading-welcome',
-			text: __('Hi Store Owner', 'multivendorx'),
+			name: 'email-banner-title',
+			text: __('Weekly Sales Report', 'multivendorx'),
 			level: 1,
 			style: {
-				fontSize: 1.125,
+				fontSize: 24,
+				color: '#ffffff',
+				backgroundColor: '#4f0cae',
+				paddingTop: 32,
+				paddingBottom: 6,
+				paddingLeft: 24,
+				paddingRight: 24,
+				textAlign: 'center',
 			},
 		},
 		{
 			id: 2,
 			type: 'richtext',
-			name: 'email-text-welcome-message',
-			html: __(
-				"Here's your sales report for the week of April 1-7, 2026.",
-				'multivendorx'
-			),
+			name: 'email-banner-period',
+			html: '{periodStart} – {periodEnd}',
 			style: {
-				color: '#2d3748',
-				fontSize: 0.9,
+				color: '#e9ddfb',
+				fontSize: 14,
+				backgroundColor: '#4f0cae',
+				paddingBottom: 32,
+				paddingLeft: 24,
+				paddingRight: 24,
+				textAlign: 'center',
 			},
 		},
 
-		// column start
+		// Greeting
 		{
 			id: 3,
-			type: 'columns',
-			name: 'email-columns',
-			layout: '3',
+			type: 'heading',
+			name: 'email-greeting',
+			text: __('Hi {storeName},', 'multivendorx'),
+			level: 2,
 			style: {
-				backgroundColor: '#e8e8e8',
-				paddingTop: 1.313,
-				paddingBottom: 1.313,
-				marginTop: 2.5,
-				borderRadius: 0.313,
-				gap: 2,
+				fontSize: 20,
+				color: '#1a202c',
+				paddingTop: 28,
+				paddingLeft: 24,
+				paddingRight: 24,
 			},
-			columns: [
-				[
-					{
-						id: 4,
-						type: 'heading',
-						name: 'email-heading-welcome',
-						text: __('48', 'multivendorx'),
-						level: 1,
-						style: {
-							fontSize: 2,
-							lineHeight: 1,
-							textAlign: 'center',
-						},
-					},
-					{
-						id: 5,
-						type: 'richtext',
-						name: 'email-text-welcome-message',
-						html: __('Total orders', 'multivendorx'),
-						style: {
-							color: '#2d3748',
-							fontSize: 0.9,
-							textAlign: 'center',
-						},
-					},
-				],
-				[
-					{
-						id: 6,
-						type: 'heading',
-						name: 'email-heading-welcome',
-						text: __('$3,240', 'multivendorx'),
-						level: 1,
-						style: {
-							fontSize: 2,
-							lineHeight: 1,
-							textAlign: 'center',
-						},
-					},
-					{
-						id: 7,
-						type: 'richtext',
-						name: 'email-text-welcome-message',
-						html: __('Total sales', 'multivendorx'),
-						style: {
-							color: '#2d3748',
-							fontSize: 0.9,
-							textAlign: 'center',
-						},
-					},
-				],
-				[
-					{
-						id: 8,
-						type: 'heading',
-						name: 'email-heading-welcome',
-						text: __('$2,831', 'multivendorx'),
-						level: 1,
-						style: {
-							fontSize: 2,
-							lineHeight: 1,
-							textAlign: 'center',
-							color: '#59a937',
-						},
-					},
-					{
-						id: 9,
-						type: 'richtext',
-						name: 'email-text-welcome-message',
-						html: __('Your earnings', 'multivendorx'),
-						style: {
-							color: '#2d3748',
-							fontSize: 0.9,
-							textAlign: 'center',
-						},
-					},
-				],
-			],
-		},
-
-		// 1st price column
-		{
-			id: 10,
-			type: 'columns',
-			name: 'email-columns',
-			layout: '3',
-			style: {
-				paddingTop: 3,
-			},
-			columns: [
-				[
-					{
-						id: 11,
-						type: 'richtext',
-						name: 'email-text-welcome-message',
-						html: __(
-							'Marketplace commission (10%)',
-							'multivendorx'
-						),
-						style: {
-							color: '#2d3748',
-							fontSize: 1,
-							textAlign: 'right',
-						},
-					},
-				],
-				[
-					{
-						id: 12,
-						type: 'richtext',
-						name: 'email-text-welcome-message',
-						html: __('−$324.00', 'multivendorx'),
-						style: {
-							color: '#2d3748',
-							fontSize: 1,
-							fontWeight: 600,
-							textAlign: 'right',
-						},
-					},
-				],
-			],
-		},
-		// 2nd price column
-		{
-			id: 13,
-			type: 'columns',
-			name: 'email-columns',
-			layout: '3',
-			style: {
-				paddingTop: 0.5,
-			},
-			columns: [
-				[
-					{
-						id: 14,
-						type: 'richtext',
-						name: 'email-text-welcome-message',
-						html: __('Total refunds', 'multivendorx'),
-						style: {
-							color: '#2d3748',
-							fontSize: 1,
-							textAlign: 'right',
-						},
-					},
-				],
-				[
-					{
-						id: 15,
-						type: 'richtext',
-						name: 'email-text-welcome-message',
-						html: __('−$85.00', 'multivendorx'),
-						style: {
-							color: '#d90d0d',
-							fontSize: 1,
-							fontWeight: 600,
-							textAlign: 'right',
-						},
-					},
-				],
-			],
-		},
-
-		// 3rd price column
-		{
-			id: 16,
-			type: 'columns',
-			name: 'email-columns',
-			layout: '3',
-			style: {
-				paddingTop: 0.5,
-			},
-			columns: [
-				[
-					{
-						id: 17,
-						type: 'richtext',
-						name: 'email-text-welcome-message',
-						html: __('Net earnings', 'multivendorx'),
-						style: {
-							color: '#2d3748',
-							fontSize: 1,
-							textAlign: 'right',
-						},
-					},
-				],
-				[
-					{
-						id: 18,
-						type: 'richtext',
-						name: 'email-text-welcome-message',
-						html: __('$2324.00', 'multivendorx'),
-						style: {
-							color: '#59a937',
-							fontSize: 1,
-							fontWeight: 600,
-							textAlign: 'right',
-						},
-					},
-				],
-			],
 		},
 		{
-			id: 19,
+			id: 4,
 			type: 'richtext',
-			name: 'email-text-welcome-message',
+			name: 'email-intro',
 			html: __(
-				'Your payout will be processed within 2–3 business days. Reply to this email for any questions.',
+				"Here's how your store performed on {siteName} this week.",
 				'multivendorx'
 			),
 			style: {
-				color: '#2d3748',
-				fontSize: 1.125,
-				marginTop: 6,
+				color: '#4a5568',
+				fontSize: 15,
+				paddingTop: 6,
+				paddingBottom: 24,
+				paddingLeft: 24,
+				paddingRight: 24,
+			},
+		},
+
+		// Headline numbers
+		{
+			id: 5,
+			type: 'columns',
+			name: 'email-stats',
+			layout: '3',
+			style: {
+				backgroundColor: '#f7f5fc',
+				borderRadius: 8,
+				marginLeft: 24,
+				marginRight: 24,
+			},
+			columns: [
+				stat(6, '{totalOrders}', __('Total orders', 'multivendorx')),
+				stat(8, '{totalSales}', __('Total sales', 'multivendorx')),
+				stat(
+					10,
+					'{storeEarnings}',
+					__('Your earnings', 'multivendorx'),
+					'#2f8a3b'
+				),
+			],
+		},
+
+		// Earnings breakdown
+		{
+			id: 12,
+			type: 'heading',
+			name: 'email-breakdown-title',
+			text: __('Earnings breakdown', 'multivendorx'),
+			level: 3,
+			style: {
+				fontSize: 16,
+				color: '#1a202c',
+				paddingTop: 32,
+				paddingBottom: 4,
+				paddingLeft: 24,
+				paddingRight: 24,
+			},
+		},
+		breakdownRow(
+			13,
+			__('Total sales', 'multivendorx'),
+			'{totalSales}'
+		),
+		breakdownRow(
+			16,
+			__('Marketplace commission ({commissionRate})', 'multivendorx'),
+			'−{commissionAmount}'
+		),
+		breakdownRow(
+			19,
+			__('Total refunds', 'multivendorx'),
+			'−{totalRefunds}',
+			'#d90d0d'
+		),
+		breakdownRow(
+			22,
+			__('Net earnings', 'multivendorx'),
+			'{netEarnings}',
+			'#2f8a3b',
+			true
+		),
+
+		{
+			id: 25,
+			type: 'divider',
+			name: 'email-divider',
+			style: { marginTop: 24, marginLeft: 24, marginRight: 24 },
+		},
+
+		// Closing
+		{
+			id: 26,
+			type: 'richtext',
+			name: 'email-payout-note',
+			html: __(
+				'Your payout will be processed within 2–3 business days. Reply to this email if you have any questions.',
+				'multivendorx'
+			),
+			style: {
+				color: '#4a5568',
+				fontSize: 15,
+				paddingTop: 20,
+				paddingLeft: 24,
+				paddingRight: 24,
 			},
 		},
 		{
-			id: 20,
+			id: 27,
 			type: 'richtext',
-			name: 'email-text-welcome-message',
+			name: 'email-signoff',
 			html: __('Best regards,', 'multivendorx'),
 			style: {
-				color: '#61666eff',
-				fontSize: 1,
-				marginBottom: 0.313,
-				marginTop: 5,
+				color: '#718096',
+				fontSize: 14,
+				paddingTop: 24,
+				paddingLeft: 24,
+				paddingRight: 24,
 			},
 		},
 		{
-			id: 21,
+			id: 28,
 			type: 'heading',
-			name: 'email-heading-welcome',
-			text: __('The Marketplace Team', 'multivendorx'),
-			level: 6,
+			name: 'email-signature',
+			text: __('The {siteName} Team', 'multivendorx'),
+			level: 4,
 			style: {
-				fontSize: 1,
+				fontSize: 15,
+				color: '#1a202c',
+				paddingBottom: 28,
+				paddingLeft: 24,
+				paddingRight: 24,
 			},
 		},
 	],

@@ -91,6 +91,7 @@ class Utill {
         'min-max'                       => 'multivendorx_min_max_settings',
         'delivery'                      => 'multivendorx_delivery_settings',
         'events-delivery'               => 'multivendorx_events_delivery_settings',
+        'email-template-customizer'     => 'multivendorx_email_template_customizer_settings',
         'compliance'                    => 'multivendorx_compliance_settings',
         'developer-tools'               => 'multivendorx_developer_tools_settings',
         'invoices'                      => 'multivendorx_invoices_settings',

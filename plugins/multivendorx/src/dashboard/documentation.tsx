@@ -13,7 +13,7 @@ import {
 	HeaderSearchComponent,
 } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
-import { truncateText } from '@/services/commonFunction';
+import { truncateChars } from '@/services/commonFunction';
 
 type DocumentItem = {
 	id: number;
@@ -122,11 +122,11 @@ const Documentation: React.FC = () => {
 					className="mini-card documentation"
 					border
 					items={filteredDocuments.map((doc) => ({
-						title: truncateText(doc.title || '', 4),
+						title: truncateChars(doc.title, 15),
 						icon: 'icon adminfont-contact-form blue',
 						desc: (
 							<>
-								{truncateText(doc.content || '', 10)}
+								{truncateChars(doc.content, 60)}{' '}
 								<a
 									className="read-more"
 									onClick={() => handleReadMore(doc)}

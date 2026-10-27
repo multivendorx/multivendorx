@@ -87,6 +87,7 @@ const PendingStores: React.FC<object> = () => {
 			type: 'info',
 			iconKey: 'info_icon',
 			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
 			badgesKey: 'info_badges',
 		},
 		action: {
@@ -162,6 +163,18 @@ const PendingStores: React.FC<object> = () => {
 		...row,
 		info_icon: 'store-inventory',
 		info_link: getUrl(row.id, 'store', 'edit'),
+		info_descriptions: row.description
+			? [
+					{
+						label: __('Desc', 'multivendorx'),
+						icon: 'text',
+						value: String(row.description)
+							.replace(/<[^>]*>/g, '')
+							.trim()
+							.slice(0, 60),
+					},
+				]
+			: [],
 		info_badges: [{ text: formatDate(row.applied_on), color: 'blue' }],
 	}));
 
