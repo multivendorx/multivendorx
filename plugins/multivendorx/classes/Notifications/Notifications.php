@@ -60,10 +60,14 @@ class Notifications {
 	 * @param string $html Email HTML.
 	 * @return string
 	 */
-	private function add_missing_css_units( $html ) {
+	public static function add_missing_css_units( $html ) {
 		$html = preg_replace_callback(
 			'/\b(font-size|padding(?:-top|-right|-bottom|-left)?|margin(?:-top|-right|-bottom|-left)?|border-radius):(\d*\.?\d+)(?=[;\'"])/',
 			static function ( $matches ) {
+				// Zero needs no unit.
+				if ( 0.0 === (float) $matches[2] ) {
+					return $matches[0];
+				}
 				// Earlier versions meant rem; px is what mail clients handle reliably.
 				return $matches[1] . ':' . round( (float) $matches[2] * 16, 2 ) . 'px';
 			},
@@ -74,12 +78,12 @@ class Notifications {
 		// so it is also set in the inline style.
 		$html = preg_replace_callback(
 			'/<table\b([^>]*)>/i',
-			function ( $matches ) {
+			static function ( $matches ) {
 				$attributes = $matches[1];
 				if ( preg_match( '/\bwidth\s*=\s*[\'"]?+(?!100%)/i', $attributes ) ) {
 					return $matches[0]; // A fixed-width table on purpose.
 				}
-				return '<table' . $this->add_inline_style( $attributes, 'width:100%;', 'width' ) . '>';
+				return '<table' . self::add_inline_style( $attributes, 'width:100%;', 'width' ) . '>';
 			},
 			$html
 		);
@@ -88,8 +92,8 @@ class Notifications {
 		// default margins, ignoring a 0 margin chosen in the editor.
 		return preg_replace_callback(
 			'/<(h[1-6])\b([^>]*)>/i',
-			function ( $matches ) {
-				return '<' . $matches[1] . $this->add_inline_style( $matches[2], 'margin:0;', 'margin' ) . '>';
+			static function ( $matches ) {
+				return '<' . $matches[1] . self::add_inline_style( $matches[2], 'margin:0;', 'margin' ) . '>';
 			},
 			$html
 		);
@@ -104,7 +108,7 @@ class Notifications {
 	 * @param string $property    Property name to look for.
 	 * @return string Attributes with the declaration added.
 	 */
-	private function add_inline_style( $attributes, $declaration, $property ) {
+	private static function add_inline_style( $attributes, $declaration, $property ) {
 		if ( preg_match( '/style\s*=\s*([\'"])(.*?)\1/is', $attributes, $style ) ) {
 			if ( preg_match( '/(^|;)\s*' . preg_quote( $property, '/' ) . '(-[a-z]+)?\s*:/i', $style[2] ) ) {
 				return $attributes;
@@ -1796,7 +1800,7 @@ class Notifications {
 				$message = str_replace( '[' . $key . ']', $value, $message );
 				$subject = str_replace( '[' . $key . ']', $value, $subject );
 			}
-			$message = $this->add_missing_css_units( $message );
+			$message = self::add_missing_css_units( $message );
 			$headers = array( 'Content-Type: text/html; charset=UTF-8' );
 
 			// VuloMail intercepts every wp_mail() call sitewide via its own pre_wp_mail hook
