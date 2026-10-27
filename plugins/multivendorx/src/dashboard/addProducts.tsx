@@ -360,12 +360,10 @@ const AddProduct = () => {
 												</div>
 												<div className="details">
 													<div className="title">
-														Price
+														{__('Price', 'multivendorx')}
 													</div>
 													<div className="des">
-														Set competitive prices
-														including any sale or
-														discount options
+														{__('Set competitive prices including any sale or discount options', 'multivendorx')}
 													</div>
 												</div>
 											</li>
@@ -380,12 +378,10 @@ const AddProduct = () => {
 												</div>
 												<div className="details">
 													<div className="title">
-														Stock
+														{__('Stock', 'multivendorx')}
 													</div>
 													<div className="des">
-														A clear, descriptive title
-														that helps customers find
-														your product
+														{__('A clear, descriptive title that helps customers find your product', 'multivendorx')}
 													</div>
 												</div>
 											</li>

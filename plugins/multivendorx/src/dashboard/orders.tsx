@@ -174,8 +174,7 @@ const Orders: React.FC = () => {
 						label:
 							status === 'all'
 								? __('All', 'multivendorx')
-								: status.charAt(0).toUpperCase() +
-									status.slice(1),
+								: formatStatusLabel(status),
 						count: total,
 					};
 				});

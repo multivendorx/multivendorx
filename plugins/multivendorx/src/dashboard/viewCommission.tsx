@@ -11,7 +11,11 @@ import {
 	SectionComponent,
 } from '@zyra/components';
 import { TableCard, TableRow } from '@zyra/table';
-import { dashNavigate, formatCurrency } from '@/services/commonFunction';
+import {
+	dashNavigate,
+	formatCurrency,
+	formatStatusLabel,
+} from '@/services/commonFunction';
 import { useNavigate } from 'react-router-dom';
 
 type ViewCommissionProps = {
@@ -245,14 +249,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 								className="space-between"
 							>
 								<span className="admin-badge blue">
-									{orderData?.status
-										? orderData.status
-											.replace(/^wc-/, '') // remove 'wc-' prefix if exists
-											.replace(/_/g, ' ') // replace underscores with spaces
-											.replace(/\b\w/g, (c) =>
-												c.toUpperCase()
-											) // capitalize first letter of each word
-										: ''}
+									{formatStatusLabel(orderData?.status)}
 								</span>
 							</FormGroupComponent>
 							{commissionData?.commission_note && (
@@ -287,14 +284,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 										: 'red'
 										}`}
 								>
-									{commissionData?.status
-										? commissionData.status
-											.replace(/^wc-/, '') // remove any prefix like 'wc-'
-											.replace(/_/g, ' ') // replace underscores with spaces
-											.replace(/\b\w/g, (c) =>
-												c.toUpperCase()
-											) // capitalize each word
-										: ''}
+									{formatStatusLabel(commissionData?.status)}
 								</span>
 							</FormGroupComponent>
 

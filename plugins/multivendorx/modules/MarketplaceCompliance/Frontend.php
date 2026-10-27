@@ -85,7 +85,7 @@ class Frontend {
         }
         $who_can_report = MultiVendorX()->setting->get_setting( 'who_can_report', 'logged_in' );
 
-        if ( ( 'logged_in' === $who_can_report && ! is_user_logged_in() ) || ( 'anyone' === $who_can_report && is_user_logged_in() ) ) {
+        if ( 'logged_in' === $who_can_report && ! is_user_logged_in() ) {
             return;
         }
 

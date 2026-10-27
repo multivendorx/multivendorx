@@ -357,8 +357,8 @@ class MVX {
 				)
 			);
 
-			$ques_votes = $question->ques_vote ? maybe_unserialize( $question->ques_vote ) : array();
-			$ans_votes  = $answer ? maybe_unserialize( $answer->ans_vote ) : array();
+			$ques_votes = $question->ques_vote ? Utill::safe_unserialize( $question->ques_vote ) : array();
+			$ans_votes  = $answer ? Utill::safe_unserialize( $answer->ans_vote ) : array();
 
 			$merged_votes = array_merge( $ques_votes, $ans_votes );
 			$total_votes  = count( $merged_votes );
@@ -723,7 +723,7 @@ class MVX {
 
             foreach ( $user_meta as $row ) {
                 $meta_key    = $row['meta_key'];
-                $meta_values = maybe_unserialize( $row['meta_value'] );
+                $meta_values = Utill::safe_unserialize( $row['meta_value'] );
                 // report abuse table data insert.
                 if ( 'report_abuse_data' === $meta_key ) {
                     $table = $wpdb->prefix . Utill::TABLES['report_abuse'];

@@ -179,7 +179,7 @@ class Ajax {
             wp_send_json_error( array( 'message' => 'Question not found.' ) );
         }
 
-        $voters      = maybe_unserialize( $row['voters'] );
+        $voters      = Utill::safe_unserialize( $row['voters'] );
         $total_votes = intval( $row['total_votes'] );
 
         $prev_vote = $voters[ $user_id ] ?? 0;

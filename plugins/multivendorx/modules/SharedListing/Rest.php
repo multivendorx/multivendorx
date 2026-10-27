@@ -90,7 +90,7 @@ class Rest {
             );
 
             if ( $row ) {
-                $map_array = maybe_unserialize( $row->listing_products, true );
+                $map_array = Utill::safe_unserialize( $row->listing_products );
 
                 if ( ! is_array( $map_array ) ) {
                     $map_array = array();

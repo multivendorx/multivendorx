@@ -25,7 +25,11 @@ import {
 } from '@zyra/components';
 import { TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
-import { formatCurrency, formatDate } from '../services/commonFunction';
+import {
+	formatCurrency,
+	formatDate,
+	formatStatusLabel,
+} from '../services/commonFunction';
 import { useParams, useNavigate } from 'react-router-dom';
 import { dashNavigate } from '../services/commonFunction';
 import { applyFilters } from '@wordpress/hooks';
@@ -620,11 +624,7 @@ const OrderDetails: React.FC = () => {
 										className={`admin-badge badge-${orderData?.status}`}
 										onClick={() => setStatusSelect(true)}
 									>
-										{(orderData?.status || '')
-											.replace(/-/g, ' ')
-											.replace(/\b\w/g, (c) =>
-												c.toUpperCase()
-											)}
+										{formatStatusLabel(orderData?.status)}
 										<i className="adminfont-keyboard-arrow-down"></i>
 									</div>
 								)}

@@ -1016,7 +1016,7 @@ class Stores extends \WP_REST_Controller {
                     }
 
                     if ( ! empty( $data['store_application_note'] ) ) {
-                        $old_notes = maybe_unserialize(
+                        $old_notes = Utill::safe_unserialize(
                             $store->get_meta( Utill::STORE_SETTINGS_KEYS['store_reject_note'] )
                         );
 
@@ -1537,7 +1537,7 @@ class Stores extends \WP_REST_Controller {
 
             $store_data[] = array(
                 'id'   => $store_id,
-                'note' => maybe_unserialize(
+                'note' => Utill::safe_unserialize(
                     $store_object->get_meta(
                         Utill::STORE_SETTINGS_KEYS['store_reject_note']
                     )
