@@ -119,7 +119,7 @@ class Frontend {
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $maps = $wpdb->get_results( $wpdb->prepare( 'SELECT listing_products FROM %i LIMIT %d', $table, $limit ) );
         foreach ( $maps as $map ) {
-            $ids = maybe_unserialize( $map->listing_products );
+            $ids = Utill::safe_unserialize( $map->listing_products );
 
             if ( empty( $ids ) ) {
                 continue;
@@ -320,7 +320,7 @@ class Frontend {
             return;
         }
 
-        $map_array = maybe_unserialize( $row->listing_products );
+        $map_array = Utill::safe_unserialize( $row->listing_products );
         if ( ! is_array( $map_array ) ) {
             return;
         }
