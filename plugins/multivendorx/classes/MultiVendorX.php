@@ -171,7 +171,6 @@ final class MultiVendorX {
         $this->container['cron']            = new Cron();
         $this->container['block']           = new Block();
         $this->container['notifications']   = new Notifications\Notifications();
-        $this->container['sales_report_email'] = new Notifications\SalesReportEmail();
         $this->container['widgets']         = new Widgets();
         $this->container['pattern']         = new Pattern();
         $this->container['tracker']         = new Tracker();
