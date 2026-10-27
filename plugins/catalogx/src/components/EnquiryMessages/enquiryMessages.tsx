@@ -486,7 +486,7 @@ const DummyEnquiryMessages = () => {
                                                 </div>
                                             </div>
                                             <div className="message-send-btn">
-                                                <i className="send-btn purple-color adminfont-send"></i>
+                                                <i className="send-btn zyra-purple-color adminfont-send"></i>
                                             </div>
                                         </div>
                                     </div>

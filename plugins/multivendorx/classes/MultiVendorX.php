@@ -163,6 +163,7 @@ final class MultiVendorX {
         $this->container['rest']            = new RestAPI\Rest();
         $this->container['payments']        = new Payments\Payments();
         $this->container['store']           = new Store\Store();
+        $this->container['registration']    = new Store\Registration();
         $this->container['transaction']     = new Transaction\Transaction();
         $this->container['modules']         = new Modules();
         $this->container['status']          = new Status();

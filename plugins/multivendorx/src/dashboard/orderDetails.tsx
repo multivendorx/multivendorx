@@ -429,7 +429,7 @@ const OrderDetails: React.FC = () => {
 					return (
 						<div className="item-details">
 							<div className="icon">
-								<i className="adminfont-cart green"></i>
+								<i className="adminfont-cart zyra-green"></i>
 							</div>
 							<div className="detail">
 								<div className="name">{row.method_title}</div>
@@ -440,7 +440,7 @@ const OrderDetails: React.FC = () => {
 					return (
 						<div className="item-details">
 							<div className="icon">
-								<i className="adminfont-cart green"></i>
+								<i className="adminfont-cart zyra-green"></i>
 							</div>
 							<div>
 								{row.label}
@@ -1098,7 +1098,7 @@ const OrderDetails: React.FC = () => {
 													}
 												</div>
 											</div>
-											<div className="reason red">
+											<div className="reason zyra-red">
 												<div className="title">
 													{__("Customer's Reason", 'multivendorx')}
 												</div>

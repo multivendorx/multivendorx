@@ -12,6 +12,7 @@ import { useLocation, Link } from 'react-router-dom';
 import EventRules from './Notification/EventRules.tsx';
 import StoreStatus from './StoreConfiguration/StoreStatus.tsx';
 import Invoice from './StoreConfiguration/Invoice';
+import RegistrationPreview from './StoreConfiguration/RegistrationPreview';
 import ProductCompliance from './Privacy & Compliance/ProductCompliance.tsx';
 import PluginModules from '../Modules/Modules.tsx';
 
@@ -92,6 +93,9 @@ const Settings: React.FC<SettingsProps> = () => {
 		}
 		if (currentTab === 'product-compliance') {
 			return <ProductCompliance />;
+		}
+		if (currentTab === 'registration') {
+			return <RegistrationPreview />;
 		}
 		if (currentTab === 'invoices') {
 			return <Invoice />;
