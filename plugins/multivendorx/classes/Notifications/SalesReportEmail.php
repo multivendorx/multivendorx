@@ -43,11 +43,6 @@ class SalesReportEmail {
 	 * @return void
 	 */
 	public function send_weekly_reports() {
-		$enabled = MultiVendorX()->setting->get_setting( 'weekly_sales_report', array() );
-		if ( ! in_array( 'enabled', (array) $enabled, true ) ) {
-			return;
-		}
-
 		$period_end   = time();
 		$period_start = $period_end - WEEK_IN_SECONDS;
 
@@ -331,8 +326,6 @@ class SalesReportEmail {
 		};
 
 		return array(
-			array( 'type' => 'heading', 'text' => __( 'Weekly Sales Report', 'multivendorx' ), 'level' => 1, 'style' => array( 'fontSize' => 24, 'color' => '#ffffff', 'backgroundColor' => '#4f0cae', 'paddingTop' => 32, 'paddingBottom' => 6, 'textAlign' => 'center' ) ),
-			array( 'type' => 'richtext', 'html' => '{periodStart} – {periodEnd}', 'style' => array( 'color' => '#e9ddfb', 'fontSize' => 14, 'backgroundColor' => '#4f0cae', 'paddingBottom' => 32, 'textAlign' => 'center' ) ),
 			array( 'type' => 'heading', 'text' => __( 'Hi {storeName},', 'multivendorx' ), 'level' => 2, 'style' => array( 'fontSize' => 20, 'paddingTop' => 28, 'paddingLeft' => 24, 'paddingRight' => 24 ) ),
 			array( 'type' => 'richtext', 'html' => __( "Here's how your store performed on {siteName} this week.", 'multivendorx' ), 'style' => array( 'color' => '#4a5568', 'fontSize' => 15, 'paddingTop' => 6, 'paddingBottom' => 24, 'paddingLeft' => 24, 'paddingRight' => 24 ) ),
 			array(

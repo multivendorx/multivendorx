@@ -13,22 +13,6 @@ export default {
 	submitUrl: 'settings',
 	modal: [
 		{
-			key: 'weekly_sales_report',
-			type: 'checkbox',
-			label: __('Weekly sales report', 'multivendorx'),
-			settingDescription: __(
-				'Email every active store a weekly summary built from the Sales Report template below.',
-				'multivendorx'
-			),
-			options: [
-				{
-					key: 'enabled',
-					value: 'enabled',
-				},
-			],
-			look: 'toggle',
-		},
-		{
 			key: 'email_templates',
 			type: 'builderform-email',
 			classes: 'full-width',

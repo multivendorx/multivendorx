@@ -92,40 +92,6 @@ export const salesReport = {
 		'multivendorx'
 	),
 	blocks: [
-		// Header banner
-		{
-			id: 1,
-			type: 'heading',
-			name: 'email-banner-title',
-			text: __('Weekly Sales Report', 'multivendorx'),
-			level: 1,
-			style: {
-				fontSize: 24,
-				color: '#ffffff',
-				backgroundColor: '#4f0cae',
-				paddingTop: 32,
-				paddingBottom: 6,
-				paddingLeft: 24,
-				paddingRight: 24,
-				textAlign: 'center',
-			},
-		},
-		{
-			id: 2,
-			type: 'richtext',
-			name: 'email-banner-period',
-			html: '{periodStart} – {periodEnd}',
-			style: {
-				color: '#e9ddfb',
-				fontSize: 14,
-				backgroundColor: '#4f0cae',
-				paddingBottom: 32,
-				paddingLeft: 24,
-				paddingRight: 24,
-				textAlign: 'center',
-			},
-		},
-
 		// Greeting
 		{
 			id: 3,
