@@ -13,6 +13,14 @@ const REGISTRATION_BLOCK_GROUPS = [
         icon: 'user',
         blocks: [
             {
+                id: 'form-title',
+                icon: 'title',
+                value: 'title',
+                label: 'Form Title',
+                fixedName: 'Form Title',
+                unique: true,
+            },
+            {
                 id: 'text',
                 icon: 't-letter-bold',
                 value: 'text',
@@ -27,14 +35,6 @@ const REGISTRATION_BLOCK_GROUPS = [
                 label: 'Email',
                 fixedName: 'Email',
                 placeholder: 'Enter your email here',
-            },
-            {
-                id: 'textarea',
-                icon: 'text',
-                value: 'textarea',
-                label: 'Enter your text',
-                fixedName: 'Textarea',
-                placeholder: 'Enter your message here',
             },
             {
                 id: 'date',
@@ -56,7 +56,7 @@ const REGISTRATION_BLOCK_GROUPS = [
                 id: 'checkboxes',
                 icon: 'checkbox',
                 value: 'checkboxes',
-                label: 'Nature Of Business',
+                label: 'Checkbox',
                 fixedName: 'Checkboxes',
                 options: OPTION_PRESETS,
             },
@@ -72,7 +72,7 @@ const REGISTRATION_BLOCK_GROUPS = [
                 id: 'radio',
                 icon: 'radio icon-form-radio',
                 value: 'radio',
-                label: 'Nature Of Business',
+                label: 'Radio',
                 fixedName: 'Radio',
                 options: OPTION_PRESETS,
             },
@@ -127,6 +127,7 @@ const REGISTRATION_BLOCK_GROUPS = [
                 fixedName: 'Name',
                 placeholder: 'Enter your store name',
                 defaultField: true,
+                unique: true,
             },
             {
                 id: 'description',
@@ -135,6 +136,7 @@ const REGISTRATION_BLOCK_GROUPS = [
                 label: 'Store Desc',
                 fixedName: 'Description',
                 placeholder: 'Enter your store description',
+                unique: true,
             },
             {
                 id: 'store-phone',
@@ -143,6 +145,7 @@ const REGISTRATION_BLOCK_GROUPS = [
                 label: 'Store Phone',
                 fixedName: 'Phone',
                 placeholder: 'Enter your store phone',
+                unique: true,
             },
             {
                 id: 'store-paypal',
@@ -151,6 +154,7 @@ const REGISTRATION_BLOCK_GROUPS = [
                 label: 'Store Paypal Email',
                 fixedName: 'Paypal Email',
                 placeholder: 'Enter your PayPal email',
+                unique: true,
             },
             {
                 id: 'store-address',
@@ -158,6 +162,7 @@ const REGISTRATION_BLOCK_GROUPS = [
                 value: 'address',
                 label: 'Store Address',
                 fixedName: 'Address',
+                unique: true,
             },
         ],
     }

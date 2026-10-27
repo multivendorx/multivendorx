@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-22T12:49:38+00:00\n"
+"POT-Creation-Date: 2026-10-27T08:08:25+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: multivendorx\n"
@@ -92,7 +92,7 @@ msgstr ""
 
 #: classes/Admin.php:187
 #: classes/Admin.php:188
-#: classes/MultiVendorX.php:261
+#: classes/MultiVendorX.php:262
 #: classes/Tracker.php:148
 #: assets/js/index.js:1
 msgid "Upgrade to Pro"
@@ -295,384 +295,456 @@ msgstr ""
 msgid "Every minute"
 msgstr ""
 
-#: classes/MultiVendorX.php:256
+#: classes/MultiVendorX.php:257
 msgid "View WooCommerce documentation"
 msgstr ""
 
-#: classes/MultiVendorX.php:256
+#: classes/MultiVendorX.php:257
 msgid "Docs"
 msgstr ""
 
-#: classes/MultiVendorX.php:257
+#: classes/MultiVendorX.php:258
 msgid "Visit community forums"
 msgstr ""
 
-#: classes/MultiVendorX.php:257
+#: classes/MultiVendorX.php:258
 #: assets/js/index.js:1
 msgid "Support"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:81
+#: classes/Notifications/Notifications.php:150
 msgid "Store pending approval"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:82
+#: classes/Notifications/Notifications.php:151
 msgid "Triggered when a new store application is submitted and placed under admin review."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:120
+#: classes/Notifications/Notifications.php:189
 msgid "Store rejected"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:121
+#: classes/Notifications/Notifications.php:190
 msgid "Admin rejected the store application."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:159
+#: classes/Notifications/Notifications.php:228
 msgid "Store permanently rejected"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:160
+#: classes/Notifications/Notifications.php:229
 msgid "Permanent rejection of a store application by the admin"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:198
+#: classes/Notifications/Notifications.php:267
 msgid "Store account created by admin"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:199
+#: classes/Notifications/Notifications.php:268
 msgid "Admin manually created store account."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:238
+#: classes/Notifications/Notifications.php:307
 msgid "Store activated"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:239
+#: classes/Notifications/Notifications.php:308
 msgid "Store activated and ready to start selling."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:277
+#: classes/Notifications/Notifications.php:346
 msgid "Store under review"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:278
+#: classes/Notifications/Notifications.php:347
 msgid "Store temporarily placed under admin review."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:315
+#: classes/Notifications/Notifications.php:384
 msgid "Store suspended"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:316
+#: classes/Notifications/Notifications.php:385
 msgid "Store temporarily suspended by the admin."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:354
+#: classes/Notifications/Notifications.php:423
 msgid "Store permanently deactivated"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:355
+#: classes/Notifications/Notifications.php:424
 msgid "Admin permanently deactivated the store."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:393
+#: classes/Notifications/Notifications.php:462
 msgid "Store account deactivation request"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:394
+#: classes/Notifications/Notifications.php:463
 msgid "Store owner requests deactivation of their store account."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:432
+#: classes/Notifications/Notifications.php:501
 msgid "Store deactivation rejected"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:433
+#: classes/Notifications/Notifications.php:502
 msgid "Store deactivation request rejected by the admin."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:471
+#: classes/Notifications/Notifications.php:540
 msgid "New order received"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:472
+#: classes/Notifications/Notifications.php:541
 msgid "New order received by the store."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:510
+#: classes/Notifications/Notifications.php:579
 msgid "Order processing"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:511
+#: classes/Notifications/Notifications.php:580
 msgid "An order status is changed to processing."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:546
+#: classes/Notifications/Notifications.php:615
 msgid "Order completed"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:547
+#: classes/Notifications/Notifications.php:616
 msgid "An order is completed successfully."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:584
+#: classes/Notifications/Notifications.php:653
 msgid "Order cancelled"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:585
+#: classes/Notifications/Notifications.php:654
 msgid "An order is cancelled by the customer or admin."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:623
+#: classes/Notifications/Notifications.php:692
 msgid "Order refunded"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:624
+#: classes/Notifications/Notifications.php:693
 msgid "A refund is issued for an order."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:662
+#: classes/Notifications/Notifications.php:731
 msgid "Shipment tracking added"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:663
+#: classes/Notifications/Notifications.php:732
 msgid "Tracking details added for the order shipment."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:705
+#: classes/Notifications/Notifications.php:774
 msgid "Order delivered"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:706
+#: classes/Notifications/Notifications.php:775
 msgid "Order marked as delivered."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:746
+#: classes/Notifications/Notifications.php:815
 #: modules/MarketplaceRefund/Frontend.php:648
 #: assets/js/index.js:1
 msgid "Refund requested"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:747
+#: classes/Notifications/Notifications.php:816
 msgid "Refund request submitted for the order."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:786
+#: classes/Notifications/Notifications.php:855
 msgid "Refund accepted"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:787
+#: classes/Notifications/Notifications.php:856
 msgid "Refund request approved for the order."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:816
+#: classes/Notifications/Notifications.php:885
 #: modules/MarketplaceRefund/Frontend.php:673
 msgid "Refund rejected"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:817
+#: classes/Notifications/Notifications.php:886
 msgid "Refund request rejected for the order."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:847
+#: classes/Notifications/Notifications.php:916
 msgid "New store review"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:848
+#: classes/Notifications/Notifications.php:917
 msgid "New customer review submitted for the store."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:876
+#: classes/Notifications/Notifications.php:945
 msgid "Admin replied to review"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:877
+#: classes/Notifications/Notifications.php:946
 msgid "Marketplace admin replies to a review."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:907
+#: classes/Notifications/Notifications.php:976
 msgid "Product submitted"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:908
+#: classes/Notifications/Notifications.php:977
 msgid "Product submitted for admin review."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:937
+#: classes/Notifications/Notifications.php:1006
 msgid "Product approved"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:938
+#: classes/Notifications/Notifications.php:1007
 msgid "Product approved and published."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:967
+#: classes/Notifications/Notifications.php:1036
 msgid "Product rejected"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:968
+#: classes/Notifications/Notifications.php:1037
 msgid "Product rejected after review."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:997
+#: classes/Notifications/Notifications.php:1066
 msgid "Product low stock"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:998
+#: classes/Notifications/Notifications.php:1067
 msgid "Product stock running low."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1028
+#: classes/Notifications/Notifications.php:1097
 msgid "Product out of stock"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1029
+#: classes/Notifications/Notifications.php:1098
 msgid "Product is currently unavailable due to no stock."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1059
+#: classes/Notifications/Notifications.php:1128
 msgid "Product question submitted"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1060
+#: classes/Notifications/Notifications.php:1129
 msgid "Customer submits a question on a product."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1089
+#: classes/Notifications/Notifications.php:1158
 msgid "Store replied to product question"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1090
+#: classes/Notifications/Notifications.php:1159
 msgid "Store owner replies to a product question."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1120
+#: classes/Notifications/Notifications.php:1189
 msgid "Payout received"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1121
+#: classes/Notifications/Notifications.php:1190
 msgid "A payment is received for an order."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1148
+#: classes/Notifications/Notifications.php:1217
 msgid "Payout failed"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1149
+#: classes/Notifications/Notifications.php:1218
 msgid "A payout processing attempt has failed."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1184
+#: classes/Notifications/Notifications.php:1253
 msgid "Withdrawal requested"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1185
+#: classes/Notifications/Notifications.php:1254
 msgid "A withdrawal request is submitted by a store."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1222
+#: classes/Notifications/Notifications.php:1291
 msgid "Withdrawal released"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1223
+#: classes/Notifications/Notifications.php:1292
 msgid "A withdrawal is released successfully."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1248
+#: classes/Notifications/Notifications.php:1317
 msgid "Withdrawl rejected"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1249
+#: classes/Notifications/Notifications.php:1318
 msgid "A withdrawl request is rejected by the admin."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1275
+#: classes/Notifications/Notifications.php:1344
 msgid "Report abuse submitted"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1276
+#: classes/Notifications/Notifications.php:1345
 msgid "A product is reported for abuse by a customer."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1315
+#: classes/Notifications/Notifications.php:1384
 msgid "System announcement"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1316
+#: classes/Notifications/Notifications.php:1385
 msgid "A system-wide announcement is published by the admin."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1353
+#: classes/Notifications/Notifications.php:1422
 msgid "Store followed"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1354
+#: classes/Notifications/Notifications.php:1423
 msgid "Customer started following the store."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1392
+#: classes/Notifications/Notifications.php:1461
 msgid "New product from followed store"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1393
+#: classes/Notifications/Notifications.php:1462
 msgid "New product published by a followed store."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1433
+#: classes/Notifications/Notifications.php:1502
 msgid "New coupon from followed store"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1434
+#: classes/Notifications/Notifications.php:1503
 msgid "New coupon created by a followed store."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1475
+#: classes/Notifications/Notifications.php:1544
 msgid "Store vacation alert"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1476
+#: classes/Notifications/Notifications.php:1545
 msgid "Followed store marked as on vacation."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1515
+#: classes/Notifications/Notifications.php:1584
 msgid "Wholesale buyer approved"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1516
+#: classes/Notifications/Notifications.php:1585
 msgid "User request for wholesale access has been approved."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1554
+#: classes/Notifications/Notifications.php:1623
 msgid "Wholesale buyer rejected"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1555
+#: classes/Notifications/Notifications.php:1624
 msgid "User request for wholesale access has been rejected."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1592
+#: classes/Notifications/Notifications.php:1661
 msgid "Store replied to support ticket"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:1593
+#: classes/Notifications/Notifications.php:1662
 msgid "Store owner replies to a support ticket."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:2053
+#: classes/Notifications/Notifications.php:2123
 msgid "MultiVendorX could not send an SMS notification because VuloMail has no SMS gateway connected yet."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:2055
+#: classes/Notifications/Notifications.php:2125
 msgid "Set up SMS in VuloMail"
 msgstr ""
 
-#: classes/Notifications/Notifications.php:2057
+#: classes/Notifications/Notifications.php:2127
 msgid "MultiVendorX could not send an SMS notification because VuloMail, the plugin it relies on for SMS delivery, isn't installed."
 msgstr ""
 
-#: classes/Notifications/Notifications.php:2059
+#: classes/Notifications/Notifications.php:2129
 msgid "Install VuloMail"
+msgstr ""
+
+#. translators: %s: store name.
+#: classes/Notifications/SalesReportEmail.php:84
+#, php-format
+msgid "Your weekly sales report for %s"
+msgstr ""
+
+#: classes/Notifications/SalesReportEmail.php:334
+#: assets/js/index.js:1
+msgid "Weekly Sales Report"
+msgstr ""
+
+#: classes/Notifications/SalesReportEmail.php:336
+#: assets/js/index.js:1
+msgid "Hi {storeName},"
+msgstr ""
+
+#: classes/Notifications/SalesReportEmail.php:337
+#: assets/js/index.js:1
+msgid "Here's how your store performed on {siteName} this week."
+msgstr ""
+
+#: classes/Notifications/SalesReportEmail.php:342
+#: assets/js/index.js:1
+msgid "Total orders"
+msgstr ""
+
+#: classes/Notifications/SalesReportEmail.php:343
+#: classes/Notifications/SalesReportEmail.php:348
+#: assets/js/index.js:1
+msgid "Total sales"
+msgstr ""
+
+#: classes/Notifications/SalesReportEmail.php:344
+#: assets/js/index.js:1
+msgid "Your earnings"
+msgstr ""
+
+#: classes/Notifications/SalesReportEmail.php:347
+#: assets/js/index.js:1
+msgid "Earnings breakdown"
+msgstr ""
+
+#: classes/Notifications/SalesReportEmail.php:349
+#: assets/js/index.js:1
+msgid "Marketplace commission ({commissionRate})"
+msgstr ""
+
+#: classes/Notifications/SalesReportEmail.php:350
+#: assets/js/index.js:1
+msgid "Total refunds"
+msgstr ""
+
+#: classes/Notifications/SalesReportEmail.php:351
+#: assets/js/index.js:1
+msgid "Net earnings"
+msgstr ""
+
+#: classes/Notifications/SalesReportEmail.php:352
+#: assets/js/index.js:1
+msgid "Your payout will be processed within 2–3 business days. Reply to this email if you have any questions."
+msgstr ""
+
+#: classes/Notifications/SalesReportEmail.php:353
+#: assets/js/index.js:1
+msgid "Best regards,"
+msgstr ""
+
+#: classes/Notifications/SalesReportEmail.php:354
+#: assets/js/index.js:1
+msgid "The {siteName} Team"
 msgstr ""
 
 #: classes/Order/Admin.php:47
@@ -729,51 +801,55 @@ msgstr ""
 msgid "A simple starter layout for a store page."
 msgstr ""
 
-#: classes/Payments/BankTransfer.php:57
+#: classes/Payments/BankTransfer.php:56
+msgid "Add custom field"
+msgstr ""
+
+#: classes/Payments/BankTransfer.php:58
 msgid "Bank details required from the store"
 msgstr ""
 
-#: classes/Payments/BankTransfer.php:61
+#: classes/Payments/BankTransfer.php:62
 msgid "Bank name"
 msgstr ""
 
-#: classes/Payments/BankTransfer.php:66
+#: classes/Payments/BankTransfer.php:68
 msgid "Account holder Name"
 msgstr ""
 
-#: classes/Payments/BankTransfer.php:71
+#: classes/Payments/BankTransfer.php:74
 msgid "Account number"
 msgstr ""
 
-#: classes/Payments/BankTransfer.php:76
+#: classes/Payments/BankTransfer.php:80
 msgid "ABA routing number"
 msgstr ""
 
-#: classes/Payments/BankTransfer.php:81
+#: classes/Payments/BankTransfer.php:86
 msgid "Destination currency"
 msgstr ""
 
-#: classes/Payments/BankTransfer.php:86
+#: classes/Payments/BankTransfer.php:92
 msgid "Bank address"
 msgstr ""
 
-#: classes/Payments/BankTransfer.php:91
+#: classes/Payments/BankTransfer.php:98
 msgid "IBAN"
 msgstr ""
 
-#: classes/Payments/BankTransfer.php:113
+#: classes/Payments/BankTransfer.php:121
 msgid "Account type"
 msgstr ""
 
-#: classes/Payments/BankTransfer.php:117
+#: classes/Payments/BankTransfer.php:125
 msgid "Current"
 msgstr ""
 
-#: classes/Payments/BankTransfer.php:122
+#: classes/Payments/BankTransfer.php:130
 msgid "Savings"
 msgstr ""
 
-#: classes/Payments/BankTransfer.php:189
+#: classes/Payments/BankTransfer.php:212
 #: assets/js/index.js:1
 msgid "Bank Transfer"
 msgstr ""
@@ -989,8 +1065,9 @@ msgstr ""
 #: classes/RestAPI/Controllers/Commissions.php:287
 #: classes/RestAPI/Controllers/Commissions.php:338
 #: classes/RestAPI/Controllers/ImportDummyData.php:87
-#: classes/RestAPI/Controllers/Logs.php:66
-#: classes/RestAPI/Controllers/Logs.php:102
+#: classes/RestAPI/Controllers/Logs.php:78
+#: classes/RestAPI/Controllers/Logs.php:101
+#: classes/RestAPI/Controllers/Logs.php:137
 #: classes/RestAPI/Controllers/Migrations.php:78
 #: classes/RestAPI/Controllers/Notifications.php:102
 #: classes/RestAPI/Controllers/Notifications.php:370
@@ -1001,8 +1078,8 @@ msgstr ""
 #: classes/RestAPI/Controllers/Status.php:111
 #: classes/RestAPI/Controllers/Stores.php:128
 #: classes/RestAPI/Controllers/Stores.php:316
-#: classes/RestAPI/Controllers/Stores.php:584
-#: classes/RestAPI/Controllers/Stores.php:777
+#: classes/RestAPI/Controllers/Stores.php:596
+#: classes/RestAPI/Controllers/Stores.php:789
 #: classes/RestAPI/Controllers/Tour.php:71
 #: classes/RestAPI/Controllers/Tour.php:133
 #: classes/RestAPI/Controllers/Transactions.php:91
@@ -1058,9 +1135,9 @@ msgstr ""
 #: classes/RestAPI/Controllers/Status.php:93
 #: classes/RestAPI/Controllers/Status.php:178
 #: classes/RestAPI/Controllers/Stores.php:225
-#: classes/RestAPI/Controllers/Stores.php:567
-#: classes/RestAPI/Controllers/Stores.php:733
-#: classes/RestAPI/Controllers/Stores.php:1238
+#: classes/RestAPI/Controllers/Stores.php:579
+#: classes/RestAPI/Controllers/Stores.php:745
+#: classes/RestAPI/Controllers/Stores.php:1250
 #: classes/RestAPI/Controllers/Tour.php:121
 #: classes/RestAPI/Controllers/Tour.php:182
 #: classes/RestAPI/Controllers/Transactions.php:220
@@ -1106,7 +1183,7 @@ msgid "You are not allowed to regenerate commissions."
 msgstr ""
 
 #: classes/RestAPI/Controllers/Dashboard.php:119
-#: classes/Store/StoreUtil.php:138
+#: classes/Store/StoreUtil.php:151
 #: modules/Elementor/Widgets/StoreTab.php:117
 #: assets/js/block/marketplace-products/index.js:1
 #: assets/js/block/marketplace-products/view.js:1
@@ -1258,7 +1335,7 @@ msgid "You are not allowed to change role permissions."
 msgstr ""
 
 #: classes/RestAPI/Controllers/Settings.php:228
-#: classes/RestAPI/Controllers/Stores.php:1230
+#: classes/RestAPI/Controllers/Stores.php:1242
 msgid "Settings Saved"
 msgstr ""
 
@@ -1266,52 +1343,52 @@ msgstr ""
 msgid "MultiVendorX visitors stats successfully deleted"
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:354
+#: classes/RestAPI/Controllers/Stores.php:366
 msgid "You are not allowed to create stores this way."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:370
-#: classes/RestAPI/Controllers/Stores.php:819
+#: classes/RestAPI/Controllers/Stores.php:382
+#: classes/RestAPI/Controllers/Stores.php:831
 msgid "You are not allowed to update this store."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:473
+#: classes/RestAPI/Controllers/Stores.php:485
 msgid "Store registered successfully and approved automatically."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:478
+#: classes/RestAPI/Controllers/Stores.php:490
 msgid "Store registered successfully and pending for approval."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:605
+#: classes/RestAPI/Controllers/Stores.php:617
 msgid "You are not allowed to access this store."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:793
+#: classes/RestAPI/Controllers/Stores.php:805
 msgid "You are not allowed to change the status of these stores."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:841
+#: classes/RestAPI/Controllers/Stores.php:853
 msgid "You are not allowed to perform this action on the store."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:937
+#: classes/RestAPI/Controllers/Stores.php:949
 msgid "New owner ID missing."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:972
+#: classes/RestAPI/Controllers/Stores.php:984
 msgid "Store registration approved."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:1033
+#: classes/RestAPI/Controllers/Stores.php:1045
 msgid "Store registration rejected permanently."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:1047
+#: classes/RestAPI/Controllers/Stores.php:1059
 msgid "Store registration rejected."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Stores.php:1255
+#: classes/RestAPI/Controllers/Stores.php:1267
 #: modules/FollowStore/Rest.php:226
 msgid "Invalid store ID"
 msgstr ""
@@ -1657,7 +1734,7 @@ msgid "Address"
 msgstr ""
 
 #: modules/Elementor/Tags/StoreInfo.php:85
-#: modules/MarketplaceCompliance/Frontend.php:122
+#: modules/MarketplaceCompliance/Frontend.php:118
 #: assets/js/block/contact-info/index.js:1
 #: assets/js/index.js:1
 msgid "Email"
@@ -1835,29 +1912,29 @@ msgstr ""
 msgid "Knowledge Base article deleted successfully"
 msgstr ""
 
-#: modules/MarketplaceCompliance/Frontend.php:97
+#: modules/MarketplaceCompliance/Frontend.php:93
 msgid "Report Abuse"
 msgstr ""
 
 #. translators: %s: Product name for abuse report
-#: modules/MarketplaceCompliance/Frontend.php:108
+#: modules/MarketplaceCompliance/Frontend.php:104
 #, php-format
 msgid "Report abuse for \"%s\""
 msgstr ""
 
-#: modules/MarketplaceCompliance/Frontend.php:117
+#: modules/MarketplaceCompliance/Frontend.php:113
 #: assets/js/block/contact-info/index.js:1
 #: assets/js/block/marketplace-stores/index.js:1
 #: assets/js/index.js:1
 msgid "Name"
 msgstr ""
 
-#: modules/MarketplaceCompliance/Frontend.php:136
+#: modules/MarketplaceCompliance/Frontend.php:132
 #: assets/js/block/contact-info/index.js:1
 msgid "Message"
 msgstr ""
 
-#: modules/MarketplaceCompliance/Frontend.php:143
+#: modules/MarketplaceCompliance/Frontend.php:139
 msgid "Report"
 msgstr ""
 
@@ -3012,19 +3089,25 @@ msgstr ""
 
 #. translators: %s: Field label.
 #: assets/js/block/registration-form/index.js:3
+#: assets/js/block/registration-form/index.js:5
 #: assets/js/block/registration-form/view.js:3
+#: assets/js/block/registration-form/view.js:5
 #, js-format
 msgid "%s is required."
 msgstr ""
 
 #: assets/js/block/registration-form/index.js:3
+#: assets/js/block/registration-form/index.js:5
 #: assets/js/block/registration-form/view.js:3
+#: assets/js/block/registration-form/view.js:5
 #: modules/MarketplaceCompliance/assets/js/frontend.js:122
 msgid "Please enter a valid email address."
 msgstr ""
 
 #: assets/js/block/registration-form/index.js:3
+#: assets/js/block/registration-form/index.js:5
 #: assets/js/block/registration-form/view.js:3
+#: assets/js/block/registration-form/view.js:5
 msgid "Please accept the Terms & Conditions."
 msgstr ""
 
@@ -4282,71 +4365,7 @@ msgid "Sales Report"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Hi Store Owner"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Here's your sales report for the week of April 1-7, 2026."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "48"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Total orders"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "$3,240"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Total sales"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "$2,831"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Your earnings"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Marketplace commission (10%)"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "−$324.00"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Total refunds"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "−$85.00"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Net earnings"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "$2324.00"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Your payout will be processed within 2–3 business days. Reply to this email for any questions."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Best regards,"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "The Marketplace Team"
+msgid "Your weekly sales summary from {siteName}"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -6550,6 +6569,14 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Edit and manage individual email templates used across the marketplace."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Weekly sales report"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Email every active store a weekly summary built from the Sales Report template below."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -11564,6 +11591,10 @@ msgid "Date Created"
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Items Sold"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "item sold"
 msgstr ""
 
@@ -11577,10 +11608,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Net Sales"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Items Sold"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -11641,6 +11668,10 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Account Overview"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Desc"
 msgstr ""
 
 #: assets/js/index.js:1
