@@ -354,17 +354,13 @@ class Stores extends \WP_REST_Controller {
             $is_admin = Utill::current_user_has_capability( array( 'manage_options' ) );
 
             $is_store_owner = in_array( 'store_owner', (array) $current_user->roles, true );
-            if ( $is_store_owner && empty( $store_data['id'] ) ) {
-                $own_stores       = Store::get_store( $current_user->ID, 'user' );
-                $own_store        = reset( $own_stores );
-                $store_data['id'] = (int) ( $own_store['id'] ?? 0 );
-            }
+
             // Decide registration status ourselves - never trust a client header for this.
             $registrations = empty( $store_data['id'] ) && ! $is_admin && ! $is_store_owner;
 
             // `create_stores` is granted to every logged-in user, so block a
             // direct, ownerless store create outside registration/self-edit.
-            if ( ! $registrations && empty( $store_data['id'] ) && ! $is_admin ) {
+            if ( ! $registrations && empty( $store_data['id'] ) && ! $is_admin && ! $is_store_owner ) {
                 return new \WP_Error(
                     'rest_forbidden',
                     __( 'You are not allowed to create stores this way.', 'multivendorx' ),
