@@ -270,6 +270,68 @@ class Install {
                 update_option( 'multivendorx_vulomail_migration_status', 'pending' );
                 update_option( 'multivendorx_vulomail_migration_reason', 'migrate' );
             }
+
+            $this->migrate_email_template_customizer_settings();
+            $this->migrate_event_rule_email_bodies();
+        }
+    }
+
+    /**
+     * Move email templates saved by the Email Template Customizer out of the
+     * registration form's setting.
+     *
+     * The customizer used to save under `store_registration_from`, the same key
+     * as the registration form, so its `emailTemplates` ended up inside the
+     * registration settings. They now live in their own settings group under
+     * `email_templates`.
+     *
+     * @return void
+     */
+    private function migrate_email_template_customizer_settings() {
+        $registration_key      = Utill::MULTIVENDORX_SETTINGS['registration'];
+        $customizer_key        = Utill::MULTIVENDORX_SETTINGS['email-template-customizer'];
+        $registration_settings = get_option( $registration_key, array() );
+        $legacy_templates      = $registration_settings['store_registration_from'] ?? array();
+
+        if ( ! is_array( $legacy_templates ) || ! isset( $legacy_templates['emailTemplates'] ) ) {
+            return;
+        }
+
+        $customizer_settings = get_option( $customizer_key, array() );
+
+        // Never overwrite templates already saved in the new location.
+        if ( empty( $customizer_settings['email_templates'] ) ) {
+            $customizer_settings['email_templates'] = array(
+                'emailTemplates'        => $legacy_templates['emailTemplates'],
+                'activeEmailTemplateId' => $legacy_templates['activeEmailTemplateId'] ?? '',
+            );
+            update_option( $customizer_key, $customizer_settings );
+        }
+
+        unset( $registration_settings['store_registration_from']['emailTemplates'], $registration_settings['store_registration_from']['activeEmailTemplateId'] );
+        update_option( $registration_key, $registration_settings );
+    }
+
+    /**
+     * Give saved event-rule email bodies real CSS units.
+     *
+     * Earlier versions stored sizes like `margin-bottom:3` (rem, unit left off),
+     * which mail clients ignore. This rewrites them once, in the database.
+     *
+     * @return void
+     */
+    private function migrate_event_rule_email_bodies() {
+        global $wpdb;
+
+        $table  = $wpdb->prefix . Utill::TABLES['system_events'];
+        $events = $wpdb->get_results( $wpdb->prepare( 'SELECT id, email_body FROM %i WHERE email_body IS NOT NULL AND email_body <> %s', $table, '' ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+        foreach ( (array) $events as $event ) {
+            $converted_body = Notifications::add_missing_css_units( $event['email_body'] );
+
+            if ( $converted_body !== $event['email_body'] ) {
+                $wpdb->update( $table, array( 'email_body' => $converted_body ), array( 'id' => (int) $event['id'] ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+            }
         }
     }
 
