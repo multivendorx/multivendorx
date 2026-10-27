@@ -184,8 +184,8 @@ class SalesReportEmail {
 		// plugins) already wraps content in <html><body>, and nesting a second
 		// one breaks the markup. Table layout + inline styles keep it intact
 		// across mail clients.
-		return '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f1f1f4;font-family:Arial,Helvetica,sans-serif;"><tr><td align="center" style="padding:24px;">'
-			. '<table role="presentation" width="600" cellspacing="0" cellpadding="0" style="width:600px;max-width:100%;background:#ffffff;font-family:Arial,Helvetica,sans-serif;"><tr><td>'
+		return '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;background:#f1f1f4;font-family:Arial,Helvetica,sans-serif;"><tr><td align="center" style="padding:24px;">'
+			. '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;max-width:600px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;"><tr><td>'
 			. $body
 			. '</td></tr></table></td></tr></table>';
 	}
@@ -239,17 +239,18 @@ class SalesReportEmail {
 					}
 					$cells .= sprintf( '<td valign="top" width="%1$s%%" style="width:%1$s%%;">%2$s</td>', $width, $inner );
 				}
-				// Margins go on a wrapper: a 100%-wide table plus its own margin overflows.
-				$margins = array();
-				foreach ( array( 'marginTop', 'marginRight', 'marginBottom', 'marginLeft' ) as $margin_key ) {
-					if ( isset( $block['style'][ $margin_key ] ) ) {
-						$margins[ $margin_key ] = $block['style'][ $margin_key ];
-						unset( $block['style'][ $margin_key ] );
+				// Margins and padding go on a wrapper: a 100%-wide table plus its own
+				// margin/padding overflows, and many mail clients ignore them on <table>.
+				$spacing = array();
+				foreach ( array( 'marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft' ) as $spacing_key ) {
+					if ( isset( $block['style'][ $spacing_key ] ) ) {
+						$spacing[ $spacing_key ] = $block['style'][ $spacing_key ];
+						unset( $block['style'][ $spacing_key ] );
 					}
 				}
 				return sprintf(
-					'<div style="%s"><table role="presentation" width="100%%" cellspacing="0" cellpadding="0" style="table-layout:fixed;%s"><tr>%s</tr></table></div>',
-					esc_attr( $this->css( $margins ) ),
+					'<div style="%s"><table role="presentation" width="100%%" cellspacing="0" cellpadding="0" style="width:100%%;table-layout:fixed;%s"><tr>%s</tr></table></div>',
+					esc_attr( $this->css( $spacing ) ),
 					esc_attr( $this->css( (array) ( $block['style'] ?? array() ) ) ),
 					$cells
 				);
