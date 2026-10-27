@@ -1,4 +1,9 @@
 /* global appLocalizer */
+export const truncateChars = (text: string, limit: number) => {
+	const plain = (text || '').replace(/<[^>]*>/g, '').trim();
+	return plain.length > limit ? `${plain.slice(0, limit)}...` : plain;
+};
+
 export const truncateText = (text: string, wordCount: number) => {
 	if (!text) {
 		return '';
