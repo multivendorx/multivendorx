@@ -12,7 +12,7 @@ import {
 import { TextInput, ButtonInput, ToggleInput } from '@zyra/inputs';
 import { getApiLink, useModules } from '@zyra/core';
 import { TableCard, TableRow } from '@zyra/table';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters, doAction } from '@wordpress/hooks';
 
 interface ShippingMethod {
@@ -171,7 +171,12 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 		});
 	};
 	const handleDelete = async (method: ShippingMethod, zone: Zone) => {
-		if (!confirm(`Are you sure you want to delete "${method.title}"?`)) {
+		if (
+			!confirm(
+				/* translators: %s: Shipping method title. */
+				sprintf(__('Are you sure you want to delete "%s"?', 'multivendorx'), method.title)
+			)
+		) {
 			return;
 		}
 
@@ -190,11 +195,13 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 			if (response.data.success) {
 				fetchZones();
 			} else {
-				alert(`Failed to delete "${method.title}".`);
+				/* translators: %s: Shipping method title. */
+				alert(sprintf(__('Failed to delete "%s".', 'multivendorx'), method.title));
 			}
 		} catch (err) {
 			console.error('Error deleting shipping method:', err);
-			alert(`Error deleting "${method.title}".`);
+			/* translators: %s: Shipping method title. */
+			alert(sprintf(__('Error deleting "%s".', 'multivendorx'), method.title));
 		}
 	};
 
@@ -211,23 +218,23 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 
 			if (formData.shippingMethod === 'local_pickup') {
 				shippingData.settings = {
-					title: 'Local Pickup',
+					title: __('Local Pickup', 'multivendorx'),
 					cost: formData.localPickupCost || '0',
-					description: 'Local pickup shipping method',
+					description: __('Local pickup shipping method', 'multivendorx'),
 				};
 			} else if (formData.shippingMethod === 'free_shipping') {
 				shippingData.settings = {
-					title: 'Free Shipping',
+					title: __('Free Shipping', 'multivendorx'),
 					requires: formData.freeShippingType || '',
 					min_amount: formData.minOrderCost || '0',
-					description: 'Free shipping method',
+					description: __('Free shipping method', 'multivendorx'),
 				};
 			} else if (formData.shippingMethod === 'flat_rate') {
 				shippingData.settings = {
-					title: 'Flat Rate',
+					title: __('Flat Rate', 'multivendorx'),
 					cost: formData.flatRateCost || '0',
 					class_cost: formData.flatRateClassCost || '',
-					description: 'Flat rate shipping method',
+					description: __('Flat rate shipping method', 'multivendorx'),
 				};
 			}
 

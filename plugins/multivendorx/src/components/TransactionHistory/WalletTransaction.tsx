@@ -343,7 +343,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	const filters = [
 		{
 			key: 'transactionType',
-			label: 'Select Transaction Type',
+			label: __('Select Transaction Type', 'multivendorx'),
 			type: 'select',
 			size: 13,
 			options: [

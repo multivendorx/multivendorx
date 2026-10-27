@@ -1,4 +1,5 @@
 /* global appLocalizer */
+import { __ } from '@wordpress/i18n';
 export const truncateText = (text: string, wordCount: number) => {
 	if (!text) {
 		return '';
@@ -126,15 +127,54 @@ export const formatDate = (date?: string): string => {
 	}).format(d);
 };
 
-// Same `under_review` -> `Under Review` formatting zyra's own `status` table
-// cell applies, for status badges built inside an `info` column instead.
-export const formatStatusLabel = (status?: string): string =>
-	String(status ?? '')
+// Translated labels for marketplace statuses that WooCommerce doesn't provide.
+const getStatusLabels = (): Record<string, string> => ({
+	active: __('Active', 'multivendorx'),
+	approve: __('Approve', 'multivendorx'),
+	approved: __('Approved', 'multivendorx'),
+	deactivated: __('Deactivated', 'multivendorx'),
+	draft: __('Draft', 'multivendorx'),
+	fixed_cart: __('Fixed Cart Discount', 'multivendorx'),
+	fixed_product: __('Fixed Product Discount', 'multivendorx'),
+	fulfilled: __('Fulfilled', 'multivendorx'),
+	instock: __('In Stock', 'multivendorx'),
+	onbackorder: __('On Backorder', 'multivendorx'),
+	outofstock: __('Out of Stock', 'multivendorx'),
+	paid: __('Paid', 'multivendorx'),
+	partially_refunded: __('Partially Refunded', 'multivendorx'),
+	pending: __('Pending', 'multivendorx'),
+	percent: __('Percentage Discount', 'multivendorx'),
+	permanently_rejected: __('Permanently Rejected', 'multivendorx'),
+	private: __('Private', 'multivendorx'),
+	publish: __('Published', 'multivendorx'),
+	'refund-rejected': __('Refund Rejected', 'multivendorx'),
+	'refund-requested': __('Refund Requested', 'multivendorx'),
+	rejected: __('Rejected', 'multivendorx'),
+	suspended: __('Suspended', 'multivendorx'),
+	under_review: __('Under Review', 'multivendorx'),
+	unpaid: __('Unpaid', 'multivendorx'),
+});
+
+// Translated label for a status slug: WooCommerce order statuses first, then
+// marketplace statuses, falling back to `under_review` -> `Under Review`.
+export const formatStatusLabel = (status?: string): string => {
+	const key = String(status ?? '')
 		.toLowerCase()
-		.split(/[-_]/)
-		.filter(Boolean)
-		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-		.join(' ');
+		.replace(/^wc-/, '');
+	const orderStatus = (appLocalizer?.order_statuses || []).find(
+		(option: { value: string; label: string }) => option.value === key
+	);
+
+	return (
+		orderStatus?.label ||
+		getStatusLabels()[key] ||
+		key
+			.split(/[-_]/)
+			.filter(Boolean)
+			.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+			.join(' ')
+	);
+};
 
 export const toWcIsoDate = (date: Date, type: 'start' | 'end'): string => {
 	const d = new Date(date);

@@ -6,7 +6,11 @@ import {
 	PopupComponent,
 	SectionComponent,
 } from '@zyra/components';
-import { formatCurrency, formatDate } from '@/services/commonFunction';
+import {
+	formatCurrency,
+	formatDate,
+	formatStatusLabel,
+} from '@/services/commonFunction';
 
 type TransactionRow = {
 	id: number;
@@ -92,14 +96,7 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 										: 'red'
 								}`}
 							>
-								{transaction.status
-									? transaction.status
-											.replace(/^wc-/, '') // remove prefix
-											.replace(/_/g, ' ') // underscores → spaces
-											.replace(/\b\w/g, (c) =>
-												c.toUpperCase()
-											) // capitalize
-									: ''}
+								{formatStatusLabel(transaction.status)}
 							</span>
 						</FormGroupComponent>
 					</FormGroupWrapperComponent>
