@@ -361,7 +361,7 @@ class Stores extends \WP_REST_Controller {
             }
 
             $store_data['who_created'] = $current_user->ID;
-            $store_data['status']      = 'active';
+            $store_data['status']     = 'active';
 
             // Determine store approval status.
             $approve_store = MultiVendorX()->setting->get_setting( 'approve_store' );
@@ -378,7 +378,7 @@ class Stores extends \WP_REST_Controller {
             }
 
             // Save core store fields.
-            $store = new Store();
+            $store    = new Store();
 
             foreach ( $core_fields as $field ) {
                 if ( array_key_exists( $field, $store_data ) ) {
@@ -402,7 +402,6 @@ class Stores extends \WP_REST_Controller {
                 Utill::STORE_SETTINGS_KEYS['state'],
                 Utill::STORE_SETTINGS_KEYS['country'],
                 Utill::STORE_SETTINGS_KEYS['zip'],
-                Utill::STORE_SETTINGS_KEYS['paypal_email'],
             );
 
             $non_core_fields = array();
@@ -430,6 +429,12 @@ class Stores extends \WP_REST_Controller {
 
             // Save store metadata.
             foreach ( $store_data as $key => $value ) {
+                if ( is_string( $value ) ) {
+                    $value = Utill::STORE_SETTINGS_KEYS['paypal_email'] === $key
+                        ? sanitize_email( $value )
+                        : sanitize_text_field( $value );
+                }
+
                 if ( in_array( $key, $registration_allowed_meta, true ) ) {
                     $store->update_meta( $key, $value );
                 } else {
