@@ -559,7 +559,7 @@ class Stores extends \WP_REST_Controller {
                 array(
                     'success'  => true,
                     'id'       => $store_id,
-                    'redirect' => $registrations
+                    'redirect' => ( $registrations || $is_store_owner )
                         ? get_permalink( MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) )
                         : null,
                 )
