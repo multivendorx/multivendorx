@@ -495,12 +495,17 @@ class Stores extends \WP_REST_Controller {
                 do_action( 'multivendorx_after_store_registration_complete', $current_user->ID, $store_id );
             }
 
-            if ( ( $registrations || $is_store_owner ) && empty( $store_data['id'] ) && empty( $store_data['store_owners'] ) ) {
-                StoreUtil::set_primary_owner( $current_user->ID, $store_id );
+            if ( empty( $store_data['id'] ) ) {
+                $owner_id = ! empty( $store_data['store_owners'] )
+                    ? $store_data['store_owners']
+                    : ( ( $registrations || $is_store_owner ) ? $current_user->ID : null );
+
+                if ( $owner_id ) {
+                    StoreUtil::set_primary_owner( $owner_id, $store_id );
+                }
             }
 
             if ( ! empty( $store_data['store_owners'] ) ) {
-                StoreUtil::set_primary_owner( $store_data['store_owners'], $store_id );
                 StoreUtil::add_store_users(
                     array(
                         'store_id' => $store_id,
