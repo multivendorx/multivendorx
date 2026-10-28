@@ -246,7 +246,7 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 
 == Changelog ==
 
-= 5.0.21 - 2026-10-27 =
+= 5.0.21 - 2026-10-28 =
 * Added     - Support for adding new fields in the Bank Transfer payment option for admins. #2387
 * Fixed     - The setup tour issue during new store onboarding. #2319
 * Fixed     - The issue where the Report Abuse button did not appear on product pages when “Everyone” was selected in the settings. #2408
