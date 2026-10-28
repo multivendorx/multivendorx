@@ -64,8 +64,25 @@ class RegistrationForm extends \WP_REST_Controller {
 	public function get_items( $request ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 		$form_id = Registration::form_id();
 
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		// VuloForm is either on the site but switched off (activate it on the Plugins screen) or not
+		// installed at all (search for it in the plugin directory).
+		$installed = false;
+
+		foreach ( array_keys( get_plugins() ) as $file ) {
+			if ( 0 === strpos( $file, 'vuloform/' ) ) {
+				$installed = true;
+				break;
+			}
+		}
+
 		return rest_ensure_response(
 			array(
+				'installed' => $installed,
+				'plugin_url' => $installed ? admin_url( 'plugins.php' ) : admin_url( 'plugin-install.php?s=VuloForm&tab=search&type=term' ),
 				'available' => Registration::is_available(),
 				'form_id'   => $form_id,
 				'edit_url'  => $form_id ? admin_url( 'admin.php?page=vuloform#&tab=forms&form=' . $form_id ) : '',

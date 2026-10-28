@@ -2,11 +2,17 @@
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { CardComponent, NoticeComponent } from '@zyra/components';
+import {
+	CardComponent,
+	ModuleGuardComponent,
+	NoticeComponent,
+} from '@zyra/components';
 import { ButtonInput } from '@zyra/inputs';
 import { getApiLink } from '@zyra/core';
 
 interface RegistrationFormData {
+	installed: boolean;
+	plugin_url: string;
 	available: boolean;
 	form_id: number;
 	edit_url: string;
@@ -54,21 +60,35 @@ const RegistrationPreview = () => {
 		}
 	};
 
+	// Without VuloForm there is no form to show or edit: offer to enable it, like a module.
+	if (data && (!data.available || !data.form_id)) {
+		return (
+			<CardComponent>
+				<ModuleGuardComponent
+					icon="form"
+					iconColor="purple"
+					title={__('Enable VuloForm', 'multivendorx')}
+					desc={__(
+						'The store registration form is built with VuloForm. Enable the plugin to preview and edit the form.',
+						'multivendorx'
+					)}
+					buttonText={
+						data.installed
+							? __('Activate VuloForm', 'multivendorx')
+							: __('Install VuloForm', 'multivendorx')
+					}
+					buttonLink={data.plugin_url}
+				/>
+			</CardComponent>
+		);
+	}
+
 	let body;
 
 	if (error) {
 		body = <p>{error}</p>;
 	} else if (!data) {
 		body = <p>{__('Loading…', 'multivendorx')}</p>;
-	} else if (!data.available || !data.form_id) {
-		body = (
-			<p>
-				{__(
-					'Store registration needs the VuloForm plugin to be active.',
-					'multivendorx'
-				)}
-			</p>
-		);
 	} else {
 		// No scripts run in the frame, and it ignores the pointer, so the preview can't be filled in
 		// or submitted.
@@ -81,11 +101,12 @@ const RegistrationPreview = () => {
 				srcDoc={document_}
 				onLoad={fitHeight}
 				style={{
-					width: '100%',
+					width: '70%',
 					height,
 					border: 0,
 					display: 'block',
 					pointerEvents: 'none',
+					margin: '0 auto',
 				}}
 			/>
 		);

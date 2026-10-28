@@ -105,6 +105,7 @@ class Registration {
 				'plugin' => 'MultiVendorX',
 				'single' => true,
 				'fields' => array(
+					call_user_func( $field, 'heading', __( 'Store registration', 'multivendorx' ), array( 'key' => 'form_title' ) ),
 					call_user_func( $field, 'text', __( 'Store name', 'multivendorx' ), array( 'key' => 'store_name', 'required' => true ) ),
 					call_user_func( $field, 'textarea', __( 'Store description', 'multivendorx' ), array( 'key' => 'store_description' ) ),
 					call_user_func( $field, 'phone', __( 'Store phone', 'multivendorx' ), array( 'key' => 'store_phone' ) ),
@@ -115,6 +116,7 @@ class Registration {
 						'consent',
 						__( 'Terms', 'multivendorx' ),
 						array(
+							'key'          => 'terms',
 							'required'     => true,
 							'consent_text' => __( 'I agree to the terms and conditions.', 'multivendorx' ),
 						)
@@ -159,7 +161,7 @@ class Registration {
 				'id'    => 'blocks',
 				'label' => __( 'Blocks', 'multivendorx' ),
 				'items' => array(
-					$item( 'form-title', 'heading', __( 'Form Title', 'multivendorx' ), 'title' ),
+					$item( 'form-title', 'heading', __( 'Form Title', 'multivendorx' ), 'title', array( 'key' => 'form_title', 'unique' => true, 'pin' => 'top' ) ),
 					$item( 'text', 'text', __( 'Enter the text', 'multivendorx' ), 't-letter-bold', array( 'placeholder' => __( 'Enter your text here', 'multivendorx' ) ) ),
 					$item( 'email', 'email', __( 'Email', 'multivendorx' ), 'unread', array( 'placeholder' => __( 'Enter your email here', 'multivendorx' ) ) ),
 					$item( 'date', 'date', __( 'Date Picker', 'multivendorx' ), 'calendar' ),
@@ -170,7 +172,7 @@ class Registration {
 					$item( 'dropdown', 'select', __( 'Dropdown', 'multivendorx' ), 'dropdown-checklist' ),
 					$item( 'attachment', 'file', __( 'Attachment', 'multivendorx' ), 'submission-message' ),
 					$item( 'section', 'page_break', __( 'Section', 'multivendorx' ), 'form-section' ),
-					$item( 'terms', 'consent', __( 'Terms & Conditions', 'multivendorx' ), 't-letter-bold' ),
+					$item( 'terms', 'consent', __( 'Terms & Conditions', 'multivendorx' ), 't-letter-bold', array( 'key' => 'terms', 'unique' => true, 'pin' => 'bottom' ) ),
 				),
 			),
 			array(
