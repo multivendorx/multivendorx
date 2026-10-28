@@ -352,7 +352,7 @@ class StoreUtil {
 		$store_meta     = $store->get_meta( Utill::STORE_SETTINGS_KEYS['registration_data'] );
         $submitted_data = ! empty( $store_meta ) ? $store_meta : array();
 
-        $submitted_data = is_serialized( $submitted_data ) ? unserialize( $submitted_data, array( 'allowed_classes' => false ) ) : $submitted_data;
+        $submitted_data = Utill::safe_unserialize( $submitted_data );
 
         $meta_keys = array(
             Utill::STORE_SETTINGS_KEYS['phone'],
@@ -813,7 +813,7 @@ class StoreUtil {
 	 * @return string Formatted phone number with country code.
 	 */
 	public static function get_phone( $phone_meta ) {
-		$data = maybe_unserialize( $phone_meta );
+		$data = (array) Utill::safe_unserialize( $phone_meta );
 
 		$country = $data['country_code'] ?? '';
 		$phone   = $data['phone'] ?? $data['whatsapp_number'] ?? '';

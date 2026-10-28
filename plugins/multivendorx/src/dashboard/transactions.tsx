@@ -141,7 +141,7 @@ const Transactions: React.FC = () => {
 	const filters = [
 		{
 			key: 'transactionType',
-			label: 'Select Transaction Type',
+			label: __('Select Transaction Type', 'multivendorx'),
 			type: 'select',
 			options: [
 				{

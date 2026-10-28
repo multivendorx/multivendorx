@@ -356,6 +356,20 @@ class Utill {
     }
 
     /**
+     * Object-injection-safe replacement for maybe_unserialize().
+     *
+     * @param mixed $data Raw or already-decoded value.
+     * @return mixed
+     */
+    public static function safe_unserialize( $data ) {
+        if ( is_serialized( $data ) ) {
+            return @unserialize( trim( $data ), array( 'allowed_classes' => false ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize, WordPress.PHP.NoSilencedErrors.Discouraged
+        }
+
+        return $data;
+    }
+
+    /**
      * Check pro plugin is active or not.
      *
      * @return bool

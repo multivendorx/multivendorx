@@ -39,9 +39,9 @@ const COUPON_STATUS_MAP: Record<string, string> = {
 	pending: __('Pending', 'multivendorx'),
 };
 const discountOptions = [
-	{ label: 'Percentage discount', value: 'percent' },
+	{ label: __('Percentage discount', 'multivendorx'), value: 'percent' },
 	// { label: 'Fixed cart discount', value: 'fixed_cart' },
-	{ label: 'Fixed product discount', value: 'fixed_product' },
+	{ label: __('Fixed product discount', 'multivendorx'), value: 'fixed_product' },
 ];
 
 const formatDateForInput = (dateString?: string | null) => {
