@@ -298,18 +298,18 @@ class Stores extends \WP_REST_Controller {
         return rest_ensure_response( $formatted_stores );
     }
 
-	/**
-	 * Create a store.
-	 *
-	 * Handles both admin and frontend store registration.
-	 *
-	 * @param \WP_REST_Request $request Full data about the request.
-	 * @return \WP_REST_Response|\WP_Error
-	 * @throws \Exception If the store cannot be saved or another unexpected error occurs.
-	 */
+    /**
+     * Create a store.
+     *
+     * Handles both admin and frontend store registration.
+     *
+     * @param \WP_REST_Request $request Full data about the request.
+     * @return \WP_REST_Response|\WP_Error
+     * @throws \Exception If the store cannot be saved or another unexpected error occurs.
+     */
     public function create_item( $request ) {
-
         $nonce = $request->get_header( 'X-WP-Nonce' );
+
         if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
             $error = new \WP_Error(
                 'invalid_nonce',
@@ -318,6 +318,7 @@ class Stores extends \WP_REST_Controller {
             );
 
             MultiVendorX()->util->log( $error );
+
             return $error;
         }
 
@@ -325,7 +326,9 @@ class Stores extends \WP_REST_Controller {
             $store_data   = (array) $request->get_param( 'formData' );
             $file_data    = $request->get_file_params();
             $current_user = MultiVendorX()->current_user;
+            $is_admin     = Utill::current_user_has_capability( array( 'manage_options' ) );
 
+            // Normalize store fields.
             if ( ! empty( $store_data['Name'] ) && empty( $store_data['name'] ) ) {
                 $store_data['name'] = $store_data['Name'];
             }
@@ -343,6 +346,8 @@ class Stores extends \WP_REST_Controller {
             }
 
             unset( $store_data['Name'], $store_data['Description'] );
+
+            // Prepare core fields.
             $core_fields = array(
                 Utill::STORE_SETTINGS_KEYS['name'],
                 Utill::STORE_SETTINGS_KEYS['slug'],
@@ -351,23 +356,6 @@ class Stores extends \WP_REST_Controller {
                 Utill::STORE_SETTINGS_KEYS['status'],
             );
 
-            $is_admin = Utill::current_user_has_capability( array( 'manage_options' ) );
-
-            $is_store_owner = in_array( 'store_owner', (array) $current_user->roles, true );
-
-            // Decide registration status ourselves - never trust a client header for this.
-            $registrations = empty( $store_data['id'] ) && ! $is_admin && ! $is_store_owner;
-
-            // `create_stores` is granted to every logged-in user, so block a
-            // direct, ownerless store create outside registration/self-edit.
-            if ( ! $registrations && empty( $store_data['id'] ) && ! $is_admin && ! $is_store_owner ) {
-                return new \WP_Error(
-                    'rest_forbidden',
-                    __( 'You are not allowed to create stores this way.', 'multivendorx' ),
-                    array( 'status' => 403 )
-                );
-            }
-
             if ( ! $is_admin ) {
                 unset( $store_data['store_owners'] );
             }
@@ -375,36 +363,22 @@ class Stores extends \WP_REST_Controller {
             $store_data['who_created'] = $current_user->ID;
             $store_data['status']      = 'active';
 
-            if ( ! empty( $store_data['id'] ) ) {
-                if ( ! StoreUtil::current_user_can_manage_store( (int) $store_data['id'] ) ) {
-                    return new \WP_Error(
-                        'rest_forbidden',
-                        __( 'You are not allowed to update this store.', 'multivendorx' ),
-                        array( 'status' => 403 )
-                    );
-                }
+            // Determine store approval status.
+            $approve_store = MultiVendorX()->setting->get_setting( 'approve_store' );
 
-                $store = new Store( (int) $store_data['id'] );
-                unset( $store_data['id'], $store_data['status'] );
-
+            if ( ! $is_admin && 'manually' === $approve_store ) {
                 $store_data['status'] = 'pending';
-            } else {
-                $store = new Store();
-
-                if (
-                    ! Utill::current_user_has_capability( array( 'manage_options' ) ) &&
-                    'manually' === MultiVendorX()->setting->get_setting( 'approve_store' )
-                ) {
-                    $store_data['status'] = 'pending';
-                }
             }
 
-            if ( $registrations ) {
-                $raw_slug = $store_data['slug']
-                    ?? sanitize_title( $store_data['name'] ?? '' );
+            // Generate a unique slug for frontend registration.
+            if ( ! $is_admin ) {
+                $raw_slug = $store_data['slug'] ?? sanitize_title( $store_data['name'] ?? '' );
 
                 $store_data['slug'] = Store::generate_unique_store_slug( $raw_slug );
             }
+
+            // Save core store fields.
+            $store = new Store();
 
             foreach ( $core_fields as $field ) {
                 if ( array_key_exists( $field, $store_data ) ) {
@@ -413,10 +387,12 @@ class Stores extends \WP_REST_Controller {
             }
 
             $store_id = $store->save();
+
             if ( ! $store_id ) {
                 throw new \Exception( 'Store save failed' );
             }
 
+            // Metadata allowed during registration.
             $registration_allowed_meta = array(
                 Utill::STORE_SETTINGS_KEYS['phone'],
                 Utill::STORE_SETTINGS_KEYS['paypal_email'],
@@ -426,15 +402,19 @@ class Stores extends \WP_REST_Controller {
                 Utill::STORE_SETTINGS_KEYS['state'],
                 Utill::STORE_SETTINGS_KEYS['country'],
                 Utill::STORE_SETTINGS_KEYS['zip'],
+                Utill::STORE_SETTINGS_KEYS['paypal_email'],
             );
-            $non_core_fields           = array();
 
+            $non_core_fields = array();
+
+            // Process uploaded files.
             foreach ( $file_data as $file ) {
                 if ( empty( $file['name'] ) || ! is_array( $file['name'] ) ) {
                     continue;
                 }
 
-                $upload_key      = array_key_first( $file['name'] );
+                $upload_key = array_key_first( $file['name'] );
+
                 $normalized_file = array(
                     'name'     => $file['name'][ $upload_key ] ?? '',
                     'type'     => $file['type'][ $upload_key ] ?? '',
@@ -442,29 +422,14 @@ class Stores extends \WP_REST_Controller {
                     'error'    => $file['error'][ $upload_key ] ?? UPLOAD_ERR_NO_FILE,
                     'size'     => $file['size'][ $upload_key ] ?? 0,
                 );
-                $attachment_id   = StoreUtil::create_attachment_from_files_array( $normalized_file );
+
+                $attachment_id = StoreUtil::create_attachment_from_files_array( $normalized_file );
 
                 $store_data[ sanitize_text_field( (string) $upload_key ) ] = $attachment_id;
             }
 
-            $registration_meta_map = array(
-                'store-paypal' => Utill::STORE_SETTINGS_KEYS['paypal_email'],
-                'Phone'        => Utill::STORE_SETTINGS_KEYS['phone'],
-            );
-
+            // Save store metadata.
             foreach ( $store_data as $key => $value ) {
-                if ( isset( $registration_meta_map[ $key ] ) ) {
-                    $key = $registration_meta_map[ $key ];
-                }
-                if ( in_array( $key, $core_fields, true ) || 'store_owners' === $key ) {
-                    continue;
-                }
-
-                if ( ! $registrations ) {
-                    $store->update_meta( $key, $value );
-                    continue;
-                }
-
                 if ( in_array( $key, $registration_allowed_meta, true ) ) {
                     $store->update_meta( $key, $value );
                 } else {
@@ -472,23 +437,35 @@ class Stores extends \WP_REST_Controller {
                 }
             }
 
-            if ( $registrations && ! empty( $non_core_fields ) ) {
+            if ( ! $is_admin && ! empty( $non_core_fields ) ) {
                 $store->update_meta(
                     Utill::STORE_SETTINGS_KEYS['registration_data'],
                     maybe_serialize( $non_core_fields )
                 );
             }
 
-            if ( $registrations ) {
-                if ( 'automatically' === MultiVendorX()->setting->get_setting( 'approve_store' ) ) {
+            // Handle frontend registration.
+            if ( ! $is_admin ) {
+                if ( 'automatically' === $approve_store ) {
                     $current_user->set_role( 'store_owner' );
-                    MultiVendorX()->util->set_activity_logs( $store_id, __( 'Store registered successfully and approved automatically.', 'multivendorx' ), 'approve' );
+
+                    MultiVendorX()->util->set_activity_logs(
+                        $store_id,
+                        __( 'Store registered successfully and approved automatically.', 'multivendorx' ),
+                        'approve'
+                    );
                 } elseif ( ! in_array( 'store_owner', (array) $current_user->roles, true ) ) {
                     $current_user->set_role(
                         get_option( Utill::MULTIVENDORX_OTHER_SETTINGS['default_role'] )
                     );
-                    MultiVendorX()->util->set_activity_logs( $store_id, __( 'Store registered successfully and pending for approval.', 'multivendorx' ), 'pending' );
+
+                    MultiVendorX()->util->set_activity_logs(
+                        $store_id,
+                        __( 'Store registered successfully and pending for approval.', 'multivendorx' ),
+                        'pending'
+                    );
                 }
+
                 $store->update_meta(
                     'store_email',
                     array(
@@ -498,42 +475,54 @@ class Stores extends \WP_REST_Controller {
                 );
 
                 StoreUtil::set_primary_owner( $current_user->ID, $store_id );
+
                 update_user_meta(
                     $current_user->ID,
                     Utill::USER_SETTINGS_KEYS['active_store'],
                     $store_id
                 );
 
-                do_action( 'multivendorx_after_store_registration_complete', $current_user->ID, $store_id );
+                do_action(
+                    'multivendorx_after_store_registration_complete',
+                    $current_user->ID,
+                    $store_id
+                );
             }
 
+            // Assign the store owner when provided.
             if ( ! empty( $store_data['store_owners'] ) ) {
-                StoreUtil::set_primary_owner( $store_data['store_owners'], $store_id );
+                $store_owner_id = $store_data['store_owners'];
+
+                StoreUtil::set_primary_owner( $store_owner_id, $store_id );
+
                 StoreUtil::add_store_users(
                     array(
                         'store_id' => $store_id,
-                        'users'    => array( $store_data['store_owners'] ),
+                        'users'    => array( $store_owner_id ),
                         'role_id'  => 'store_owner',
                     )
                 );
 
-                $user = get_user_by( 'id', $store_data['store_owners'] );
+                $user = get_user_by( 'id', $store_owner_id );
 
                 MultiVendorX()->notifications->send_notification_helper(
                     'store_account_created_by_admin',
                     $store,
                     null,
                     array(
-						'store_name'       => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
-						'marketplace_name' => get_bloginfo( 'name' ),
-						'store_owner_name' => $user->display_name,
-						'login_url'        => get_permalink( (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) ),
-						'store_id'         => $store_id,
-						'category'         => 'activity',
-					)
+                        'store_name'       => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
+                        'marketplace_name' => get_bloginfo( 'name' ),
+                        'store_owner_name' => $user->display_name,
+                        'login_url'        => get_permalink(
+                            (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' )
+                        ),
+                        'store_id'         => $store_id,
+                        'category'         => 'activity',
+                    )
                 );
             }
 
+            // Handle store status notifications.
             if ( 'active' === $store_data['status'] ) {
                 do_action( 'multivendorx_after_store_active', $store_id );
 
@@ -542,10 +531,10 @@ class Stores extends \WP_REST_Controller {
                     $store,
                     null,
                     array(
-						'store_name' => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
-						'store_id'   => $store_id,
-						'category'   => 'activity',
-					)
+                        'store_name' => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
+                        'store_id'   => $store_id,
+                        'category'   => 'activity',
+                    )
                 );
             }
 
@@ -555,10 +544,10 @@ class Stores extends \WP_REST_Controller {
                     $store,
                     null,
                     array(
-						'store_name' => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
-						'store_id'   => $store_id,
-						'category'   => 'activity',
-					)
+                        'store_name' => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
+                        'store_id'   => $store_id,
+                        'category'   => 'activity',
+                    )
                 );
             }
 
@@ -566,7 +555,7 @@ class Stores extends \WP_REST_Controller {
                 array(
                     'success'  => true,
                     'id'       => $store_id,
-                    'redirect' => $registrations
+                    'redirect' => ! $is_admin
                         ? get_permalink( MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) )
                         : null,
                 )
