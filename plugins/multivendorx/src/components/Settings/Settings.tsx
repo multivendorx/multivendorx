@@ -13,6 +13,7 @@ import EventRules from './Notification/EventRules.tsx';
 import StoreStatus from './StoreConfiguration/StoreStatus.tsx';
 import Invoice from './StoreConfiguration/Invoice';
 import RegistrationPreview from './StoreConfiguration/RegistrationPreview';
+import EmailTemplateCustomizerLink from './Notification/EmailTemplateCustomizerLink';
 import ProductCompliance from './Privacy & Compliance/ProductCompliance.tsx';
 import PluginModules from '../Modules/Modules.tsx';
 
@@ -93,6 +94,9 @@ const Settings: React.FC<SettingsProps> = () => {
 		}
 		if (currentTab === 'product-compliance') {
 			return <ProductCompliance />;
+		}
+		if (currentTab === 'email-template-customizer') {
+			return <EmailTemplateCustomizerLink />;
 		}
 		if (currentTab === 'registration') {
 			return <RegistrationPreview />;

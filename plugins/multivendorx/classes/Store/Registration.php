@@ -43,6 +43,11 @@ class Registration {
 		// shows forms made from them) while MultiVendorX is active.
 		add_filter( 'vuloform_templates', array( $this, 'add_template' ) );
 		add_filter( 'vuloform_template_palettes', array( $this, 'add_palette' ) );
+		// A store needs a name: the field is always required, can't be removed, and an application
+		// without one is refused.
+		add_filter( 'vuloform_template_locked_fields', array( $this, 'lock_store_name' ) );
+		add_filter( 'vuloform_sanitize_field', array( $this, 'require_store_name_field' ) );
+		add_filter( 'vuloform_validate_field', array( $this, 'reject_empty_store_name' ), 10, 5 );
 		// There is exactly one registration form. It is fixed (no delete), and is put back if it is
 		// ever removed by other means.
 		add_filter( 'vuloform_protected_forms', array( $this, 'protect_form' ) );
@@ -84,6 +89,53 @@ class Registration {
 	}
 
 	/**
+	 * The store name can't be removed from the form or made optional.
+	 *
+	 * @param array $locked Locked fields by template.
+	 * @return array
+	 */
+	public function lock_store_name( $locked ) {
+		$locked[ self::TEMPLATE ]['store_name'] = array(
+			'required' => true,
+			'delete'   => false,
+		);
+
+		return $locked;
+	}
+
+	/**
+	 * Whatever is saved, the Store Name field is required.
+	 *
+	 * @param array $field Sanitized field.
+	 * @return array
+	 */
+	public function require_store_name_field( $field ) {
+		if ( is_array( $field ) && 'store_name' === ( $field['key'] ?? '' ) ) {
+			$field['required'] = true;
+		}
+
+		return $field;
+	}
+
+	/**
+	 * An application with no store name is refused, even if the saved form says otherwise.
+	 *
+	 * @param string $error  Current error.
+	 * @param array  $field  Field definition.
+	 * @param mixed  $value  Cleaned value.
+	 * @param array  $values All cleaned values.
+	 * @param array  $form   Form.
+	 * @return string
+	 */
+	public function reject_empty_store_name( $error, $field, $value, $values, $form ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+		if ( '' === $error && 'store_name' === ( $field['key'] ?? '' ) && (int) ( $form['id'] ?? 0 ) === (int) get_option( self::FORM_OPTION, 0 ) && '' === trim( is_scalar( $value ) ? (string) $value : '' ) ) {
+			return (string) ( $form['schema']['settings']['messages']['required'] ?? __( 'This field is required.', 'multivendorx' ) );
+		}
+
+		return $error;
+	}
+
+	/**
 	 * Adds the Store registration template to VuloForm's picker.
 	 *
 	 * @param array $templates VuloForm templates.
@@ -105,22 +157,11 @@ class Registration {
 				'plugin' => 'MultiVendorX',
 				'single' => true,
 				'fields' => array(
-					call_user_func( $field, 'heading', __( 'Store registration', 'multivendorx' ), array( 'key' => 'form_title' ) ),
-					call_user_func( $field, 'text', __( 'Store name', 'multivendorx' ), array( 'key' => 'store_name', 'required' => true ) ),
-					call_user_func( $field, 'textarea', __( 'Store description', 'multivendorx' ), array( 'key' => 'store_description' ) ),
-					call_user_func( $field, 'phone', __( 'Store phone', 'multivendorx' ), array( 'key' => 'store_phone' ) ),
-					call_user_func( $field, 'email', __( 'PayPal email', 'multivendorx' ), array( 'key' => 'store_paypal_email' ) ),
-					call_user_func( $field, 'address', __( 'Store address', 'multivendorx' ), array( 'key' => 'store_address' ) ),
-					call_user_func(
-						$field,
-						'consent',
-						__( 'Terms', 'multivendorx' ),
-						array(
-							'key'          => 'terms',
-							'required'     => true,
-							'consent_text' => __( 'I agree to the terms and conditions.', 'multivendorx' ),
-						)
-					),
+					call_user_func( $field, 'text', __( 'Store Name', 'multivendorx' ), array( 'key' => 'store_name', 'required' => true, 'placeholder' => __( 'Enter your store name', 'multivendorx' ) ) ),
+					call_user_func( $field, 'textarea', __( 'Store Desc', 'multivendorx' ), array( 'key' => 'store_description', 'placeholder' => __( 'Enter your store description', 'multivendorx' ) ) ),
+					call_user_func( $field, 'phone', __( 'Store Phone', 'multivendorx' ), array( 'key' => 'store_phone', 'placeholder' => __( 'Enter your store phone', 'multivendorx' ) ) ),
+					call_user_func( $field, 'email', __( 'Store Paypal Email', 'multivendorx' ), array( 'key' => 'store_paypal_email', 'placeholder' => __( 'Enter your PayPal email', 'multivendorx' ) ) ),
+					call_user_func( $field, 'address', __( 'Store Address', 'multivendorx' ), array( 'key' => 'store_address' ) ),
 				),
 				'submit' => __( 'Apply for a store', 'multivendorx' ),
 			)
@@ -179,7 +220,7 @@ class Registration {
 				'id'    => 'store',
 				'label' => __( 'Store', 'multivendorx' ),
 				'items' => array(
-					$item( 'store-name', 'text', __( 'Store Name', 'multivendorx' ), 't-letter-bold', $once( 'store_name', __( 'Enter your store name', 'multivendorx' ) ) ),
+					$item( 'store-name', 'text', __( 'Store Name', 'multivendorx' ), 't-letter-bold', array_merge( $once( 'store_name', __( 'Enter your store name', 'multivendorx' ) ), array( 'required' => true ) ) ),
 					$item( 'store-description', 'textarea', __( 'Store Desc', 'multivendorx' ), 'text', $once( 'store_description', __( 'Enter your store description', 'multivendorx' ) ) ),
 					$item( 'store-phone', 'phone', __( 'Store Phone', 'multivendorx' ), 'form-phone', $once( 'store_phone', __( 'Enter your store phone', 'multivendorx' ) ) ),
 					$item( 'store-paypal', 'email', __( 'Store Paypal Email', 'multivendorx' ), 'unread', $once( 'store_paypal_email', __( 'Enter your PayPal email', 'multivendorx' ) ) ),
