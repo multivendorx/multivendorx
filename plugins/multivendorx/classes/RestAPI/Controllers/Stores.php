@@ -355,8 +355,6 @@ class Stores extends \WP_REST_Controller {
 
             $is_store_owner = in_array( 'store_owner', (array) $current_user->roles, true );
 
-            // A fresh, ownerless submission (no id) is a first-time registration,
-            // unless it's coming from an admin or a store owner creating directly.
             $registrations = empty( $store_data['id'] ) && ! $is_admin && ! $is_store_owner;
 
             if ( ! $is_admin ) {
@@ -497,8 +495,6 @@ class Stores extends \WP_REST_Controller {
                 do_action( 'multivendorx_after_store_registration_complete', $current_user->ID, $store_id );
             }
 
-            // A brand-new store with no admin-assigned owner belongs to whoever created
-            // it (registration or a store owner creating one directly) -- link them once.
             if ( ( $registrations || $is_store_owner ) && empty( $store_data['id'] ) && empty( $store_data['store_owners'] ) ) {
                 StoreUtil::set_primary_owner( $current_user->ID, $store_id );
             }
