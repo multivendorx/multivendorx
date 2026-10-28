@@ -488,7 +488,6 @@ class Stores extends \WP_REST_Controller {
                     )
                 );
 
-                StoreUtil::set_primary_owner( $current_user->ID, $store_id );
                 update_user_meta(
                     $current_user->ID,
                     Utill::USER_SETTINGS_KEYS['active_store'],
@@ -498,9 +497,9 @@ class Stores extends \WP_REST_Controller {
                 do_action( 'multivendorx_after_store_registration_complete', $current_user->ID, $store_id );
             }
 
-            // A store owner creating a new store directly (not via registration) still
-            // needs to be linked as its owner, or it'll be stuck unapprovable later.
-            if ( $is_store_owner && empty( $store_data['id'] ) && empty( $store_data['store_owners'] ) ) {
+            // A brand-new store with no admin-assigned owner belongs to whoever created
+            // it (registration or a store owner creating one directly) -- link them once.
+            if ( ( $registrations || $is_store_owner ) && empty( $store_data['id'] ) && empty( $store_data['store_owners'] ) ) {
                 StoreUtil::set_primary_owner( $current_user->ID, $store_id );
             }
 
