@@ -356,26 +356,22 @@ class Stores extends \WP_REST_Controller {
                 Utill::STORE_SETTINGS_KEYS['status'],
             );
 
-            if ( ! $is_admin ) {
-                unset( $store_data['store_owners'] );
-            }
-
-            $store_data['who_created'] = $current_user->ID;
-            $store_data['status']     = 'active';
-
             // Determine store approval status.
             $approve_store = MultiVendorX()->setting->get_setting( 'approve_store' );
 
-            if ( ! $is_admin && 'manually' === $approve_store ) {
-                $store_data['status'] = 'pending';
-            }
-
-            // Generate a unique slug for frontend registration.
+            // Prepare frontend registration data.
             if ( ! $is_admin ) {
-                $raw_slug = $store_data['slug'] ?? sanitize_title( $store_data['name'] ?? '' );
+                unset( $store_data['store_owners'] );
 
+                $raw_slug = $store_data['slug'] ?? sanitize_title( $store_data['name'] ?? '' );
                 $store_data['slug'] = Store::generate_unique_store_slug( $raw_slug );
+
+                $store_data['status'] = 'manually' === $approve_store ? 'pending' : 'active';
+            } else {
+                $store_data['status'] = 'active';
             }
+
+            $store_data['who_created'] = $current_user->ID;
 
             // Save core store fields.
             $store    = new Store();
@@ -442,6 +438,7 @@ class Stores extends \WP_REST_Controller {
                 }
             }
 
+            // Save additional registration data for frontend registration.
             if ( ! $is_admin && ! empty( $non_core_fields ) ) {
                 $store->update_meta(
                     Utill::STORE_SETTINGS_KEYS['registration_data'],
@@ -449,8 +446,9 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
-            // Handle frontend registration.
+            // Handle frontend registration and ownership.
             if ( ! $is_admin ) {
+                // Handle approval and user role.
                 if ( 'automatically' === $approve_store ) {
                     $current_user->set_role( 'store_owner' );
 
@@ -471,6 +469,7 @@ class Stores extends \WP_REST_Controller {
                     );
                 }
 
+                // Set store email.
                 $store->update_meta(
                     'store_email',
                     array(
@@ -479,14 +478,17 @@ class Stores extends \WP_REST_Controller {
                     )
                 );
 
+                // Assign primary owner.
                 StoreUtil::set_primary_owner( $current_user->ID, $store_id );
 
+                // Set active store.
                 update_user_meta(
                     $current_user->ID,
                     Utill::USER_SETTINGS_KEYS['active_store'],
                     $store_id
                 );
 
+                // Trigger registration hook.
                 do_action(
                     'multivendorx_after_store_registration_complete',
                     $current_user->ID,
@@ -494,7 +496,7 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
-            // Assign the store owner when provided.
+            // Assign the store owner when provided by an admin.
             if ( ! empty( $store_data['store_owners'] ) ) {
                 $store_owner_id = $store_data['store_owners'];
 
@@ -541,9 +543,7 @@ class Stores extends \WP_REST_Controller {
                         'category'   => 'activity',
                     )
                 );
-            }
-
-            if ( 'pending' === $store_data['status'] ) {
+            } elseif ( 'pending' === $store_data['status'] ) {
                 MultiVendorX()->notifications->send_notification_helper(
                     'store_pending_approval',
                     $store,
