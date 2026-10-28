@@ -355,18 +355,9 @@ class Stores extends \WP_REST_Controller {
 
             $is_store_owner = in_array( 'store_owner', (array) $current_user->roles, true );
 
-            // Decide registration status ourselves - never trust a client header for this.
+            // A fresh, ownerless submission (no id) is a first-time registration,
+            // unless it's coming from an admin or a store owner creating directly.
             $registrations = empty( $store_data['id'] ) && ! $is_admin && ! $is_store_owner;
-
-            // `create_stores` is granted to every logged-in user, so block a
-            // direct, ownerless store create outside registration/self-edit.
-            if ( ! $registrations && empty( $store_data['id'] ) && ! $is_admin ) {
-                return new \WP_Error(
-                    'rest_forbidden',
-                    __( 'You are not allowed to create stores this way.', 'multivendorx' ),
-                    array( 'status' => 403 )
-                );
-            }
 
             if ( ! $is_admin ) {
                 unset( $store_data['store_owners'] );
@@ -505,6 +496,12 @@ class Stores extends \WP_REST_Controller {
                 );
 
                 do_action( 'multivendorx_after_store_registration_complete', $current_user->ID, $store_id );
+            }
+
+            // A store owner creating a new store directly (not via registration) still
+            // needs to be linked as its owner, or it'll be stuck unapprovable later.
+            if ( $is_store_owner && empty( $store_data['id'] ) && empty( $store_data['store_owners'] ) ) {
+                StoreUtil::set_primary_owner( $current_user->ID, $store_id );
             }
 
             if ( ! empty( $store_data['store_owners'] ) ) {
@@ -995,6 +992,12 @@ class Stores extends \WP_REST_Controller {
                         );
                         return rest_ensure_response( array( 'success' => true ) );
                     }
+
+                    return new \WP_Error(
+                        'no_store_owner',
+                        __( 'This store has no owner to approve.', 'multivendorx' ),
+                        array( 'status' => 400 )
+                    );
                 }
 
                 if ( 'rejected' === ( $data['status'] ?? '' ) ) {

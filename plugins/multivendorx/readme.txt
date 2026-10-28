@@ -5,7 +5,7 @@ Donate link: http://multivendorx.com/donate/?utm_source=wporg&utm_medium=plugind
 Requires at least: 6.4.0
 Tested up to: 7.1.3
 Requires PHP: 8.0
-Stable tag: 5.0.20
+Stable tag: 5.0.21
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -245,6 +245,18 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 15. Store-admin-list.
 
 == Changelog ==
+
+= 5.0.21 - 2026-10-28 =
+* Added     - Support for adding new fields in the Bank Transfer payment option for admins. #2387
+* Fixed     - The setup tour issue during new store onboarding. #2319
+* Fixed     - The issue where the Report Abuse button did not appear on product pages when “Everyone” was selected in the settings. #2408
+* Fixed     - The issue with uploading images for downloadable products. #2406
+* Fixed     - Security vulnerabilities reported by WordPress community members. #2413
+* Fixed     - The product image reordering functionality in the Store Owner Dashboard. #2359
+* Fixed     - The issue where registration form fields entered by store owners were not displayed in the admin dashboard correctly. #2377
+* Fixed     - Translation issues affecting several Store Dashboard strings. #2224
+* Fixed     - Mobile view optimisation for the store registration page. #2396
+* Updated   - Language file.
 
 = 5.0.20 - 2026-10-13 =
 * Added     - Compatibility with WordPress 7.1.3
