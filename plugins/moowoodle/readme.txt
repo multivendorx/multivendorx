@@ -231,7 +231,7 @@ This project might have bugs and may be lacking certain features. If you'd like 
 
 == Changelog ==
 
-= 3.4.13 - 2026-10-27 =
+= 3.4.13 - 2026-10-29 =
 * Added     - Compatibility of WooCommerce 11.2.1.
 * Added     - MCP (Model Context Protocol) support for enhanced integration and interoperability.
 * Updated   - Language file.
