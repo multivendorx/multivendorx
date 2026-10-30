@@ -30,6 +30,10 @@ class Utill {
         'product_discontinued' => 'product_discontinued',
     );
 
+    public const NOTIFIMA_OTHER_SETTINGS = array(
+        'vulomail_notice'            => 'notifima_vulomail_notice_dismissed_at',
+    );
+    
     /**
      * Custom $wpdb table names (unprefixed), keyed by logical name.
      * Always reference via `$wpdb->prefix . Utill::TABLES['subscribers']`, never a hardcoded string.
