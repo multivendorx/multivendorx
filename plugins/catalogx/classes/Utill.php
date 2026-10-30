@@ -69,6 +69,7 @@ class Utill {
         'tour_completed'      => 'catalogx_tour_completed',
         'plugin_db_version'   => 'catalogx_version',
         'log_file'            => 'catalogx_log_file',
+        'vulomail_notice'     => 'catalogx_vulomail_notice_dismissed_at',
     );
 
     /**
