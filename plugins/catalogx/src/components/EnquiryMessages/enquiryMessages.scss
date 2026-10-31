@@ -251,7 +251,9 @@
                     font-weight: 500;
                 }
             }
-
+            .calendar-tabs-container.open-downward{
+                left: 0;
+            }
             .starter-message {
                 user-select: none;
                 cursor: pointer;
