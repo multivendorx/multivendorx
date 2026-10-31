@@ -257,23 +257,6 @@
                 cursor: pointer;
             }
 
-            .select-toggle-btn {
-                flex-shrink: 0;
-                background: $theme-background-color;
-                color: $text-color;
-                border: none;
-                border-radius: $border-radius-small;
-                padding: 0.375rem 0.75rem;
-                font-size: 0.75rem;
-                font-weight: 600;
-                cursor: pointer;
-
-                &.active {
-                    background: $color-active;
-                    color: $color-white;
-                }
-            }
-
             .search-option {
                 position: relative;
                 display: flex;
@@ -378,15 +361,29 @@
                 color: #2a2f34bf;
                 font-weight: 600;
 
-                .select-all-btn {
+                .download-chats-btn {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.4rem;
                     margin-left: auto;
-                    background: transparent;
+                    background: $theme-color;
+                    color: $color-white;
                     border: none;
-                    color: $color-active;
+                    border-radius: 6.25rem;
+                    padding: 0.4rem 0.875rem;
                     font-size: 0.75rem;
                     font-weight: 600;
                     cursor: pointer;
-                    padding: 0;
+                    white-space: nowrap;
+
+                    &:disabled {
+                        opacity: 0.5;
+                        cursor: not-allowed;
+                    }
+
+                    i {
+                        font-size: 0.813rem;
+                    }
                 }
             }
 
@@ -432,11 +429,6 @@
                         border-color: #afa9a9fa;
                     }
 
-                    &.checked {
-                        border-color: $theme-color;
-                        background: $theme-background-color;
-                    }
-
                     &.no-data-section {
                         height: 4.875rem;
                         display: flex;
@@ -455,39 +447,6 @@
                         align-items: center;
                         position: relative;
                         width: 100%;
-
-                        .chat-item-checkbox {
-                            order: 3;
-                            flex-shrink: 0;
-                            appearance: none;
-                            -webkit-appearance: none;
-                            width: 1.25rem;
-                            height: 1.25rem;
-                            margin-left: 0.75rem;
-                            margin-right: 0;
-                            border: 0.094rem solid #d7d5e0;
-                            border-radius: 50%;
-                            background: $color-white;
-                            cursor: pointer;
-                            position: relative;
-
-                            &:checked {
-                                background: $theme-color;
-                                border-color: $theme-color;
-
-                                &::after {
-                                    content: "";
-                                    position: absolute;
-                                    left: 0.375rem;
-                                    top: 0.15rem;
-                                    width: 0.3rem;
-                                    height: 0.55rem;
-                                    border: solid $color-white;
-                                    border-width: 0 0.125rem 0.125rem 0;
-                                    transform: rotate(45deg);
-                                }
-                            }
-                        }
 
                         .chat-img {
                             // align-self: center;
@@ -528,7 +487,6 @@
                         }
 
                         .date {
-                            order: 2;
                             flex-shrink: 0;
                             margin-left: 0.5rem;
                             font-size: 0.688rem;
@@ -567,59 +525,6 @@
                 }
             }
 
-            .bulk-action-bar {
-                position: absolute;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                display: flex;
-                align-items: center;
-                gap: 0.75rem;
-                padding: 0.75rem 0;
-                border-top: 0.063rem solid #dbdbdb;
-                background: $color-white;
-
-                .bulk-selected-count {
-                    flex: 1;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    color: $text-color;
-                    font-size: 0.813rem;
-                    font-weight: 600;
-
-                    &::before {
-                        content: "";
-                        width: 1.125rem;
-                        height: 1.125rem;
-                        border-radius: 50%;
-                        background: $theme-color;
-                    }
-                }
-
-                .bulk-download-btn {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.4rem;
-                    background: $theme-color;
-                    color: $color-white;
-                    border: none;
-                    border-radius: 6.25rem;
-                    padding: 0.5rem 1.125rem;
-                    font-size: 0.813rem;
-                    font-weight: 600;
-                    cursor: pointer;
-
-                    &:disabled {
-                        opacity: 0.7;
-                        cursor: not-allowed;
-                    }
-
-                    i {
-                        font-size: 0.875rem;
-                    }
-                }
-            }
         }
     }
 
