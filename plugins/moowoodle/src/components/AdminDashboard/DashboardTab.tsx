@@ -309,7 +309,7 @@ const DashboardTab: React.FC<object> = () => {
 					titleIcon="section"
 					desc="Discover more tools to grow your marketplace."
 				>
-					<ColumnComponent row>
+					<ColumnComponent>
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
 							<ListComponent
 								className="mini-card"
