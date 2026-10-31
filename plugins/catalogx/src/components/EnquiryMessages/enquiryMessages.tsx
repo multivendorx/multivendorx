@@ -343,10 +343,7 @@ const DummyEnquiryMessages = () => {
                                 </div>
 
                                 <div className="chat-list-container">
-                                    <div className="recent-message">
-                                        {__('Enquiry Messages', 'catalogx')}
-                                        <span className="total-message">({demoChatList.length})</span>
-                                    </div>
+                                    <div className="recent-message">Enquiry Messages<span className="total-message">(4)</span><button type="button" className="download-chats-btn" title="Download all chats"><i className="adminfont-download"></i>Download</button></div>
                                     <div className="chat-list-wrapper">
                                         {demoChatList.map((chat) => (
                                             <div
