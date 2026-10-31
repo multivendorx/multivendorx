@@ -163,6 +163,7 @@ final class MultiVendorX {
         $this->container['rest']            = new RestAPI\Rest();
         $this->container['payments']        = new Payments\Payments();
         $this->container['store']           = new Store\Store();
+        $this->container['registration']    = new Store\Registration();
         $this->container['transaction']     = new Transaction\Transaction();
         $this->container['modules']         = new Modules();
         $this->container['status']          = new Status();
@@ -177,6 +178,7 @@ final class MultiVendorX {
         $this->container['promotions']      = new Promotions();
         $this->container['migration']       = new Migration\Cron();
         $this->container['vulomail_migration'] = new Integrations\VuloMailMigration();
+        $this->container['vulomail_templates'] = new Integrations\VuloMailTemplates();
 
         $this->initialize_multivendorx_log();
 

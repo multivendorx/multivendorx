@@ -1,13 +1,13 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps } from '@wordpress/block-editor';
-import RegistrationForm from './registrationForm';
+import { __ } from '@wordpress/i18n';
 
-// Edit component (no attributes needed for this form)
+// The form itself is a VuloForm form, rendered on the server; the editor shows a placeholder.
 const EditBlock = () => {
 	const blockProps = useBlockProps();
 	return (
 		<div {...blockProps}>
-			<RegistrationForm />
+			<p>{__('Store registration form (built with VuloForm).', 'multivendorx')}</p>
 		</div>
 	);
 };
@@ -22,7 +22,7 @@ registerBlockType('multivendorx/registration-form', {
 
 	edit: EditBlock,
 
-	// Save function just outputs a placeholder <div> for frontend rendering
+	// Kept as before so existing blocks stay valid; the front end is rendered by render.php.
 	save() {
 		return <div id="multivendorx-registration-form"></div>;
 	},

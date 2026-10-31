@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
-import { salesReport } from '../../../assets/template/emailTemplate/salesReport';
 
+// The email builder itself lives in VuloMail; this tab (see EmailTemplateCustomizerLink) opens it.
 export default {
 	id: 'email-template-customizer',
 	priority: 3,
@@ -10,14 +10,7 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'search-discovery',
+	hideSettingHeader: true,
 	submitUrl: 'settings',
-	modal: [
-		{
-			key: 'email_templates',
-			type: 'builderform-email',
-			classes: 'full-width',
-			emailTemplates: [salesReport],
-			defaultTemplateId: 'store-registration',
-		},
-	],
+	modal: [],
 };

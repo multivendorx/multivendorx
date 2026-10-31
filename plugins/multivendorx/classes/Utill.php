@@ -53,6 +53,7 @@ class Utill {
     const MULTIVENDORX_SETTINGS = array(
         'onboarding'                    => 'multivendorx_onboarding_settings',
         'registration'                  => 'multivendorx_registration_settings',
+        'email-template-customizer'     => 'multivendorx_email_template_customizer_settings',
         'dashboard-menu'                => 'multivendorx_dashboard_menu_settings',
         'privacy'                       => 'multivendorx_privacy_settings',
         'coupons-discounts'             => 'multivendorx_coupons_discounts_settings',

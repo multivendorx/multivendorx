@@ -16,6 +16,7 @@ use MultiVendorX\RestAPI\Controllers\Status;
 use MultiVendorX\RestAPI\Controllers\Notifications;
 use MultiVendorX\RestAPI\Controllers\Transactions;
 use MultiVendorX\RestAPI\Controllers\Tour;
+use MultiVendorX\RestAPI\Controllers\RegistrationForm;
 use MultiVendorX\RestAPI\Controllers\Logs;
 use MultiVendorX\RestAPI\Controllers\Tracking;
 
@@ -1147,6 +1148,7 @@ class Rest {
             'transaction'       => new Transactions(),
             'notifications'     => new Notifications(),
             'tour'              => new Tour(),
+            'registration-form' => new RegistrationForm(),
             'logs'              => new Logs(),
             'import_dummy_data' => new ImportDummyData(),
             'Migration'         => new Migrations(),

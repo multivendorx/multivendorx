@@ -132,17 +132,12 @@ class Notifications {
 	}
 
 	/**
-	 * Insert system events.
+	 * The default system events, by key: name, description, subject, email body and so on.
 	 *
-	 * This function inserts system events, optionally only new ones.
-	 *
-	 * @param bool $is_new Optional. Whether to insert only new events. Default false.
-	 * @return void
+	 * @return array
 	 */
-	public function insert_system_events( $is_new = false ) {
-		global $wpdb;
-
-		$this->events = apply_filters(
+	public function default_events() {
+		return apply_filters(
 			'multivendorx_system_events',
 			array(
 				// Store Registration & Approval.
@@ -1692,6 +1687,18 @@ class Notifications {
 				),
 			)
 		);
+	}
+
+	/**
+	 * Insert system events.
+	 *
+	 * @param bool $is_new Optional. Whether to insert only new ones. Default false.
+	 * @return void
+	 */
+	public function insert_system_events( $is_new = false ) {
+		global $wpdb;
+
+		$this->events = $this->default_events();
 
 		if ( ! $is_new ) {
 			$table = $wpdb->prefix . Utill::TABLES['system_events'];
