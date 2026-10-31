@@ -97,6 +97,7 @@ class Utill {
         'invoices'                      => 'multivendorx_invoices_settings',
         'tax-information'               => 'multivendorx_tax_information_settings',
         'printful'                      => 'multivendorx_printful_settings',
+        'email-template-customizer'     => 'multivendorx_email_template_customizer_settings'
     );
 
     const MULTIVENDORX_OTHER_SETTINGS = array(
