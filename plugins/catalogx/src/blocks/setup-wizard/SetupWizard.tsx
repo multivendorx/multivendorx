@@ -1,6 +1,6 @@
 /* global appLocalizer */
 import React, { useState } from 'react';
-import { ExpandablePanelInput } from '@zyra/inputs';
+import { SetupWizardInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 import img from '../../assets/images/catalogx-logo.png';
 
@@ -35,8 +35,6 @@ const SetupWizard: React.FC = () => {
 				'Choose how customers can submit enquiries for your products.',
 				'catalogx'
 			),
-			countBtn: true,
-			isWizardMode: true,
 			openForm: true,
 			formFields: [
 				{
@@ -111,8 +109,6 @@ const SetupWizard: React.FC = () => {
 			label: __('Set up quotation requests', 'catalogx'),
 			icon: 'setting',
 			desc: __('Allow customers to request quotations and define how long quotes remain valid.', 'catalogx'),
-			countBtn: true,
-			isWizardMode: true,
 			openForm: true,
 			formFields: [
 				{
@@ -165,8 +161,6 @@ const SetupWizard: React.FC = () => {
 			label: __('Build your enquiry form', 'catalogx'),
 			icon: 'setting',
 			desc: __('Customize the information customers provide when submitting enquiries and quote requests.', 'catalogx'),
-			countBtn: true,
-			isWizardMode: true,
 			openForm: true,
 			formFields: [
 				{
@@ -208,34 +202,30 @@ const SetupWizard: React.FC = () => {
 	};
 
 	return (
-		<div className="wizard-container">
-			<div className="welcome-wrapper">
-				<img src={img} alt="" />
-				<div className="wizard-title">
-					{__('Welcome to the CatalogX family!', 'catalogx')}
-				</div>
-				<div className="des">
-					{__(
-						`This quick setup wizard will help you configure enquiries and quotations for your products. It shouldn't take longer than two minutes.`,
-						'catalogx'
-					)}
-				</div>
-			</div>
-
-			<ExpandablePanelInput
-				key={inputField.key}
-				name={inputField.key}
-				apilink={String(inputField.apiLink)}
-				appLocalizer={appLocalizer}
-				methods={methods}
-				value={value}
-				onChange={(data) => {
-					updateSetting(inputField.key, data);
-				}}
-				isWizardMode={true}
-				canAccess={true}
-			/>
-		</div>
+		<SetupWizardInput
+			key={inputField.key}
+			apilink={String(inputField.apiLink)}
+			methods={methods}
+			value={value}
+			onChange={(data) => updateSetting(inputField.key, data)}
+			canAccess
+			brandName="CatalogX"
+			brandMark={<img src={img} alt="" />}
+			railTitle={__('Setup', 'catalogx')}
+			intro={
+				<>
+					<h4 className="wizard-title">
+						{__('Welcome to the CatalogX family!', 'catalogx')}
+					</h4>
+					<p>
+						{__(
+							`This quick setup wizard will help you configure enquiries and quotations for your products. It shouldn't take longer than two minutes.`,
+							'catalogx'
+						)}
+					</p>
+				</>
+			}
+		/>
 	);
 };
 
