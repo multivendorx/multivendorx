@@ -239,6 +239,12 @@ class CommissionUtil {
 		$start_date = (string) ( $args['start_date'] ?? '' );
 		$end_date   = (string) ( $args['end_date'] ?? '' );
 		$by_dates   = ( '' !== $start_date && '' !== $end_date ) ? 1 : 0;
+		// Dummy valid dates when none are set — MySQL strict mode validates BETWEEN operands
+		// against the DATE() expression even when the %d flag makes that branch logically irrelevant.
+		if ( ! $by_dates ) {
+			$start_date = '1970-01-01';
+			$end_date   = '1970-01-01';
+		}
 
 		if ( $dashboard ) {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching

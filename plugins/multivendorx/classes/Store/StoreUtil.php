@@ -649,8 +649,10 @@ class StoreUtil {
 		$by_dates      = ( isset( $args['start_date'] ) && isset( $args['end_date'] ) ) ? 1 : 0;
 		$enabled      += $by_dates;
 		$term_values[] = $by_dates;
-		$term_values[] = (string) ( $args['start_date'] ?? '' );
-		$term_values[] = (string) ( $args['end_date'] ?? '' );
+		// Dummy valid timestamps when dates aren't set — MySQL strict mode validates BETWEEN operands
+		// against the column type even when the %d flag makes the IF() branch logically irrelevant.
+		$term_values[] = $by_dates ? (string) $args['start_date'] : '1970-01-01 00:00:00';
+		$term_values[] = $by_dates ? (string) $args['end_date'] : '1970-01-01 00:00:00';
 
 		$required      = ( 'OR' === strtoupper( trim( $args['condition'] ?? 'AND' ) ) ) ? min( 1, $enabled ) : $enabled;
 		$term_values[] = $required;
