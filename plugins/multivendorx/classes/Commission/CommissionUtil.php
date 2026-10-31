@@ -239,12 +239,13 @@ class CommissionUtil {
 		$start_date = (string) ( $args['start_date'] ?? '' );
 		$end_date   = (string) ( $args['end_date'] ?? '' );
 		$by_dates   = ( '' !== $start_date && '' !== $end_date ) ? 1 : 0;
-		// Dummy valid dates when none are set — MySQL strict mode validates BETWEEN operands
-		// against the DATE() expression even when the %d flag makes that branch logically irrelevant.
-		if ( ! $by_dates ) {
-			$start_date = '1970-01-01';
-			$end_date   = '1970-01-01';
-		}
+
+		// Only feed the BETWEEN clause real date literals when a date filter is actually
+		// active — MySQL strict mode validates BETWEEN operands against the DATE() expression
+		// regardless of the surrounding OR's flag, so an empty/absent filter must drop the
+		// clause from the query entirely rather than pass it an empty string.
+		$date_clause  = $by_dates ? '( %d = 0 OR DATE(created_at) BETWEEN %s AND %s )' : '( %d = 0 OR 1 = 1 )';
+		$date_values  = $by_dates ? array( $by_dates, $start_date, $end_date ) : array( $by_dates );
 
 		if ( $dashboard ) {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
@@ -258,15 +259,13 @@ class CommissionUtil {
 						COUNT(DISTINCT order_id) AS orders
 					FROM %i
 					WHERE store_id = %d
-					AND ( %d = 0 OR DATE(created_at) BETWEEN %s AND %s )
+					AND {$date_clause}
 					GROUP BY YEAR(created_at), MONTH(created_at)
 					ORDER BY created_at ASC
 					",
 					$table_name,
 					$store_id,
-					$by_dates,
-					$start_date,
-					$end_date
+					...$date_values
 				),
 				ARRAY_A
 			);
@@ -278,7 +277,7 @@ class CommissionUtil {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$result = $wpdb->get_row(
 			$wpdb->prepare(
-				'
+				"
 				SELECT
 					COUNT(DISTINCT order_id) AS order_count,
 					COALESCE(SUM(total_order_value), 0) AS total_order_amount,
@@ -291,10 +290,10 @@ class CommissionUtil {
 					COALESCE(SUM(store_refunded), 0) AS commission_refunded
 				FROM %i
 				WHERE ( %d = 0 OR store_id = %d )
-				AND ( %d = 0 OR DATE(created_at) BETWEEN %s AND %s )
-				',
+				AND {$date_clause}
+				",
 				$table_name,
-				...array_merge( array_fill( 0, 2, (int) $store_id ), array( $by_dates, $start_date, $end_date ) )
+				...array_merge( array_fill( 0, 2, (int) $store_id ), $date_values )
 			)
 		);
 

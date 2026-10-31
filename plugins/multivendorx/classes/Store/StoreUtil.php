@@ -646,13 +646,22 @@ class StoreUtil {
 				: (string) ( $args[ $filter_key ] ?? '' );
 		}
 
-		$by_dates      = ( isset( $args['start_date'] ) && isset( $args['end_date'] ) ) ? 1 : 0;
-		$enabled      += $by_dates;
-		$term_values[] = $by_dates;
-		// Dummy valid timestamps when dates aren't set — MySQL strict mode validates BETWEEN operands
-		// against the column type even when the %d flag makes the IF() branch logically irrelevant.
-		$term_values[] = $by_dates ? (string) $args['start_date'] : '1970-01-01 00:00:00';
-		$term_values[] = $by_dates ? (string) $args['end_date'] : '1970-01-01 00:00:00';
+		$by_dates = ( isset( $args['start_date'] ) && isset( $args['end_date'] ) ) ? 1 : 0;
+		$enabled += $by_dates;
+
+		// Only feed the BETWEEN clause real date literals when a date filter is actually
+		// active — MySQL strict mode validates BETWEEN operands against the column type
+		// regardless of the surrounding IF()'s flag, so an empty/absent filter must drop
+		// the clause from the query entirely rather than pass it an empty string.
+		$date_clause = $by_dates
+			? 'IF( %d = 1 AND create_time BETWEEN %s AND %s, 1, 0 )'
+			: 'IF( %d = 1, 1, 0 )';
+		$term_values = array_merge(
+			$term_values,
+			$by_dates
+				? array( $by_dates, (string) $args['start_date'], (string) $args['end_date'] )
+				: array( $by_dates )
+		);
 
 		$required      = ( 'OR' === strtoupper( trim( $args['condition'] ?? 'AND' ) ) ) ? min( 1, $enabled ) : $enabled;
 		$term_values[] = $required;
@@ -669,7 +678,7 @@ class StoreUtil {
 						+ IF( %d = 1 AND name LIKE %s, 1, 0 )
 						+ IF( %d = 1 AND slug = %s, 1, 0 )
 						+ IF( %d = 1 AND name LIKE %s, 1, 0 )
-						+ IF( %d = 1 AND create_time BETWEEN %s AND %s, 1, 0 )
+						+ ' . $date_clause . '
 					) >= %d',
 					$table,
 					...$term_values
@@ -694,7 +703,7 @@ class StoreUtil {
 						+ IF( %d = 1 AND name LIKE %s, 1, 0 )
 						+ IF( %d = 1 AND slug = %s, 1, 0 )
 						+ IF( %d = 1 AND name LIKE %s, 1, 0 )
-						+ IF( %d = 1 AND create_time BETWEEN %s AND %s, 1, 0 )
+						+ ' . $date_clause . '
 					) >= %d
 					ORDER BY CASE WHEN %d = 1 THEN %i END DESC, %i ASC
 					LIMIT %d OFFSET %d',
