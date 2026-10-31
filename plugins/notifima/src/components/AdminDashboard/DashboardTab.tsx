@@ -285,8 +285,8 @@ const DashboardTab: React.FC<object> = () => {
 
 			{/* Right Side */}
 			<ColumnComponent grid={4}>
-				<CardComponent title={__('Extend your website', 'notifima')} titleIcon="section" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
-					<ColumnComponent row>
+				<CardComponent title={__('Extend your website', 'notifima')} titleIcon="section" desc="Discover tools and add-ons to expand your website’s capabilities.">
+					<ColumnComponent>
 						{/* notifima */}
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
 							<ListComponent
@@ -465,7 +465,7 @@ const DashboardTab: React.FC<object> = () => {
 				</CardComponent>
 
 				{/* Quick Links */}
-				<CardComponent title={__('Need help getting started?', 'notifima')} titleIcon="help" desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+				<CardComponent title={__('Need help getting started?', 'notifima')} titleIcon="help" desc="Find guides, resources, and support to help you set up and manage your WooCommerce store.">
 					<div className="quick-link">
 						{resources.map((res) => (
 							<ListComponent
