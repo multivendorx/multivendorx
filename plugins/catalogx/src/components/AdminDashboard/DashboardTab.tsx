@@ -301,9 +301,9 @@ const DashboardTab: React.FC<object> = () => {
 			</ColumnComponent>
 
 			{/* Right Side */}
-			<ColumnComponent grid={4}>L
+			<ColumnComponent grid={4}>
 				<CardComponent title={__('Extend your website', 'catalogx')} titleIcon="section" desc="Discover more tools to grow your marketplace.">
-					<ColumnComponent row>
+					<ColumnComponent>
 						{pluginStatus['dc-woocommerce-multi-vendor'] ? (
 							<ListComponent
 								className="mini-card"
