@@ -169,7 +169,7 @@ class Promotions {
 	public function dismiss_vulomail_notice() {
 		check_ajax_referer( 'dismiss_vulomail_notice', 'nonce' );
 
-		update_option( Utill::CATALOGX_OTHER_SETTINGS['vulomail_notice'], time(), false );
+		update_option( Utill::CATALOGX_OTHER_SETTINGS['vulomail_notice_dismissal_time'], time(), false );
 
 		wp_send_json_success();
 	}
@@ -223,7 +223,7 @@ class Promotions {
 	 * @return bool
 	 */
 	private function should_display_vulomail_notice() {
-		$dismissed_at = (int) get_option( Utill::CATALOGX_OTHER_SETTINGS['vulomail_notice'], 0 );
+		$dismissed_at = (int) get_option( Utill::CATALOGX_OTHER_SETTINGS['vulomail_notice_dismissal_time'], 0 );
 
 		return ! $dismissed_at || ( time() - $dismissed_at ) >= YEAR_IN_SECONDS;
 	}
