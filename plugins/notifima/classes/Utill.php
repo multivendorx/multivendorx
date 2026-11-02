@@ -31,7 +31,7 @@ class Utill {
     );
 
     public const NOTIFIMA_OTHER_SETTINGS = array(
-        'vulomail_notice'            => 'notifima_vulomail_notice_dismissed_at',
+        'vulopilot_notice_dismissal_time'            => 'notifima_vulopilot_notice_dismissed_at',
     );
     
     /**
