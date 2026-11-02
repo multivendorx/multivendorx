@@ -1,14 +1,11 @@
 <?php
 /**
- * VuloMail notification class file.
+ * Communications class file.
  *
  * @package Notifima
  */
 
-namespace Notifima\Notifications;
-
-use Notifima\FrontendScripts;
-use Notifima\Utill;
+namespace Notifima;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -18,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  * @version     3.1.9
  * @package     Notifima
  */
-class Vulomail {
+class Communications {
 
 	/**
 	 * Promotions constructor. Registers notice, AJAX and script hooks.
