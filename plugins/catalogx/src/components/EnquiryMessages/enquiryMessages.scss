@@ -129,7 +129,7 @@
     gap: 1rem;
     margin: auto;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     height: 90vh;
     max-height: 90vh;
 
@@ -251,7 +251,9 @@
                     font-weight: 500;
                 }
             }
-
+            .calendar-tabs-container.open-downward{
+                left: 0;
+            }
             .starter-message {
                 user-select: none;
                 cursor: pointer;
@@ -353,10 +355,38 @@
             position: relative;
 
             .recent-message {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
                 font-size: 0.75rem;
                 margin: 1rem 0;
                 color: #2a2f34bf;
                 font-weight: 600;
+
+                .download-chats-btn {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                    margin-left: auto;
+                    background: $theme-color;
+                    color: $color-white;
+                    border: none;
+                    border-radius: 6.25rem;
+                    padding: 0.4rem 0.875rem;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    white-space: nowrap;
+
+                    &:disabled {
+                        opacity: 0.5;
+                        cursor: not-allowed;
+                    }
+
+                    i {
+                        font-size: 0.813rem;
+                    }
+                }
             }
 
             .chat-list-wrapper {
@@ -418,9 +448,11 @@
                         display: flex;
                         align-items: center;
                         position: relative;
+                        width: 100%;
 
                         .chat-img {
                             // align-self: center;
+                            flex-shrink: 0;
                             margin-right: 0.75rem;
                             position: relative;
 
@@ -435,18 +467,33 @@
                             }
                         }
 
+                        .chat-meta {
+                            flex: 1;
+                            min-width: 0;
+                        }
+
                         .name {
                             font-size: 1.063rem;
                             font-weight: 500;
                             padding-bottom: 0.313rem;
                             color: $text-color;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        }
+
+                        .last-chat {
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
                         }
 
                         .date {
-                            position: absolute;
-                            top: 0;
-                            right: 0;
-                            font-size: 0.813rem;
+                            flex-shrink: 0;
+                            margin-left: 0.5rem;
+                            font-size: 0.688rem;
+                            color: $sub-text-color;
+                            white-space: nowrap;
                         }
                     }
 
@@ -459,10 +506,6 @@
                             top: 0;
                             bottom: 0;
                             left: 0;
-                        }
-
-                        .date {
-                            right: 1.5rem;
                         }
 
                         .count {
@@ -483,6 +526,7 @@
                     }
                 }
             }
+
         }
     }
 
@@ -1152,6 +1196,10 @@
 
 // for my account only
 #enquiry-msg-box {
+    .enquiry-container {
+        overflow: hidden;
+    }
+
     .enquiry-container:has(.active-navbar) {
         .chat-list {
             transform: translateX(0);
