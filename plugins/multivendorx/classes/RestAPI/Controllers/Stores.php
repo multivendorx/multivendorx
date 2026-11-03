@@ -145,7 +145,6 @@ class Stores extends \WP_REST_Controller {
     public function prepare_get_items_response( $params, $request = null ) {
         try {
             $permission = Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
-            $is_admin   = Utill::current_user_has_capability( array( 'manage_options' ) );
             $flag_map   = array(
                 'visitorMap'         => 'get_visitor_map_data',
                 'store_registration' => 'get_store_registration_data',
@@ -171,17 +170,6 @@ class Stores extends \WP_REST_Controller {
             }
 
             $args = $this->get_store_query_args( $params );
-
-            if ( ! $is_admin ) {
-                // Non-admin callers (store owners/staff) only ever see their own store(s).
-                $own_store_ids = StoreUtil::get_store_ids_for_user( MultiVendorX()->current_user_id );
-
-                if ( ! empty( $args['ID'] ) ) {
-                    $args['ID'] = array_intersect( array_map( 'intval', (array) $args['ID'] ), $own_store_ids );
-                } else {
-                    $args['ID'] = $own_store_ids;
-                }
-            }
 
             $store_ids = $args['nearest_store_ids'] ?? array();
             unset( $args['nearest_store_ids'] );
@@ -226,13 +214,9 @@ class Stores extends \WP_REST_Controller {
 
             // Status counters in headers.
             foreach ( $status_filters as $key => $filter ) {
-                $count_args = array_merge( $filter, array( 'count' => true ) );
-
-                if ( ! $is_admin ) {
-                    $count_args['ID'] = $args['ID'];
-                }
-
-                $count = StoreUtil::get_store_information( $count_args );
+                $count = StoreUtil::get_store_information(
+                    array_merge( $filter, array( 'count' => true ) )
+                );
 
                 if ( 'all' === $key ) {
                     $response->header( 'X-WP-Total', (int) $count );

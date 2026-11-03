@@ -569,40 +569,6 @@ class StoreUtil {
 	}
 
 	/**
-	 * Get the ids of every store a user is the primary owner or a listed staff member of.
-	 *
-	 * Used to scope a store listing to a non-admin caller's own store(s), the
-	 * same way current_user_can_manage_store() scopes a single-store lookup.
-	 *
-	 * @param int $user_id User ID.
-	 * @return array<int>
-	 */
-	public static function get_store_ids_for_user( $user_id ) {
-		global $wpdb;
-
-		$user_id = (int) $user_id;
-		if ( ! $user_id ) {
-			return array();
-		}
-
-		$table     = $wpdb->prefix . Utill::TABLES['store_users'];
-		$store_ids = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-            $wpdb->prepare(
-                'SELECT DISTINCT store_id FROM %i WHERE user_id = %d OR primary_owner = %d',
-                $table,
-                $user_id,
-                $user_id
-            )
-		);
-
-		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
-			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
-		}
-
-		return wp_parse_id_list( $store_ids );
-	}
-
-	/**
 	 * Set primary owner for a store.
 	 *
 	 * @param int $user_id User ID.
