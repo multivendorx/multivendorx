@@ -91,14 +91,16 @@ class Abilities {
     }
 
     /**
-     * No store_id -> admin only. A store_id -> scoped to that store.
+     * No store_id -> active_store, then admin only if that's empty too.
      *
      * @param array $input Ability input.
      * @return bool
      */
     public function store_permissions_check( $input ) {
-        if ( ! empty( $input['store_id'] ) ) {
-            return StoreUtil::current_user_can_manage_store( $input['store_id'] );
+        $store_id = $input['store_id'] ?? (int) MultiVendorX()->active_store;
+
+        if ( ! empty( $store_id ) ) {
+            return StoreUtil::current_user_can_manage_store( $store_id );
         }
 
         return Utill::current_user_has_capability( array( 'manage_options' ) );
@@ -123,7 +125,9 @@ class Abilities {
      * @return \WP_REST_Response|\WP_Error
      */
     public function get_customer_questions( $input ) {
-        return Module::init()->rest->prepare_get_items_response( (array) $input );
+        $store_id = $input['store_id'] ?? (int) MultiVendorX()->active_store;
+
+        return Module::init()->rest->prepare_get_items_response( array_merge( (array) $input, array( 'store_id' => $store_id ) ) );
     }
 
     /**

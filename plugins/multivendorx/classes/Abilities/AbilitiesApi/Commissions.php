@@ -56,14 +56,16 @@ class Commissions {
     }
 
     /**
-     * No store_id -> admin only. A store_id -> scoped to that store.
+     * No store_id -> active_store, then admin only if that's empty too.
      *
      * @param array $input Ability input.
      * @return bool
      */
     public function store_permissions_check( $input ) {
-        if ( ! empty( $input['store_id'] ) ) {
-            return StoreUtil::current_user_can_manage_store( $input['store_id'] );
+        $store_id = $input['store_id'] ?? (int) MultiVendorX()->active_store;
+
+        if ( ! empty( $store_id ) ) {
+            return StoreUtil::current_user_can_manage_store( $store_id );
         }
 
         return Utill::current_user_has_capability( array( 'manage_options' ) );
@@ -76,6 +78,8 @@ class Commissions {
      * @return array
      */
     public function get_commission_summary( $input ) {
+        $store_id = $input['store_id'] ?? (int) MultiVendorX()->active_store;
+
         $args = array_filter(
             array(
                 'start_date' => $input['start_date'] ?? null,
@@ -83,6 +87,6 @@ class Commissions {
             )
         );
 
-        return CommissionUtil::get_commission_summary_for_store( (int) ( $input['store_id'] ?? 0 ), false, null, null, $args );
+        return CommissionUtil::get_commission_summary_for_store( (int) $store_id, false, null, null, $args );
     }
 }

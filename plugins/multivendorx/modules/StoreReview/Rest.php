@@ -139,7 +139,7 @@ class Rest extends \WP_REST_Controller {
     }
 
     /**
-     * Get reviews. Shared by get_items() and the get-store-reviews ability.
+     * Get reviews. Shared by get_items() and the get-reviews ability.
      *
      * @param array                 $params  Plain request params.
      * @param \WP_REST_Request|null $request Originating request, if any.

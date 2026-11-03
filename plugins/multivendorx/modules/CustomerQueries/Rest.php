@@ -149,7 +149,7 @@ class Rest extends \WP_REST_Controller {
 
             // Non-admins only ever see their own store's questions.
             if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
-                $store_id = (int) MultiVendorX()->active_store;
+                $store_id = $store_id ?: (int) MultiVendorX()->active_store;
 
                 if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
                     return new \WP_Error(

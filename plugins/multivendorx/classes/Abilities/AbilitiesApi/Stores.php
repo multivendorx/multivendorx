@@ -87,8 +87,10 @@ class Stores {
      * @return bool
      */
     public function store_permissions_check( $input ) {
-        if ( ! empty( $input['store_id'] ) ) {
-            return StoreUtil::current_user_can_manage_store( $input['store_id'] );
+        $store_id = $input['store_id'] ?? (int) MultiVendorX()->active_store;
+
+        if ( ! empty( $store_id ) ) {
+            return StoreUtil::current_user_can_manage_store( $store_id );
         }
 
         return Utill::current_user_has_capability( array( 'manage_options' ) );
@@ -101,8 +103,10 @@ class Stores {
      * @return \WP_REST_Response|\WP_Error
      */
     public function get_stores( $input ) {
-        if ( ! empty( $input['store_id'] ) ) {
-            return MultiVendorX()->rest->store->prepare_get_item_response( array( 'id' => (int) $input['store_id'] ) );
+        $store_id = $input['store_id'] ?? (int) MultiVendorX()->active_store;
+
+        if ( ! empty( $store_id ) ) {
+            return MultiVendorX()->rest->store->prepare_get_item_response( array( 'id' => (int) $store_id ) );
         }
 
         return MultiVendorX()->rest->store->prepare_get_items_response( (array) $input );
@@ -115,8 +119,10 @@ class Stores {
      * @return \WP_REST_Response|\WP_Error
      */
     public function update_store( $input ) {
+        $store_id = $input['store_id'] ?? (int) MultiVendorX()->active_store;
+
         $params = array(
-            'id'   => (int) ( $input['store_id'] ?? 0 ),
+            'id'   => (int) $store_id,
             'data' => (array) ( $input['data'] ?? array() ),
         );
 
