@@ -682,4 +682,14 @@ class Utill {
 
         return false;
     }
+
+    /**
+     * An ability's execute_callback must return plain data, not a REST response object.
+     *
+     * @param mixed $response Whatever a prepare_*_response() method returned.
+     * @return mixed
+     */
+    public static function ability_response( $response ) {
+        return $response instanceof \WP_REST_Response ? $response->get_data() : $response;
+    }
 }

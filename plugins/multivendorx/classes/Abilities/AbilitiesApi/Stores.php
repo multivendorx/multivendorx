@@ -100,23 +100,23 @@ class Stores {
      * Get a specific store when store_id is given, otherwise the store list.
      *
      * @param array $input Ability input.
-     * @return \WP_REST_Response|\WP_Error
+     * @return array|\WP_Error
      */
     public function get_stores( $input ) {
         $store_id = $input['store_id'] ?? (int) MultiVendorX()->active_store;
 
-        if ( ! empty( $store_id ) ) {
-            return MultiVendorX()->rest->store->prepare_get_item_response( array( 'id' => (int) $store_id ) );
-        }
+        $response = ! empty( $store_id )
+            ? MultiVendorX()->rest->store->prepare_get_item_response( array( 'id' => (int) $store_id ) )
+            : MultiVendorX()->rest->store->prepare_get_items_response( (array) $input );
 
-        return MultiVendorX()->rest->store->prepare_get_items_response( (array) $input );
+        return Utill::ability_response( $response );
     }
 
     /**
      * Update a store's details.
      *
      * @param array $input Ability input.
-     * @return \WP_REST_Response|\WP_Error
+     * @return array|\WP_Error
      */
     public function update_store( $input ) {
         $store_id = $input['store_id'] ?? (int) MultiVendorX()->active_store;
@@ -126,6 +126,8 @@ class Stores {
             'data' => (array) ( $input['data'] ?? array() ),
         );
 
-        return MultiVendorX()->rest->store->prepare_update_item_response( $params );
+        $response = MultiVendorX()->rest->store->prepare_update_item_response( $params );
+
+        return Utill::ability_response( $response );
     }
 }
