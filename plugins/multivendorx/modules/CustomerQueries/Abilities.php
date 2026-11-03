@@ -7,7 +7,6 @@
 
 namespace MultiVendorX\CustomerQueries;
 
-use MultiVendorX\Abilities\StoreScopedPermission;
 use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\Utill;
 
@@ -21,8 +20,6 @@ defined( 'ABSPATH' ) || exit;
  * this module is active.
  */
 class Abilities {
-
-    use StoreScopedPermission;
 
     /**
      * Abilities constructor.
@@ -38,17 +35,17 @@ class Abilities {
      */
     public function register_abilities() {
         wp_register_ability(
-            'multivendorx/get-store-customer-questions',
+            'multivendorx/get-customer-questions',
             array(
-                'label'               => __( 'Get Store Customer Questions', 'multivendorx' ),
-                'description'         => __( 'Retrieve customer product questions for a store.', 'multivendorx' ),
+                'label'               => __( 'Get Customer Questions', 'multivendorx' ),
+                'description'         => __( 'Customer questions for a specific store, or every store when store_id is omitted.', 'multivendorx' ),
                 'category'            => 'multivendorx',
                 'input_schema'        => array(
-                    'type'                 => 'object',
-                    'properties'           => array(
+                    'type'       => 'object',
+                    'properties' => array(
                         'store_id' => array(
                             'type'        => 'integer',
-                            'description' => __( 'Store ID.', 'multivendorx' ),
+                            'description' => __( 'Store ID. Omit for every store (admin only).', 'multivendorx' ),
                         ),
                         'status'   => array(
                             'type'        => 'string',
@@ -56,11 +53,9 @@ class Abilities {
                             'enum'        => array( 'has_answer', 'no_answer' ),
                         ),
                     ),
-                    'required'             => array( 'store_id' ),
-                    'additionalProperties' => false,
                 ),
                 'output_schema'       => array( 'type' => 'array' ),
-                'execute_callback'    => array( $this, 'get_store_customer_questions' ),
+                'execute_callback'    => array( $this, 'get_customer_questions' ),
                 'permission_callback' => array( $this, 'store_permissions_check' ),
                 'meta'                => array( 'public' => true ),
             )
@@ -96,6 +91,20 @@ class Abilities {
     }
 
     /**
+     * No store_id -> admin only. A store_id -> scoped to that store.
+     *
+     * @param array $input Ability input.
+     * @return bool
+     */
+    public function store_permissions_check( $input ) {
+        if ( ! empty( $input['store_id'] ) ) {
+            return StoreUtil::current_user_can_manage_store( $input['store_id'] );
+        }
+
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
+    }
+
+    /**
      * Check whether the current user can manage the question's store.
      *
      * @param array $input Ability input.
@@ -108,19 +117,13 @@ class Abilities {
     }
 
     /**
-     * Retrieve a store's customer questions.
+     * Retrieve customer questions - a specific store's, or every store's.
      *
      * @param array $input Ability input.
-     * @return array
+     * @return \WP_REST_Response|\WP_Error
      */
-    public function get_store_customer_questions( $input ) {
-        $args = array( 'store_id' => (int) $input['store_id'] );
-
-        if ( ! empty( $input['status'] ) ) {
-            $args[ $input['status'] ] = true;
-        }
-
-        return array_map( array( $this, 'prepare_question' ), Util::query_questions( $args ) );
+    public function get_customer_questions( $input ) {
+        return Module::init()->rest->prepare_get_items_response( (array) $input );
     }
 
     /**
@@ -142,22 +145,6 @@ class Abilities {
                 'answer_text' => sanitize_textarea_field( (string) $input['answer_text'] ),
                 'answer_by'   => MultiVendorX()->current_user_id,
             )
-        );
-    }
-
-    /**
-     * Format a question row for ability output.
-     *
-     * @param array $question Question row.
-     * @return array
-     */
-    private function prepare_question( $question ) {
-        return array(
-            'id'            => (int) $question['id'],
-            'product_id'    => (int) $question['product_id'],
-            'question_text' => $question['question_text'],
-            'answer_text'   => $question['answer_text'],
-            'question_date' => Utill::multivendorx_rest_prepare_date_response( $question['question_date'] ),
         );
     }
 }

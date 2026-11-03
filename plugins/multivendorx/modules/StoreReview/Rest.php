@@ -134,20 +134,32 @@ class Rest extends \WP_REST_Controller {
 
             return $error;
         }
+
+        return $this->prepare_get_items_response( $request->get_params(), $request );
+    }
+
+    /**
+     * Get reviews. Shared by get_items() and the get-store-reviews ability.
+     *
+     * @param array                 $params  Plain request params.
+     * @param \WP_REST_Request|null $request Originating request, if any.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function prepare_get_items_response( $params, $request = null ) {
         try {
-            $store_id = $request->get_param( 'store_id' );
-            if ( $request->get_param( 'overview' ) ) {
+            $store_id = $params['store_id'] ?? null;
+            if ( ! empty( $params['overview'] ) ) {
                 return rest_ensure_response( $this->calculate_store_rating_summary( intval( $store_id ) ) );
             }
-			$limit          = intval( $request->get_param( 'row' ) ) ? intval( $request->get_param( 'row' ) ) : 0;
-			$page           = intval( $request->get_param( 'page' ) ) ? intval( $request->get_param( 'page' ) ) : 1;
+			$limit          = intval( $params['row'] ?? 0 ) ?: 0;
+			$page           = intval( $params['page'] ?? 0 ) ?: 1;
             $offset         = ( $page - 1 ) * $limit;
-            $status         = sanitize_text_field( $request->get_param( 'status' ) );
-            $order_by       = sanitize_text_field( $request->get_param( 'order_by' ) );
-            $order          = sanitize_text_field( $request->get_param( 'order' ) );
-            $overall_rating = $request->get_param( 'overall_rating' );
-            $sec_fetch_site = $request->get_header( 'sec_fetch_site' );
-            $referer        = $request->get_header( 'referer' );
+            $status         = sanitize_text_field( $params['status'] ?? '' );
+            $order_by       = sanitize_text_field( $params['order_by'] ?? '' );
+            $order          = sanitize_text_field( $params['order'] ?? '' );
+            $overall_rating = $params['overall_rating'] ?? null;
+            $sec_fetch_site = $request instanceof \WP_REST_Request ? $request->get_header( 'sec_fetch_site' ) : null;
+            $referer        = $request instanceof \WP_REST_Request ? $request->get_header( 'referer' ) : null;
 
             $can_manage = $store_id
                 ? StoreUtil::current_user_can_manage_store( intval( $store_id ) )

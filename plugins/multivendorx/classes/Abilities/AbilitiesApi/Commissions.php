@@ -7,8 +7,9 @@
 
 namespace MultiVendorX\Abilities\AbilitiesApi;
 
-use MultiVendorX\Abilities\StoreScopedPermission;
 use MultiVendorX\Commission\CommissionUtil;
+use MultiVendorX\Store\StoreUtil;
+use MultiVendorX\Utill;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,8 +18,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class Commissions {
 
-    use StoreScopedPermission;
-
     /**
      * Register MultiVendorX commission abilities.
      *
@@ -26,17 +25,17 @@ class Commissions {
      */
     public function register_abilities() {
         wp_register_ability(
-            'multivendorx/get-store-commission-summary',
+            'multivendorx/get-commission-summary',
             array(
-                'label'               => __( 'Get Store Commission Summary', 'multivendorx' ),
-                'description'         => __( 'Retrieve the commission summary for a MultiVendorX store.', 'multivendorx' ),
+                'label'               => __( 'Get Commission Summary', 'multivendorx' ),
+                'description'         => __( 'Commission summary for a specific store, or every store when store_id is omitted.', 'multivendorx' ),
                 'category'            => 'multivendorx',
                 'input_schema'        => array(
-                    'type'                 => 'object',
-                    'properties'           => array(
+                    'type'       => 'object',
+                    'properties' => array(
                         'store_id'   => array(
                             'type'        => 'integer',
-                            'description' => __( 'Store ID.', 'multivendorx' ),
+                            'description' => __( 'Store ID. Omit for every store (admin only).', 'multivendorx' ),
                         ),
                         'start_date' => array(
                             'type'        => 'string',
@@ -47,11 +46,9 @@ class Commissions {
                             'description' => __( 'End date (Y-m-d).', 'multivendorx' ),
                         ),
                     ),
-                    'required'             => array( 'store_id' ),
-                    'additionalProperties' => false,
                 ),
                 'output_schema'       => array( 'type' => 'object' ),
-                'execute_callback'    => array( $this, 'get_store_commission_summary' ),
+                'execute_callback'    => array( $this, 'get_commission_summary' ),
                 'permission_callback' => array( $this, 'store_permissions_check' ),
                 'meta'                => array( 'public' => true ),
             )
@@ -59,12 +56,26 @@ class Commissions {
     }
 
     /**
-     * Retrieve a store's commission summary.
+     * No store_id -> admin only. A store_id -> scoped to that store.
+     *
+     * @param array $input Ability input.
+     * @return bool
+     */
+    public function store_permissions_check( $input ) {
+        if ( ! empty( $input['store_id'] ) ) {
+            return StoreUtil::current_user_can_manage_store( $input['store_id'] );
+        }
+
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
+    }
+
+    /**
+     * Retrieve a commission summary - a specific store's, or every store's.
      *
      * @param array $input Ability input.
      * @return array
      */
-    public function get_store_commission_summary( $input ) {
+    public function get_commission_summary( $input ) {
         $args = array_filter(
             array(
                 'start_date' => $input['start_date'] ?? null,
@@ -72,6 +83,6 @@ class Commissions {
             )
         );
 
-        return CommissionUtil::get_commission_summary_for_store( (int) $input['store_id'], false, null, null, $args );
+        return CommissionUtil::get_commission_summary_for_store( (int) ( $input['store_id'] ?? 0 ), false, null, null, $args );
     }
 }

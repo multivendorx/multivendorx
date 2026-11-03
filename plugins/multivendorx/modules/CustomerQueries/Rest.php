@@ -120,19 +120,30 @@ class Rest extends \WP_REST_Controller {
 
             return $error;
         }
+
+        return $this->prepare_get_items_response( $request->get_params() );
+    }
+
+    /**
+     * Get customer questions. Shared by get_items() and the get-customer-questions ability.
+     *
+     * @param array $params Plain request params.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function prepare_get_items_response( $params ) {
         try {
-            $store_id            = $request->get_param( 'store_id' );
-            $limit               = max( intval( $request->get_param( 'row' ) ), 10 );
-            $page                = max( intval( $request->get_param( 'page' ) ), 1 );
+            $store_id            = $params['store_id'] ?? null;
+            $limit               = max( intval( $params['row'] ?? 0 ), 10 );
+            $page                = max( intval( $params['page'] ?? 0 ), 1 );
             $offset              = ( $page - 1 ) * $limit;
-            $status              = sanitize_text_field( $request->get_param( 'status' ) );
-            $search              = sanitize_text_field( $request->get_param( 'search_value' ) );
-            $order_by            = sanitize_text_field( $request->get_param( 'order_by' ) );
-            $order               = sanitize_text_field( $request->get_param( 'order' ) );
-            $question_visibility = sanitize_text_field( $request->get_param( 'question_visibility' ) );
+            $status              = sanitize_text_field( $params['status'] ?? '' );
+            $search              = sanitize_text_field( $params['search_value'] ?? '' );
+            $order_by            = sanitize_text_field( $params['order_by'] ?? '' );
+            $order               = sanitize_text_field( $params['order'] ?? '' );
+            $question_visibility = sanitize_text_field( $params['question_visibility'] ?? '' );
             $range               = Utill::normalize_date_range(
-                $request->get_param( 'start_date' ),
-                $request->get_param( 'end_date' )
+                $params['start_date'] ?? null,
+                $params['end_date'] ?? null
             );
             $args                = array();
 

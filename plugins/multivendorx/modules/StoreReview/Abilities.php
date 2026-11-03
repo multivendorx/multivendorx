@@ -7,7 +7,6 @@
 
 namespace MultiVendorX\StoreReview;
 
-use MultiVendorX\Abilities\StoreScopedPermission;
 use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\Utill;
 
@@ -21,8 +20,6 @@ defined( 'ABSPATH' ) || exit;
  * this module is active.
  */
 class Abilities {
-
-    use StoreScopedPermission;
 
     /**
      * Abilities constructor.
@@ -38,28 +35,26 @@ class Abilities {
      */
     public function register_abilities() {
         wp_register_ability(
-            'multivendorx/get-store-reviews',
+            'multivendorx/get-reviews',
             array(
-                'label'               => __( 'Get Store Reviews', 'multivendorx' ),
-                'description'         => __( 'Retrieve a store\'s approved reviews.', 'multivendorx' ),
+                'label'               => __( 'Get Reviews', 'multivendorx' ),
+                'description'         => __( 'Reviews for a specific store, or every store when store_id is omitted.', 'multivendorx' ),
                 'category'            => 'multivendorx',
                 'input_schema'        => array(
-                    'type'                 => 'object',
-                    'properties'           => array(
+                    'type'       => 'object',
+                    'properties' => array(
                         'store_id' => array(
                             'type'        => 'integer',
-                            'description' => __( 'Store ID.', 'multivendorx' ),
+                            'description' => __( 'Store ID. Omit for every store (admin only).', 'multivendorx' ),
                         ),
                         'limit'    => array(
                             'type'        => 'integer',
                             'description' => __( 'Number of reviews to return.', 'multivendorx' ),
                         ),
                     ),
-                    'required'             => array( 'store_id' ),
-                    'additionalProperties' => false,
                 ),
                 'output_schema'       => array( 'type' => 'array' ),
-                'execute_callback'    => array( $this, 'get_store_reviews' ),
+                'execute_callback'    => array( $this, 'get_reviews' ),
                 'permission_callback' => array( $this, 'store_permissions_check' ),
                 'meta'                => array( 'public' => true ),
             )
@@ -95,6 +90,20 @@ class Abilities {
     }
 
     /**
+     * No store_id -> admin only. A store_id -> scoped to that store.
+     *
+     * @param array $input Ability input.
+     * @return bool
+     */
+    public function store_permissions_check( $input ) {
+        if ( ! empty( $input['store_id'] ) ) {
+            return StoreUtil::current_user_can_manage_store( $input['store_id'] );
+        }
+
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
+    }
+
+    /**
      * Check whether the current user can manage the review's store.
      *
      * @param array $input Ability input.
@@ -107,18 +116,13 @@ class Abilities {
     }
 
     /**
-     * Retrieve a store's reviews.
+     * Retrieve reviews - a specific store's, or every store's.
      *
      * @param array $input Ability input.
-     * @return array
+     * @return \WP_REST_Response|\WP_Error
      */
-    public function get_store_reviews( $input ) {
-        $reviews = Util::get_reviews_by_store(
-            (int) $input['store_id'],
-            ! empty( $input['limit'] ) ? absint( $input['limit'] ) : 20
-        );
-
-        return array_map( array( $this, 'prepare_review' ), $reviews );
+    public function get_reviews( $input ) {
+        return Module::init()->rest->prepare_get_items_response( (array) $input );
     }
 
     /**
@@ -140,22 +144,6 @@ class Abilities {
                 'reply'      => sanitize_textarea_field( (string) $input['reply'] ),
                 'reply_date' => current_time( 'mysql' ),
             )
-        );
-    }
-
-    /**
-     * Format a review row for ability output.
-     *
-     * @param object $review Review row.
-     * @return array
-     */
-    private function prepare_review( $review ) {
-        return array(
-            'id'      => (int) $review->review_id,
-            'title'   => $review->review_title,
-            'content' => $review->review_content,
-            'reply'   => $review->reply ?? '',
-            'created' => Utill::multivendorx_rest_prepare_date_response( $review->date_created ),
         );
     }
 }
