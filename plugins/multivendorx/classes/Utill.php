@@ -682,4 +682,47 @@ class Utill {
 
         return false;
     }
+
+    /**
+     * Build a real \WP_REST_Request out of a plain params array when one
+     * isn't already available.
+     *
+     * REST controller methods that are shared with an ability's
+     * execute_callback (a `prepare_*_response( $params, $request = null )`
+     * method) sometimes need to hand a real request object to a sub-handler
+     * or to third-party filter subscribers that call `$request->get_param()`/
+     * `has_param()` directly. When called from REST, `$request` is already
+     * real - pass it straight through. When called from an ability, there is
+     * no request at all, only `$params` - wrap it in a throwaway request so
+     * those callers keep working unchanged.
+     *
+     * @param array                 $params  Plain params to expose via get_param()/has_param().
+     * @param \WP_REST_Request|null $request An existing request, if any.
+     * @return \WP_REST_Request
+     */
+    public static function resolve_rest_request( $params, $request = null ) {
+        if ( $request instanceof \WP_REST_Request ) {
+            return $request;
+        }
+
+        $synthetic = new \WP_REST_Request();
+        $synthetic->set_body_params( (array) $params );
+
+        return $synthetic;
+    }
+
+    /**
+     * Unwrap a REST controller's `prepare_*_response()` return value for use
+     * as an ability's execute_callback return value.
+     *
+     * A `prepare_*_response()` method returns a \WP_REST_Response (what a
+     * REST callback is expected to return), but an ability's execute_callback
+     * is expected to return plain data to validate against its output_schema.
+     *
+     * @param mixed $response Whatever a prepare_*_response() method returned.
+     * @return mixed
+     */
+    public static function unwrap_ability_response( $response ) {
+        return $response instanceof \WP_REST_Response ? $response->get_data() : $response;
+    }
 }

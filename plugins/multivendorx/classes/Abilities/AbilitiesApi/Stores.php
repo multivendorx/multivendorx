@@ -7,8 +7,7 @@
 
 namespace MultiVendorX\Abilities\AbilitiesApi;
 
-use MultiVendorX\Abilities\StoreScopedPermission;
-use MultiVendorX\Store\Store;
+use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\Utill;
 
 defined( 'ABSPATH' ) || exit;
@@ -16,13 +15,15 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Store Abilities controller.
  *
- * Every ability here is scoped to the specific store id in its input, via
- * StoreUtil::current_user_can_manage_store() - a store owner can act on a
- * store they own/manage, an admin can act on any store.
+ * Doesn't re-implement store read/write logic - every execute_callback below
+ * delegates into the RestAPI\Controllers\Stores controller's shared
+ * `prepare_*_response()` methods (the same ones the REST `get_items()`/
+ * `get_item()`/`update_item()` callbacks call), so the two surfaces can
+ * never drift. That shared logic already scopes access via
+ * StoreUtil::current_user_can_manage_store() - an admin can read/update any
+ * store, a store owner/staff member only their own.
  */
 class Stores {
-
-    use StoreScopedPermission;
 
     /**
      * Register MultiVendorX store abilities.
@@ -30,6 +31,35 @@ class Stores {
      * @return void
      */
     public function register_abilities() {
+        wp_register_ability(
+            'multivendorx/get-stores',
+            array(
+                'label'               => __( 'Get Stores', 'multivendorx' ),
+                'description'         => __( 'List MultiVendorX stores - every store for an admin, only the caller\'s own store(s) otherwise.', 'multivendorx' ),
+                'category'            => 'multivendorx',
+                'input_schema'        => array(
+                    'type'       => 'object',
+                    'properties' => array(
+                        'filter_status' => array(
+                            'type'        => 'string',
+                            'description' => __( 'Filter stores by status.', 'multivendorx' ),
+                        ),
+                        'search_value'  => array(
+                            'type'        => 'string',
+                            'description' => __( 'Search stores by name.', 'multivendorx' ),
+                        ),
+                    ),
+                ),
+                'output_schema'       => array(
+                    'type'  => 'array',
+                    'items' => array( 'type' => 'object' ),
+                ),
+                'execute_callback'    => array( $this, 'get_stores' ),
+                'permission_callback' => array( $this, 'get_stores_permissions_check' ),
+                'meta'                => array( 'public' => true ),
+            )
+        );
+
         wp_register_ability(
             'multivendorx/get-store',
             array(
@@ -64,32 +94,65 @@ class Stores {
         );
 
         wp_register_ability(
-            'multivendorx/update-store-description',
+            'multivendorx/update-store',
             array(
-                'label'               => __( 'Update Store Description', 'multivendorx' ),
-                'description'         => __( 'Update a MultiVendorX store\'s description.', 'multivendorx' ),
+                'label'               => __( 'Update Store', 'multivendorx' ),
+                'description'         => __( 'Update a MultiVendorX store\'s details.', 'multivendorx' ),
                 'category'            => 'multivendorx',
                 'input_schema'        => array(
                     'type'                 => 'object',
                     'properties'           => array(
-                        'store_id'    => array(
+                        'store_id' => array(
                             'type'        => 'integer',
                             'description' => __( 'Store ID.', 'multivendorx' ),
                         ),
-                        'description' => array(
-                            'type'        => 'string',
-                            'description' => __( 'New store description.', 'multivendorx' ),
+                        'data'     => array(
+                            'type'        => 'object',
+                            'description' => __( 'Store fields to update (e.g. description). Admin-only fields are ignored for non-admin callers.', 'multivendorx' ),
                         ),
                     ),
-                    'required'             => array( 'store_id', 'description' ),
+                    'required'             => array( 'store_id', 'data' ),
                     'additionalProperties' => false,
                 ),
-                'output_schema'       => array( 'type' => 'boolean' ),
-                'execute_callback'    => array( $this, 'update_store_description' ),
+                'output_schema'       => array( 'type' => 'object' ),
+                'execute_callback'    => array( $this, 'update_store' ),
                 'permission_callback' => array( $this, 'store_permissions_check' ),
                 'meta'                => array( 'public' => true ),
             )
         );
+    }
+
+    /**
+     * Check permission to list stores. Not a blanket allow - the caller
+     * still needs at least a marketplace-management capability; which
+     * stores they actually get back is then scoped inside
+     * prepare_get_items_response() (all of them for an admin, only their
+     * own for anyone else).
+     *
+     * @return bool
+     */
+    public function get_stores_permissions_check() {
+        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
+    }
+
+    /**
+     * Check whether the current user can manage the store named in the ability input.
+     *
+     * @param array $input Ability input.
+     * @return bool
+     */
+    public function store_permissions_check( $input ) {
+        return StoreUtil::current_user_can_manage_store( $input['store_id'] ?? 0 );
+    }
+
+    /**
+     * List stores - admin sees all, non-admin sees only their own.
+     *
+     * @param array $input Ability input.
+     * @return array|\WP_Error
+     */
+    public function get_stores( $input ) {
+        return Utill::unwrap_ability_response( MultiVendorX()->rest->store->prepare_get_items_response( (array) $input ) );
     }
 
     /**
@@ -99,36 +162,23 @@ class Stores {
      * @return array|\WP_Error
      */
     public function get_store( $input ) {
-        $store = new Store( (int) $input['store_id'] );
+        $params = array( 'id' => (int) ( $input['store_id'] ?? 0 ) );
 
-        if ( ! $store->exists() ) {
-            return new \WP_Error( 'multivendorx_store_not_found', __( 'Store not found.', 'multivendorx' ) );
-        }
-
-        return array(
-            'id'          => $store->get_id(),
-            'name'        => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
-            'slug'        => $store->get( Utill::STORE_SETTINGS_KEYS['slug'] ),
-            'description' => $store->get( Utill::STORE_SETTINGS_KEYS['description'] ),
-            'status'      => $store->get( Utill::STORE_SETTINGS_KEYS['status'] ),
-        );
+        return Utill::unwrap_ability_response( MultiVendorX()->rest->store->prepare_get_item_response( $params ) );
     }
 
     /**
-     * Update a store's description.
+     * Update a store's details.
      *
      * @param array $input Ability input.
-     * @return bool|\WP_Error
+     * @return array|\WP_Error
      */
-    public function update_store_description( $input ) {
-        $store = new Store( (int) $input['store_id'] );
+    public function update_store( $input ) {
+        $params = array(
+            'id'   => (int) ( $input['store_id'] ?? 0 ),
+            'data' => (array) ( $input['data'] ?? array() ),
+        );
 
-        if ( ! $store->exists() ) {
-            return new \WP_Error( 'multivendorx_store_not_found', __( 'Store not found.', 'multivendorx' ) );
-        }
-
-        $store->set( Utill::STORE_SETTINGS_KEYS['description'], wp_kses_post( (string) $input['description'] ) );
-
-        return (bool) $store->save();
+        return Utill::unwrap_ability_response( MultiVendorX()->rest->store->prepare_update_item_response( $params ) );
     }
 }

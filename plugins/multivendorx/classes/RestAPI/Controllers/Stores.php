@@ -132,8 +132,24 @@ class Stores extends \WP_REST_Controller {
             return $error;
         }
 
+        return $this->prepare_get_items_response( $request->get_params(), $request );
+    }
+
+    /**
+     * Get all stores. Shared by the REST `get_items()` callback and the
+     * `multivendorx/get-stores` ability - admins get every store, a
+     * non-admin caller only ever gets the store(s) they own/manage.
+     *
+     * @param array                 $params  Plain request params.
+     * @param \WP_REST_Request|null $request The originating REST request, if any.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function prepare_get_items_response( $params, $request = null ) {
+        $request = Utill::resolve_rest_request( $params, $request );
+
         try {
             $permission = Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
+            $is_admin   = Utill::current_user_has_capability( array( 'manage_options' ) );
             $flag_map   = array(
                 'visitorMap'         => 'get_visitor_map_data',
                 'store_registration' => 'get_store_registration_data',
@@ -146,7 +162,7 @@ class Stores extends \WP_REST_Controller {
             $flag_map   = apply_filters( 'multivendorx_rest_store_handlers', $flag_map );
             if ( $permission ) {
                 foreach ( $flag_map as $param => $method ) {
-                    if ( ! $request->get_param( $param ) ) {
+                    if ( empty( $params[ $param ] ) ) {
                         continue;
                     }
 
@@ -158,7 +174,18 @@ class Stores extends \WP_REST_Controller {
                 }
             }
 
-            $args = $this->get_store_query_args( $request );
+            $args = $this->get_store_query_args( $params );
+
+            if ( ! $is_admin ) {
+                // Non-admin callers (store owners/staff) only ever see their own store(s).
+                $own_store_ids = StoreUtil::get_store_ids_for_user( MultiVendorX()->current_user_id );
+
+                if ( ! empty( $args['ID'] ) ) {
+                    $args['ID'] = array_intersect( array_map( 'intval', (array) $args['ID'] ), $own_store_ids );
+                } else {
+                    $args['ID'] = $own_store_ids;
+                }
+            }
 
             $store_ids = $args['nearest_store_ids'] ?? array();
             unset( $args['nearest_store_ids'] );
@@ -203,9 +230,13 @@ class Stores extends \WP_REST_Controller {
 
             // Status counters in headers.
             foreach ( $status_filters as $key => $filter ) {
-                $count = StoreUtil::get_store_information(
-                    array_merge( $filter, array( 'count' => true ) )
-                );
+                $count_args = array_merge( $filter, array( 'count' => true ) );
+
+                if ( ! $is_admin ) {
+                    $count_args['ID'] = $args['ID'];
+                }
+
+                $count = StoreUtil::get_store_information( $count_args );
 
                 if ( 'all' === $key ) {
                     $response->header( 'X-WP-Total', (int) $count );
@@ -595,15 +626,34 @@ class Stores extends \WP_REST_Controller {
             return $error;
         }
 
+        $params                 = $request->get_params();
+        $params['registrations'] = (bool) $request->get_header( 'registrations' );
+
+        return $this->prepare_get_item_response( $params, $request );
+    }
+
+    /**
+     * Get a single store's data. Shared by the REST `get_item()` callback
+     * and the `multivendorx/get-store` ability - scoped via
+     * StoreUtil::current_user_can_manage_store() either way, so an admin can
+     * fetch any store and a store owner/staff member only their own.
+     *
+     * @param array                 $params  Plain request params.
+     * @param \WP_REST_Request|null $request The originating REST request, if any.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function prepare_get_item_response( $params, $request = null ) {
+        $request = Utill::resolve_rest_request( $params, $request );
+
         try {
-            $id            = absint( $request->get_param( 'id' ) );
-            $action        = $request->get_param( 'action' );
-            $store_flag    = $request->get_param( 'store' );
-            $fetch_user    = $request->get_param( 'fetch_user' );
-            $dashboard     = $request->get_param( 'dashboard' );
-            $registrations = (bool) $request->get_header( 'registrations' );
-            $start_date    = $request->get_param( 'start_date' );
-            $end_date      = $request->get_param( 'end_date' );
+            $id            = absint( $params['id'] ?? 0 );
+            $action        = $params['action'] ?? null;
+            $store_flag    = $params['store'] ?? null;
+            $fetch_user    = $params['fetch_user'] ?? null;
+            $dashboard     = $params['dashboard'] ?? null;
+            $registrations = (bool) ( $params['registrations'] ?? false );
+            $start_date    = $params['start_date'] ?? null;
+            $end_date      = $params['end_date'] ?? null;
 
             if ( $id && ! StoreUtil::current_user_can_manage_store( $id ) ) {
                 return new \WP_Error(
@@ -788,9 +838,32 @@ class Stores extends \WP_REST_Controller {
             return $error;
         }
 
+        $params = array(
+            'ids'         => $request->get_param( 'ids' ),
+            'bulk_status' => $request->get_param( 'action' ),
+            'id'          => $request->get_param( 'id' ),
+            'data'        => (array) $request->get_json_params(),
+        );
+
+        return $this->prepare_update_item_response( $params, $request );
+    }
+
+    /**
+     * Update a store (or bulk-update several stores' status). Shared by the
+     * REST `update_item()` callback and the `multivendorx/update-store`
+     * ability - scoped via StoreUtil::current_user_can_manage_store() either
+     * way, and admin-only fields are stripped for non-admin callers in
+     * both cases.
+     *
+     * @param array                 $params  Plain params: ids/bulk_status for a bulk status change,
+     *                                        or id/data for a single-store update.
+     * @param \WP_REST_Request|null $request The originating REST request, if any.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function prepare_update_item_response( $params, $request = null ) {
         try {
-            $ids    = $request->get_param( 'ids' );
-            $status = $request->get_param( 'action' );
+            $ids    = $params['ids'] ?? null;
+            $status = $params['bulk_status'] ?? null;
 
             if ( ! empty( $ids ) && ! empty( $status ) ) {
                 if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
@@ -816,8 +889,8 @@ class Stores extends \WP_REST_Controller {
                     )
                 );
             }
-            $id   = absint( $request->get_param( 'id' ) );
-            $data = (array) $request->get_json_params();
+            $id   = absint( $params['id'] ?? 0 );
+            $data = (array) ( $params['data'] ?? array() );
 
             if ( ! StoreUtil::current_user_can_manage_store( $id ) ) {
                 return new \WP_Error(
@@ -835,7 +908,12 @@ class Stores extends \WP_REST_Controller {
             $previous_status = $store->get( Utill::STORE_SETTINGS_KEYS['status'] );
             $current_status  = $data['status'] ?? '';
 
-            $data = apply_filters( 'multivendorx_before_store_update', $data, $store, $request );
+            // Filter subscribers (modules) expect a real request whose get_param()/
+            // has_param() reflects the submitted $data - build one when there isn't
+            // a real REST request already (i.e. when called from an ability).
+            $filter_request = Utill::resolve_rest_request( $data, $request );
+
+            $data = apply_filters( 'multivendorx_before_store_update', $data, $store, $filter_request );
 
             $is_admin = Utill::current_user_has_capability( array( 'manage_options' ) );
 
@@ -1566,12 +1644,12 @@ class Stores extends \WP_REST_Controller {
     /**
      * Get store query arguments.
      *
-     * @param object $request Request data.
+     * @param array $params Plain request params (REST `$request->get_params()` or ability input).
      * @return array
      */
-    private function get_store_query_args( $request ) {
-        $limit = $request->get_param( 'row' );
-        $page  = $request->get_param( 'page' );
+    private function get_store_query_args( $params ) {
+        $limit = $params['row'] ?? null;
+        $page  = $params['page'] ?? null;
         $args  = array();
 
         // Pagination.
@@ -1581,14 +1659,14 @@ class Stores extends \WP_REST_Controller {
         }
 
         // Search or date filter.
-        $search = sanitize_text_field( $request->get_param( 'search_value' ) );
+        $search = sanitize_text_field( $params['search_value'] ?? '' );
 
         if ( ! empty( $search ) ) {
             $args['searchField'] = $search;
         } else {
             $dates = Utill::normalize_date_range(
-                $request->get_param( 'start_date' ),
-                $request->get_param( 'end_date' )
+                $params['start_date'] ?? null,
+                $params['end_date'] ?? null
             );
 
             if ( ! empty( $dates['start_date'] ) ) {
@@ -1601,34 +1679,34 @@ class Stores extends \WP_REST_Controller {
         }
 
         // Status.
-        $status = $request->get_param( 'filter_status' );
+        $status = $params['filter_status'] ?? null;
 
         if ( ! empty( $status ) ) {
             $args['status'] = $status;
         }
 
         // Exclude stores.
-        $exclude_ids = $request->get_param( 'exclude_ids' );
+        $exclude_ids = $params['exclude_ids'] ?? null;
 
         if ( ! empty( $exclude_ids ) ) {
             $args['exclude_ids'] = $exclude_ids;
         }
 
         // Sorting.
-        $order_by = $request->get_param( 'order_by' );
+        $order_by = $params['order_by'] ?? null;
 
         if ( ! empty( $order_by ) ) {
             $args['order_by'] = sanitize_text_field( $order_by );
             $args['order']    = sanitize_text_field(
-                $request->get_param( 'order' )
+                $params['order'] ?? ''
             );
         }
 
         // Radius filter.
-        $lat    = $request->get_param( 'location_lat' );
-        $lng    = $request->get_param( 'location_lng' );
-        $radius = $request->get_param( 'radius_max' );
-        $unit   = $request->get_param( 'radius_unit' );
+        $lat    = $params['location_lat'] ?? null;
+        $lng    = $params['location_lng'] ?? null;
+        $radius = $params['radius_max'] ?? null;
+        $unit   = $params['radius_unit'] ?? null;
 
         if ( ! empty( $lat ) && ! empty( $lng ) && ! empty( $radius ) ) {
             $store_ids = StoreUtil::get_stores_by_radius(
