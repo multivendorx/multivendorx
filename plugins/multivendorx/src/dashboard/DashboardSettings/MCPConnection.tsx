@@ -10,6 +10,8 @@ import {
 import { TextInput, ButtonInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
 
+import { formatDate } from '../../services/commonFunction';
+
 interface AppPassword {
 	uuid: string;
 	name: string;
@@ -216,10 +218,11 @@ const MCPConnection = () => {
 							{appPasswords.map((appPassword: AppPassword) => (
 								<tr key={appPassword.uuid}>
 									<td>{appPassword.name}</td>
-									<td>{appPassword.created}</td>
+									<td>{formatDate(appPassword.created)}</td>
 									<td>
-										{appPassword.last_used ||
-											__('Never', 'multivendorx')}
+										{appPassword.last_used
+											? formatDate(appPassword.last_used)
+											: __('Never', 'multivendorx')}
 									</td>
 									<td>
 										<ButtonInput
