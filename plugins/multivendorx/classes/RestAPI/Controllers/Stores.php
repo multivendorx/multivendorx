@@ -136,17 +136,13 @@ class Stores extends \WP_REST_Controller {
     }
 
     /**
-     * Get all stores. Shared by the REST `get_items()` callback and the
-     * `multivendorx/get-stores` ability - admins get every store, a
-     * non-admin caller only ever gets the store(s) they own/manage.
+     * Get all stores. Shared by get_items() and the get-stores ability.
      *
      * @param array                 $params  Plain request params.
-     * @param \WP_REST_Request|null $request The originating REST request, if any.
+     * @param \WP_REST_Request|null $request Originating request, if any.
      * @return \WP_REST_Response|\WP_Error
      */
     public function prepare_get_items_response( $params, $request = null ) {
-        $request = Utill::resolve_rest_request( $params, $request );
-
         try {
             $permission = Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
             $is_admin   = Utill::current_user_has_capability( array( 'manage_options' ) );
@@ -633,17 +629,13 @@ class Stores extends \WP_REST_Controller {
     }
 
     /**
-     * Get a single store's data. Shared by the REST `get_item()` callback
-     * and the `multivendorx/get-store` ability - scoped via
-     * StoreUtil::current_user_can_manage_store() either way, so an admin can
-     * fetch any store and a store owner/staff member only their own.
+     * Get a single store's data. Shared by get_item() and the get-stores ability.
      *
      * @param array                 $params  Plain request params.
-     * @param \WP_REST_Request|null $request The originating REST request, if any.
+     * @param \WP_REST_Request|null $request Originating request, if any.
      * @return \WP_REST_Response|\WP_Error
      */
     public function prepare_get_item_response( $params, $request = null ) {
-        $request = Utill::resolve_rest_request( $params, $request );
 
         try {
             $id            = absint( $params['id'] ?? 0 );
@@ -849,15 +841,11 @@ class Stores extends \WP_REST_Controller {
     }
 
     /**
-     * Update a store (or bulk-update several stores' status). Shared by the
-     * REST `update_item()` callback and the `multivendorx/update-store`
-     * ability - scoped via StoreUtil::current_user_can_manage_store() either
-     * way, and admin-only fields are stripped for non-admin callers in
-     * both cases.
+     * Update a store, or bulk-update several stores' status. Shared by
+     * update_item() and the update-store ability.
      *
-     * @param array                 $params  Plain params: ids/bulk_status for a bulk status change,
-     *                                        or id/data for a single-store update.
-     * @param \WP_REST_Request|null $request The originating REST request, if any.
+     * @param array                 $params  ids/bulk_status for a bulk status change, or id/data for a single-store update.
+     * @param \WP_REST_Request|null $request Originating request, if any.
      * @return \WP_REST_Response|\WP_Error
      */
     public function prepare_update_item_response( $params, $request = null ) {
@@ -908,12 +896,12 @@ class Stores extends \WP_REST_Controller {
             $previous_status = $store->get( Utill::STORE_SETTINGS_KEYS['status'] );
             $current_status  = $data['status'] ?? '';
 
-            // Filter subscribers (modules) expect a real request whose get_param()/
-            // has_param() reflects the submitted $data - build one when there isn't
-            // a real REST request already (i.e. when called from an ability).
-            $filter_request = Utill::resolve_rest_request( $data, $request );
+            if ( ! ( $request instanceof \WP_REST_Request ) ) {
+                $request = new \WP_REST_Request();
+                $request->set_body_params( $data );
+            }
 
-            $data = apply_filters( 'multivendorx_before_store_update', $data, $store, $filter_request );
+            $data = apply_filters( 'multivendorx_before_store_update', $data, $store, $request );
 
             $is_admin = Utill::current_user_has_capability( array( 'manage_options' ) );
 
