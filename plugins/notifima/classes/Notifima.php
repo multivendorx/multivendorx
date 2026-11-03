@@ -191,7 +191,7 @@ class Notifima {
         $this->container['rest']            = new Rest();
         $this->container['block']           = new Block();
         $this->container['frontendScripts'] = new FrontendScripts();
-        $this->container['promotions']       = new Promotions();
+        $this->container['communications']    = new Communications();
     }
 
     /**
