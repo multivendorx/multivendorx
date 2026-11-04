@@ -65,57 +65,58 @@ class Util {
 
 		$table = $wpdb->prefix . Utill::TABLES['report_abuse'];
 
-		// Every filter is always present in the literal query; an unused one is a no-op.
-		$filter_by_stores = ! empty( $args['store_ids'] ) ? 1 : 0;
-		$store_ids        = array_merge( array( 0 ), array_map( 'intval', (array) ( $args['store_ids'] ?? 0 ) ) ); // 0 keeps IN () valid for an empty list.
-		$email            = ! empty( $args['email'] ) ? sanitize_email( $args['email'] ) : '';
-		$product_id       = ! empty( $args['product_id'] ) ? absint( $args['product_id'] ) : 0;
-		$by_date_range    = isset( $args['date_range'] ) ? 1 : 0;
-		$date_start       = (string) ( $args['date_range']['start'] ?? '' );
-		$date_end         = (string) ( $args['date_range']['end'] ?? '' );
-		$filter_values    = array(
-			$filter_by_stores,
-			...array_fill( 0, 2, $email ),
-			...array_fill( 0, 2, $product_id ),
-			$by_date_range,
-			$date_start,
-			$date_end,
-		);
+		$conditions = array();
+		$values     = array();
+
+		if ( ! empty( $args['store_ids'] ) ) {
+			$ids          = array_map( 'intval', (array) $args['store_ids'] );
+			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+			$conditions[] = 'store_id IN (' . $placeholders . ')';
+			$values       = array_merge( $values, $ids );
+		}
+
+		if ( ! empty( $args['email'] ) ) {
+			$conditions[] = 'email = %s';
+			$values[]     = sanitize_email( $args['email'] );
+		}
+
+		if ( ! empty( $args['product_id'] ) ) {
+			$conditions[] = 'product_id = %d';
+			$values[]     = absint( $args['product_id'] );
+		}
+
+		if ( isset( $args['date_range'] ) ) {
+			$conditions[] = 'DATE(created_at) BETWEEN %s AND %s';
+			$values[]     = (string) ( $args['date_range']['start'] ?? '' );
+			$values[]     = (string) ( $args['date_range']['end'] ?? '' );
+		}
+
+		$where_sql = $conditions ? implode( ' AND ', $conditions ) : '1=1';
 
 		if ( ! empty( $args['count'] ) ) {
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$result = (int) $wpdb->get_var(
 				$wpdb->prepare(
-					'SELECT COUNT(*) FROM %i
-					WHERE ( %d = 0 OR store_id IN (' . esc_sql( implode( ',', $store_ids ) ) . ') )
-					AND ( CHAR_LENGTH( %s ) = 0 OR email = %s )
-					AND ( %d = 0 OR product_id = %d )
-					AND ( %d = 0 OR DATE(created_at) BETWEEN %s AND %s )',
+					'SELECT COUNT(*) FROM %i WHERE ' . $where_sql,
 					$table,
-					...$filter_values
+					...$values
 				)
 			);
 		} else {
 			// Order by (column and direction both allowlisted); default is newest first.
 			$allowed   = array( 'created_at', 'updated_at', 'id', 'store_id', 'product_id' );
 			$order_by  = ( isset( $args['order_by'] ) && in_array( $args['order_by'], $allowed, true ) ) ? $args['order_by'] : 'created_at';
-			$sort_desc = ( isset( $args['order'] ) && 'ASC' === strtoupper( $args['order'] ) ) ? 0 : 1;
+			$order_dir = ( isset( $args['order'] ) && 'ASC' === strtoupper( $args['order'] ) ) ? 'ASC' : 'DESC';
 			$has_limit = isset( $args['limit'], $args['offset'] );
 			$limit     = $has_limit ? intval( $args['limit'] ) : PHP_INT_MAX;
 			$offset    = $has_limit ? intval( $args['offset'] ) : 0;
 
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$result = (array) $wpdb->get_results(
 				$wpdb->prepare(
-					'SELECT * FROM %i
-					WHERE ( %d = 0 OR store_id IN (' . esc_sql( implode( ',', $store_ids ) ) . ') )
-					AND ( CHAR_LENGTH( %s ) = 0 OR email = %s )
-					AND ( %d = 0 OR product_id = %d )
-					AND ( %d = 0 OR DATE(created_at) BETWEEN %s AND %s )
-					ORDER BY CASE WHEN %d = 1 THEN %i END DESC, %i ASC
-					LIMIT %d OFFSET %d',
+					'SELECT * FROM %i WHERE ' . $where_sql . ' ORDER BY %i ' . $order_dir . ' LIMIT %d OFFSET %d',
 					$table,
-					...array_merge( $filter_values, array( $sort_desc, $order_by, $order_by, $limit, $offset ) )
+					...array_merge( $values, array( $order_by, $limit, $offset ) )
 				),
 				ARRAY_A
 			);

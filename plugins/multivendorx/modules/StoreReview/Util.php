@@ -406,85 +406,75 @@ class Util {
         global $wpdb;
         $table = $wpdb->prefix . Utill::TABLES['review'];
 
-        // Each condition is a 1/0 term (flag AND test) summed in SQL; a row matches when enough terms hit:
-        // every enabled filter for AND, at least one for OR, none required when nothing is set.
-        $review_ids  = array_merge( array( 0 ), array_map( 'intval', (array) ( $args['review_id'] ?? 0 ) ) ); // 0 keeps IN () valid for an empty list.
-        $enabled     = isset( $args['review_id'] ) ? 1 : 0;
-        $term_values = array( $enabled );
+        $conditions = array();
+        $values     = array();
 
-        $filters = array(
-            'store_id'    => isset( $args['store_id'] ),
-            'customer_id' => isset( $args['customer_id'] ),
-            'order_id'    => isset( $args['order_id'] ),
-            'status'      => isset( $args['status'] ) && '' !== $args['status'],
-            'reported'    => isset( $args['reported'] ),
-            'start_date'  => ! empty( $args['start_date'] ),
-            'end_date'    => ! empty( $args['end_date'] ),
-        );
-        foreach ( $filters as $filter_key => $is_set ) {
-            $enabled      += (int) $is_set;
-            $term_values[] = (int) $is_set;
-            $term_values[] = in_array( $filter_key, array( 'status', 'start_date', 'end_date' ), true )
-                ? (string) ( $args[ $filter_key ] ?? '' )
-                : intval( $args[ $filter_key ] ?? 0 );
+        if ( isset( $args['review_id'] ) ) {
+            $ids          = array_map( 'intval', (array) $args['review_id'] );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $conditions[] = 'review_id IN (' . $placeholders . ')';
+            $values       = array_merge( $values, $ids );
+        }
+
+        foreach ( array( 'store_id', 'customer_id', 'order_id' ) as $filter_key ) {
+            if ( isset( $args[ $filter_key ] ) ) {
+                $conditions[] = $filter_key . ' = %d';
+                $values[]     = intval( $args[ $filter_key ] );
+            }
+        }
+
+        if ( isset( $args['status'] ) && '' !== $args['status'] ) {
+            $conditions[] = 'status = %s';
+            $values[]     = (string) $args['status'];
+        }
+
+        if ( isset( $args['reported'] ) ) {
+            $conditions[] = 'reported = %d';
+            $values[]     = intval( $args['reported'] );
+        }
+
+        if ( ! empty( $args['start_date'] ) ) {
+            $conditions[] = 'date_created >= %s';
+            $values[]     = (string) $args['start_date'];
+        }
+
+        if ( ! empty( $args['end_date'] ) ) {
+            $conditions[] = 'date_created <= %s';
+            $values[]     = (string) $args['end_date'];
         }
 
         // "X stars & up": rating >= selected value, never below 1.
-        $has_rating    = ( isset( $args['overall_rating'] ) && '' !== $args['overall_rating'] ) ? 1 : 0;
-        $enabled      += $has_rating;
-        $term_values[] = $has_rating;
-        $term_values[] = max( 1, floatval( $args['overall_rating'] ?? 0 ) );
+        if ( isset( $args['overall_rating'] ) && '' !== $args['overall_rating'] ) {
+            $conditions[] = 'overall_rating >= %f';
+            $values[]     = max( 1, floatval( $args['overall_rating'] ) );
+        }
 
-        $required      = ( 'OR' === strtoupper( trim( $args['condition'] ?? 'AND' ) ) ) ? min( 1, $enabled ) : $enabled;
-        $term_values[] = $required;
+        $join      = ( 'OR' === strtoupper( trim( $args['condition'] ?? 'AND' ) ) ) ? ' OR ' : ' AND ';
+        $where_sql = $conditions ? implode( $join, $conditions ) : '1=1';
 
         if ( isset( $args['count'] ) ) {
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             $results = $wpdb->get_var(
                 $wpdb->prepare(
-                    'SELECT COUNT(*) FROM %i
-                    WHERE (
-                        IF( %d = 1 AND review_id IN (' . esc_sql( implode( ',', $review_ids ) ) . '), 1, 0 )
-                        + IF( %d = 1 AND store_id = %d, 1, 0 )
-                        + IF( %d = 1 AND customer_id = %d, 1, 0 )
-                        + IF( %d = 1 AND order_id = %d, 1, 0 )
-                        + IF( %d = 1 AND status = %s, 1, 0 )
-                        + IF( %d = 1 AND reported = %d, 1, 0 )
-                        + IF( %d = 1 AND date_created >= %s, 1, 0 )
-                        + IF( %d = 1 AND date_created <= %s, 1, 0 )
-                        + IF( %d = 1 AND overall_rating >= %f, 1, 0 )
-                    ) >= %d',
+                    'SELECT COUNT(*) FROM %i WHERE ' . $where_sql,
                     $table,
-                    ...$term_values
+                    ...$values
                 )
             );
         } else {
             $allowed_columns = array( 'date_created', 'overall_rating', 'status', 'store_id', 'customer_id' );
             $order_by        = ( isset( $args['order_by'] ) && in_array( $args['order_by'], $allowed_columns, true ) ) ? $args['order_by'] : 'date_created';
-            $sort_desc       = ( isset( $args['order_dir'] ) && 'ASC' === strtoupper( $args['order_dir'] ) ) ? 0 : 1;
+            $order_dir       = ( isset( $args['order_dir'] ) && 'ASC' === strtoupper( $args['order_dir'] ) ) ? 'ASC' : 'DESC';
             $has_limit       = isset( $args['limit'] ) && isset( $args['offset'] );
             $limit           = $has_limit ? intval( $args['limit'] ) : PHP_INT_MAX;
             $offset          = $has_limit ? intval( $args['offset'] ) : 0;
 
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             $results = $wpdb->get_results(
                 $wpdb->prepare(
-                    'SELECT * FROM %i
-                    WHERE (
-                        IF( %d = 1 AND review_id IN (' . esc_sql( implode( ',', $review_ids ) ) . '), 1, 0 )
-                        + IF( %d = 1 AND store_id = %d, 1, 0 )
-                        + IF( %d = 1 AND customer_id = %d, 1, 0 )
-                        + IF( %d = 1 AND order_id = %d, 1, 0 )
-                        + IF( %d = 1 AND status = %s, 1, 0 )
-                        + IF( %d = 1 AND reported = %d, 1, 0 )
-                        + IF( %d = 1 AND date_created >= %s, 1, 0 )
-                        + IF( %d = 1 AND date_created <= %s, 1, 0 )
-                        + IF( %d = 1 AND overall_rating >= %f, 1, 0 )
-                    ) >= %d
-                    ORDER BY CASE WHEN %d = 1 THEN %i END DESC, %i ASC
-                    LIMIT %d OFFSET %d',
+                    'SELECT * FROM %i WHERE ' . $where_sql . ' ORDER BY %i ' . $order_dir . ' LIMIT %d OFFSET %d',
                     $table,
-                    ...array_merge( $term_values, array( $sort_desc, $order_by, $order_by, $limit, $offset ) )
+                    ...array_merge( $values, array( $order_by, $limit, $offset ) )
                 ),
                 ARRAY_A
             );

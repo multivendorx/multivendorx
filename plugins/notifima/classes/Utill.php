@@ -206,28 +206,43 @@ class Utill {
     public static function get_subscribers( $args ) {
         global $wpdb;
 
-        $table             = $wpdb->prefix . self::TABLES['subscribers'];
-        $filter_by_product = isset( $args['product_ids'] ) ? 1 : 0;
-        $product_ids       = array_merge( array( 0 ), array_map( 'absint', (array) ( $args['product_ids'] ?? 0 ) ) ); // 0 keeps IN () valid for an empty list.
-        $email_pattern     = ! empty( $args['email'] ) ? '%' . $wpdb->esc_like( $args['email'] ) . '%' : '';
-        $status            = ( ! empty( $args['status'] ) && 'all' !== $args['status'] ) ? (string) $args['status'] : '';
-        $by_dates          = ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) ? 1 : 0;
-        $start_date        = (int) ( $args['start_date'] ?? 0 );
-        $end_date          = (int) ( $args['end_date'] ?? 0 );
-        $filter_values     = array( $filter_by_product, ...array_fill( 0, 2, $email_pattern ), ...array_fill( 0, 2, $status ), $by_dates, $start_date, $end_date );
+        $table = $wpdb->prefix . self::TABLES['subscribers'];
 
-        // Every filter is always present in the literal query; an unused one is a no-op.
+        $conditions = array();
+        $values     = array();
+
+        if ( isset( $args['product_ids'] ) ) {
+            $ids          = array_map( 'absint', (array) $args['product_ids'] );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $conditions[] = 'product_id IN (' . $placeholders . ')';
+            $values       = array_merge( $values, $ids );
+        }
+
+        if ( ! empty( $args['email'] ) ) {
+            $conditions[] = 'email LIKE %s';
+            $values[]     = '%' . $wpdb->esc_like( $args['email'] ) . '%';
+        }
+
+        if ( ! empty( $args['status'] ) && 'all' !== $args['status'] ) {
+            $conditions[] = 'status = %s';
+            $values[]     = (string) $args['status'];
+        }
+
+        if ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) {
+            $conditions[] = 'create_time BETWEEN FROM_UNIXTIME(%d) AND FROM_UNIXTIME(%d)';
+            $values[]     = (int) $args['start_date'];
+            $values[]     = (int) $args['end_date'];
+        }
+
+        $where_sql = $conditions ? implode( ' AND ', $conditions ) : '1=1';
+
         if ( ! empty( $args['count'] ) ) {
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             return (int) $wpdb->get_var(
                 $wpdb->prepare(
-                    'SELECT COUNT(*) FROM %i
-                    WHERE ( %d = 0 OR product_id IN (' . esc_sql( implode( ',', $product_ids ) ) . ') )
-                    AND ( CHAR_LENGTH( %s ) = 0 OR email LIKE %s )
-                    AND ( CHAR_LENGTH( %s ) = 0 OR status = %s )
-                    AND ( %d = 0 OR create_time BETWEEN FROM_UNIXTIME(%d) AND FROM_UNIXTIME(%d) )',
+                    'SELECT COUNT(*) FROM %i WHERE ' . $where_sql,
                     $table,
-                    ...$filter_values
+                    ...$values
                 )
             );
         }
@@ -236,17 +251,12 @@ class Utill {
         $limit     = $has_limit ? (int) $args['limit'] : PHP_INT_MAX;
         $offset    = $has_limit ? (int) $args['offset'] : 0;
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         return $wpdb->get_results(
             $wpdb->prepare(
-                'SELECT * FROM %i
-                WHERE ( %d = 0 OR product_id IN (' . esc_sql( implode( ',', $product_ids ) ) . ') )
-                AND ( CHAR_LENGTH( %s ) = 0 OR email LIKE %s )
-                AND ( CHAR_LENGTH( %s ) = 0 OR status = %s )
-                AND ( %d = 0 OR create_time BETWEEN FROM_UNIXTIME(%d) AND FROM_UNIXTIME(%d) )
-                LIMIT %d OFFSET %d',
+                'SELECT * FROM %i WHERE ' . $where_sql . ' LIMIT %d OFFSET %d',
                 $table,
-                ...array_merge( $filter_values, array( $limit, $offset ) )
+                ...array_merge( $values, array( $limit, $offset ) )
             )
         );
     }

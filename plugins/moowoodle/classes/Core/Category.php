@@ -42,8 +42,10 @@ class Category {
 			return $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i', $table_name ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		}
 
+		$placeholders = implode( ',', array_fill( 0, count( $category_ids ), '%d' ) );
+
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		return $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i WHERE id IN (' . esc_sql( implode( ',', $category_ids ) ) . ')', $table_name ), ARRAY_A );
+		return $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i WHERE id IN (' . $placeholders . ')', $table_name, ...$category_ids ), ARRAY_A );
 	}
 
 	/**

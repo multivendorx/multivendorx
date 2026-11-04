@@ -90,69 +90,55 @@ class CommissionUtil {
         $table    = $wpdb->prefix . Utill::TABLES['commission'];
         $is_count = ! empty( $args['count'] );
 
-        // Each id filter is an "enabled" flag plus its list (0 keeps IN () valid for an empty list).
-        $id_lists = array();
+        $conditions = array();
+        $values     = array();
+
         foreach ( array( 'ID', 'order_id', 'store_id', 'customer_id' ) as $filter_key ) {
-            $id_lists[ $filter_key ] = array_merge( array( 0 ), array_map( 'intval', (array) ( $args[ $filter_key ] ?? 0 ) ) );
+            if ( isset( $args[ $filter_key ] ) ) {
+                $ids          = array_map( 'intval', (array) $args[ $filter_key ] );
+                $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+                $conditions[] = $filter_key . ' IN (' . $placeholders . ')';
+                $values       = array_merge( $values, $ids );
+            }
         }
-        $has_id       = isset( $args['ID'] ) ? 1 : 0;
-        $has_order    = isset( $args['order_id'] ) ? 1 : 0;
-        $has_store    = isset( $args['store_id'] ) ? 1 : 0;
-        $has_customer = isset( $args['customer_id'] ) ? 1 : 0;
-        $status       = (string) ( $args['status'] ?? '' );
-        $by_dates     = isset( $args['start_date'], $args['end_date'] ) ? 1 : 0;
 
-        $id_or_order   = array( $has_id, $has_order );
-        $filter_values = array(
-            $has_store,
-            $has_customer,
-            ...array_fill( 0, 2, $status ),
-            $by_dates,
-            (string) ( $args['start_date'] ?? '' ),
-            (string) ( $args['end_date'] ?? '' ),
-            ...array_merge( $id_or_order, $id_or_order ),
-        );
+        if ( isset( $args['status'] ) && '' !== $args['status'] ) {
+            $conditions[] = 'status = %s';
+            $values[]     = (string) $args['status'];
+        }
 
-        // ID and order_id are alternatives (OR) to each other, but both are ANDed with the other filters.
+        if ( isset( $args['start_date'], $args['end_date'] ) ) {
+            $conditions[] = 'created_at BETWEEN %s AND %s';
+            $values[]     = (string) $args['start_date'];
+            $values[]     = (string) $args['end_date'];
+        }
+
+        $join      = ( 'OR' === strtoupper( trim( $args['condition'] ?? 'AND' ) ) ) ? ' OR ' : ' AND ';
+        $where_sql = $conditions ? implode( $join, $conditions ) : '1=1';
+
         if ( $is_count ) {
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             $results = (int) $wpdb->get_var(
                 $wpdb->prepare(
-                    'SELECT COUNT(*) FROM %i
-                    WHERE ( %d = 0 OR store_id IN (' . esc_sql( implode( ',', $id_lists['store_id'] ) ) . ') )
-                    AND ( %d = 0 OR customer_id IN (' . esc_sql( implode( ',', $id_lists['customer_id'] ) ) . ') )
-                    AND ( CHAR_LENGTH( %s ) = 0 OR status = %s )
-                    AND ( %d = 0 OR created_at BETWEEN %s AND %s )
-                    AND ( ( %d = 0 AND %d = 0 )
-                        OR ( %d = 1 AND ID IN (' . esc_sql( implode( ',', $id_lists['ID'] ) ) . ') )
-                        OR ( %d = 1 AND order_id IN (' . esc_sql( implode( ',', $id_lists['order_id'] ) ) . ') ) )',
+                    'SELECT COUNT(*) FROM %i WHERE ' . $where_sql,
                     $table,
-                    ...$filter_values
+                    ...$values
                 )
             );
         } else {
             $allowed_columns = array( 'ID', 'order_id', 'status', 'store_id', 'create_time' );
             $order_by        = ( ! empty( $args['order_by'] ) && in_array( $args['order_by'], $allowed_columns, true ) ) ? $args['order_by'] : 'ID';
-            $sort_desc       = ( isset( $args['order'] ) && strtolower( $args['order'] ) === 'desc' ) ? 1 : 0;
+            $order_dir       = ( isset( $args['order'] ) && 'desc' === strtolower( $args['order'] ) ) ? 'DESC' : 'ASC';
             $has_limit       = isset( $args['limit'], $args['offset'] );
             $limit           = $has_limit ? intval( $args['limit'] ) : PHP_INT_MAX;
             $offset          = $has_limit ? intval( $args['offset'] ) : 0;
 
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             $results = $wpdb->get_results(
                 $wpdb->prepare(
-                    'SELECT * FROM %i
-                    WHERE ( %d = 0 OR store_id IN (' . esc_sql( implode( ',', $id_lists['store_id'] ) ) . ') )
-                    AND ( %d = 0 OR customer_id IN (' . esc_sql( implode( ',', $id_lists['customer_id'] ) ) . ') )
-                    AND ( CHAR_LENGTH( %s ) = 0 OR status = %s )
-                    AND ( %d = 0 OR created_at BETWEEN %s AND %s )
-                    AND ( ( %d = 0 AND %d = 0 )
-                        OR ( %d = 1 AND ID IN (' . esc_sql( implode( ',', $id_lists['ID'] ) ) . ') )
-                        OR ( %d = 1 AND order_id IN (' . esc_sql( implode( ',', $id_lists['order_id'] ) ) . ') ) )
-                    ORDER BY CASE WHEN %d = 1 THEN %i END DESC, %i ASC
-                    LIMIT %d OFFSET %d',
+                    'SELECT * FROM %i WHERE ' . $where_sql . ' ORDER BY %i ' . $order_dir . ' LIMIT %d OFFSET %d',
                     $table,
-                    ...array_merge( $filter_values, array( $sort_desc, $order_by, $order_by, $limit, $offset ) )
+                    ...array_merge( $values, array( $order_by, $limit, $offset ) )
                 ),
                 ARRAY_A
             );
