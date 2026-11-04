@@ -95,13 +95,13 @@ class Course {
 		}
 
 		$join      = ( 'OR' === strtoupper( $query_args['condition'] ?? 'AND' ) ) ? ' OR ' : ' AND ';
-		$where_sql = $conditions ? implode( $join, $conditions ) : '1=1';
+		$where_sql = $conditions ? ' WHERE ' . implode( $join, $conditions ) : '';
 
 		if ( $is_count ) {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$course_count = $wpdb->get_var(
 				$wpdb->prepare(
-					'SELECT COUNT(*) FROM %i WHERE ' . $where_sql,
+					'SELECT COUNT(*) FROM %i' . $where_sql,
 					$table_name,
 					...$values
 				)
@@ -116,7 +116,7 @@ class Course {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$courses = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT * FROM %i WHERE ' . $where_sql . ' LIMIT %d OFFSET %d',
+				'SELECT * FROM %i' . $where_sql . ' LIMIT %d OFFSET %d',
 				$table_name,
 				...array_merge( $values, array( $limit, $offset ) )
 			),

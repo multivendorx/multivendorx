@@ -242,13 +242,13 @@ class Transaction {
         }
 
         $join      = ( 'OR' === strtoupper( trim( $args['condition'] ?? 'AND' ) ) ) ? ' OR ' : ' AND ';
-        $where_sql = $conditions ? implode( $join, $conditions ) : '1=1';
+        $where_sql = $conditions ? ' WHERE ' . implode( $join, $conditions ) : '';
 
         if ( isset( $args['count'] ) ) {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             return (int) $wpdb->get_var(
                 $wpdb->prepare(
-                    'SELECT COUNT(*) FROM %i WHERE ' . $where_sql,
+                    'SELECT COUNT(*) FROM %i' . $where_sql,
                     $table,
                     ...$values
                 )
@@ -266,7 +266,7 @@ class Transaction {
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         $result = $wpdb->get_results(
             $wpdb->prepare(
-                'SELECT * FROM %i WHERE ' . $where_sql . ' ORDER BY %i ' . $order_dir . ' LIMIT %d OFFSET %d',
+                'SELECT * FROM %i' . $where_sql . ' ORDER BY %i ' . $order_dir . ' LIMIT %d OFFSET %d',
                 $table,
                 ...array_merge( $values, array( $order_by, $limit, $offset ) )
             ),

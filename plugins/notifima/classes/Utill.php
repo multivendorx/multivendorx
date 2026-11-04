@@ -234,13 +234,13 @@ class Utill {
             $values[]     = (int) $args['end_date'];
         }
 
-        $where_sql = $conditions ? implode( ' AND ', $conditions ) : '1=1';
+        $where_sql = $conditions ? ' WHERE ' . implode( ' AND ', $conditions ) : '';
 
         if ( ! empty( $args['count'] ) ) {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             return (int) $wpdb->get_var(
                 $wpdb->prepare(
-                    'SELECT COUNT(*) FROM %i WHERE ' . $where_sql,
+                    'SELECT COUNT(*) FROM %i' . $where_sql,
                     $table,
                     ...$values
                 )
@@ -254,7 +254,7 @@ class Utill {
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         return $wpdb->get_results(
             $wpdb->prepare(
-                'SELECT * FROM %i WHERE ' . $where_sql . ' LIMIT %d OFFSET %d',
+                'SELECT * FROM %i' . $where_sql . ' LIMIT %d OFFSET %d',
                 $table,
                 ...array_merge( $values, array( $limit, $offset ) )
             )
