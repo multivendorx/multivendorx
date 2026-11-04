@@ -1,6 +1,6 @@
 <?php
 /**
- * Promotions class file
+ * Communications class file
  *
  * @package CatalogX
  */
@@ -10,11 +10,11 @@ namespace CatalogX;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Handles CatalogX promotional notices and plugin listing links.
+ * Handles CatalogX communications, including promotional notices and plugin listing links.
  *
- * @class Promotions
+ * @class Communications
  */
-class Promotions {
+class Communications {
 
 	/**
 	 * Constructor.
