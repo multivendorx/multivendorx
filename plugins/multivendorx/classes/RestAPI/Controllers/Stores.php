@@ -134,18 +134,39 @@ class Stores extends \WP_REST_Controller {
 
         try {
             $permission = Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
-            $flag_map   = array(
-                'visitorMap'         => 'get_visitor_map_data',
+            $is_admin   = Utill::current_user_has_capability( array( 'manage_options' ) );
+
+            $restricted_action_map = array(
                 'store_registration' => 'get_store_registration_data',
-                'slug'               => 'check_store_slug',
                 'pending_withdraw'   => 'get_stores_with_pending_withdraw',
                 'deactivate'         => 'get_stores_with_deactivate_requests',
-                'options'            => 'get_stores_dropdown',
                 'status'             => 'get_pending_stores',
+                'slug'               => 'check_store_slug',
+                'options'            => 'get_stores_dropdown',
             );
-            $flag_map   = apply_filters( 'multivendorx_rest_store_handlers', $flag_map );
+            $restricted_action_map = apply_filters( 'multivendorx_rest_store_admin_handlers', $restricted_action_map );
+
+            $store_owner_flag_map = array(
+                'visitorMap' => 'get_visitor_map_data',
+            );
+            $store_owner_flag_map = apply_filters( 'multivendorx_rest_store_handlers', $store_owner_flag_map );
+
+            if ( $is_admin ) {
+                foreach ( $restricted_action_map as $param => $method ) {
+                    if ( ! $request->get_param( $param ) ) {
+                        continue;
+                    }
+
+                    if ( method_exists( $this, $method ) ) {
+                        return rest_ensure_response( $this->$method( $request ) );
+                    }
+
+                    return apply_filters( $method, rest_ensure_response( array() ), $request );
+                }
+            }
+
             if ( $permission ) {
-                foreach ( $flag_map as $param => $method ) {
+                foreach ( $store_owner_flag_map as $param => $method ) {
                     if ( ! $request->get_param( $param ) ) {
                         continue;
                     }
@@ -186,7 +207,8 @@ class Stores extends \WP_REST_Controller {
             $formatted_stores = array();
 
             foreach ( $stores as $store ) {
-                $formatted_stores[] = $this->prepare_store_response( $store, $permission );
+                $can_view_privileged_fields = $is_admin || StoreUtil::current_user_can_manage_store( (int) $store['ID'] );
+                $formatted_stores[]         = $this->prepare_store_response( $store, $can_view_privileged_fields );
             }
 
             // Prepare status filters.
@@ -1426,7 +1448,16 @@ class Stores extends \WP_REST_Controller {
      * @return \WP_REST_Response
      */
     private function get_visitor_map_data( $request ) {
-        $store_id  = (int) $request->get_param( 'id' );
+        $store_id = (int) $request->get_param( 'id' );
+
+        if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+            return new \WP_Error(
+                'rest_forbidden',
+                __( 'You are not allowed to view this store\'s visitor data.', 'multivendorx' ),
+                array( 'status' => 403 )
+            );
+        }
+
         $cache_key = 'multivendorx_visitor_stats_data_' . $store_id;
 
         $cached = get_transient( $cache_key );

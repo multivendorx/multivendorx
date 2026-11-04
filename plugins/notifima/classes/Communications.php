@@ -1,6 +1,6 @@
 <?php
 /**
- * Promotions class file.
+ * Communications class file.
  *
  * @package Notifima
  */
@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  * @version     3.1.9
  * @package     Notifima
  */
-class Promotions {
+class Communications {
 
 	/**
 	 * Promotions constructor. Registers notice, AJAX and script hooks.
