@@ -8,7 +8,6 @@
 namespace MultiVendorX\Abilities\AbilitiesApi;
 
 use MultiVendorX\Commission\CommissionUtil;
-use MultiVendorX\Store\Store;
 use MultiVendorX\Utill;
 
 defined( 'ABSPATH' ) || exit;
@@ -62,12 +61,7 @@ class Commissions {
      * @return array
      */
     public function get_commission_summary( $input ) {
-        $store_id = $input['store_id'] ?? 0;
-
-        if ( empty( $store_id ) ) {
-            $store_ids = Store::get_store( MultiVendorX()->current_user_id, 'user' );
-            $store_id  = ! empty( $store_ids ) ? reset( $store_ids )['id'] : 0;
-        }
+        $store_id = Utill::resolve_ability_store_id( $input );
 
         $args = array_filter(
             array(

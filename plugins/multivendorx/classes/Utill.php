@@ -694,6 +694,29 @@ class Utill {
     }
 
     /**
+     * Resolve the store an ability should act on: an explicit store_id, else
+     * the caller's active store, else their own first store.
+     *
+     * @param array $input Ability input.
+     * @return int
+     */
+    public static function resolve_ability_store_id( $input ) {
+        $store_id = (int) ( $input['store_id'] ?? 0 );
+        $user_id  = get_current_user_id();
+
+        if ( ! $store_id ) {
+            $store_id = (int) get_user_meta( $user_id, self::USER_SETTINGS_KEYS['active_store'], true );
+        }
+
+        if ( ! $store_id ) {
+            $store_ids = Store::get_store( $user_id, 'user' );
+            $store_id  = ! empty( $store_ids ) ? (int) reset( $store_ids )['id'] : 0;
+        }
+
+        return $store_id;
+    }
+
+    /**
      * Shared permission check for store-scoped abilities: an explicit store_id,
      * else the current user's own store, else admin only.
      *
@@ -701,17 +724,22 @@ class Utill {
      * @return bool
      */
     public static function store_permissions_check( $input ) {
-        $store_id = $input['store_id'] ?? 0;
-
-        if ( empty( $store_id ) ) {
-            $store_ids = Store::get_store( MultiVendorX()->current_user_id, 'user' );
-            $store_id  = ! empty( $store_ids ) ? reset( $store_ids )['id'] : 0;
+        if ( self::current_user_has_capability( array( 'manage_options' ) ) ) {
+            return true;
         }
 
-        if ( ! empty( $store_id ) ) {
-            return \MultiVendorX\Store\StoreUtil::current_user_can_manage_store( $store_id );
+        $user_id  = get_current_user_id();
+        $store_id = self::resolve_ability_store_id( $input );
+
+        if ( ! $user_id || ! $store_id ) {
+            return false;
         }
 
-        return self::current_user_has_capability( array( 'manage_options' ) );
+        if ( (int) \MultiVendorX\Store\StoreUtil::get_primary_owner( $store_id ) === $user_id ) {
+            return true;
+        }
+
+        $store_users = \MultiVendorX\Store\StoreUtil::get_store_users( $store_id );
+        return in_array( $user_id, (array) $store_users['users'], true );
     }
 }

@@ -108,7 +108,7 @@ class Abilities {
      * @return array|\WP_Error
      */
     public function get_reviews( $input ) {
-        $store_id = $input['store_id'] ?? (int) MultiVendorX()->active_store;
+        $store_id = Utill::resolve_ability_store_id( $input );
 
         $response = Module::init()->rest->prepare_get_items_response( array_merge( (array) $input, array( 'store_id' => $store_id ) ) );
 

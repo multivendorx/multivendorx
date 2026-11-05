@@ -86,7 +86,7 @@ class Stores {
      * @return array|\WP_Error
      */
     public function get_stores( $input ) {
-        $store_id = $input['store_id'] ?? (int) MultiVendorX()->active_store;
+        $store_id = Utill::resolve_ability_store_id( $input );
 
         $response = ! empty( $store_id )
             ? MultiVendorX()->rest->store->prepare_get_item_response( array( 'id' => (int) $store_id ) )
@@ -102,7 +102,7 @@ class Stores {
      * @return array|\WP_Error
      */
     public function update_store( $input ) {
-        $store_id = $input['store_id'] ?? (int) MultiVendorX()->active_store;
+        $store_id = Utill::resolve_ability_store_id( $input );
 
         $params = array(
             'id'   => (int) $store_id,
