@@ -170,8 +170,8 @@ class Rest extends \WP_REST_Controller {
             }
 
             $range = Utill::normalize_date_range(
-                $request->get_param( 'start_date' ),
-                $request->get_param( 'end_date' )
+                $params['start_date'] ?? null,
+                $params['end_date'] ?? null
             );
             $args  = array();
 

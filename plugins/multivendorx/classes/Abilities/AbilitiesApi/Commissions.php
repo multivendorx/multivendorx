@@ -8,7 +8,7 @@
 namespace MultiVendorX\Abilities\AbilitiesApi;
 
 use MultiVendorX\Commission\CommissionUtil;
-use MultiVendorX\Store\StoreUtil;
+use MultiVendorX\Store\Store;
 use MultiVendorX\Utill;
 
 defined( 'ABSPATH' ) || exit;
@@ -49,26 +49,10 @@ class Commissions {
                 ),
                 'output_schema'       => array( 'type' => 'object' ),
                 'execute_callback'    => array( $this, 'get_commission_summary' ),
-                'permission_callback' => array( $this, 'store_permissions_check' ),
+                'permission_callback' => array( Utill::class, 'store_permissions_check' ),
                 'meta'                => array( 'public' => true ),
             )
         );
-    }
-
-    /**
-     * No store_id -> active_store, then admin only if that's empty too.
-     *
-     * @param array $input Ability input.
-     * @return bool
-     */
-    public function store_permissions_check( $input ) {
-        $store_id = $input['store_id'] ?? (int) MultiVendorX()->active_store;
-
-        if ( ! empty( $store_id ) ) {
-            return StoreUtil::current_user_can_manage_store( $store_id );
-        }
-
-        return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 
     /**
@@ -78,7 +62,12 @@ class Commissions {
      * @return array
      */
     public function get_commission_summary( $input ) {
-        $store_id = $input['store_id'] ?? (int) MultiVendorX()->active_store;
+        $store_id = $input['store_id'] ?? 0;
+
+        if ( empty( $store_id ) ) {
+            $store_ids = Store::get_store( MultiVendorX()->current_user_id, 'user' );
+            $store_id  = ! empty( $store_ids ) ? reset( $store_ids )['id'] : 0;
+        }
 
         $args = array_filter(
             array(
@@ -87,6 +76,8 @@ class Commissions {
             )
         );
 
-        return CommissionUtil::get_commission_summary_for_store( (int) $store_id, false, null, null, $args );
+        $response = CommissionUtil::get_commission_summary_for_store( (int) $store_id, false, false, 3, $args );
+
+        return Utill::ability_response( $response );
     }
 }

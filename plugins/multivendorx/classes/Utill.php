@@ -692,4 +692,26 @@ class Utill {
     public static function ability_response( $response ) {
         return $response instanceof \WP_REST_Response ? $response->get_data() : $response;
     }
+
+    /**
+     * Shared permission check for store-scoped abilities: an explicit store_id,
+     * else the current user's own store, else admin only.
+     *
+     * @param array $input Ability input.
+     * @return bool
+     */
+    public static function store_permissions_check( $input ) {
+        $store_id = $input['store_id'] ?? 0;
+
+        if ( empty( $store_id ) ) {
+            $store_ids = Store::get_store( MultiVendorX()->current_user_id, 'user' );
+            $store_id  = ! empty( $store_ids ) ? reset( $store_ids )['id'] : 0;
+        }
+
+        if ( ! empty( $store_id ) ) {
+            return \MultiVendorX\Store\StoreUtil::current_user_can_manage_store( $store_id );
+        }
+
+        return self::current_user_has_capability( array( 'manage_options' ) );
+    }
 }

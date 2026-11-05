@@ -7,7 +7,6 @@
 
 namespace MultiVendorX\Abilities\AbilitiesApi;
 
-use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\Utill;
 
 defined( 'ABSPATH' ) || exit;
@@ -57,26 +56,10 @@ class Transactions {
                     ),
                 ),
                 'execute_callback'    => array( $this, 'get_transactions' ),
-                'permission_callback' => array( $this, 'store_permissions_check' ),
+                'permission_callback' => array( Utill::class, 'store_permissions_check' ),
                 'meta'                => array( 'public' => true ),
             )
         );
-    }
-
-    /**
-     * No store_id -> active_store, then admin only if that's empty too.
-     *
-     * @param array $input Ability input.
-     * @return bool
-     */
-    public function store_permissions_check( $input ) {
-        $store_id = $input['store_id'] ?? (int) MultiVendorX()->active_store;
-
-        if ( ! empty( $store_id ) ) {
-            return StoreUtil::current_user_can_manage_store( $store_id );
-        }
-
-        return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 
     /**
