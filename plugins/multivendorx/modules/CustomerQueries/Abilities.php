@@ -133,7 +133,7 @@ class Abilities {
             $id,
             array(
                 'answer_text' => sanitize_textarea_field( (string) $input['answer_text'] ),
-                'answer_by'   => MultiVendorX()->current_user_id,
+                'answer_by'   => get_current_user_id(),
             )
         );
     }

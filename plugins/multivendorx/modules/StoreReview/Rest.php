@@ -348,7 +348,7 @@ class Rest extends \WP_REST_Controller {
         }
 
         try {
-            $user_id = MultiVendorX()->current_user_id;
+            $user_id = get_current_user_id();
 
             $store_id       = absint( $request->get_param( 'store_id' ) );
             $review_title   = sanitize_text_field( $request->get_param( 'review_title' ) );

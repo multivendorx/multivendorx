@@ -555,7 +555,7 @@ class StoreUtil {
 			return false;
 		}
 
-		$user_id = MultiVendorX()->current_user_id;
+		$user_id = get_current_user_id();
 		if ( ! $user_id ) {
 			return false;
 		}

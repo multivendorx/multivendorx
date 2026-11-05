@@ -724,22 +724,12 @@ class Utill {
      * @return bool
      */
     public static function store_permissions_check( $input ) {
-        if ( self::current_user_has_capability( array( 'manage_options' ) ) ) {
-            return true;
-        }
-
-        $user_id  = get_current_user_id();
         $store_id = self::resolve_ability_store_id( $input );
 
-        if ( ! $user_id || ! $store_id ) {
-            return false;
+        if ( $store_id ) {
+            return \MultiVendorX\Store\StoreUtil::current_user_can_manage_store( $store_id );
         }
 
-        if ( (int) \MultiVendorX\Store\StoreUtil::get_primary_owner( $store_id ) === $user_id ) {
-            return true;
-        }
-
-        $store_users = \MultiVendorX\Store\StoreUtil::get_store_users( $store_id );
-        return in_array( $user_id, (array) $store_users['users'], true );
+        return self::current_user_has_capability( array( 'manage_options' ) );
     }
 }

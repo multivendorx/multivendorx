@@ -663,7 +663,7 @@ class Stores extends \WP_REST_Controller {
 
             if ( $id && 'switch' === $action ) {
                 update_user_meta(
-                    MultiVendorX()->current_user_id,
+                    get_current_user_id(),
                     Utill::USER_SETTINGS_KEYS['active_store'],
                     $id
                 );

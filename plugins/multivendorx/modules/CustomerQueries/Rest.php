@@ -149,7 +149,7 @@ class Rest extends \WP_REST_Controller {
 
             // Non-admins only ever see their own store's questions.
             if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
-                $store_id = $store_id ?: (int) MultiVendorX()->active_store;
+                $store_id = $store_id ?: (int) get_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], true );
 
                 if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
                     return new \WP_Error(
@@ -281,7 +281,7 @@ class Rest extends \WP_REST_Controller {
             return new \WP_Error( 'not_found', __( 'Question not found', 'multivendorx' ), array( 'status' => 404 ) );
         }
 
-        if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) && (int) MultiVendorX()->active_store !== (int) $question['store_id'] ) {
+        if ( ! StoreUtil::current_user_can_manage_store( (int) $question['store_id'] ) ) {
             return new \WP_Error(
                 'rest_forbidden',
                 __( 'You are not allowed to view this question.', 'multivendorx' ),
@@ -332,7 +332,7 @@ class Rest extends \WP_REST_Controller {
                 );
             }
 
-            if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) && (int) MultiVendorX()->active_store !== (int) $question['store_id'] ) {
+            if ( ! StoreUtil::current_user_can_manage_store( (int) $question['store_id'] ) ) {
                 return new \WP_Error(
                     'forbidden',
                     __( 'You cannot manage this question.', 'multivendorx' ),
@@ -376,7 +376,7 @@ class Rest extends \WP_REST_Controller {
             }
 
             // Add answer_by (current user ID).
-            $current_user_id = MultiVendorX()->current_user_id;
+            $current_user_id = get_current_user_id();
             if ( $current_user_id ) {
                 $data_to_update['answer_by'] = $current_user_id;
             }
