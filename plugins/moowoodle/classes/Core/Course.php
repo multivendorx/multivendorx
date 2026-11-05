@@ -61,52 +61,49 @@ class Course {
 
 		$is_count = ! empty( $query_args['count'] );
 
-		// Each condition is a 1/0 term (flag AND test) summed in SQL; a row matches when enough terms hit:
-		// every enabled filter for AND, at least one for OR, none required when nothing is set.
-		$ids          = array_merge( array( 0 ), array_map( 'intval', (array) ( $query_args['id'] ?? 0 ) ) );
-		$enabled      = isset( $query_args['id'] ) ? 1 : 0;
-		$term_values  = array( $enabled );
-		$int_fields   = array( 'moodle_course_id', 'category_id', 'product_id', 'startdate', 'enddate' );
-		$like_filters = array( 'shortname', 'fullname' );
+		$conditions = array();
+		$values     = array();
 
-		foreach ( array_merge( $int_fields, $like_filters ) as $field ) {
-			$is_set        = isset( $query_args[ $field ] ) ? 1 : 0;
-			$enabled      += $is_set;
-			$term_values[] = $is_set;
-			$term_values[] = in_array( $field, $like_filters, true )
-				? '%' . $wpdb->esc_like( $query_args[ $field ] ?? '' ) . '%'
-				: (int) ( $query_args[ $field ] ?? 0 );
+		if ( isset( $query_args['id'] ) ) {
+			$ids          = array_map( 'intval', (array) $query_args['id'] );
+			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+			$conditions[] = 'id IN (' . $placeholders . ')';
+			$values       = array_merge( $values, $ids );
 		}
 
-		$is_expired    = ! empty( $query_args['expired'] ) ? 1 : 0;
-		$has_product   = ! empty( $query_args['has_product'] ) ? 1 : 0;
-		$enabled      += $is_expired + $has_product;
-		$term_values[] = $is_expired;
-		$term_values[] = time();
-		$term_values[] = $has_product;
+		foreach ( array( 'moodle_course_id', 'category_id', 'product_id', 'startdate', 'enddate' ) as $field ) {
+			if ( isset( $query_args[ $field ] ) ) {
+				$conditions[] = $field . ' = %d';
+				$values[]     = (int) $query_args[ $field ];
+			}
+		}
 
-		$required      = ( 'OR' === strtoupper( $query_args['condition'] ?? 'AND' ) ) ? min( 1, $enabled ) : $enabled;
-		$term_values[] = $required;
+		foreach ( array( 'shortname', 'fullname' ) as $field ) {
+			if ( isset( $query_args[ $field ] ) ) {
+				$conditions[] = $field . ' LIKE %s';
+				$values[]     = '%' . $wpdb->esc_like( $query_args[ $field ] ) . '%';
+			}
+		}
+
+		if ( ! empty( $query_args['expired'] ) ) {
+			$conditions[] = 'enddate > 0 AND enddate <= %d';
+			$values[]     = time();
+		}
+
+		if ( ! empty( $query_args['has_product'] ) ) {
+			$conditions[] = 'product_id > 0';
+		}
+
+		$join      = ( 'OR' === strtoupper( $query_args['condition'] ?? 'AND' ) ) ? ' OR ' : ' AND ';
+		$where_sql = $conditions ? ' WHERE ' . implode( $join, $conditions ) : '';
 
 		if ( $is_count ) {
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$course_count = $wpdb->get_var(
 				$wpdb->prepare(
-					'SELECT COUNT(*) FROM %i
-					WHERE (
-						IF( %d = 1 AND id IN (' . esc_sql( implode( ',', $ids ) ) . '), 1, 0 )
-						+ IF( %d = 1 AND moodle_course_id = %d, 1, 0 )
-						+ IF( %d = 1 AND category_id = %d, 1, 0 )
-						+ IF( %d = 1 AND product_id = %d, 1, 0 )
-						+ IF( %d = 1 AND startdate = %d, 1, 0 )
-						+ IF( %d = 1 AND enddate = %d, 1, 0 )
-						+ IF( %d = 1 AND shortname LIKE %s, 1, 0 )
-						+ IF( %d = 1 AND fullname LIKE %s, 1, 0 )
-						+ IF( %d = 1 AND enddate > 0 AND enddate <= %d, 1, 0 )
-						+ IF( %d = 1 AND product_id > 0, 1, 0 )
-					) >= %d',
+					'SELECT COUNT(*) FROM %i' . $where_sql,
 					$table_name,
-					...$term_values
+					...$values
 				)
 			);
 			return $course_count ?? 0;
@@ -116,25 +113,12 @@ class Course {
 		$limit     = $has_limit ? (int) $query_args['limit'] : PHP_INT_MAX;
 		$offset    = ( $has_limit && isset( $query_args['offset'] ) ) ? (int) $query_args['offset'] : 0;
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$courses = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT * FROM %i
-				WHERE (
-					IF( %d = 1 AND id IN (' . esc_sql( implode( ',', $ids ) ) . '), 1, 0 )
-					+ IF( %d = 1 AND moodle_course_id = %d, 1, 0 )
-					+ IF( %d = 1 AND category_id = %d, 1, 0 )
-					+ IF( %d = 1 AND product_id = %d, 1, 0 )
-					+ IF( %d = 1 AND startdate = %d, 1, 0 )
-					+ IF( %d = 1 AND enddate = %d, 1, 0 )
-					+ IF( %d = 1 AND shortname LIKE %s, 1, 0 )
-					+ IF( %d = 1 AND fullname LIKE %s, 1, 0 )
-					+ IF( %d = 1 AND enddate > 0 AND enddate <= %d, 1, 0 )
-					+ IF( %d = 1 AND product_id > 0, 1, 0 )
-				) >= %d
-				LIMIT %d OFFSET %d',
+				'SELECT * FROM %i' . $where_sql . ' LIMIT %d OFFSET %d',
 				$table_name,
-				...array_merge( $term_values, array( $limit, $offset ) )
+				...array_merge( $values, array( $limit, $offset ) )
 			),
 			ARRAY_A
 		);
