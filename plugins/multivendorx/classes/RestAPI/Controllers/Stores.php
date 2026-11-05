@@ -164,7 +164,7 @@ class Stores extends \WP_REST_Controller {
 
             if ( $is_admin ) {
                 foreach ( $restricted_action_map as $param => $method ) {
-                    if ( ! $request->get_param( $param ) ) {
+                    if ( empty( $params[ $param ] ) ) {
                         continue;
                     }
 
@@ -178,7 +178,7 @@ class Stores extends \WP_REST_Controller {
 
             if ( $permission ) {
                 foreach ( $store_owner_flag_map as $param => $method ) {
-                    if ( ! $request->get_param( $param ) ) {
+                    if ( empty( $params[ $param ] ) ) {
                         continue;
                     }
 
