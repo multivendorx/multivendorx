@@ -702,11 +702,15 @@ class Utill {
      */
     public static function resolve_ability_store_id( $input ) {
         $store_id = (int) ( $input['store_id'] ?? 0 );
-        $user_id  = get_current_user_id();
 
-        if ( ! $store_id ) {
-            $store_id = (int) get_user_meta( $user_id, self::USER_SETTINGS_KEYS['active_store'], true );
+        // Admins omitting store_id mean "every store" - only default a
+        // vendor to their own store when none was given.
+        if ( $store_id || self::current_user_has_capability( array( 'manage_options' ) ) ) {
+            return $store_id;
         }
+
+        $user_id  = get_current_user_id();
+        $store_id = (int) get_user_meta( $user_id, self::USER_SETTINGS_KEYS['active_store'], true );
 
         if ( ! $store_id ) {
             $store_ids = Store::get_store( $user_id, 'user' );

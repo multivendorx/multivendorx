@@ -151,7 +151,7 @@ class Rest extends \WP_REST_Controller {
             if ( ! empty( $params['overview'] ) ) {
                 return rest_ensure_response( $this->calculate_store_rating_summary( intval( $store_id ) ) );
             }
-			$limit          = intval( $params['row'] ?? 0 ) ?: 0;
+			$limit          = max( 1, (int) ( $params['row'] ?? 0 ) ?: 10 );
 			$page           = intval( $params['page'] ?? 0 ) ?: 1;
             $offset         = ( $page - 1 ) * $limit;
             $status         = sanitize_text_field( $params['status'] ?? '' );
