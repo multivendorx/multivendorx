@@ -86,10 +86,10 @@ class Stores {
      * @return array|\WP_Error
      */
     public function get_stores( $input ) {
-        $store_id = Utill::resolve_ability_store_id( $input );
+        $input['store_id'] = Utill::resolve_ability_store_id( $input );
 
-        $response = ! empty( $store_id )
-            ? MultiVendorX()->rest->store->prepare_get_item_response( array( 'id' => (int) $store_id ) )
+        $response = ! empty( $input['store_id'] )
+            ? MultiVendorX()->rest->store->prepare_get_item_response( array( 'id' => (int) $input['store_id'] ) )
             : MultiVendorX()->rest->store->prepare_get_items_response( (array) $input );
 
         return Utill::ability_response( $response );
@@ -102,10 +102,10 @@ class Stores {
      * @return array|\WP_Error
      */
     public function update_store( $input ) {
-        $store_id = Utill::resolve_ability_store_id( $input );
+        $input['store_id'] = Utill::resolve_ability_store_id( $input );
 
         $params = array(
-            'id'   => (int) $store_id,
+            'id'   => (int) $input['store_id'],
             'data' => (array) ( $input['data'] ?? array() ),
         );
 

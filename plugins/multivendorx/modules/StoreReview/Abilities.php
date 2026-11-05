@@ -108,9 +108,9 @@ class Abilities {
      * @return array|\WP_Error
      */
     public function get_reviews( $input ) {
-        $store_id = Utill::resolve_ability_store_id( $input );
+        $input['store_id'] = Utill::resolve_ability_store_id( $input );
 
-        $response = Module::init()->rest->prepare_get_items_response( array_merge( (array) $input, array( 'store_id' => $store_id ) ) );
+        $response = Module::init()->rest->prepare_get_items_response( (array) $input );
 
         return Utill::ability_response( $response );
     }

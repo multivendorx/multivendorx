@@ -69,9 +69,9 @@ class Transactions {
      * @return array|\WP_Error
      */
     public function get_transactions( $input ) {
-        $store_id = Utill::resolve_ability_store_id( $input );
+        $input['store_id'] = Utill::resolve_ability_store_id( $input );
 
-        $response = MultiVendorX()->rest->transaction->prepare_get_items_response( array_merge( (array) $input, array( 'store_id' => $store_id ) ) );
+        $response = MultiVendorX()->rest->transaction->prepare_get_items_response( (array) $input );
 
         return Utill::ability_response( $response );
     }

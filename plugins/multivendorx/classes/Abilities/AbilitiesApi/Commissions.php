@@ -61,7 +61,7 @@ class Commissions {
      * @return array
      */
     public function get_commission_summary( $input ) {
-        $store_id = Utill::resolve_ability_store_id( $input );
+        $input['store_id'] = Utill::resolve_ability_store_id( $input );
 
         $args = array_filter(
             array(
@@ -70,7 +70,7 @@ class Commissions {
             )
         );
 
-        $response = CommissionUtil::get_commission_summary_for_store( (int) $store_id, false, false, 3, $args );
+        $response = CommissionUtil::get_commission_summary_for_store( (int) $input['store_id'], false, false, 3, $args );
 
         return Utill::ability_response( $response );
     }
