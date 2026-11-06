@@ -120,25 +120,36 @@ class Rest extends \WP_REST_Controller {
 
             return $error;
         }
+
+        return $this->prepare_get_items_response( $request->get_params() );
+    }
+
+    /**
+     * Get customer questions. Shared by get_items() and the get-customer-questions ability.
+     *
+     * @param array $params Plain request params.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function prepare_get_items_response( $params ) {
         try {
-            $store_id            = $request->get_param( 'store_id' );
-            $limit               = max( intval( $request->get_param( 'row' ) ), 10 );
-            $page                = max( intval( $request->get_param( 'page' ) ), 1 );
+            $store_id            = $params['store_id'] ?? null;
+            $limit               = max( intval( $params['row'] ?? 0 ), 10 );
+            $page                = max( intval( $params['page'] ?? 0 ), 1 );
             $offset              = ( $page - 1 ) * $limit;
-            $status              = sanitize_text_field( $request->get_param( 'status' ) );
-            $search              = sanitize_text_field( $request->get_param( 'search_value' ) );
-            $order_by            = sanitize_text_field( $request->get_param( 'order_by' ) );
-            $order               = sanitize_text_field( $request->get_param( 'order' ) );
-            $question_visibility = sanitize_text_field( $request->get_param( 'question_visibility' ) );
+            $status              = sanitize_text_field( $params['status'] ?? '' );
+            $search              = sanitize_text_field( $params['search_value'] ?? '' );
+            $order_by            = sanitize_text_field( $params['order_by'] ?? '' );
+            $order               = sanitize_text_field( $params['order'] ?? '' );
+            $question_visibility = sanitize_text_field( $params['question_visibility'] ?? '' );
             $range               = Utill::normalize_date_range(
-                $request->get_param( 'start_date' ),
-                $request->get_param( 'end_date' )
+                $params['start_date'] ?? null,
+                $params['end_date'] ?? null
             );
             $args                = array();
 
             // Non-admins only ever see their own store's questions.
             if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
-                $store_id = (int) MultiVendorX()->active_store;
+                $store_id = $store_id ?: (int) get_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], true );
 
                 if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
                     return new \WP_Error(
@@ -270,7 +281,7 @@ class Rest extends \WP_REST_Controller {
             return new \WP_Error( 'not_found', __( 'Question not found', 'multivendorx' ), array( 'status' => 404 ) );
         }
 
-        if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) && (int) MultiVendorX()->active_store !== (int) $question['store_id'] ) {
+        if ( ! StoreUtil::current_user_can_manage_store( (int) $question['store_id'] ) ) {
             return new \WP_Error(
                 'rest_forbidden',
                 __( 'You are not allowed to view this question.', 'multivendorx' ),
@@ -321,7 +332,7 @@ class Rest extends \WP_REST_Controller {
                 );
             }
 
-            if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) && (int) MultiVendorX()->active_store !== (int) $question['store_id'] ) {
+            if ( ! StoreUtil::current_user_can_manage_store( (int) $question['store_id'] ) ) {
                 return new \WP_Error(
                     'forbidden',
                     __( 'You cannot manage this question.', 'multivendorx' ),
@@ -365,7 +376,7 @@ class Rest extends \WP_REST_Controller {
             }
 
             // Add answer_by (current user ID).
-            $current_user_id = MultiVendorX()->current_user_id;
+            $current_user_id = get_current_user_id();
             if ( $current_user_id ) {
                 $data_to_update['answer_by'] = $current_user_id;
             }

@@ -10,6 +10,7 @@ namespace MultiVendorX;
 defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 use MultiVendorX\Utill;
+use MultiVendorX\Abilities\Abilities;
 
 /**
  * MultiVendorX Class.
@@ -177,6 +178,7 @@ final class MultiVendorX {
         $this->container['promotions']      = new Promotions();
         $this->container['migration']       = new Migration\Cron();
         $this->container['vulomail_migration'] = new Integrations\VuloMailMigration();
+        $this->container['abilities']       = new Abilities();
 
         $this->initialize_multivendorx_log();
 

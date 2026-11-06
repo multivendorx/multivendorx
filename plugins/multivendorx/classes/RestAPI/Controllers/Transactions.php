@@ -95,25 +95,36 @@ class Transactions extends \WP_REST_Controller {
 			return $error;
 		}
 
+		return $this->prepare_get_items_response( $request->get_params(), $request );
+	}
+
+	/**
+	 * Get transactions. Shared by get_items() and the get-transactions ability.
+	 *
+	 * @param array                 $params  Plain request params.
+	 * @param \WP_REST_Request|null $request Originating request, if any.
+	 * @return \WP_REST_Response|\WP_Error
+	 */
+	public function prepare_get_items_response( $params, $request = null ) {
 		try {
-			$limit              = max( 1, (int) $request->get_param( 'row' ) ? (int) $request->get_param( 'row' ) : 10 );
-			$page               = max( 1, (int) $request->get_param( 'page' ) ? (int) $request->get_param( 'page' ) : 1 );
+			$limit              = max( 1, (int) ( $params['row'] ?? 0 ) ?: 10 );
+			$page               = max( 1, (int) ( $params['page'] ?? 0 ) ?: 1 );
 			$offset             = ( $page - 1 ) * $limit;
-			$store_id           = (int) $request->get_param( 'store_id' );
-			$status             = $request->get_param( 'status' );
-			$transaction_type   = $request->get_param( 'transaction_type' );
-			$transaction_status = $request->get_param( 'transaction_status' );
-			$order_by           = sanitize_text_field( $request->get_param( 'order_by' ) ) ? sanitize_text_field( $request->get_param( 'order_by' ) ) : 'created_at';
-			$order              = strtoupper( sanitize_text_field( $request->get_param( 'order' ) ) ) ? strtoupper( sanitize_text_field( $request->get_param( 'order' ) ) ) : 'DESC';
-			$search_id          = $request->get_param( 'search_value' );
+			$store_id           = (int) ( $params['store_id'] ?? 0 );
+			$status             = $params['status'] ?? null;
+			$transaction_type   = $params['transaction_type'] ?? null;
+			$transaction_status = $params['transaction_status'] ?? null;
+			$order_by           = sanitize_text_field( $params['order_by'] ?? '' ) ? sanitize_text_field( $params['order_by'] ) : 'created_at';
+			$order              = strtoupper( sanitize_text_field( $params['order'] ?? '' ) ) ? strtoupper( sanitize_text_field( $params['order'] ) ) : 'DESC';
+			$search_id          = $params['search_value'] ?? null;
 			$dates              = Utill::normalize_date_range(
-                $request->get_param( 'start_date' ),
-                $request->get_param( 'end_date' )
+                $params['start_date'] ?? null,
+                $params['end_date'] ?? null
 			);
 
-			$ids            = $request->get_param( 'ids' );
-			$sec_fetch_site = $request->get_header( 'sec_fetch_site' );
-			$referer        = $request->get_header( 'referer' );
+			$ids            = $params['ids'] ?? null;
+			$sec_fetch_site = $request instanceof \WP_REST_Request ? $request->get_header( 'sec_fetch_site' ) : null;
+			$referer        = $request instanceof \WP_REST_Request ? $request->get_header( 'referer' ) : null;
 
 			if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
 				return new \WP_Error(
