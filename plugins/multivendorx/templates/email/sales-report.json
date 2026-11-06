@@ -1,0 +1,362 @@
+{
+	"id": "store-registration",
+	"name": "Sales Report",
+	"previewText": "Your weekly sales summary from {siteName}",
+	"blocks": [
+		{
+			"id": 3,
+			"type": "heading",
+			"name": "email-greeting",
+			"text": "Hi {storeName},",
+			"level": 2,
+			"style": {
+				"fontSize": 20,
+				"color": "#1a202c",
+				"paddingTop": 28,
+				"paddingLeft": 24,
+				"paddingRight": 24
+			}
+		},
+		{
+			"id": 4,
+			"type": "richtext",
+			"name": "email-intro",
+			"html": "Here's how your store performed on {siteName} this week.",
+			"style": {
+				"color": "#4a5568",
+				"fontSize": 15,
+				"paddingTop": 6,
+				"paddingBottom": 24,
+				"paddingLeft": 24,
+				"paddingRight": 24
+			}
+		},
+		{
+			"id": 5,
+			"type": "columns",
+			"name": "email-stats",
+			"layout": "3",
+			"style": {
+				"backgroundColor": "#f7f5fc",
+				"borderRadius": 8,
+				"marginLeft": 24,
+				"marginRight": 24
+			},
+			"columns": [
+				[
+					{
+						"id": 6,
+						"type": "heading",
+						"name": "email-stat-value",
+						"text": "{totalOrders}",
+						"level": 2,
+						"style": {
+							"fontSize": 22,
+							"lineHeight": 1.2,
+							"textAlign": "center",
+							"color": "#2d3748",
+							"paddingTop": 18
+						}
+					},
+					{
+						"id": 7,
+						"type": "richtext",
+						"name": "email-stat-label",
+						"html": "Total orders",
+						"style": {
+							"color": "#718096",
+							"fontSize": 13,
+							"textAlign": "center",
+							"paddingBottom": 18
+						}
+					}
+				],
+				[
+					{
+						"id": 8,
+						"type": "heading",
+						"name": "email-stat-value",
+						"text": "{totalSales}",
+						"level": 2,
+						"style": {
+							"fontSize": 22,
+							"lineHeight": 1.2,
+							"textAlign": "center",
+							"color": "#2d3748",
+							"paddingTop": 18
+						}
+					},
+					{
+						"id": 9,
+						"type": "richtext",
+						"name": "email-stat-label",
+						"html": "Total sales",
+						"style": {
+							"color": "#718096",
+							"fontSize": 13,
+							"textAlign": "center",
+							"paddingBottom": 18
+						}
+					}
+				],
+				[
+					{
+						"id": 10,
+						"type": "heading",
+						"name": "email-stat-value",
+						"text": "{storeEarnings}",
+						"level": 2,
+						"style": {
+							"fontSize": 22,
+							"lineHeight": 1.2,
+							"textAlign": "center",
+							"color": "#2f8a3b",
+							"paddingTop": 18
+						}
+					},
+					{
+						"id": 11,
+						"type": "richtext",
+						"name": "email-stat-label",
+						"html": "Your earnings",
+						"style": {
+							"color": "#718096",
+							"fontSize": 13,
+							"textAlign": "center",
+							"paddingBottom": 18
+						}
+					}
+				]
+			]
+		},
+		{
+			"id": 12,
+			"type": "heading",
+			"name": "email-breakdown-title",
+			"text": "Earnings breakdown",
+			"level": 3,
+			"style": {
+				"fontSize": 16,
+				"color": "#1a202c",
+				"paddingTop": 32,
+				"paddingBottom": 4,
+				"paddingLeft": 24,
+				"paddingRight": 24
+			}
+		},
+		{
+			"id": 13,
+			"type": "columns",
+			"name": "email-breakdown-row",
+			"layout": "2",
+			"style": {
+				"paddingTop": 12,
+				"paddingBottom": 12,
+				"paddingLeft": 24,
+				"paddingRight": 24
+			},
+			"columns": [
+				[
+					{
+						"id": 14,
+						"type": "richtext",
+						"name": "email-breakdown-label",
+						"html": "Total sales",
+						"style": {
+							"color": "#4a5568",
+							"fontSize": 15,
+							"fontWeight": 400
+						}
+					}
+				],
+				[
+					{
+						"id": 15,
+						"type": "richtext",
+						"name": "email-breakdown-value",
+						"html": "{totalSales}",
+						"style": {
+							"color": "#2d3748",
+							"fontSize": 15,
+							"fontWeight": 600,
+							"textAlign": "right"
+						}
+					}
+				]
+			]
+		},
+		{
+			"id": 16,
+			"type": "columns",
+			"name": "email-breakdown-row",
+			"layout": "2",
+			"style": {
+				"paddingTop": 12,
+				"paddingBottom": 12,
+				"paddingLeft": 24,
+				"paddingRight": 24
+			},
+			"columns": [
+				[
+					{
+						"id": 17,
+						"type": "richtext",
+						"name": "email-breakdown-label",
+						"html": "Marketplace commission ({commissionRate})",
+						"style": {
+							"color": "#4a5568",
+							"fontSize": 15,
+							"fontWeight": 400
+						}
+					}
+				],
+				[
+					{
+						"id": 18,
+						"type": "richtext",
+						"name": "email-breakdown-value",
+						"html": "\u2212{commissionAmount}",
+						"style": {
+							"color": "#2d3748",
+							"fontSize": 15,
+							"fontWeight": 600,
+							"textAlign": "right"
+						}
+					}
+				]
+			]
+		},
+		{
+			"id": 19,
+			"type": "columns",
+			"name": "email-breakdown-row",
+			"layout": "2",
+			"style": {
+				"paddingTop": 12,
+				"paddingBottom": 12,
+				"paddingLeft": 24,
+				"paddingRight": 24
+			},
+			"columns": [
+				[
+					{
+						"id": 20,
+						"type": "richtext",
+						"name": "email-breakdown-label",
+						"html": "Total refunds",
+						"style": {
+							"color": "#4a5568",
+							"fontSize": 15,
+							"fontWeight": 400
+						}
+					}
+				],
+				[
+					{
+						"id": 21,
+						"type": "richtext",
+						"name": "email-breakdown-value",
+						"html": "\u2212{totalRefunds}",
+						"style": {
+							"color": "#d90d0d",
+							"fontSize": 15,
+							"fontWeight": 600,
+							"textAlign": "right"
+						}
+					}
+				]
+			]
+		},
+		{
+			"id": 22,
+			"type": "columns",
+			"name": "email-breakdown-row",
+			"layout": "2",
+			"style": {
+				"paddingTop": 12,
+				"paddingBottom": 12,
+				"paddingLeft": 24,
+				"paddingRight": 24
+			},
+			"columns": [
+				[
+					{
+						"id": 23,
+						"type": "richtext",
+						"name": "email-breakdown-label",
+						"html": "Net earnings",
+						"style": {
+							"color": "#4a5568",
+							"fontSize": 15,
+							"fontWeight": 600
+						}
+					}
+				],
+				[
+					{
+						"id": 24,
+						"type": "richtext",
+						"name": "email-breakdown-value",
+						"html": "{netEarnings}",
+						"style": {
+							"color": "#2f8a3b",
+							"fontSize": 15,
+							"fontWeight": 600,
+							"textAlign": "right"
+						}
+					}
+				]
+			]
+		},
+		{
+			"id": 25,
+			"type": "divider",
+			"name": "email-divider",
+			"style": {
+				"marginTop": 24,
+				"marginLeft": 24,
+				"marginRight": 24
+			}
+		},
+		{
+			"id": 26,
+			"type": "richtext",
+			"name": "email-payout-note",
+			"html": "Your payout will be processed within 2\u20133 business days. Reply to this email if you have any questions.",
+			"style": {
+				"color": "#4a5568",
+				"fontSize": 15,
+				"paddingTop": 20,
+				"paddingLeft": 24,
+				"paddingRight": 24
+			}
+		},
+		{
+			"id": 27,
+			"type": "richtext",
+			"name": "email-signoff",
+			"html": "Best regards,",
+			"style": {
+				"color": "#718096",
+				"fontSize": 14,
+				"paddingTop": 24,
+				"paddingLeft": 24,
+				"paddingRight": 24
+			}
+		},
+		{
+			"id": 28,
+			"type": "heading",
+			"name": "email-signature",
+			"text": "The {siteName} Team",
+			"level": 4,
+			"style": {
+				"fontSize": 15,
+				"color": "#1a202c",
+				"paddingBottom": 28,
+				"paddingLeft": 24,
+				"paddingRight": 24
+			}
+		}
+	]
+}

@@ -10,16 +10,8 @@ import {
 	EmailInput,
 } from '@zyra/inputs';
 import { TableCard, QueryProps } from '@zyra/table';
-import {
-	EmailBuilder,
-	legacyEmailBlocksToEmailBlocks,
-	emailBlocksToLegacyEmailBlocks,
-	renderBlocksToHTML,
-	htmlToBlocks,
-} from '@zyra/builders';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { salesReport } from '../../../assets/template/emailTemplate/salesReport';
 
 const RECIPIENT_CONFIG: Record<string, { icon: string; badge: string }> = {
 	Store: { icon: 'storefront', badge: 'blue' },
@@ -55,6 +47,8 @@ interface RecipientBadgeProps {
 
 interface Notification {
 	id: number;
+	/** Name of this event's email in VuloMail's template registry. */
+	template?: string;
 	event: string;
 	tag: string;
 	category: string;
@@ -124,7 +118,6 @@ const EventRules: React.FC = () => {
 		field: string | null;
 	}>({ start: 0, end: 0, field: null });
 	const [isLoading, setIsLoading] = useState(true);
-	const [useTemplate, setUseTemplate] = useState(false);
 	const [tablePage, setTablePage] = useState(1);
 	const [tablePerPage, setTablePerPage] = useState(10);
 
@@ -253,6 +246,17 @@ const EventRules: React.FC = () => {
 		}));
 
 	const openEditPannel = (notifId: number, channel: string) => {
+		// The mail and the notice (bell) icons open this event's email in VuloMail's editor, ready to edit. The email stays
+		// saved in MultiVendorX: the event is registered with VuloMail as `multivendorx/<event>` and
+		// VuloMail saves through it (see Integrations/VuloMailTemplates.php).
+		if ('mail' === channel || 'system' === channel) {
+			const templateName = notifications.find((n) => n.id === notifId)?.template;
+
+			window.location.href = `${appLocalizer.admin_url}admin.php?page=vulomail#&tab=email-templates${
+				templateName ? `&template=${encodeURIComponent(templateName)}` : ''
+			}`;
+			return;
+		}
 		apiRequest('GET', `notifications/${notifId}`).then((response) => {
 			const notifData = Array.isArray(response.data)
 				? response.data[0]
@@ -404,46 +408,6 @@ const EventRules: React.FC = () => {
 	};
 
 
-	// System-notification editor data: saved HTML (or the Sales Report
-	// template when picked) as editor blocks, plus this event's own
-	// `[placeholder]` tokens for the "Insert a tag" picker.
-	const systemTemplates = useMemo(
-		() => [
-			{
-				id: salesReport.id,
-				name: salesReport.name,
-				blocks: legacyEmailBlocksToEmailBlocks(salesReport.blocks),
-			},
-		],
-		[]
-	);
-	const systemMessageBlocks = useMemo(() => {
-		if (useTemplate || !formData.email_body) {
-			return systemTemplates[0].blocks;
-		}
-		try {
-			return legacyEmailBlocksToEmailBlocks(
-				htmlToBlocks(formData.email_body)
-			);
-		} catch (e) {
-			console.error('Builder load error:', e);
-			return systemTemplates[0].blocks;
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [formData.id, useTemplate, systemTemplates]);
-	const systemMergeTags = useMemo(
-		() =>
-			(formData.available_placeholders || '')
-				.split(',')
-				.map((item) => item.replace(/[[\]]/g, '').trim())
-				.filter(Boolean)
-				.map((name) => ({
-					token: `[${name}]`,
-					label: name.replace(/_/g, ' '),
-				})),
-		[formData.available_placeholders]
-	);
-
 	return (
 		<div
 			className="notification-container module-container tab-bg"
@@ -527,49 +491,23 @@ const EventRules: React.FC = () => {
 				</ColumnComponent>
 			)}
 
-			{openChannel && (
+
+			{(openChannel === 'sms' || openChannel === 'mail') && (
 				<PopupComponent
-					open={!!openChannel}
+					open
 					onClose={() => setOpenChannel(null)}
 					width="90%"
 					height="90%"
 					header={{
 						icon: 'notification',
 						title: `${
-							openChannel === 'system'
-								? __('System Notification', 'multivendorx')
-								: openChannel === 'sms'
-									? __('SMS Message', 'multivendorx')
-									: __('Email Message', 'multivendorx')
+							openChannel === 'sms'
+								? __('SMS Message', 'multivendorx')
+								: __('Email Message', 'multivendorx')
 						} - ${editNotification?.event ?? ''}`,
 					}}
 				>
 					<>
-						{openChannel === 'system' && (
-							<EmailBuilder
-								key={`${formData.id}-${useTemplate ? 'template' : 'saved'}`}
-								value={systemMessageBlocks}
-								templates={systemTemplates}
-								activeTemplateId={useTemplate ? salesReport.id : undefined}
-								onTemplateSelect={() => setUseTemplate(true)}
-								mergeTags={systemMergeTags}
-								onChange={(blocks) => {
-									if (!formData.id) {
-										return;
-									}
-									// Saved as HTML, same as before, so existing
-									// notifications keep loading.
-									const updatedForm = {
-										...formData,
-										email_body: renderBlocksToHTML(
-											emailBlocksToLegacyEmailBlocks(blocks)
-										),
-									};
-									setFormData(updatedForm);
-									handleEmailSave(updatedForm.id, updatedForm);
-								}}
-							/>
-						)}
 						<FormGroupWrapperComponent>
 							{openChannel === 'sms' && (
 								<FormGroupComponent

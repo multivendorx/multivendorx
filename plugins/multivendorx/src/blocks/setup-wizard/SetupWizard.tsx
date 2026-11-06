@@ -1,6 +1,6 @@
 /* global appLocalizer */
 import React, { useState } from 'react';
-import { ExpandablePanelInput } from '@zyra/inputs';
+import { SetupWizardInput } from '@zyra/inputs';
 import { __, sprintf } from '@wordpress/i18n';
 import img from '../../assets/images/multivendorx-logo.png';
 interface SettingsState {
@@ -47,8 +47,6 @@ const SetupWizard: React.FC = () => {
 				'This helps us tailor features for your business.',
 				'multivendorx'
 			),
-			countBtn: true,
-			isWizardMode: true,
 			openForm: true,
 			formFields: [
 				{
@@ -246,8 +244,6 @@ const SetupWizard: React.FC = () => {
 			label: __('Configure Your Store', 'multivendorx'),
 			icon: 'setting',
 			desc: __('How stores sell on your marketplace.', 'multivendorx'),
-			countBtn: true,
-			isWizardMode: true,
 			openForm: true,
 			formFields: [
 				{
@@ -298,8 +294,6 @@ const SetupWizard: React.FC = () => {
 				'Decide how your marketplace earns money.',
 				'multivendorx'
 			),
-			countBtn: true,
-			isWizardMode: true,
 			openForm: true,
 			formFields: [
 				{
@@ -423,8 +417,6 @@ const SetupWizard: React.FC = () => {
 						label: __('Migration', 'multivendorx'),
 						icon: 'migration',
 						desc: __('Migration.', 'multivendorx'),
-						countBtn: true,
-						isWizardMode: true,
 						openForm: true,
 						formFields: [
 							{
@@ -630,8 +622,6 @@ const SetupWizard: React.FC = () => {
 				"You're all set with the basics! Use the quick links below to fine-tune your marketplace now — or come back later anytime.",
 				'multivendorx'
 			),
-			countBtn: true,
-			isWizardMode: true,
 			openForm: true,
 			formFields: [
 				{
@@ -677,34 +667,30 @@ const SetupWizard: React.FC = () => {
 	};
 
 	return (
-		<div className="wizard-container">
-			<div className="welcome-wrapper">
-				<img src={img} alt="" />
-				<div className="wizard-title">
-					{__('Welcome to the MultivendorX family!', 'multivendorx')}
-				</div>
-				<div className="des">
-					{__(
-						'Thank you for choosing MultiVendorX! This quick setup wizard will help you configure the basic settings and have your marketplace ready in no time. It’s completely optional and shouldn’t take longer than five minutes.',
-						'multivendorx'
-					)}
-				</div>
-			</div>
-
-			<ExpandablePanelInput
-				key={inputField.key}
-				name={inputField.key}
-				apilink={String(inputField.apiLink)}
-				appLocalizer={appLocalizer}
-				methods={methods}
-				value={value}
-				onChange={(data) => {
-					updateSetting(inputField.key, data);
-				}}
-				isWizardMode={true}
-				canAccess={true}
-			/>
-		</div>
+		<SetupWizardInput
+			key={inputField.key}
+			apilink={String(inputField.apiLink)}
+			methods={methods}
+			value={value}
+			onChange={(data) => updateSetting(inputField.key, data)}
+			canAccess
+			brandName="MultiVendorX"
+			brandMark={<img src={img} alt="" />}
+			railTitle={__('Setup', 'multivendorx')}
+			intro={
+				<>
+					<h4 className="wizard-title">
+						{__('Welcome to the MultivendorX family!', 'multivendorx')}
+					</h4>
+					<p>
+						{__(
+							'Thank you for choosing MultiVendorX! This quick setup wizard will help you configure the basic settings and have your marketplace ready in no time. It’s completely optional and shouldn’t take longer than five minutes.',
+							'multivendorx'
+						)}
+					</p>
+				</>
+			}
+		/>
 	);
 };
 

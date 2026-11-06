@@ -8,6 +8,7 @@
 namespace MultiVendorX;
 
 use MultiVendorX\Utill;
+use MultiVendorX\Store;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -79,7 +80,7 @@ class Shortcode {
     }
 
     /**
-     * Load registration page assets.
+     * Load registration page assets: the login / sign-up tabs.
      *
      * @return void
      */
@@ -88,8 +89,7 @@ class Shortcode {
             return;
         }
 
-        FrontendScripts::enqueue_script( 'multivendorx-registration-form-view-script' );
-        FrontendScripts::localize_scripts( 'multivendorx-registration-form-view-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-products-script' );
         FrontendScripts::enqueue_style( 'multivendorx-store-tabs-style' );
     }
 
@@ -220,36 +220,7 @@ class Shortcode {
             exit;
         }
 
-        ob_start();
-        ?>
-        <div id="multivendorx-registration-form" class="woocommerce">
-            <div class="multivendorxstep-wizard">
-				<div class="multivendorxsteps-container">
-					<div class='multivendorxstep-item'>
-						<span class='skeleton skeleton-circular' style="width: 2.125rem; height: 2.125rem;"> </span>
-						<span class='skeleton skeleton-text' style="width: 5rem; height: 1.5rem;"></span>
-					</div>
-
-					<div class="multivendorx-step-divider"></div>
-					<div class='multivendorxstep-item' >
-						<span class='skeleton skeleton-circular' style="width: 2.125rem; height: 2.125rem;"> </span>
-						<span class='skeleton skeleton-text' style="width: 6rem; height: 1.5rem;"></span>
-					</div>
-
-				</div>
-				<div class="multivendorxprogress-bar"></div>
-			</div>
-			<div class="multivendorxstep-content multivendorxstep-1-content">
-				<div class="multivendorxprogress-content">
-					<p><span class='skeleton skeleton-text' style="width: 6rem; height: 1.5rem;"> </span></p>
-					<h3><span class='skeleton skeleton-text' style="width: 14rem; height: 1.5rem;"></span></h3>
-					<p><span class='skeleton skeleton-text' style="width: 80%; height: 1rem;"></span></p>
-				</div>
-			</div>
-        </div>
-        <?php
-        // Return the output buffer content.
-        return ob_get_clean();
+        return '<div id="multivendorx-registration-form" class="woocommerce">' . Store\Registration::render() . '</div>';
     }
 
     /**

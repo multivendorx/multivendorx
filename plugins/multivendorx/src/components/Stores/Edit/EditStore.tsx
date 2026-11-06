@@ -734,7 +734,7 @@ const EditStore = () => {
 																data?.status !=
 																'permanently_rejected' && (
 																	<span
-																		className="edit-icon blue-color"
+																		className="edit-icon zyra-blue-color"
 																		onClick={() => {
 																			navigate(
 																				`?page=multivendorx#&tab=stores&edit/${data.id}/&subtab=store`,
@@ -970,7 +970,7 @@ const EditStore = () => {
 										<div className="details-box">
 											<div className="details">
 												<div className="number">
-													<i className="adminfont-single-product blue"></i>{' '}
+													<i className="adminfont-single-product zyra-blue"></i>{' '}
 													{productCount}
 												</div>
 												<div className="desc">
@@ -982,7 +982,7 @@ const EditStore = () => {
 											</div>
 											<div className="details">
 												<div className="number">
-													<i className="adminfont-order pink"></i>{' '}
+													<i className="adminfont-order zyra-pink"></i>{' '}
 													{orderCount}
 												</div>
 												<div className="desc">

@@ -285,7 +285,7 @@ const Verification = () => {
 									className="varification-wrapper"
 								>
 									<div className="left">
-										<i className="adminfont-verification3 yellow"></i>
+										<i className="adminfont-verification3 zyra-yellow"></i>
 										<div className="name">
 											{method.label}
 										</div>
