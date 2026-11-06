@@ -2022,28 +2022,41 @@ class Notifications {
 		$table = $wpdb->prefix . Utill::TABLES['notifications'];
 
 		if ( ! empty( $args ) ) {
-			$filter_by_id     = isset( $args['ID'] ) ? 1 : 0;
-			$notification_ids = array_merge( array( 0 ), array_map( 'intval', (array) ( $args['ID'] ?? 0 ) ) ); // 0 keeps IN () valid for an empty list.
-			$category         = (string) ( $args['category'] ?? '' );
-			$store_id         = intval( $args['store_id'] ?? 0 );
-			$by_dates         = ( isset( $args['start_date'] ) && isset( $args['end_date'] ) ) ? 1 : 0;
-			$start_date       = (string) ( $args['start_date'] ?? '' );
-			$end_date         = (string) ( $args['end_date'] ?? '' );
-			$filter_values    = array( $filter_by_id, isset( $args['category'] ) ? 1 : 0, $category, ...array_fill( 0, 2, $store_id ), $by_dates, $start_date, $end_date );
+			$conditions = array( 'is_dismissed = 0', 'is_read = 0' );
+			$values     = array();
 
-			// Every filter is always present in the literal query; an unused one is a no-op.
+			if ( isset( $args['ID'] ) ) {
+				$ids          = array_map( 'intval', (array) $args['ID'] );
+				$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+				$conditions[] = 'ID IN (' . $placeholders . ')';
+				$values       = array_merge( $values, $ids );
+			}
+
+			if ( isset( $args['category'] ) ) {
+				$conditions[] = 'category = %s';
+				$values[]     = (string) $args['category'];
+			}
+
+			if ( isset( $args['store_id'] ) ) {
+				$conditions[] = 'store_id = %d';
+				$values[]     = intval( $args['store_id'] );
+			}
+
+			if ( isset( $args['start_date'] ) && isset( $args['end_date'] ) ) {
+				$conditions[] = 'created_at BETWEEN %s AND %s';
+				$values[]     = (string) $args['start_date'];
+				$values[]     = (string) $args['end_date'];
+			}
+
+			$where_sql = implode( ' AND ', $conditions );
+
 			if ( isset( $args['count'] ) ) {
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$results = $wpdb->get_var(
 					$wpdb->prepare(
-						'SELECT COUNT(*) FROM %i
-						WHERE ( %d = 0 OR ID IN (' . esc_sql( implode( ',', $notification_ids ) ) . ') )
-						AND ( %d = 0 OR category = %s )
-						AND ( %d = 0 OR store_id = %d )
-						AND ( %d = 0 OR created_at BETWEEN %s AND %s )
-						AND is_dismissed = 0 AND is_read = 0',
+						'SELECT COUNT(*) FROM %i WHERE ' . $where_sql,
 						$table,
-						...$filter_values
+						...$values
 					)
 				);
 				return $results ?? 0;
@@ -2053,18 +2066,12 @@ class Notifications {
 			$limit     = $has_limit ? intval( $args['limit'] ) : PHP_INT_MAX;
 			$offset    = $has_limit ? intval( $args['offset'] ) : 0;
 
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$results = $wpdb->get_results(
 				$wpdb->prepare(
-					'SELECT * FROM %i
-					WHERE ( %d = 0 OR ID IN (' . esc_sql( implode( ',', $notification_ids ) ) . ') )
-					AND ( %d = 0 OR category = %s )
-					AND ( %d = 0 OR store_id = %d )
-					AND ( %d = 0 OR created_at BETWEEN %s AND %s )
-					AND is_dismissed = 0 AND is_read = 0
-					LIMIT %d OFFSET %d',
+					'SELECT * FROM %i WHERE ' . $where_sql . ' LIMIT %d OFFSET %d',
 					$table,
-					...array_merge( $filter_values, array( $limit, $offset ) )
+					...array_merge( $values, array( $limit, $offset ) )
 				),
 				ARRAY_A
 			);

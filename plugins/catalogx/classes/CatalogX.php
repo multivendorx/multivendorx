@@ -179,7 +179,7 @@ final class CatalogX {
         $this->services['shortcode']       = new Shortcode();
         $this->services['session']         = new Core\Session();
         $this->services['quotecart']       = new Core\QuoteCart();
-        $this->services['promotions']      = new Promotions();
+        $this->services['communications']  = new Communications();
         // Load all active modules.
         $this->services['modules']->load_active_modules();
 
