@@ -3,11 +3,14 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import {
+	ClipboardComponent,
 	FormGroupComponent,
 	FormGroupWrapperComponent,
+	NoticeComponent,
 	NoticeManager,
 } from '@zyra/components';
 import { TextInput, ButtonInput } from '@zyra/inputs';
+import { TableCard } from '@zyra/table';
 import { __ } from '@wordpress/i18n';
 
 import { formatDate } from '../../services/commonFunction';
@@ -70,6 +73,15 @@ const MCPConnection = () => {
 			.then((response) => {
 				setGeneratedPassword(response.data.password);
 				loadAppPasswords();
+				NoticeManager.add({
+					title: __('Success', 'multivendorx'),
+					message: __(
+						'MCP connection generated successfully.',
+						'multivendorx'
+					),
+					type: 'success',
+					position: 'float',
+				});
 			})
 			.catch(() => {
 				NoticeManager.add({
@@ -116,23 +128,13 @@ const MCPConnection = () => {
 			});
 	};
 
-	const copyToClipboard = (value: string) => {
-		navigator.clipboard?.writeText(value);
-		NoticeManager.add({
-			title: __('Copied', 'multivendorx'),
-			message: __('Copied to clipboard.', 'multivendorx'),
-			type: 'success',
-			position: 'float',
-		});
-	};
-
 	return (
 		<>
 			<FormGroupWrapperComponent>
 				<FormGroupComponent label={__('Site URL', 'multivendorx')}>
 					<TextInput
 						value={window.location.origin}
-						onChange={() => {}}
+						onChange={() => { }}
 						disabled
 					/>
 				</FormGroupComponent>
@@ -140,112 +142,105 @@ const MCPConnection = () => {
 				<FormGroupComponent label={__('Username', 'multivendorx')}>
 					<TextInput
 						value={getCurrentUsername()}
-						onChange={() => {}}
+						onChange={() => { }}
 						disabled
 					/>
 				</FormGroupComponent>
 
 				{generatedPassword && (
-					<>
-						<FormGroupComponent
-							label={__(
-								'Application Password (copy now — it will not be shown again)',
+					<FormGroupComponent
+						label={__(
+							'Application Password (copy now — it will not be shown again)',
+							'multivendorx'
+						)}
+					>
+						<ClipboardComponent
+							text={generatedPassword}
+							copyButtonLabel={__(
+								'Copy Password',
 								'multivendorx'
 							)}
-						>
-							<TextInput
-								value={generatedPassword}
-								onChange={() => {}}
-								disabled
-							/>
-						</FormGroupComponent>
-
-						<ButtonInput
-							position="right"
-							buttons={[
-								{
-									icon: 'copy',
-									text: __('Copy Password', 'multivendorx'),
-									onClick: () =>
-										copyToClipboard(generatedPassword),
-								},
-							]}
+							copiedLabel={__('Copied!', 'multivendorx')}
 						/>
-					</>
+					</FormGroupComponent>
 				)}
-
-				<ButtonInput
-					position="left"
-					buttons={[
-						{
-							icon: 'plus',
-							text:
-								appPasswords.length > 0
-									? __(
+				<FormGroupComponent>
+					<ButtonInput
+						position="left"
+						buttons={[
+							{
+								icon: 'plus',
+								text:
+									appPasswords.length > 0
+										? __(
 											'Generate New MCP Connection',
 											'multivendorx'
 										)
-									: __(
+										: __(
 											'Generate MCP Connection',
 											'multivendorx'
 										),
-							onClick: createConnection,
-							disabled: loading,
-						},
-					]}
-				/>
-
+								onClick: createConnection,
+								disabled: loading,
+							},
+						]}
+					/>
+				</FormGroupComponent>
+				<FormGroupComponent>
+					{appPasswords.length > 0 && (
+						<NoticeComponent
+							type="info"
+							displayPosition="inline-notice"
+							message={__(
+								'You already have an active connection below. Generating a new one does not revoke the old one — revoke credentials you no longer use.',
+								'multivendorx'
+							)}
+						/>
+					)}
+				</FormGroupComponent>
 				{appPasswords.length > 0 && (
-					<p className="mcp-connection-hint">
-						{__(
-							'You already have an active connection below. Generating a new one does not revoke the old one — revoke credentials you no longer use.',
-							'multivendorx'
-						)}
-					</p>
-				)}
-
-				{appPasswords.length > 0 && (
-					<table className="mcp-connection-list widefat">
-						<thead>
-							<tr>
-								<th>{__('Name', 'multivendorx')}</th>
-								<th>{__('Created', 'multivendorx')}</th>
-								<th>{__('Last used', 'multivendorx')}</th>
-								<th></th>
-							</tr>
-						</thead>
-						<tbody>
-							{appPasswords.map((appPassword: AppPassword) => (
-								<tr key={appPassword.uuid}>
-									<td>{appPassword.name}</td>
-									<td>{formatDate(appPassword.created)}</td>
-									<td>
-										{appPassword.last_used
-											? formatDate(appPassword.last_used)
-											: __('Never', 'multivendorx')}
-									</td>
-									<td>
-										<ButtonInput
-											position="right"
-											buttons={[
-												{
-													icon: 'trash',
-													text: __(
-														'Revoke',
-														'multivendorx'
-													),
-													onClick: () =>
-														revokeConnection(
-															appPassword.uuid
-														),
-												},
-											]}
-										/>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
+					<TableCard
+						showMenu={false}
+						headers={{
+							name: {
+								label: __('Name', 'multivendorx'),
+							},
+							created: {
+								label: __('Created', 'multivendorx'),
+								render: (row: AppPassword) =>
+									formatDate(row.created),
+							},
+							last_used: {
+								label: __('Last used', 'multivendorx'),
+								render: (row: AppPassword) =>
+									row.last_used
+										? formatDate(row.last_used)
+										: __('Never', 'multivendorx'),
+							},
+							actions: {
+								label: '',
+								render: (row: AppPassword) => (
+									<ButtonInput
+										position="right"
+										buttons={[
+											{
+												icon: 'trash',
+												text: __(
+													'Revoke',
+													'multivendorx'
+												),
+												onClick: () =>
+													revokeConnection(row.uuid),
+											},
+										]}
+									/>
+								),
+							},
+						}}
+						hideHeader={false}
+						rows={appPasswords}
+						totalRows={appPasswords.length}
+					/>
 				)}
 			</FormGroupWrapperComponent>
 		</>
