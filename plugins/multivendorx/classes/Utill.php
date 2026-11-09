@@ -694,22 +694,33 @@ class Utill {
      * @return int
      */
     public static function resolve_ability_store_id( $input ) {
-        $store_id = (int) ( $input['store_id'] ?? 0 );
+        $requested_store_id = (int) ( $input['store_id'] ?? 0 );
+        $is_admin           = self::current_user_has_capability( array( 'manage_options' ) );
 
-        // Admin with no store_id means "every store"; only default a vendor to their own.
-        if ( $store_id || self::current_user_has_capability( array( 'manage_options' ) ) ) {
-            return $store_id;
+        // No store_id from an admin means "every store".
+        if ( $requested_store_id || $is_admin ) {
+            return $requested_store_id;
         }
 
+        return self::get_current_users_own_store_id();
+    }
+
+    /**
+     * The current user's own store id: their saved active store, else their first store, else 0.
+     *
+     * @return int
+     */
+    private static function get_current_users_own_store_id() {
         $user_id  = get_current_user_id();
         $store_id = (int) get_user_meta( $user_id, self::USER_SETTINGS_KEYS['active_store'], true );
 
-        if ( ! $store_id ) {
-            $store_ids = Store::get_store( $user_id, 'user' );
-            $store_id  = ! empty( $store_ids ) ? (int) reset( $store_ids )['id'] : 0;
+        if ( $store_id ) {
+            return $store_id;
         }
 
-        return $store_id;
+        $stores = Store::get_store( $user_id, 'user' );
+
+        return ! empty( $stores ) ? (int) reset( $stores )['id'] : 0;
     }
 
     /**
