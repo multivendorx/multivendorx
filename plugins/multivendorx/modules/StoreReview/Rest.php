@@ -194,7 +194,7 @@ class Rest extends \WP_REST_Controller {
             }
 
             // --- Step 5.2: Filter by Overall Rating (like "4 stars & up") ---.
-            if ( isset( $payload['overall_rating'] ) && '' !== $payload['overall_rating'] ) {
+            if ( ! empty( $payload['overall_rating'] ) ) {
                 $rating = floatval( $payload['overall_rating'] );
 
                 // Prevent invalid or below 1 ratings.

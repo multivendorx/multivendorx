@@ -132,28 +132,39 @@ class Rest extends \WP_REST_Controller {
      */
     public function prepare_get_items_response( $payload ) {
         try {
-            $store_id            = $payload['store_id'] ?? null;
-            $limit               = max( intval( $payload['row'] ?? 0 ), 10 );
-            $page                = max( intval( $payload['page'] ?? 0 ), 1 );
-            $offset              = ( $page - 1 ) * $limit;
-            $status              = sanitize_text_field( $payload['status'] ?? '' );
-            $search              = sanitize_text_field( $payload['search_value'] ?? '' );
-            $order_by            = sanitize_text_field( $payload['order_by'] ?? '' );
-            $order               = sanitize_text_field( $payload['order'] ?? '' );
-            $range               = Utill::normalize_date_range( $payload['start_date'] ?? '', $payload['end_date'] ?? '' );
-            $args                = array();
+            $payload = wp_parse_args(
+                $payload,
+                array(
+                    'row'          => 0,
+                    'page'         => 0,
+                    'status'       => '',
+                    'search_value' => '',
+                    'order_by'     => '',
+                    'order'        => '',
+                    'start_date'   => '',
+                    'end_date'     => '',
+                )
+            );
+
+            $limit    = max( intval( $payload['row'] ), 10 );
+            $page     = max( intval( $payload['page'] ), 1 );
+            $offset   = ( $page - 1 ) * $limit;
+            $status   = sanitize_text_field( $payload['status'] );
+            $search   = sanitize_text_field( $payload['search_value'] );
+            $order_by = sanitize_text_field( $payload['order_by'] );
+            $order    = sanitize_text_field( $payload['order'] );
+            $range    = Utill::normalize_date_range( $payload['start_date'], $payload['end_date'] );
+            $args     = array();
 
             // Non-admins only ever see their own store's questions.
-            if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
-                $store_id = $store_id ?: (int) get_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], true );
+            $store_id = Utill::resolve_ability_store_id( $payload );
 
-                if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
-                    return new \WP_Error(
-                        'rest_forbidden',
-                        __( 'You are not allowed to view this store\'s customer questions.', 'multivendorx' ),
-                        array( 'status' => 403 )
-                    );
-                }
+            if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to view this store\'s customer questions.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
             }
 
             if ( $store_id ) {
