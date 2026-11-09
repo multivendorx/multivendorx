@@ -114,13 +114,10 @@ class Transactions extends \WP_REST_Controller {
 			$status             = $payload['status'] ?? null;
 			$transaction_type   = $payload['transaction_type'] ?? null;
 			$transaction_status = $payload['transaction_status'] ?? null;
-			$order_by           = sanitize_text_field( $payload['order_by'] ?? '' ) ? sanitize_text_field( $payload['order_by'] ) : 'created_at';
-			$order              = strtoupper( sanitize_text_field( $payload['order'] ?? '' ) ) ? strtoupper( sanitize_text_field( $payload['order'] ) ) : 'DESC';
+			$order_by           = sanitize_text_field( $payload['order_by'] ?? '' ) ?: 'created_at';
+			$order              = strtoupper( sanitize_text_field( $payload['order'] ?? '' ) ) ?: 'DESC';
 			$search_id          = $payload['search_value'] ?? null;
-			$dates              = Utill::normalize_date_range(
-                $payload['start_date'] ?? null,
-                $payload['end_date'] ?? null
-			);
+			$dates              = Utill::normalize_date_range( $payload['start_date'] ?? '', $payload['end_date'] ?? '' );
 
 			$ids            = $payload['ids'] ?? null;
 			$sec_fetch_site = $request instanceof \WP_REST_Request ? $request->get_header( 'sec_fetch_site' ) : null;

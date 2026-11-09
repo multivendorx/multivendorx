@@ -644,14 +644,7 @@ class Stores extends \WP_REST_Controller {
     public function prepare_get_item_response( $payload, $request = null ) {
 
         try {
-            $id            = absint( $payload['id'] ?? 0 );
-            $action        = $payload['action'] ?? null;
-            $store_flag    = $payload['store'] ?? null;
-            $fetch_user    = $payload['fetch_user'] ?? null;
-            $dashboard     = $payload['dashboard'] ?? null;
-            $registrations = (bool) ( $payload['registrations'] ?? false );
-            $start_date    = $payload['start_date'] ?? null;
-            $end_date      = $payload['end_date'] ?? null;
+            $id = absint( $payload['id'] ?? 0 );
 
             if ( $id && ! StoreUtil::current_user_can_manage_store( $id ) ) {
                 return new \WP_Error(
@@ -661,7 +654,7 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
-            if ( $id && 'switch' === $action ) {
+            if ( $id && isset( $payload['action'] ) && 'switch' === $payload['action'] ) {
                 update_user_meta(
                     get_current_user_id(),
                     Utill::USER_SETTINGS_KEYS['active_store'],
@@ -679,7 +672,7 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
-            if ( $store_flag ) {
+            if ( ! empty( $payload['store'] ) ) {
                 return $this->get_store_products_and_category( $request );
             }
 
@@ -691,7 +684,7 @@ class Stores extends \WP_REST_Controller {
                 'user_email'   => $owner ? $owner->user_email : '',
             );
 
-            if ( $fetch_user ) {
+            if ( ! empty( $payload['fetch_user'] ) ) {
                 $users = StoreUtil::get_store_users( $id );
 
                 return rest_ensure_response(
@@ -709,7 +702,7 @@ class Stores extends \WP_REST_Controller {
                 return;
             }
 
-            if ( $registrations ) {
+            if ( ! empty( $payload['registrations'] ) ) {
                 return rest_ensure_response(
                     array(
 						'registration' => StoreUtil::get_store_registration_form( $store->get_id() ),
@@ -719,13 +712,13 @@ class Stores extends \WP_REST_Controller {
             }
             $args = array();
 
-            if ( $start_date && $end_date ) {
-                $args['start_date'] = $start_date;
-                $args['end_date']   = $end_date;
+            if ( ! empty( $payload['start_date'] ) && ! empty( $payload['end_date'] ) ) {
+                $args['start_date'] = $payload['start_date'];
+                $args['end_date']   = $payload['end_date'];
             }
             $commission = CommissionUtil::get_commission_summary_for_store( $id, false, false, 3, $args );
 
-            if ( $dashboard ) {
+            if ( ! empty( $payload['dashboard'] ) ) {
                 $transient_key = Utill::MULTIVENDORX_TRANSIENT_KEYS['dashboard_transient'];
 
                 $date_range_label = $args['start_date'] . '_' . $args['end_date'];

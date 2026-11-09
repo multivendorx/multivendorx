@@ -90,7 +90,7 @@ class Abilities {
      * @return array
      */
     public function multivendorx_only_show_my_store_items( $args ) {
-        $store_id = $this->get_current_stores_id_if_restriction_applies();
+        $store_id = Utill::resolve_ability_store_id( array() );
         if ( ! $store_id ) {
             return $args;
         }
@@ -103,18 +103,5 @@ class Abilities {
         );
 
         return $args;
-    }
-
-    /**
-     * The calling store owner's store id, or 0 if no restriction applies.
-     *
-     * @return int
-     */
-    private function get_current_stores_id_if_restriction_applies() {
-        if ( Utill::current_user_has_capability( array( 'manage_woocommerce' ) ) ) {
-            return 0;
-        }
-
-        return Utill::resolve_ability_store_id( array() );
     }
 }

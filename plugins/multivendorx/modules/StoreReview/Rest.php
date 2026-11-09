@@ -148,6 +148,7 @@ class Rest extends \WP_REST_Controller {
     public function prepare_get_items_response( $payload, $request = null ) {
         try {
             $store_id = $payload['store_id'] ?? null;
+
             if ( ! empty( $payload['overview'] ) ) {
                 return rest_ensure_response( $this->calculate_store_rating_summary( intval( $store_id ) ) );
             }
@@ -169,10 +170,7 @@ class Rest extends \WP_REST_Controller {
                 $status = 'approved';
             }
 
-            $range = Utill::normalize_date_range(
-                $payload['start_date'] ?? null,
-                $payload['end_date'] ?? null
-            );
+            $range = Utill::normalize_date_range( $payload['start_date'] ?? '', $payload['end_date'] ?? '' );
             $args  = array();
 
             // --- Step 3: Apply Store Filter ---.

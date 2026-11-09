@@ -141,10 +141,7 @@ class Rest extends \WP_REST_Controller {
             $order_by            = sanitize_text_field( $payload['order_by'] ?? '' );
             $order               = sanitize_text_field( $payload['order'] ?? '' );
             $question_visibility = sanitize_text_field( $payload['question_visibility'] ?? '' );
-            $range               = Utill::normalize_date_range(
-                $payload['start_date'] ?? null,
-                $payload['end_date'] ?? null
-            );
+            $range               = Utill::normalize_date_range( $payload['start_date'] ?? '', $payload['end_date'] ?? '' );
             $args                = array();
 
             // Non-admins only ever see their own store's questions.
