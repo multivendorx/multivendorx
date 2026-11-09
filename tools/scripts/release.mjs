@@ -42,6 +42,7 @@ const includeFiles = [
 	'vendor',
 	'readme.txt',
 	'config.php',
+	'wpml-config.xml',
 	'composer.json',
 	'composer.lock',
 	mainPluginFile

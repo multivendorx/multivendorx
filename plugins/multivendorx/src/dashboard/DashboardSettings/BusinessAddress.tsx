@@ -340,7 +340,6 @@ const BusinessAddress = () => {
 					htmlFor="zip"
 				>
 					<TextInput
-						type="number"
 						value={addressData.zip}
 						onChange={(value: string) =>
 							handleAddressChange('zip', value)
