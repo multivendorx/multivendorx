@@ -158,7 +158,6 @@ class Rest extends \WP_REST_Controller {
             $status         = sanitize_text_field( $payload['status'] ?? '' );
             $order_by       = sanitize_text_field( $payload['order_by'] ?? '' );
             $order          = sanitize_text_field( $payload['order'] ?? '' );
-            $overall_rating = $payload['overall_rating'] ?? null;
             $sec_fetch_site = $request instanceof \WP_REST_Request ? $request->get_header( 'sec_fetch_site' ) : null;
             $referer        = $request instanceof \WP_REST_Request ? $request->get_header( 'referer' ) : null;
 
@@ -195,8 +194,8 @@ class Rest extends \WP_REST_Controller {
             }
 
             // --- Step 5.2: Filter by Overall Rating (like "4 stars & up") ---.
-            if ( null !== $overall_rating && '' !== $overall_rating ) {
-                $rating = floatval( $overall_rating );
+            if ( isset( $payload['overall_rating'] ) && '' !== $payload['overall_rating'] ) {
+                $rating = floatval( $payload['overall_rating'] );
 
                 // Prevent invalid or below 1 ratings.
                 if ( $rating < 1 ) {
@@ -308,7 +307,7 @@ class Rest extends \WP_REST_Controller {
                 return $response;
             }
 
-            if ( ! StoreUtil::current_user_can_manage_store( $review['store_id'] ?? 0 ) ) {
+            if ( ! StoreUtil::current_user_can_manage_store( $review['store_id'] ) ) {
                 return new \WP_Error(
                     'rest_forbidden',
                     __( 'You are not allowed to view this review.', 'multivendorx' ),
@@ -456,7 +455,7 @@ class Rest extends \WP_REST_Controller {
                 );
             }
 
-            if ( ! StoreUtil::current_user_can_manage_store( $review['store_id'] ?? 0 ) ) {
+            if ( ! StoreUtil::current_user_can_manage_store( $review['store_id'] ) ) {
                 return new \WP_Error(
                     'rest_forbidden',
                     __( 'You are not allowed to manage this review.', 'multivendorx' ),
