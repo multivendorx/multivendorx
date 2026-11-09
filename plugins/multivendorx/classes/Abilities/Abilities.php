@@ -38,8 +38,8 @@ class Abilities {
 
         add_action( 'wp_abilities_api_categories_init', array( $this, 'register_categories' ) );
         add_action( 'wp_abilities_api_init', array( $this, 'register_abilities' ) );
-        add_filter( 'woocommerce_product_data_store_cpt_get_products_query', array( $this, 'multivendorx_show_current_store_items_only' ), 20 );
-        add_filter( 'woocommerce_orders_table_datastore_get_orders_query', array( $this, 'multivendorx_show_current_store_items_only' ), 20 );
+        add_filter( 'woocommerce_product_data_store_cpt_get_products_query', array( $this, 'multivendorx_get_current_store_items' ), 20 );
+        add_filter( 'woocommerce_orders_table_datastore_get_orders_query', array( $this, 'multivendorx_get_current_store_items' ), 20 );
     }
 
     /**
@@ -89,7 +89,7 @@ class Abilities {
      * @param array $args Query args.
      * @return array
      */
-    public function multivendorx_show_current_store_items_only( $args ) {
+    public function multivendorx_get_current_store_items( $args ) {
         $store_id = Utill::resolve_ability_store_id( array() );
         if ( ! $store_id ) {
             return $args;
