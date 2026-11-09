@@ -644,7 +644,7 @@ class Stores extends \WP_REST_Controller {
     public function prepare_get_item_response( $payload, $request = null ) {
 
         try {
-            $id = absint( $payload['id'] ?? 0 );
+            $id = absint( $payload['id'] );
 
             if ( $id && ! StoreUtil::current_user_can_manage_store( $id ) ) {
                 return new \WP_Error(
@@ -848,10 +848,7 @@ class Stores extends \WP_REST_Controller {
      */
     public function prepare_update_item_response( $payload, $request = null ) {
         try {
-            $ids    = $payload['ids'] ?? null;
-            $status = $payload['bulk_status'] ?? null;
-
-            if ( ! empty( $ids ) && ! empty( $status ) ) {
+            if ( ! empty( $payload['ids'] ) && ! empty( $payload['bulk_status'] ) ) {
                 if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
                     return new \WP_Error(
                         'rest_forbidden',
@@ -860,12 +857,12 @@ class Stores extends \WP_REST_Controller {
                     );
                 }
 
-                foreach ( (array) $ids as $store_id ) {
+                foreach ( (array) $payload['ids'] as $store_id ) {
                     $store = new Store( absint( $store_id ) );
                     if ( ! $store->exists() ) {
                         continue;
                     }
-                    $store->set( Utill::STORE_SETTINGS_KEYS['status'], $status );
+                    $store->set( Utill::STORE_SETTINGS_KEYS['status'], $payload['bulk_status'] );
                     $store->save();
                 }
 
@@ -915,9 +912,7 @@ class Stores extends \WP_REST_Controller {
 
             // Deactivation handling.
             if ( ! empty( $data['deactivate'] ) ) {
-                $action = $data['action'] ?? '';
-
-                if ( 'approve' === $action ) {
+                if ( isset( $data['action'] ) && 'approve' === $data['action'] ) {
                     $store->set( Utill::STORE_SETTINGS_KEYS['status'], 'deactivated' );
                     $store->delete_meta( Utill::STORE_SETTINGS_KEYS['deactivation_reason'] );
                     $store->delete_meta( Utill::STORE_SETTINGS_KEYS['deactivation_request_date'] );
@@ -933,7 +928,7 @@ class Stores extends \WP_REST_Controller {
                     );
                 }
 
-                if ( 'reject' === $action ) {
+                if ( isset( $data['action'] ) && 'reject' === $data['action'] ) {
                     $store->delete_meta( Utill::STORE_SETTINGS_KEYS['deactivation_reason'] );
                     $store->delete_meta( Utill::STORE_SETTINGS_KEYS['deactivation_request_date'] );
                     MultiVendorX()->notifications->send_notification_helper(
@@ -954,9 +949,7 @@ class Stores extends \WP_REST_Controller {
 
             // Delete store handling.
             if ( ! empty( $data['delete'] ) ) {
-                $delete_option = $data['deleteOption'] ?? '';
-
-                switch ( $delete_option ) {
+                switch ( $data['deleteOption'] ?? '' ) {
                     case 'direct':
                     case 'permanent_delete':
                         return rest_ensure_response(

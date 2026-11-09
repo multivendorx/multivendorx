@@ -111,15 +111,11 @@ class Transactions extends \WP_REST_Controller {
 			$page               = max( 1, (int) ( $payload['page'] ?? 0 ) ?: 1 );
 			$offset             = ( $page - 1 ) * $limit;
 			$store_id           = (int) ( $payload['store_id'] ?? 0 );
-			$status             = $payload['status'] ?? null;
-			$transaction_type   = $payload['transaction_type'] ?? null;
-			$transaction_status = $payload['transaction_status'] ?? null;
 			$order_by           = sanitize_text_field( $payload['order_by'] ?? '' ) ?: 'created_at';
 			$order              = strtoupper( sanitize_text_field( $payload['order'] ?? '' ) ) ?: 'DESC';
 			$search_id          = $payload['search_value'] ?? null;
 			$dates              = Utill::normalize_date_range( $payload['start_date'] ?? '', $payload['end_date'] ?? '' );
 
-			$ids            = $payload['ids'] ?? null;
 			$sec_fetch_site = $request instanceof \WP_REST_Request ? $request->get_header( 'sec_fetch_site' ) : null;
 			$referer        = $request instanceof \WP_REST_Request ? $request->get_header( 'referer' ) : null;
 
@@ -134,19 +130,19 @@ class Transactions extends \WP_REST_Controller {
 			$args = array_filter(
 				array(
 					'store_id'         => $store_id ? $store_id : null,
-					'status'           => $status ? $status : null,
+					'status'           => empty( $payload['status'] ) ? null : $payload['status'],
 					'start_date'       => $dates['start_date'] ? $dates['start_date'] : null,
 					'end_date'         => $dates['end_date'] ? $dates['end_date'] : null,
-					'transaction_type' => $transaction_type ? $transaction_type : null,
+					'transaction_type' => empty( $payload['transaction_type'] ) ? null : $payload['transaction_type'],
 					'limit'            => $limit,
 					'offset'           => $offset,
-					'order_by'         => $order_by ? $order_by : null,
+					'order_by'         => $order_by,
 					'order'            => in_array( $order, array( 'ASC', 'DESC' ), true ) ? $order : null,
                 )
 			);
 
-			if ( $transaction_status ) {
-				$args['entry_type'] = $transaction_status;
+			if ( ! empty( $payload['transaction_status'] ) ) {
+				$args['entry_type'] = $payload['transaction_status'];
 			}
 
 			if ( 'same-origin' === $sec_fetch_site && preg_match( '#/dashboard/?$#', $referer ) && get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['withdrawal_transient'] . $store_id ) ) {
@@ -159,8 +155,8 @@ class Transactions extends \WP_REST_Controller {
 				unset( $args['start_date'], $args['end_date'] );
 			}
 
-			if ( $ids ) {
-				$args['id'] = $ids;
+			if ( ! empty( $payload['ids'] ) ) {
+				$args['id'] = $payload['ids'];
 			}
 			$transactions = Transaction::get_transaction_information( $args );
 

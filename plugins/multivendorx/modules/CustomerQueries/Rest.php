@@ -140,7 +140,6 @@ class Rest extends \WP_REST_Controller {
             $search              = sanitize_text_field( $payload['search_value'] ?? '' );
             $order_by            = sanitize_text_field( $payload['order_by'] ?? '' );
             $order               = sanitize_text_field( $payload['order'] ?? '' );
-            $question_visibility = sanitize_text_field( $payload['question_visibility'] ?? '' );
             $range               = Utill::normalize_date_range( $payload['start_date'] ?? '', $payload['end_date'] ?? '' );
             $args                = array();
 
@@ -213,8 +212,8 @@ class Rest extends \WP_REST_Controller {
                 $args['order_by'] = 'question_date';
                 $args['order']    = 'DESC';
             }
-            if ( ! empty( $question_visibility ) ) {
-                $args['question_visibility'] = $question_visibility;
+            if ( ! empty( $payload['question_visibility'] ) ) {
+                $args['question_visibility'] = sanitize_text_field( $payload['question_visibility'] );
             }
             // --- Step 7: Fetch Question Data ---
             $questions = Util::query_questions( $args );
