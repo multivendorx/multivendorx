@@ -248,7 +248,7 @@ const Withdrawals: React.FC = () => {
 					<CardComponent>
 						<div className="payout-card-wrapper">
 							<div className="price-wrapper">
-								<div className="admin-badge green">
+								<div className="admin-badge zyra-green">
 									{__('Ready to withdraw', 'multivendorx')}
 								</div>
 								<div className="price">

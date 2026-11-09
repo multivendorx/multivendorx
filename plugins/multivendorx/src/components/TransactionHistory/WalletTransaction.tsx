@@ -511,7 +511,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 										tags: (
 											<>
 												{hasPaymentMethod && (
-													<div className="admin-badge green">
+													<div className="admin-badge zyra-green">
 														{__(
 															'Completed',
 															'multivendorx'
@@ -547,7 +547,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					<CardComponent>
 						<div className="payout-card-wrapper">
 							<div className="price-wrapper">
-								<div className="admin-badge green">
+								<div className="admin-badge zyra-green">
 									{__('Ready to withdraw', 'multivendorx')}
 								</div>
 								<div className="price">

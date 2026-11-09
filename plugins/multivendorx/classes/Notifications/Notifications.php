@@ -170,7 +170,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>No action is required at this moment. We will notify you once the review process is completed.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>No action is required at this moment. We will notify you once the review process is completed.</div>",
 					'sms_content'            => 'Store [store_name] is pending approval.',
 					'available_placeholders' => array(
 						'[store_name]',
@@ -209,7 +209,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Once you've made the necessary updates, you can submit your application again for review.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Once you've made the necessary updates, you can submit your application again for review.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -248,7 +248,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you believe this decision requires clarification, you may contact the marketplace administrator for more details.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you believe this decision requires clarification, you may contact the marketplace administrator for more details.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -287,7 +287,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>No further action is required to activate your account. You can begin managing your store immediately.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>No further action is required to activate your account. You can begin managing your store immediately.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -327,7 +327,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>No further action is required to activate your account. You can begin managing your store immediately.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>No further action is required to activate your account. You can begin managing your store immediately.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -366,7 +366,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>No action is required from your side at this moment. We will notify you as soon as your store status is updated.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>No action is required from your side at this moment. We will notify you as soon as your store status is updated.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -404,7 +404,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you believe this action was taken in error or wish to resolve the issue, please contact the marketplace support team for further assistance.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you believe this action was taken in error or wish to resolve the issue, please contact the marketplace support team for further assistance.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -443,7 +443,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you need clarification regarding this decision, you may contact the marketplace support team for assistance.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you need clarification regarding this decision, you may contact the marketplace support team for assistance.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -482,7 +482,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>No action is required from your side at this moment. We will update you once your request has been processed.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>No action is required from your side at this moment. We will update you once your request has been processed.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -521,7 +521,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you need further assistance, please contact the marketplace support team for more details or guidance.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you need further assistance, please contact the marketplace support team for more details or guidance.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 					),
@@ -560,7 +560,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Prompt action is recommended to ensure timely delivery and a smooth customer experience.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Prompt action is recommended to ensure timely delivery and a smooth customer experience.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[order_id]',
@@ -633,7 +633,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Thank you for shopping with us. We look forward to serving you again.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Thank you for shopping with us. We look forward to serving you again.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[order_id]',
@@ -672,7 +672,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you have any questions, please contact our support team for assistance.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you have any questions, please contact our support team for assistance.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[order_id]',
@@ -710,7 +710,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you do not see the refund after the expected time, please contact our support team for assistance.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you do not see the refund after the expected time, please contact our support team for assistance.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[order_id]',
@@ -750,7 +750,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>You can use the tracking link above to check real-time delivery updates. We'll also keep you informed about major status changes.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>You can use the tracking link above to check real-time delivery updates. We'll also keep you informed about major status changes.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[order_id]',
@@ -794,7 +794,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Thank you for shopping with us. We hope to see you again soon.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Thank you for shopping with us. We hope to see you again soon.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[order_id]',
@@ -835,7 +835,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Once you've addressed the relevant requirements, you're welcome to resubmit your application through the Play Console.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Once you've addressed the relevant requirements, you're welcome to resubmit your application through the Play Console.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[order_id]',
@@ -865,7 +865,7 @@ class Notifications {
 					<h1 style='font-size:20px;padding-bottom:16px'>Hello,</h1>
 					<div style='font-size:16px;line-height:1.25;padding-top:20px'>Good news! Your refund request for order #[order_id] from [store_name] on [marketplace_name] has been approved.</div>
 					<div style='line-height:1.25;font-size:15px;padding-top:24px;font-weight:500'>The refund process has now been initiated as per the marketplace refund policy.</div>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you have any questions, please contact our support team for further assistance.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you have any questions, please contact our support team for further assistance.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[order_id]',
@@ -895,7 +895,7 @@ class Notifications {
 					<h1 style='font-size:20px;padding-bottom:16px'>Hello,</h1>
 					<div style='font-size:16px;line-height:1.25;padding-top:20px'>We would like to inform you that your refund request for order #[order_id] from [store_name] on [marketplace_name] has been reviewed and was not approved as per our refund policy.</div>
 					<div style='line-height:1.25;font-size:15px;padding-top:24px;font-weight:500'>To help you understand next steps, please review the key areas below before reapplying</div>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you need more clarification, please contact our support team for assistance.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you need more clarification, please contact our support team for assistance.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[order_id]',
@@ -926,7 +926,7 @@ class Notifications {
 					<h1 style='font-size:20px;padding-bottom:16px'>Hello,</h1>
 					<div style='font-size:16px;line-height:1.25;padding-top:20px'>You have received a new review for your store [store_name] on [marketplace_name].</div>
 					<div style='line-height:1.25;font-size:15px;padding-top:24px;font-weight:500'>Customer feedback helps improve your store reputation and build trust with future buyers.</div>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Keep up the great work and continue delivering a great shopping experience.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Keep up the great work and continue delivering a great shopping experience.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -955,7 +955,7 @@ class Notifications {
 					<h1 style='font-size:20px;padding-bottom:16px'>Hello,</h1>
 					<div style='font-size:16px;line-height:1.25;padding-top:20px'>The admin has responded to your review for store [store_name] on [marketplace_name].</div>
 					<div style='line-height:1.25;font-size:15px;padding-top:24px;font-weight:500'>You can view the full reply and any additional details in your account.</div>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Thank you for sharing your feedback. It helps improve the marketplace experience for everyone.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Thank you for sharing your feedback. It helps improve the marketplace experience for everyone.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[product_name]',
@@ -986,7 +986,7 @@ class Notifications {
 					<h1 style='font-size:20px;padding-bottom:16px'>Hello,</h1>
 					<div style='font-size:16px;line-height:1.25;padding-top:20px'>A new product has been submitted by store [store_name] on [marketplace_name] and is currently awaiting your approval.</div>
 					<div style='line-height:1.25;font-size:15px;padding-top:24px;font-weight:500'>The product will be visible to customers only after it is approved.</div>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Please review the submission and approve or reject it based on marketplace guidelines.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Please review the submission and approve or reject it based on marketplace guidelines.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[product_name]',
@@ -1016,7 +1016,7 @@ class Notifications {
 					<h1 style='font-size:20px;padding-bottom:16px'>Hello,</h1>
 					<div style='font-size:16px;line-height:1.25;padding-top:20px'>Good news! Your product [product_name] submitted for [store_name] on [marketplace_name] has been reviewed and approved by the admin.</div>
 					<div style='line-height:1.25;font-size:15px;padding-top:24px;font-weight:500'>The product is now visible to customers and available for purchase on the marketplace.</div>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Your product is now live. Continue adding great products to grow your store.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Your product is now live. Continue adding great products to grow your store.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[product_name]',
@@ -1045,7 +1045,7 @@ class Notifications {
 					</table>
 					<h1 style='font-size:20px;padding-bottom:16px'>Hello,</h1>
 					<div style='font-size:16px;line-height:1.25;padding-top:20px'>We would like to inform you that your product [product_name] submitted from store [store_name] on [marketplace_name] has been reviewed and was not approved by the admin.</div>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>You may review the product details, make the necessary updates, and submit it again for approval.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>You may review the product details, make the necessary updates, and submit it again for approval.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[product_name]',
@@ -1076,7 +1076,7 @@ class Notifications {
 					<h1 style='font-size:20px;padding-bottom:16px'>Hello,</h1>
 					<div style='font-size:16px;line-height:1.25;padding-top:20px'>This is a quick reminder that the stock for your product [product_name] in store [store_name] on [marketplace_name] is running low.</div>
 					<div style='line-height:1.25;font-size:15px;padding-top:24px;font-weight:500'>To avoid missing potential sales, we recommend updating your inventory soon.</div>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Keeping your inventory updated helps ensure a smooth shopping experience for your customers.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Keeping your inventory updated helps ensure a smooth shopping experience for your customers.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[product_name]',
@@ -1107,7 +1107,7 @@ class Notifications {
 					<h1 style='font-size:20px;padding-bottom:16px'>Hello,</h1>
 					<div style='font-size:16px;line-height:1.25;padding-top:20px'>The product [product_name] from your store [store_name] on [marketplace_name] is now out of stock.</div>
 					<div style='line-height:1.25;font-size:15px;padding-top:24px;font-weight:500'>Customers will not be able to purchase this product until the inventory is updated.</div>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Update the product inventory from your store dashboard to make it available for customers again.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Update the product inventory from your store dashboard to make it available for customers again.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[product_name]',
@@ -1138,7 +1138,7 @@ class Notifications {
 					<h1 style='font-size:20px;padding-bottom:16px'>Hello,</h1>
 					<div style='font-size:16px;line-height:1.25;padding-top:20px'>A customer has submitted a question for the product [product_name] from your store [store_name] on [marketplace_name].</div>
 					<div style='line-height:1.25;font-size:15px;padding-top:24px;font-weight:500'>Responding promptly can help customers make informed purchase decisions</div>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Providing clear and timely answers helps build trust and improve the shopping experience.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Providing clear and timely answers helps build trust and improve the shopping experience.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[product_name]',
@@ -1168,7 +1168,7 @@ class Notifications {
 					<h1 style='font-size:20px;padding-bottom:16px'>Hello,</h1>
 					<div style='font-size:16px;line-height:1.25;padding-top:20px'>The store [store_name] has replied to your question about the product [product_name] on [marketplace_name].</div>
 					<div style='line-height:1.25;font-size:15px;padding-top:24px;font-weight:500'>You can now view the response and continue the conversation if needed.</div>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Thank you for engaging with the store. We hope the response helps you make an informed purchase decision.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Thank you for engaging with the store. We hope the response helps you make an informed purchase decision.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[product_name]',
@@ -1197,7 +1197,7 @@ class Notifications {
 					<h1 style='font-size:20px;padding-bottom:16px'>Hello,</h1>
 					<div style='font-size:16px;line-height:1.25;padding-top:20px'>Good news! A payout for your earnings from [store_name] on [marketplace_name] has been successfully processed.</div>
 					<div style='line-height:1.25;font-size:15px;padding-top:24px;font-weight:500'>The amount has been transferred to your registered payout account.</div>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>You can check your earnings and payout history anytime from your dashboard.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>You can check your earnings and payout history anytime from your dashboard.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -1234,7 +1234,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Once the payout details are updated, the payout can be processed again.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Once the payout details are updated, the payout can be processed again.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -1271,7 +1271,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>No action is required from your side at this moment. We will notify you once there is an update on your request.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>No action is required from your side at this moment. We will notify you once there is an update on your request.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -1298,7 +1298,7 @@ class Notifications {
 					<h1 style='font-size:20px;padding-bottom:16px'>Hello,</h1>
 					<div style='font-size:16px;line-height:1.25;padding-top:20px'>Your withdrawal request for earnings from your store [store_name] on [marketplace_name] has been approved and the payout has been released.</div>
 					<div style='line-height:1.25;font-size:15px;padding-top:24px;font-weight:500'>The amount has been transferred to your registered payout account.</div>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>You can review your earnings and withdrawal history anytime from your dashboard.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>You can review your earnings and withdrawal history anytime from your dashboard.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -1323,7 +1323,7 @@ class Notifications {
 					</table>
 					<h1 style='font-size:20px;padding-bottom:16px'>Hello,</h1>
 					<div style='font-size:16px;line-height:1.25;padding-top:20px'>We would like to inform you that your withdrawal request for earnings from your store [store_name] on [marketplace_name] has been reviewed and was not approved by the admin.</div>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Please review your payout details and requirements in the dashboard before submitting a new withdrawal request.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Please review your payout details and requirements in the dashboard before submitting a new withdrawal request.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -1363,7 +1363,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Please review the report and take the necessary action according to marketplace guidelines.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Please review the report and take the necessary action according to marketplace guidelines.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[product_name]',
@@ -1402,7 +1402,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you have any questions or need further clarification, please feel free to contact our support team.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you have any questions or need further clarification, please feel free to contact our support team.</div>",
 					'available_placeholders' => array(
 						'[announcement_message]',
 						'[marketplace_name]',
@@ -1442,7 +1442,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Keep your store updated with products and offers to engage your followers.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Keep your store updated with products and offers to engage your followers.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -1481,7 +1481,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Visit the store now to check out this new product and stay updated with the latest arrivals.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Visit the store now to check out this new product and stay updated with the latest arrivals.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -1522,7 +1522,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Don't miss out on this limited-time offer. Visit the store and start saving today!</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Don't miss out on this limited-time offer. Visit the store and start saving today!</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -1564,7 +1564,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>We appreciate your understanding and encourage you to check back once the store is active again.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>We appreciate your understanding and encourage you to check back once the store is active again.</div>",
 					'available_placeholders' => array(
 						'[store_name]',
 						'[marketplace_name]',
@@ -1604,7 +1604,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Your wholesale access is now active. Start exploring and make the most of your wholesale benefits.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Your wholesale access is now active. Start exploring and make the most of your wholesale benefits.</div>",
 					'available_placeholders' => array(
 						'[customer_name]',
 						'[marketplace_name]',
@@ -1623,7 +1623,7 @@ class Notifications {
 					'system_enabled'         => true,
 					'email_subject'          => 'Wholesale access request not approved',
 					'email_body'             => "<table width='100%' cellpadding='0' cellspacing='0' style='padding-top:16px;padding-bottom:16px;padding-right:16px;padding-left:16px;background-color:#f2cfcf;margin-bottom:48px;border-radius:5px'>
-						<td>
+						<tr>
 							<td valign='top' style='padding:10px;'>
 								<h1 style='color:#e92525;background-color:#f2cfcf;font-size:21px'>Wholesale buyer rejected</h1>
 								<div style='color:#e92525;font-size:15px'>Your wholesale account request was not approved</div>
@@ -1643,7 +1643,7 @@ class Notifications {
 							</td>
 						</tr>
 					</table>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you have any questions or wish to reapply, please contact the marketplace support team for further guidance.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>If you have any questions or wish to reapply, please contact the marketplace support team for further guidance.</div>",
 					'available_placeholders' => array(
 						'[marketplace_name]',
 					),
@@ -1674,7 +1674,7 @@ class Notifications {
 						<div style='font-size:15px;font-weight:500;margin-bottom:8px'>Store reply:</div>
 						<div style='font-size:15px;line-height:1.5'>[reply]</div>
 					</div>
-					<div style='color:#2d3748;font-size:16px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Thank you for contacting the store.</div>",
+					<div style='color:#2d3748;font-size:16px;padding-top:24px;margin-top:64px;line-height:1.125;margin-bottom:48px'>Thank you for contacting the store.</div>",
 					'available_placeholders' => array(
 						'[name]',
 						'[subject]',

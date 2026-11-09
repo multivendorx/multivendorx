@@ -903,7 +903,7 @@ const Dashboard: React.FC = () => {
 										desc: truncateText(item.content, 20),
 										icon: `announcement admin-badge admin-color${index + 2}`,
 										tags: (
-											<span className="admin-badge blue">
+											<span className="admin-badge zyra-blue">
 												{formatTimeAgo(item.date_created)}
 											</span>
 										),

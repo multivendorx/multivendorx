@@ -543,19 +543,19 @@ const EditStore = () => {
 
 									<div className="tag-wrapper">
 										{data.status === 'active' ? (
-											<span className="status admin-badge green">
+											<span className="status admin-badge zyra-green">
 												{__('Active', 'multivendorx')}
 											</span>
 										) : data.status === 'pending' ? (
-											<span className="status admin-badge yellow">
+											<span className="status admin-badge zyra-yellow">
 												{__('Pending', 'multivendorx')}
 											</span>
 										) : data.status === 'rejected' ? (
-											<span className="status admin-badge red">
+											<span className="status admin-badge zyra-red">
 												{__('Rejected', 'multivendorx')}
 											</span>
 										) : data.status === 'suspended' ? (
-											<span className="status admin-badge blue">
+											<span className="status admin-badge zyra-blue">
 												{__(
 													'Suspended',
 													'multivendorx'
@@ -563,21 +563,21 @@ const EditStore = () => {
 											</span>
 										) : data.status ===
 											'permanently_rejected' ? (
-											<span className="status admin-badge red">
+											<span className="status admin-badge zyra-red">
 												{__(
 													'Permanently Rejected',
 													'multivendorx'
 												)}
 											</span>
 										) : data.status === 'under_review' ? (
-											<span className="status admin-badge yellow">
+											<span className="status admin-badge zyra-yellow">
 												{__(
 													'Under Review',
 													'multivendorx'
 												)}
 											</span>
 										) : data.status === 'deactivated' ? (
-											<span className="status admin-badge red">
+											<span className="status admin-badge zyra-red">
 												{__(
 													'Permanently Deactivated',
 													'multivendorx'
@@ -591,28 +591,28 @@ const EditStore = () => {
 											'marketplace-compliance'
 										) && (
 											<>
-												<div className="admin-badge green">
+												<div className="admin-badge zyra-green">
 													<i className="adminfont-store-inventory"></i>
 													{__(
 														'Gold Plan',
 														'multivendorx'
 													)}
 												</div>
-												<div className="admin-badge blue">
+												<div className="admin-badge zyra-blue">
 													<i className="adminfont-geo-my-wp"></i>
 													{__(
 														'On Vacation',
 														'multivendorx'
 													)}
 												</div>
-												<div className="admin-badge yellow">
+												<div className="admin-badge zyra-yellow">
 													<i className="adminfont-staff-manager"></i>
 													{__(
 														'Closed',
 														'multivendorx'
 													)}
 												</div>
-												<div className="admin-badge yellow">
+												<div className="admin-badge zyra-yellow">
 													<i className="adminfont-staff-manager"></i>
 													{__(
 														'Complained',

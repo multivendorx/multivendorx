@@ -89,6 +89,7 @@ class VuloMailTemplates {
 				'icon'             => 'mail',
 				'group'            => $this->group_label( (string) ( $event['tag'] ?? '' ) ),
 				'recipients'       => $this->recipients( $event ),
+				'merge_tags'       => (array) ( $event['available_placeholders'] ?? array() ),
 				'subject'          => (string) ( $event['email_subject'] ?? '' ),
 				'content'          => (string) ( $event['email_body'] ?? '' ),
 				'load_callback'    => array( $this, 'load_event' ),

@@ -427,7 +427,7 @@ const SetupWizard: React.FC = () => {
 								message: sprintf(
 									/* translators: %s: Active multivendor plugin name. */
 									__(
-										'We found an active multivendor plugin on your site <span class="admin-badge purple">%s</span>',
+										'We found an active multivendor plugin on your site <span class="admin-badge zyra-purple">%s</span>',
 										'multivendorx'
 									),
 									appLocalizer.multivendor_plugin

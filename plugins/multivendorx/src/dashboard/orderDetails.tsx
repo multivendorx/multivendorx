@@ -1020,7 +1020,7 @@ const OrderDetails: React.FC = () => {
 													)
 													.map((item) => (
 														<div
-															className="admin-badge blue"
+															className="admin-badge zyra-blue"
 															key={item.id}
 														>
 															{item.name} x {item.quantity} ({formatCurrency(item.total)})
@@ -1420,7 +1420,7 @@ const OrderDetails: React.FC = () => {
 														'multivendorx'
 													)}
 												>
-													<div className="admin-badge blue">
+													<div className="admin-badge zyra-blue">
 														{orderData?.payment_method_title ||
 															__(
 																'Not specified',

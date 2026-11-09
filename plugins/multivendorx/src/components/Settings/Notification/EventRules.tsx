@@ -330,14 +330,14 @@ const EventRules: React.FC = () => {
 							{row.event}
 							{row.tag && (
 								<span
-									className={`admin-badge yellow ${row.tag}`}
+									className={`admin-badge zyra-yellow ${row.tag}`}
 								>
 									{row.tag}
 								</span>
 							)}
 							{row.category && (
 								<span
-									className={`admin-badge blue ${row.category}`}
+									className={`admin-badge zyra-blue ${row.category}`}
 								>
 									{row.category}
 								</span>
