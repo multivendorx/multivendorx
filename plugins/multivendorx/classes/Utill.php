@@ -8,6 +8,7 @@
 namespace MultiVendorX;
 
 use MultiVendorX\Store\Store;
+use MultiVendorX\Store\StoreUtil;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -695,32 +696,26 @@ class Utill {
      */
     public static function resolve_ability_store_id( $input ) {
         $requested_store_id = (int) ( $input['store_id'] ?? 0 );
-        $is_admin           = self::current_user_has_capability( array( 'manage_options' ) );
 
         // No store_id from an admin means "every store".
-        if ( $requested_store_id || $is_admin ) {
+        if ( $requested_store_id || self::current_user_has_capability( array( 'manage_options' ) ) ) {
             return $requested_store_id;
         }
 
-        return self::get_current_users_own_store_id();
-    }
+        $user_id = get_current_user_id();
+        $stores  = Store::get_store( $user_id, 'user' );
 
-    /**
-     * The current user's own store id: their saved active store, else their first store, else 0.
-     *
-     * @return int
-     */
-    private static function get_current_users_own_store_id() {
-        $user_id  = get_current_user_id();
+        if ( empty( $stores ) ) {
+            return 0;
+        }
+
+        // The saved active store only counts if it's still one of this user's stores.
         $store_id = (int) get_user_meta( $user_id, self::USER_SETTINGS_KEYS['active_store'], true );
-
-        if ( $store_id ) {
+        if ( $store_id && in_array( $store_id, array_column( $stores, 'id' ), false ) ) {
             return $store_id;
         }
 
-        $stores = Store::get_store( $user_id, 'user' );
-
-        return ! empty( $stores ) ? (int) reset( $stores )['id'] : 0;
+        return (int) reset( $stores )['id'];
     }
 
     /**
@@ -730,12 +725,6 @@ class Utill {
      * @return bool
      */
     public static function store_permissions_check( $input ) {
-        $store_id = self::resolve_ability_store_id( $input );
-
-        if ( $store_id ) {
-            return \MultiVendorX\Store\StoreUtil::current_user_can_manage_store( $store_id );
-        }
-
-        return self::current_user_has_capability( array( 'manage_options' ) );
+        return StoreUtil::current_user_can_manage_store( self::resolve_ability_store_id( $input ) );
     }
 }
