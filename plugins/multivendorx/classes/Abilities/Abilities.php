@@ -40,6 +40,7 @@ class Abilities {
         add_action( 'wp_abilities_api_init', array( $this, 'register_abilities' ) );
         add_filter( 'woocommerce_product_data_store_cpt_get_products_query', array( $this, 'multivendorx_get_current_store_items' ), 20 );
         add_filter( 'woocommerce_orders_table_datastore_get_orders_query', array( $this, 'multivendorx_get_current_store_items' ), 20 );
+        add_filter( 'woocommerce_rest_check_permissions', array( $this, 'multivendorx_can_access_store_item' ), 10, 4 );
     }
 
     /**
@@ -103,5 +104,33 @@ class Abilities {
         );
 
         return $args;
+    }
+
+    /**
+     * Restrict a single product/order lookup (by id) to the caller's own store.
+     *
+     * @param bool   $permission Permission result so far.
+     * @param string $context    Request context ('read', 'edit', etc.).
+     * @param int    $object_id  Post ID, or 0 for a collection-level check.
+     * @param string $post_type  Post type being checked.
+     * @return bool
+     */
+    public function multivendorx_can_access_store_item( $permission, $context, $object_id, $post_type ) {
+        if ( ! $object_id || 'read' !== $context || ! in_array( $post_type, array( 'product', 'shop_order' ), true ) ) {
+            return $permission;
+        }
+
+        $store_id = Utill::resolve_ability_store_id( array() );
+        if ( ! $store_id ) {
+            return $permission;
+        }
+
+        if ( 'shop_order' === $post_type ) {
+            $order = wc_get_order( $object_id );
+
+            return $order && $store_id === (int) $order->get_meta( Utill::POST_META_SETTINGS['store_id'] );
+        }
+
+        return $store_id === (int) get_post_meta( $object_id, Utill::POST_META_SETTINGS['store_id'], true );
     }
 }
