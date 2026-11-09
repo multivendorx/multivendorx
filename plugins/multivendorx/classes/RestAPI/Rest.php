@@ -397,9 +397,13 @@ class Rest {
      * @return int Store ID, or 0.
      */
     private function get_current_member_store_id() {
-        $store_id = absint( MultiVendorX()->active_store );
+        $user_id = get_current_user_id();
+        if ( ! $user_id ) {
+            return 0;
+        }
 
-        if ( ! $store_id || ! MultiVendorX()->current_user_id ) {
+        $store_id = absint( get_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['active_store'], true ) );
+        if ( ! $store_id ) {
             return 0;
         }
 
