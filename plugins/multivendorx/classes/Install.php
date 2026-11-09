@@ -273,6 +273,7 @@ class Install {
 
             $this->migrate_email_template_customizer_settings();
             $this->migrate_event_rule_email_bodies();
+            $this->repair_empty_event_rule_email_bodies();
         }
     }
 
@@ -333,6 +334,45 @@ class Install {
                 $wpdb->update( $table, array( 'email_body' => $converted_body ), array( 'id' => (int) $event['id'] ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
             }
         }
+    }
+
+    /**
+     * Restore the default email for event rules whose saved email has nothing in it.
+     *
+     * Saving an event's email from a block editor that could not read the stored message wrote back a
+     * body of empty wrappers (`<div style=\"\"></div>`), so the event sent a blank email and showed an
+     * empty editor. A body with no text and no image is replaced by the event's default email, matched
+     * on the event's name. Emails that have any content are left alone.
+     *
+     * @return int Number of emails restored.
+     */
+    public function repair_empty_event_rule_email_bodies() {
+        global $wpdb;
+
+        $table    = $wpdb->prefix . Utill::TABLES['system_events'];
+        $defaults = array();
+
+        foreach ( (array) MultiVendorX()->notifications->default_events() as $event ) {
+            if ( ! empty( $event['name'] ) && ! empty( $event['email_body'] ) ) {
+                $defaults[ $event['name'] ] = $event['email_body'];
+            }
+        }
+
+        $events   = $wpdb->get_results( $wpdb->prepare( 'SELECT id, event_name, email_body FROM %i WHERE email_body IS NOT NULL AND email_body <> %s', $table, '' ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+        $restored = 0;
+
+        foreach ( (array) $events as $event ) {
+            $has_content = '' !== trim( wp_strip_all_tags( html_entity_decode( $event['email_body'] ) ) ) || false !== stripos( $event['email_body'], '<img' );
+
+            if ( $has_content || empty( $defaults[ $event['event_name'] ] ) ) {
+                continue;
+            }
+
+            $wpdb->update( $table, array( 'email_body' => $defaults[ $event['event_name'] ] ), array( 'id' => (int) $event['id'] ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+            ++$restored;
+        }
+
+        return $restored;
     }
 
     /**

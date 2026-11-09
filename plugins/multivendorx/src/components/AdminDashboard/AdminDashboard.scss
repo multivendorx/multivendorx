@@ -505,6 +505,7 @@
     }
 
     &.signature-view {
+
         .store-address,
         .store-name {
             text-align: center;
@@ -555,7 +556,7 @@
         .contact-details {
             flex-direction: column;
 
-            .row{
+            .row {
                 flex-direction: column;
                 gap: 0;
             }

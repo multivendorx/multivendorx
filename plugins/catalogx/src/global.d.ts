@@ -40,6 +40,7 @@ declare global {
         free_version: any;
         pro_data: any;
         email_tags: Array;
+        url: string;
     }
 
     interface EnquiryFormData {

@@ -321,7 +321,7 @@ const DashboardTab: React.FC<object> = () => {
 										img: multivendorxIcon,
 										tags: (
 											<>
-												<span className="admin-badge red">
+												<span className="admin-badge zyra-red">
 													<i className="adminfont-pro-tag"></i>{' '}
 													{__('Pro', 'catalogx')}
 												</span>
@@ -354,7 +354,7 @@ const DashboardTab: React.FC<object> = () => {
 										img: multivendorxIcon,
 										tags: (
 											<>
-												<span className="admin-badge green">
+												<span className="admin-badge zyra-green">
 													{__('Free', 'catalogx')}
 												</span>
 												<a
@@ -414,7 +414,7 @@ const DashboardTab: React.FC<object> = () => {
 										img: notifimaIcon,
 										tags: (
 											<>
-												<span className="admin-badge red">
+												<span className="admin-badge zyra-red">
 													<i className="adminfont-pro-tag"></i>{' '}
 													{__('Pro', 'catalogx')}
 												</span>
@@ -447,7 +447,7 @@ const DashboardTab: React.FC<object> = () => {
 										img: notifimaIcon,
 										tags: (
 											<>
-												<span className="admin-badge green">
+												<span className="admin-badge zyra-green">
 													{__('Free', 'catalogx')}
 												</span>
 												<a

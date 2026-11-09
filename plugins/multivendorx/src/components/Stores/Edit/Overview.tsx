@@ -257,7 +257,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 										),
 										value: __('Store', 'multivendorx'),
 										tags: (
-											<span className="admin-badge green">
+											<span className="admin-badge zyra-green">
 												{__('Open', 'multivendorx')}
 											</span>
 										)
@@ -416,7 +416,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 											storeData?.payment_methods
 										);
 									return primaryMethodId ? (
-										<div className="admin-badge purple method">
+										<div className="admin-badge zyra-purple method">
 											<i className="adminfont-bank"></i>
 											{formatMethod(primaryMethodId)}
 										</div>

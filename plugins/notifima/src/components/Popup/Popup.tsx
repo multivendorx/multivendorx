@@ -107,7 +107,7 @@ const ShowProPopup: React.FC<ShowProPopupProps> = (props) => {
 		<>
 			{props.confirmMode ? (
 				<div className="popup-confirm">
-					<i className="popup-icon adminfont-suspended admin-badge red"></i>
+					<i className="popup-icon adminfont-suspended admin-badge zyra-red"></i>
 					<div className="title">
 						{props.title || __('Confirmation', 'notifima')}
 					</div>

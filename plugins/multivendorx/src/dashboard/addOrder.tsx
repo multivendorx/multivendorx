@@ -480,7 +480,7 @@ const AddOrder = () => {
 					return (
 						<div className="item-details">
 							<div className="icon">
-								<i className="adminfont-cart green"></i>
+								<i className="adminfont-cart zyra-green"></i>
 							</div>
 							<div className="detail">
 								<div className="name">

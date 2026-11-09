@@ -345,14 +345,14 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 			<div className="shipping-method-wrapper">
 				{methodsArray.map((method: ShippingMethod) => (
 					<div key={method.instance_id} className="shipping-method">
-						<div className="admin-badge yellow">{method.title}</div>
+						<div className="admin-badge zyra-yellow">{method.title}</div>
 						<i
 							onClick={() => handleEdit(method, zone)}
-							className="admin-badge blue adminfont-edit"
+							className="admin-badge zyra-blue adminfont-edit"
 						></i>
 						<i
 							onClick={() => handleDelete(method, zone)}
-							className="admin-badge red adminfont-delete"
+							className="admin-badge zyra-red adminfont-delete"
 						></i>
 					</div>
 				))}

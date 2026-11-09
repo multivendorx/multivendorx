@@ -400,7 +400,7 @@ const StoreReviews: React.FC = () => {
 						<div className="review-popup-wrapper">
 							<div className="customer-wrapper">
 								<div className="avatar">
-									<span className="purple-bg">
+									<span className="zyra-purple-bg">
 										{selectedReview.customer_name
 											.charAt(0)
 											.toUpperCase()}

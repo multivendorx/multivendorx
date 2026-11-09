@@ -166,13 +166,13 @@ const SpmvProducts: React.FC = () => {
 							{__('Search by', 'multivendorx')}
 						</div>
 
-						<span className="admin-badge blue">
+						<span className="admin-badge zyra-blue">
 							{__('Name', 'multivendorx')}
 						</span>
-						<span className="admin-badge pink">
+						<span className="admin-badge zyra-pink">
 							{__('UPC', 'multivendorx')}
 						</span>
-						<span className="admin-badge teal">
+						<span className="admin-badge zyra-teal">
 							{__('ISBN', 'multivendorx')}
 						</span>
 
