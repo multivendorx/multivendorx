@@ -697,8 +697,12 @@ class Utill {
     public static function resolve_ability_store_id( $input ) {
         $requested_store_id = (int) ( $input['store_id'] ?? 0 );
 
+        if ( $requested_store_id ) {
+            return $requested_store_id;
+        }
+
         // No store_id from an admin means "every store".
-        if ( $requested_store_id || self::current_user_has_capability( array( 'manage_options' ) ) ) {
+        if ( self::current_user_has_capability( array( 'manage_options' ) ) ) {
             return $requested_store_id;
         }
 
