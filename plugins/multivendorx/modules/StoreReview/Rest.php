@@ -139,10 +139,10 @@ class Rest extends \WP_REST_Controller {
     }
 
     /**
-     * Get reviews. Shared by get_items() and the get-reviews ability.
+     * Get reviews (REST or ability).
      *
-     * @param array                 $payload  Plain request params.
-     * @param \WP_REST_Request|null $request Originating request, if any.
+     * @param array                 $payload Request params.
+     * @param \WP_REST_Request|null $request Request object, if any.
      * @return \WP_REST_Response|\WP_Error
      */
     public function prepare_get_items_response( $payload, $request = null ) {

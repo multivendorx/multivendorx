@@ -136,10 +136,10 @@ class Stores extends \WP_REST_Controller {
     }
 
     /**
-     * Get all stores. Shared by get_items() and the get-stores ability.
+     * Get all stores (REST or ability).
      *
-     * @param array                 $payload  Plain request params.
-     * @param \WP_REST_Request|null $request Originating request, if any.
+     * @param array                 $payload Request params.
+     * @param \WP_REST_Request|null $request Request object, if any.
      * @return \WP_REST_Response|\WP_Error
      */
     public function prepare_get_items_response( $payload, $request = null ) {
@@ -635,10 +635,10 @@ class Stores extends \WP_REST_Controller {
     }
 
     /**
-     * Get a single store's data. Shared by get_item() and the get-stores ability.
+     * Get a single store (REST or ability).
      *
-     * @param array                 $payload  Plain request params.
-     * @param \WP_REST_Request|null $request Originating request, if any.
+     * @param array                 $payload Request params.
+     * @param \WP_REST_Request|null $request Request object, if any.
      * @return \WP_REST_Response|\WP_Error
      */
     public function prepare_get_item_response( $payload, $request = null ) {
@@ -840,11 +840,10 @@ class Stores extends \WP_REST_Controller {
     }
 
     /**
-     * Update a store, or bulk-update several stores' status. Shared by
-     * update_item() and the update-store ability.
+     * Update one store, or bulk-update several stores' status.
      *
-     * @param array                 $payload  ids/bulk_status for a bulk status change, or id/data for a single-store update.
-     * @param \WP_REST_Request|null $request Originating request, if any.
+     * @param array                 $payload Update or bulk-status data.
+     * @param \WP_REST_Request|null $request Request object, if any.
      * @return \WP_REST_Response|\WP_Error
      */
     public function prepare_update_item_response( $payload, $request = null ) {

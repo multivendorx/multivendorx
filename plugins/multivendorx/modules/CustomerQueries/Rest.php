@@ -125,9 +125,9 @@ class Rest extends \WP_REST_Controller {
     }
 
     /**
-     * Get customer questions. Shared by get_items() and the get-customer-questions ability.
+     * Get customer questions (REST or ability).
      *
-     * @param array $payload Plain request params.
+     * @param array $payload Request params.
      * @return \WP_REST_Response|\WP_Error
      */
     public function prepare_get_items_response( $payload ) {
