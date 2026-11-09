@@ -1636,23 +1636,36 @@ class Stores extends \WP_REST_Controller {
      * @return array
      */
     private function get_store_query_args( $payload ) {
-        $limit = (int) ( $payload['row'] ?? 0 );
+        $payload = wp_parse_args(
+            $payload,
+            array(
+                'row'          => 0,
+                'page'         => 0,
+                'search_value' => '',
+                'start_date'   => '',
+                'end_date'     => '',
+                'order'        => '',
+                'radius_unit'  => '',
+            )
+        );
+
+        $limit = (int) $payload['row'];
         $args  = array();
 
         // Pagination.
         if ( $limit > 0 ) {
-            $page           = (int) ( $payload['page'] ?? 0 );
+            $page           = (int) $payload['page'];
             $args['limit']  = $limit;
             $args['offset'] = ( $page - 1 ) * $limit;
         }
 
         // Search or date filter.
-        $search = sanitize_text_field( $payload['search_value'] ?? '' );
+        $search = sanitize_text_field( $payload['search_value'] );
 
         if ( $search ) {
             $args['searchField'] = $search;
         } else {
-            $dates = Utill::normalize_date_range( $payload['start_date'] ?? '', $payload['end_date'] ?? '' );
+            $dates = Utill::normalize_date_range( $payload['start_date'], $payload['end_date'] );
 
             if ( ! empty( $dates['start_date'] ) ) {
                 $args['start_date'] = $dates['start_date'];
@@ -1676,7 +1689,7 @@ class Stores extends \WP_REST_Controller {
         // Sorting.
         if ( ! empty( $payload['order_by'] ) ) {
             $args['order_by'] = sanitize_text_field( $payload['order_by'] );
-            $args['order']    = sanitize_text_field( $payload['order'] ?? '' );
+            $args['order']    = sanitize_text_field( $payload['order'] );
         }
 
         // Radius filter.
@@ -1685,7 +1698,7 @@ class Stores extends \WP_REST_Controller {
                 floatval( $payload['location_lat'] ),
                 floatval( $payload['location_lng'] ),
                 floatval( $payload['radius_max'] ),
-                $payload['radius_unit'] ?? ''
+                $payload['radius_unit']
             );
 
             if ( ! empty( $store_ids ) ) {

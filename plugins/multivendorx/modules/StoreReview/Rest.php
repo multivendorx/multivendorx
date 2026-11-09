@@ -147,17 +147,31 @@ class Rest extends \WP_REST_Controller {
      */
     public function prepare_get_items_response( $payload, $request = null ) {
         try {
-            $store_id = $payload['store_id'] ?? null;
+            $payload = wp_parse_args(
+                $payload,
+                array(
+                    'store_id'   => 0,
+                    'row'        => 0,
+                    'page'       => 0,
+                    'status'     => '',
+                    'order_by'   => '',
+                    'order'      => '',
+                    'start_date' => '',
+                    'end_date'   => '',
+                )
+            );
+
+            $store_id = $payload['store_id'];
 
             if ( ! empty( $payload['overview'] ) ) {
                 return rest_ensure_response( $this->calculate_store_rating_summary( intval( $store_id ) ) );
             }
-			$limit          = max( 1, (int) ( $payload['row'] ?? 0 ) ?: 10 );
-			$page           = intval( $payload['page'] ?? 0 ) ?: 1;
+			$limit          = max( 1, (int) $payload['row'] ?: 10 );
+			$page           = intval( $payload['page'] ) ?: 1;
             $offset         = ( $page - 1 ) * $limit;
-            $status         = sanitize_text_field( $payload['status'] ?? '' );
-            $order_by       = sanitize_text_field( $payload['order_by'] ?? '' );
-            $order          = sanitize_text_field( $payload['order'] ?? '' );
+            $status         = sanitize_text_field( $payload['status'] );
+            $order_by       = sanitize_text_field( $payload['order_by'] );
+            $order          = sanitize_text_field( $payload['order'] );
             $sec_fetch_site = $request instanceof \WP_REST_Request ? $request->get_header( 'sec_fetch_site' ) : null;
             $referer        = $request instanceof \WP_REST_Request ? $request->get_header( 'referer' ) : null;
 
@@ -169,7 +183,7 @@ class Rest extends \WP_REST_Controller {
                 $status = 'approved';
             }
 
-            $range = Utill::normalize_date_range( $payload['start_date'] ?? '', $payload['end_date'] ?? '' );
+            $range = Utill::normalize_date_range( $payload['start_date'], $payload['end_date'] );
             $args  = array();
 
             // --- Step 3: Apply Store Filter ---.

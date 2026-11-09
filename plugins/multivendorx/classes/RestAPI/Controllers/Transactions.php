@@ -107,14 +107,28 @@ class Transactions extends \WP_REST_Controller {
 	 */
 	public function prepare_get_items_response( $payload, $request = null ) {
 		try {
-			$limit              = max( 1, (int) ( $payload['row'] ?? 0 ) ?: 10 );
-			$page               = max( 1, (int) ( $payload['page'] ?? 0 ) ?: 1 );
+			$payload = wp_parse_args(
+				$payload,
+				array(
+					'row'          => 0,
+					'page'         => 0,
+					'store_id'     => 0,
+					'order_by'     => '',
+					'order'        => '',
+					'search_value' => '',
+					'start_date'   => '',
+					'end_date'     => '',
+				)
+			);
+
+			$limit              = max( 1, (int) $payload['row'] ?: 10 );
+			$page               = max( 1, (int) $payload['page'] ?: 1 );
 			$offset             = ( $page - 1 ) * $limit;
-			$store_id           = (int) ( $payload['store_id'] ?? 0 );
-			$order_by           = sanitize_text_field( $payload['order_by'] ?? '' ) ?: 'created_at';
-			$order              = strtoupper( sanitize_text_field( $payload['order'] ?? '' ) ) ?: 'DESC';
-			$search_id          = $payload['search_value'] ?? null;
-			$dates              = Utill::normalize_date_range( $payload['start_date'] ?? '', $payload['end_date'] ?? '' );
+			$store_id           = (int) $payload['store_id'];
+			$order_by           = sanitize_text_field( $payload['order_by'] ) ?: 'created_at';
+			$order              = strtoupper( sanitize_text_field( $payload['order'] ) ) ?: 'DESC';
+			$search_id          = $payload['search_value'];
+			$dates              = Utill::normalize_date_range( $payload['start_date'], $payload['end_date'] );
 
 			$sec_fetch_site = $request instanceof \WP_REST_Request ? $request->get_header( 'sec_fetch_site' ) : null;
 			$referer        = $request instanceof \WP_REST_Request ? $request->get_header( 'referer' ) : null;
