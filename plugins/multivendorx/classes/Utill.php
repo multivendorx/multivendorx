@@ -715,7 +715,7 @@ class Utill {
             return $store_id;
         }
 
-        return (int) reset( $stores )['id'];
+        return 0;
     }
 
     /**
