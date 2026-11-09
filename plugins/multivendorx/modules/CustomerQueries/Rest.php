@@ -171,7 +171,7 @@ class Rest extends \WP_REST_Controller {
                 $args['store_id'] = intval( $store_id );
             }
 
-            // --- Step 3: Handle Search (Product first, fallback to Question) ---
+            // Search products first, fall back to question/answer text.
             if ( ! empty( $search ) ) {
                 /* phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_query */
                 $product_query = new \WC_Product_Query(
@@ -198,7 +198,7 @@ class Rest extends \WP_REST_Controller {
                     $args['search'] = $search;
                 }
             }
-            // --- Step 5: Build Base Query Args ---
+
             $args['limit']  = $limit;
             $args['offset'] = $offset;
 
@@ -210,7 +210,7 @@ class Rest extends \WP_REST_Controller {
                 $args['end_date'] = $range['end_date'];
             }
 
-            // --- Step 6: Add Filter by Status (from frontend tabs) ---
+            // Answer-status filter (from frontend tabs).
             if ( 'has_answer' === $status ) {
                 $args['has_answer'] = true;
             } elseif ( 'no_answer' === $status ) {
@@ -226,12 +226,10 @@ class Rest extends \WP_REST_Controller {
             if ( ! empty( $payload['question_visibility'] ) ) {
                 $args['question_visibility'] = sanitize_text_field( $payload['question_visibility'] );
             }
-            // --- Step 7: Fetch Question Data ---
             $questions = Util::query_questions( $args );
-
             $formatted = array_map( array( $this, 'prepare_rest_item_for_response' ), $questions );
 
-            // --- Step 9: Get Counters ---
+            // Status counters.
             $base_args = $args;
             unset( $base_args['limit'], $base_args['offset'], $base_args['has_answer'], $base_args['no_answer'] );
             $response = rest_ensure_response( $formatted );

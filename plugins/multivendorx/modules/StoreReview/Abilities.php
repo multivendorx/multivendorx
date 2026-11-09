@@ -13,11 +13,7 @@ use MultiVendorX\Utill;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Store Review Abilities.
- *
- * Registers abilities on the shared 'multivendorx' category (already
- * registered centrally by \MultiVendorX\Abilities\Abilities), only while
- * this module is active.
+ * Store Review Abilities. Registered on the shared 'multivendorx' category, only while this module is active.
  */
 class Abilities {
 

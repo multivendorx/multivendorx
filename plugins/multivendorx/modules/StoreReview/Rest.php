@@ -186,12 +186,12 @@ class Rest extends \WP_REST_Controller {
             $range = Utill::normalize_date_range( $payload['start_date'], $payload['end_date'] );
             $args  = array();
 
-            // --- Step 3: Apply Store Filter ---.
+            // Store filter.
             if ( $store_id ) {
                 $args['store_id'] = intval( $store_id );
             }
 
-            // --- Step 5: Add Filters (status, date, pagination) ---.
+            // Status, date, pagination filters.
             if ( $status ) {
                 $args['status'] = $status;
             }
@@ -207,25 +207,22 @@ class Rest extends \WP_REST_Controller {
                 $args['end_date'] = $range['end_date'];
             }
 
-            // --- Step 5.2: Filter by Overall Rating (like "4 stars & up") ---.
+            // Overall-rating filter.
             if ( ! empty( $payload['overall_rating'] ) ) {
                 $rating = floatval( $payload['overall_rating'] );
 
-                // Prevent invalid or below 1 ratings.
                 if ( $rating < 1 ) {
                     $rating = 1;
                 }
 
-                // Pass to query args.
                 $args['overall_rating'] = $rating;
             }
 
-            // --- Step 5.1: Add Sorting ---.
+            // Sorting.
             if ( ! empty( $order_by ) && ! empty( $order ) ) {
                 $args['order_by']  = $order_by;
                 $args['order_dir'] = ! empty( $order ) ? strtoupper( $order ) : 'DESC';
             } else {
-                // Fallback default sort.
                 $args['order_by']  = 'date_created';
                 $args['order_dir'] = 'DESC';
             }
@@ -233,13 +230,10 @@ class Rest extends \WP_REST_Controller {
 			if ( 'same-origin' === $sec_fetch_site && preg_match( '#/dashboard/?$#', $referer ) && get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id ) ) {
                     return get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id );
             }
-            // --- Step 6: Fetch Review Data ---.
-            $reviews = Util::query_reviews( $args );
-
-            // --- Step 7: Format Data for Response ---.
+            $reviews   = Util::query_reviews( $args );
             $formatted = array_map( array( $this, 'prepare_rest_item_for_response' ), $reviews ? $reviews : array() );
 
-            // --- Step 8: Get Status Counters ---.
+            // Status counters.
             $base_args = $args;
             unset( $base_args['limit'], $base_args['offset'], $base_args['status'] );
 
