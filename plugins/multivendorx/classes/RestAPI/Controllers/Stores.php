@@ -132,6 +132,17 @@ class Stores extends \WP_REST_Controller {
             return $error;
         }
 
+        return $this->prepare_get_items_response( $request->get_params(), $request );
+    }
+
+    /**
+     * Get all stores (REST or ability).
+     *
+     * @param array                 $payload Request params.
+     * @param \WP_REST_Request|null $request Request object, if any.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function prepare_get_items_response( $payload, $request = null ) {
         try {
             $permission = Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
             $is_admin   = Utill::current_user_has_capability( array( 'manage_options' ) );
@@ -153,7 +164,7 @@ class Stores extends \WP_REST_Controller {
 
             if ( $is_admin ) {
                 foreach ( $restricted_action_map as $param => $method ) {
-                    if ( ! $request->get_param( $param ) ) {
+                    if ( empty( $payload[ $param ] ) ) {
                         continue;
                     }
 
@@ -167,7 +178,7 @@ class Stores extends \WP_REST_Controller {
 
             if ( $permission ) {
                 foreach ( $store_owner_flag_map as $param => $method ) {
-                    if ( ! $request->get_param( $param ) ) {
+                    if ( empty( $payload[ $param ] ) ) {
                         continue;
                     }
 
@@ -179,7 +190,7 @@ class Stores extends \WP_REST_Controller {
                 }
             }
 
-            $args = $this->get_store_query_args( $request );
+            $args = $this->get_store_query_args( $payload );
 
             $store_ids = $args['nearest_store_ids'] ?? array();
             unset( $args['nearest_store_ids'] );
@@ -617,15 +628,23 @@ class Stores extends \WP_REST_Controller {
             return $error;
         }
 
+        $payload                 = $request->get_params();
+        $payload['registrations'] = (bool) $request->get_header( 'registrations' );
+
+        return $this->prepare_get_item_response( $payload, $request );
+    }
+
+    /**
+     * Get a single store (REST or ability).
+     *
+     * @param array                 $payload Request params.
+     * @param \WP_REST_Request|null $request Request object, if any.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function prepare_get_item_response( $payload, $request = null ) {
+
         try {
-            $id            = absint( $request->get_param( 'id' ) );
-            $action        = $request->get_param( 'action' );
-            $store_flag    = $request->get_param( 'store' );
-            $fetch_user    = $request->get_param( 'fetch_user' );
-            $dashboard     = $request->get_param( 'dashboard' );
-            $registrations = (bool) $request->get_header( 'registrations' );
-            $start_date    = $request->get_param( 'start_date' );
-            $end_date      = $request->get_param( 'end_date' );
+            $id = absint( $payload['id'] );
 
             if ( $id && ! StoreUtil::current_user_can_manage_store( $id ) ) {
                 return new \WP_Error(
@@ -635,9 +654,9 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
-            if ( $id && 'switch' === $action ) {
+            if ( $id && isset( $payload['action'] ) && 'switch' === $payload['action'] ) {
                 update_user_meta(
-                    MultiVendorX()->current_user_id,
+                    get_current_user_id(),
                     Utill::USER_SETTINGS_KEYS['active_store'],
                     $id
                 );
@@ -653,7 +672,7 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
-            if ( $store_flag ) {
+            if ( ! empty( $payload['store'] ) ) {
                 return $this->get_store_products_and_category( $request );
             }
 
@@ -665,7 +684,7 @@ class Stores extends \WP_REST_Controller {
                 'user_email'   => $owner ? $owner->user_email : '',
             );
 
-            if ( $fetch_user ) {
+            if ( ! empty( $payload['fetch_user'] ) ) {
                 $users = StoreUtil::get_store_users( $id );
 
                 return rest_ensure_response(
@@ -683,7 +702,7 @@ class Stores extends \WP_REST_Controller {
                 return;
             }
 
-            if ( $registrations ) {
+            if ( ! empty( $payload['registrations'] ) ) {
                 return rest_ensure_response(
                     array(
 						'registration' => StoreUtil::get_store_registration_form( $store->get_id() ),
@@ -693,13 +712,13 @@ class Stores extends \WP_REST_Controller {
             }
             $args = array();
 
-            if ( $start_date && $end_date ) {
-                $args['start_date'] = $start_date;
-                $args['end_date']   = $end_date;
+            if ( ! empty( $payload['start_date'] ) && ! empty( $payload['end_date'] ) ) {
+                $args['start_date'] = $payload['start_date'];
+                $args['end_date']   = $payload['end_date'];
             }
             $commission = CommissionUtil::get_commission_summary_for_store( $id, false, false, 3, $args );
 
-            if ( $dashboard ) {
+            if ( ! empty( $payload['dashboard'] ) ) {
                 $transient_key = Utill::MULTIVENDORX_TRANSIENT_KEYS['dashboard_transient'];
 
                 $date_range_label = $args['start_date'] . '_' . $args['end_date'];
@@ -810,11 +829,26 @@ class Stores extends \WP_REST_Controller {
             return $error;
         }
 
-        try {
-            $ids    = $request->get_param( 'ids' );
-            $status = $request->get_param( 'action' );
+        $payload = array(
+            'ids'         => $request->get_param( 'ids' ),
+            'bulk_status' => $request->get_param( 'action' ),
+            'id'          => $request->get_param( 'id' ),
+            'data'        => (array) $request->get_json_params(),
+        );
 
-            if ( ! empty( $ids ) && ! empty( $status ) ) {
+        return $this->prepare_update_item_response( $payload, $request );
+    }
+
+    /**
+     * Update one store, or bulk-update several stores' status.
+     *
+     * @param array                 $payload Update or bulk-status data.
+     * @param \WP_REST_Request|null $request Request object, if any.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function prepare_update_item_response( $payload, $request = null ) {
+        try {
+            if ( ! empty( $payload['ids'] ) && ! empty( $payload['bulk_status'] ) ) {
                 if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
                     return new \WP_Error(
                         'rest_forbidden',
@@ -823,12 +857,12 @@ class Stores extends \WP_REST_Controller {
                     );
                 }
 
-                foreach ( (array) $ids as $store_id ) {
+                foreach ( (array) $payload['ids'] as $store_id ) {
                     $store = new Store( absint( $store_id ) );
                     if ( ! $store->exists() ) {
                         continue;
                     }
-                    $store->set( Utill::STORE_SETTINGS_KEYS['status'], $status );
+                    $store->set( Utill::STORE_SETTINGS_KEYS['status'], $payload['bulk_status'] );
                     $store->save();
                 }
 
@@ -838,8 +872,8 @@ class Stores extends \WP_REST_Controller {
                     )
                 );
             }
-            $id   = absint( $request->get_param( 'id' ) );
-            $data = (array) $request->get_json_params();
+            $id   = absint( $payload['id'] ?? 0 );
+            $data = (array) ( $payload['data'] ?? array() );
 
             if ( ! StoreUtil::current_user_can_manage_store( $id ) ) {
                 return new \WP_Error(
@@ -857,6 +891,11 @@ class Stores extends \WP_REST_Controller {
             $previous_status = $store->get( Utill::STORE_SETTINGS_KEYS['status'] );
             $current_status  = $data['status'] ?? '';
 
+            if ( ! ( $request instanceof \WP_REST_Request ) ) {
+                $request = new \WP_REST_Request();
+                $request->set_body_params( $data );
+            }
+
             $data = apply_filters( 'multivendorx_before_store_update', $data, $store, $request );
 
             $is_admin = Utill::current_user_has_capability( array( 'manage_options' ) );
@@ -873,9 +912,7 @@ class Stores extends \WP_REST_Controller {
 
             // Deactivation handling.
             if ( ! empty( $data['deactivate'] ) ) {
-                $action = $data['action'] ?? '';
-
-                if ( 'approve' === $action ) {
+                if ( isset( $data['action'] ) && 'approve' === $data['action'] ) {
                     $store->set( Utill::STORE_SETTINGS_KEYS['status'], 'deactivated' );
                     $store->delete_meta( Utill::STORE_SETTINGS_KEYS['deactivation_reason'] );
                     $store->delete_meta( Utill::STORE_SETTINGS_KEYS['deactivation_request_date'] );
@@ -891,7 +928,7 @@ class Stores extends \WP_REST_Controller {
                     );
                 }
 
-                if ( 'reject' === $action ) {
+                if ( isset( $data['action'] ) && 'reject' === $data['action'] ) {
                     $store->delete_meta( Utill::STORE_SETTINGS_KEYS['deactivation_reason'] );
                     $store->delete_meta( Utill::STORE_SETTINGS_KEYS['deactivation_request_date'] );
                     MultiVendorX()->notifications->send_notification_helper(
@@ -912,9 +949,7 @@ class Stores extends \WP_REST_Controller {
 
             // Delete store handling.
             if ( ! empty( $data['delete'] ) ) {
-                $delete_option = $data['deleteOption'] ?? '';
-
-                switch ( $delete_option ) {
+                switch ( $data['deleteOption'] ?? '' ) {
                     case 'direct':
                     case 'permanent_delete':
                         return rest_ensure_response(
@@ -1597,30 +1632,40 @@ class Stores extends \WP_REST_Controller {
     /**
      * Get store query arguments.
      *
-     * @param object $request Request data.
+     * @param array $payload Plain request params (REST `$request->get_params()` or ability input).
      * @return array
      */
-    private function get_store_query_args( $request ) {
-        $limit = $request->get_param( 'row' );
-        $page  = $request->get_param( 'page' );
+    private function get_store_query_args( $payload ) {
+        $payload = wp_parse_args(
+            $payload,
+            array(
+                'row'          => 0,
+                'page'         => 0,
+                'search_value' => '',
+                'start_date'   => '',
+                'end_date'     => '',
+                'order'        => '',
+                'radius_unit'  => '',
+            )
+        );
+
+        $limit = (int) $payload['row'];
         $args  = array();
 
         // Pagination.
         if ( $limit > 0 ) {
+            $page           = (int) $payload['page'];
             $args['limit']  = $limit;
             $args['offset'] = ( $page - 1 ) * $limit;
         }
 
         // Search or date filter.
-        $search = sanitize_text_field( $request->get_param( 'search_value' ) );
+        $search = sanitize_text_field( $payload['search_value'] );
 
-        if ( ! empty( $search ) ) {
+        if ( $search ) {
             $args['searchField'] = $search;
         } else {
-            $dates = Utill::normalize_date_range(
-                $request->get_param( 'start_date' ),
-                $request->get_param( 'end_date' )
-            );
+            $dates = Utill::normalize_date_range( $payload['start_date'], $payload['end_date'] );
 
             if ( ! empty( $dates['start_date'] ) ) {
                 $args['start_date'] = $dates['start_date'];
@@ -1632,41 +1677,28 @@ class Stores extends \WP_REST_Controller {
         }
 
         // Status.
-        $status = $request->get_param( 'filter_status' );
-
-        if ( ! empty( $status ) ) {
-            $args['status'] = $status;
+        if ( ! empty( $payload['filter_status'] ) ) {
+            $args['status'] = $payload['filter_status'];
         }
 
         // Exclude stores.
-        $exclude_ids = $request->get_param( 'exclude_ids' );
-
-        if ( ! empty( $exclude_ids ) ) {
-            $args['exclude_ids'] = $exclude_ids;
+        if ( ! empty( $payload['exclude_ids'] ) ) {
+            $args['exclude_ids'] = $payload['exclude_ids'];
         }
 
         // Sorting.
-        $order_by = $request->get_param( 'order_by' );
-
-        if ( ! empty( $order_by ) ) {
-            $args['order_by'] = sanitize_text_field( $order_by );
-            $args['order']    = sanitize_text_field(
-                $request->get_param( 'order' )
-            );
+        if ( ! empty( $payload['order_by'] ) ) {
+            $args['order_by'] = sanitize_text_field( $payload['order_by'] );
+            $args['order']    = sanitize_text_field( $payload['order'] );
         }
 
         // Radius filter.
-        $lat    = $request->get_param( 'location_lat' );
-        $lng    = $request->get_param( 'location_lng' );
-        $radius = $request->get_param( 'radius_max' );
-        $unit   = $request->get_param( 'radius_unit' );
-
-        if ( ! empty( $lat ) && ! empty( $lng ) && ! empty( $radius ) ) {
+        if ( ! empty( $payload['location_lat'] ) && ! empty( $payload['location_lng'] ) && ! empty( $payload['radius_max'] ) ) {
             $store_ids = StoreUtil::get_stores_by_radius(
-                floatval( $lat ),
-                floatval( $lng ),
-                floatval( $radius ),
-                $unit
+                floatval( $payload['location_lat'] ),
+                floatval( $payload['location_lng'] ),
+                floatval( $payload['radius_max'] ),
+                $payload['radius_unit']
             );
 
             if ( ! empty( $store_ids ) ) {

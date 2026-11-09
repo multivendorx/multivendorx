@@ -8,6 +8,7 @@
 namespace MultiVendorX;
 
 use MultiVendorX\Store\Store;
+use MultiVendorX\Store\StoreUtil;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -659,15 +660,9 @@ class Utill {
         );
     }
     /**
-     * Generic REST API capability check, shared by every controller/route's
-     * `permission_callback` in this plugin.
+     * Shared REST/ability capability check: true if the user has any one of the given capabilities.
      *
-     * Grants access when the current user has at least one of the given
-     * capabilities; otherwise returns a WP_Error with the correct 401
-     * (not logged in) or 403 (logged in, but lacking the capability) status.
-     *
-     * @param string|array $capabilities One capability, or an array of capabilities -
-     *                                   access is granted if the current user has any one of them.
+     * @param string|array $capabilities One capability, or an array of capabilities.
      * @param string       $context      Permission check context.
      * @return true|\WP_Error
      */
@@ -681,5 +676,59 @@ class Utill {
         }
 
         return false;
+    }
+
+    /**
+     * An ability's execute_callback must return plain data, not a REST response object.
+     *
+     * @param mixed $response Whatever a prepare_*_response() method returned.
+     * @return mixed
+     */
+    public static function ability_response( $response ) {
+        return $response instanceof \WP_REST_Response ? $response->get_data() : $response;
+    }
+
+    /**
+     * Resolve the store an ability should act on: explicit store_id, else the caller's own store.
+     *
+     * @param array $input Ability input.
+     * @return int
+     */
+    public static function resolve_ability_store_id( $input ) {
+        $requested_store_id = (int) ( $input['store_id'] ?? 0 );
+
+        if ( $requested_store_id ) {
+            return $requested_store_id;
+        }
+
+        // No store_id from an admin means "every store".
+        if ( self::current_user_has_capability( array( 'manage_options' ) ) ) {
+            return $requested_store_id;
+        }
+
+        $user_id = get_current_user_id();
+        $stores  = Store::get_store( $user_id, 'user' );
+
+        if ( empty( $stores ) ) {
+            return 0;
+        }
+
+        // The saved active store only counts if it's still one of this user's stores.
+        $store_id = (int) get_user_meta( $user_id, self::USER_SETTINGS_KEYS['active_store'], true );
+        if ( $store_id && in_array( $store_id, array_column( $stores, 'id' ), false ) ) {
+            return $store_id;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Shared permission check for store-scoped abilities.
+     *
+     * @param array $input Ability input.
+     * @return bool
+     */
+    public static function store_permissions_check( $input ) {
+        return StoreUtil::current_user_can_manage_store( self::resolve_ability_store_id( $input ) );
     }
 }

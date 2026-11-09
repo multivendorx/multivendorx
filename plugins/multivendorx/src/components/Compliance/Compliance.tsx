@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../AdminDashboard/AdminDashboard.scss';
 import { applyFilters } from '@wordpress/hooks';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 
 if (!window.multivendorxComplianceStore) {
@@ -78,6 +78,7 @@ const Compliance = () => {
 	}, []);
 
 	const { modules } = useModules();
+	const navigate = useNavigate();
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
 	const settingContent = applyFilters(
@@ -96,7 +97,7 @@ const Compliance = () => {
 	const getForm = (tabId: string) => {
 		return (
 			applyFilters('multivendorx_compliance_tab_content', null, {
-				tabId, useLocation, Link
+				tabId, useLocation, navigate, Link
 			}) || <div />
 		);
 	};
@@ -111,6 +112,7 @@ const Compliance = () => {
 					prepareUrl={(subTab: string) =>
 						`?page=multivendorx#&tab=compliance&subtab=${subTab}`
 					}
+					onNavigate={navigate}
 					appLocalizer={appLocalizer}
 					Link={Link}
 					variant={'card'}
