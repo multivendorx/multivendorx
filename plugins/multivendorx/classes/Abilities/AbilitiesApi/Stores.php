@@ -14,7 +14,9 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Store Abilities controller.
  *
- * @version 5.0.22
+ * @class       Stores class
+ * @version     5.0.22
+ * @author      MultiVendorX
  */
 class Stores {
 

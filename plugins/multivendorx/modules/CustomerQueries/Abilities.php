@@ -15,7 +15,9 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Customer Queries Abilities. Registered on the shared 'multivendorx' category, only while this module is active.
  *
- * @version 5.0.22
+ * @class       Abilities class
+ * @version     5.0.22
+ * @author      MultiVendorX
  */
 class Abilities {
 
