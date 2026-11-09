@@ -107,22 +107,29 @@ class Abilities {
     }
 
     /**
-     * Restrict a single product/order lookup (by id) to the caller's own store.
+     * Scope product/order read and edit access to the caller's own store.
+     *
+     * Covers the orders-query, products-query, order-add-note,
+     * order-update-status, product-update, and product-delete abilities.
      *
      * @param bool   $permission Permission result so far.
-     * @param string $context    Request context ('read', 'edit', etc.).
+     * @param string $context    Request context ('read', 'edit', 'delete').
      * @param int    $object_id  Post ID, or 0 for a collection-level check.
      * @param string $post_type  Post type being checked.
      * @return bool
      */
     public function multivendorx_can_access_store_item( $permission, $context, $object_id, $post_type ) {
-        if ( ! $object_id || 'read' !== $context || ! in_array( $post_type, array( 'product', 'shop_order' ), true ) ) {
+        if ( ! in_array( $context, array( 'read', 'edit', 'delete' ), true ) || ! in_array( $post_type, array( 'product', 'shop_order' ), true ) ) {
             return $permission;
         }
 
         $store_id = Utill::resolve_ability_store_id( array() );
         if ( ! $store_id ) {
             return $permission;
+        }
+
+        if ( ! $object_id ) {
+            return 'shop_order' === $post_type && 'read' === $context ? true : $permission;
         }
 
         if ( 'shop_order' === $post_type ) {
