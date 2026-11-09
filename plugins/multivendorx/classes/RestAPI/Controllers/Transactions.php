@@ -101,28 +101,28 @@ class Transactions extends \WP_REST_Controller {
 	/**
 	 * Get transactions. Shared by get_items() and the get-transactions ability.
 	 *
-	 * @param array                 $params  Plain request params.
+	 * @param array                 $payload  Plain request params.
 	 * @param \WP_REST_Request|null $request Originating request, if any.
 	 * @return \WP_REST_Response|\WP_Error
 	 */
-	public function prepare_get_items_response( $params, $request = null ) {
+	public function prepare_get_items_response( $payload, $request = null ) {
 		try {
-			$limit              = max( 1, (int) ( $params['row'] ?? 0 ) ?: 10 );
-			$page               = max( 1, (int) ( $params['page'] ?? 0 ) ?: 1 );
+			$limit              = max( 1, (int) ( $payload['row'] ?? 0 ) ?: 10 );
+			$page               = max( 1, (int) ( $payload['page'] ?? 0 ) ?: 1 );
 			$offset             = ( $page - 1 ) * $limit;
-			$store_id           = (int) ( $params['store_id'] ?? 0 );
-			$status             = $params['status'] ?? null;
-			$transaction_type   = $params['transaction_type'] ?? null;
-			$transaction_status = $params['transaction_status'] ?? null;
-			$order_by           = sanitize_text_field( $params['order_by'] ?? '' ) ? sanitize_text_field( $params['order_by'] ) : 'created_at';
-			$order              = strtoupper( sanitize_text_field( $params['order'] ?? '' ) ) ? strtoupper( sanitize_text_field( $params['order'] ) ) : 'DESC';
-			$search_id          = $params['search_value'] ?? null;
+			$store_id           = (int) ( $payload['store_id'] ?? 0 );
+			$status             = $payload['status'] ?? null;
+			$transaction_type   = $payload['transaction_type'] ?? null;
+			$transaction_status = $payload['transaction_status'] ?? null;
+			$order_by           = sanitize_text_field( $payload['order_by'] ?? '' ) ? sanitize_text_field( $payload['order_by'] ) : 'created_at';
+			$order              = strtoupper( sanitize_text_field( $payload['order'] ?? '' ) ) ? strtoupper( sanitize_text_field( $payload['order'] ) ) : 'DESC';
+			$search_id          = $payload['search_value'] ?? null;
 			$dates              = Utill::normalize_date_range(
-                $params['start_date'] ?? null,
-                $params['end_date'] ?? null
+                $payload['start_date'] ?? null,
+                $payload['end_date'] ?? null
 			);
 
-			$ids            = $params['ids'] ?? null;
+			$ids            = $payload['ids'] ?? null;
 			$sec_fetch_site = $request instanceof \WP_REST_Request ? $request->get_header( 'sec_fetch_site' ) : null;
 			$referer        = $request instanceof \WP_REST_Request ? $request->get_header( 'referer' ) : null;
 

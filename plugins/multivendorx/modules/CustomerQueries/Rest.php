@@ -127,23 +127,23 @@ class Rest extends \WP_REST_Controller {
     /**
      * Get customer questions. Shared by get_items() and the get-customer-questions ability.
      *
-     * @param array $params Plain request params.
+     * @param array $payload Plain request params.
      * @return \WP_REST_Response|\WP_Error
      */
-    public function prepare_get_items_response( $params ) {
+    public function prepare_get_items_response( $payload ) {
         try {
-            $store_id            = $params['store_id'] ?? null;
-            $limit               = max( intval( $params['row'] ?? 0 ), 10 );
-            $page                = max( intval( $params['page'] ?? 0 ), 1 );
+            $store_id            = $payload['store_id'] ?? null;
+            $limit               = max( intval( $payload['row'] ?? 0 ), 10 );
+            $page                = max( intval( $payload['page'] ?? 0 ), 1 );
             $offset              = ( $page - 1 ) * $limit;
-            $status              = sanitize_text_field( $params['status'] ?? '' );
-            $search              = sanitize_text_field( $params['search_value'] ?? '' );
-            $order_by            = sanitize_text_field( $params['order_by'] ?? '' );
-            $order               = sanitize_text_field( $params['order'] ?? '' );
-            $question_visibility = sanitize_text_field( $params['question_visibility'] ?? '' );
+            $status              = sanitize_text_field( $payload['status'] ?? '' );
+            $search              = sanitize_text_field( $payload['search_value'] ?? '' );
+            $order_by            = sanitize_text_field( $payload['order_by'] ?? '' );
+            $order               = sanitize_text_field( $payload['order'] ?? '' );
+            $question_visibility = sanitize_text_field( $payload['question_visibility'] ?? '' );
             $range               = Utill::normalize_date_range(
-                $params['start_date'] ?? null,
-                $params['end_date'] ?? null
+                $payload['start_date'] ?? null,
+                $payload['end_date'] ?? null
             );
             $args                = array();
 

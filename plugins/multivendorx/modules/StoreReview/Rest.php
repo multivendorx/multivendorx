@@ -141,23 +141,23 @@ class Rest extends \WP_REST_Controller {
     /**
      * Get reviews. Shared by get_items() and the get-reviews ability.
      *
-     * @param array                 $params  Plain request params.
+     * @param array                 $payload  Plain request params.
      * @param \WP_REST_Request|null $request Originating request, if any.
      * @return \WP_REST_Response|\WP_Error
      */
-    public function prepare_get_items_response( $params, $request = null ) {
+    public function prepare_get_items_response( $payload, $request = null ) {
         try {
-            $store_id = $params['store_id'] ?? null;
-            if ( ! empty( $params['overview'] ) ) {
+            $store_id = $payload['store_id'] ?? null;
+            if ( ! empty( $payload['overview'] ) ) {
                 return rest_ensure_response( $this->calculate_store_rating_summary( intval( $store_id ) ) );
             }
-			$limit          = max( 1, (int) ( $params['row'] ?? 0 ) ?: 10 );
-			$page           = intval( $params['page'] ?? 0 ) ?: 1;
+			$limit          = max( 1, (int) ( $payload['row'] ?? 0 ) ?: 10 );
+			$page           = intval( $payload['page'] ?? 0 ) ?: 1;
             $offset         = ( $page - 1 ) * $limit;
-            $status         = sanitize_text_field( $params['status'] ?? '' );
-            $order_by       = sanitize_text_field( $params['order_by'] ?? '' );
-            $order          = sanitize_text_field( $params['order'] ?? '' );
-            $overall_rating = $params['overall_rating'] ?? null;
+            $status         = sanitize_text_field( $payload['status'] ?? '' );
+            $order_by       = sanitize_text_field( $payload['order_by'] ?? '' );
+            $order          = sanitize_text_field( $payload['order'] ?? '' );
+            $overall_rating = $payload['overall_rating'] ?? null;
             $sec_fetch_site = $request instanceof \WP_REST_Request ? $request->get_header( 'sec_fetch_site' ) : null;
             $referer        = $request instanceof \WP_REST_Request ? $request->get_header( 'referer' ) : null;
 
@@ -170,8 +170,8 @@ class Rest extends \WP_REST_Controller {
             }
 
             $range = Utill::normalize_date_range(
-                $params['start_date'] ?? null,
-                $params['end_date'] ?? null
+                $payload['start_date'] ?? null,
+                $payload['end_date'] ?? null
             );
             $args  = array();
 

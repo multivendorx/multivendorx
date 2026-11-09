@@ -38,9 +38,8 @@ class Abilities {
 
         add_action( 'wp_abilities_api_categories_init', array( $this, 'register_categories' ) );
         add_action( 'wp_abilities_api_init', array( $this, 'register_abilities' ) );
-        add_filter( 'woocommerce_product_data_store_cpt_get_products_query', array( $this, 'scope_woocommerce_ability_query' ), 20 );
-        add_filter( 'woocommerce_orders_table_datastore_get_orders_query', array( $this, 'scope_woocommerce_ability_query' ), 20 );
-        add_filter( 'woocommerce_rest_check_permissions', array( $this, 'scope_woocommerce_ability_object_permission' ), 20, 4 );
+        add_filter( 'woocommerce_product_data_store_cpt_get_products_query', array( $this, 'multivendorx_only_show_my_store_items' ), 20 );
+        add_filter( 'woocommerce_orders_table_datastore_get_orders_query', array( $this, 'multivendorx_only_show_my_store_items' ), 20 );
     }
 
     /**
@@ -85,15 +84,13 @@ class Abilities {
     }
 
     /**
+     * Scope a product/order query to the current store owner's own store.
+     *
      * @param array $args Query args.
      * @return array
      */
-    public function scope_woocommerce_ability_query( $args ) {
-        if ( Utill::current_user_has_capability( array( 'manage_woocommerce' ) ) ) {
-            return $args;
-        }
-
-        $store_id = Utill::resolve_ability_store_id( array() );
+    public function multivendorx_only_show_my_store_items( $args ) {
+        $store_id = $this->get_current_stores_id_if_restriction_applies();
         if ( ! $store_id ) {
             return $args;
         }
@@ -109,50 +106,15 @@ class Abilities {
     }
 
     /**
-     * @param bool   $permission Whether the operation is allowed.
-     * @param string $context    Request context.
-     * @param int    $object_id  Object ID, 0 for a collection.
-     * @param string $post_type  Post type, taxonomy, or WooCommerce object name.
-     * @return bool
+     * The calling store owner's store id, or 0 if no restriction applies.
+     *
+     * @return int
      */
-    public function scope_woocommerce_ability_object_permission( $permission, $context, $object_id, $post_type ) {
+    private function get_current_stores_id_if_restriction_applies() {
         if ( Utill::current_user_has_capability( array( 'manage_woocommerce' ) ) ) {
-            return $permission;
+            return 0;
         }
 
-        if ( ! in_array( $post_type, array( 'product', 'product_variation', 'shop_order' ), true ) ) {
-            return $permission;
-        }
-
-        $store_id = Utill::resolve_ability_store_id( array() );
-        if ( ! $store_id ) {
-            return $permission;
-        }
-
-        $object_id = absint( $object_id );
-        if ( ! $object_id ) {
-            // A query/list call with no id yet - the data-store query filter scopes the actual results.
-            return true;
-        }
-
-        return $this->get_object_store_id( $post_type, $object_id ) === $store_id;
-    }
-
-    /**
-     * @param string $post_type Object type.
-     * @param int    $object_id Object ID.
-     * @return int Store ID, or 0 when unassigned.
-     */
-    private function get_object_store_id( $post_type, $object_id ) {
-        if ( 'shop_order' === $post_type ) {
-            $order = wc_get_order( $object_id );
-            return $order ? absint( $order->get_meta( Utill::POST_META_SETTINGS['store_id'] ) ) : 0;
-        }
-
-        if ( 'product_variation' === $post_type ) {
-            $object_id = wp_get_post_parent_id( $object_id );
-        }
-
-        return absint( get_post_meta( $object_id, Utill::POST_META_SETTINGS['store_id'], true ) );
+        return Utill::resolve_ability_store_id( array() );
     }
 }

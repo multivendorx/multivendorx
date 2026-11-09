@@ -659,15 +659,9 @@ class Utill {
         );
     }
     /**
-     * Generic REST API capability check, shared by every controller/route's
-     * `permission_callback` in this plugin.
+     * Shared REST/ability capability check: true if the user has any one of the given capabilities.
      *
-     * Grants access when the current user has at least one of the given
-     * capabilities; otherwise returns a WP_Error with the correct 401
-     * (not logged in) or 403 (logged in, but lacking the capability) status.
-     *
-     * @param string|array $capabilities One capability, or an array of capabilities -
-     *                                   access is granted if the current user has any one of them.
+     * @param string|array $capabilities One capability, or an array of capabilities.
      * @param string       $context      Permission check context.
      * @return true|\WP_Error
      */
@@ -694,8 +688,7 @@ class Utill {
     }
 
     /**
-     * Resolve the store an ability should act on: an explicit store_id, else
-     * the caller's active store, else their own first store.
+     * Resolve the store an ability should act on: explicit store_id, else the caller's own store.
      *
      * @param array $input Ability input.
      * @return int
@@ -703,8 +696,7 @@ class Utill {
     public static function resolve_ability_store_id( $input ) {
         $store_id = (int) ( $input['store_id'] ?? 0 );
 
-        // Admins omitting store_id mean "every store" - only default a
-        // vendor to their own store when none was given.
+        // Admin with no store_id means "every store"; only default a vendor to their own.
         if ( $store_id || self::current_user_has_capability( array( 'manage_options' ) ) ) {
             return $store_id;
         }
@@ -721,8 +713,7 @@ class Utill {
     }
 
     /**
-     * Shared permission check for store-scoped abilities: an explicit store_id,
-     * else the current user's own store, else admin only.
+     * Shared permission check for store-scoped abilities.
      *
      * @param array $input Ability input.
      * @return bool
