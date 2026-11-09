@@ -72,65 +72,69 @@ const ShippingCard = ({
 						<ToggleInput
 							width="49%"
 							multiSelect={true}
-							options={[
-								{
-									key: 'physical',
-									value: 'physical',
-									label: __(
-										'Physical - I pack and post it',
-										'multivendorx'
-									),
-									desc: __(
-										'Item is packed and shipped to the customer address.',
-										'multivendorx'
-									),
-									icon: 'delivery-person'
-								},
-								...(typeFields.includes('downloadable')
-									? [
-										{
-											key: 'downloadable',
-											value: 'downloadable',
-											label: __(
-												'Downloadable',
-												'multivendorx'
-											),
-											desc: __(
-												'Customer receives digital file - e.g. a PDF, software etc.',
-												'multivendorx'
-											),
-											icon: 'download'
-										},
-									]
-									: []),
-								...(typeFields.includes('virtual')
-									? [
-										{
-											key: 'digital_product_service',
-											value: 'digital_product_service',
-											label: __(
-												'Digital service - Delivered online',
-												'multivendorx'
-											),
-											desc: __(
-												'Remote service only. No shipping or downloadable files.',
-												'multivendorx'
-											),
-											icon: 'digital-service'
-										},
-									]
-									: []),
-								{
-									key: 'others',
-									value: 'others',
-									label: __('Something else', 'multivendorx'),
-									desc: __(
-										"Anything that does not fit the above.",
-										'multivendorx'
-									),
-									icon: 'link'
-								},
-							]}
+							options={applyFilters(
+								'multivendorx_product_delivery_type_options',
+								[
+									{
+										key: 'physical',
+										value: 'physical',
+										label: __(
+											'Physical - I pack and post it',
+											'multivendorx'
+										),
+										desc: __(
+											'Item is packed and shipped to the customer address.',
+											'multivendorx'
+										),
+										icon: 'delivery-person'
+									},
+									...(typeFields.includes('downloadable')
+										? [
+											{
+												key: 'downloadable',
+												value: 'downloadable',
+												label: __(
+													'Downloadable',
+													'multivendorx'
+												),
+												desc: __(
+													'Customer receives digital file - e.g. a PDF, software etc.',
+													'multivendorx'
+												),
+												icon: 'download'
+											},
+										]
+										: []),
+									...(typeFields.includes('virtual')
+										? [
+											{
+												key: 'digital_product_service',
+												value: 'digital_product_service',
+												label: __(
+													'Digital service - Delivered online',
+													'multivendorx'
+												),
+												desc: __(
+													'Remote service only. No shipping or downloadable files.',
+													'multivendorx'
+												),
+												icon: 'digital-service'
+											},
+										]
+										: []),
+									{
+										key: 'others',
+										value: 'others',
+										label: __('Something else', 'multivendorx'),
+										desc: __(
+											"Anything that does not fit the above.",
+											'multivendorx'
+										),
+										icon: 'link'
+									},
+								],
+								typeFields
+							)}
 							custom={true}
 							value={productType}
 							onChange={(val) => {
