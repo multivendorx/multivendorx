@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<wpml-config>
+    <custom-fields>
+        <custom-field action="copy">multivendorx_store_id</custom-field>
+    </custom-fields>
+</wpml-config>
