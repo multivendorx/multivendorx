@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  * MultiVendorX Abilities main class.
  *
  * @class       Abilities class
- * @version     1.0.0
+ * @version     5.0.22
  * @author      MultiVendorX
  */
 class Abilities {
