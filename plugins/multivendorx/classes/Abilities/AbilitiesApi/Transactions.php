@@ -13,6 +13,8 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Transaction Abilities controller.
+ *
+ * @version 5.0.22
  */
 class Transactions {
 

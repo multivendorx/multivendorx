@@ -14,6 +14,8 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Store Review Abilities. Registered on the shared 'multivendorx' category, only while this module is active.
+ *
+ * @version 5.0.22
  */
 class Abilities {
 

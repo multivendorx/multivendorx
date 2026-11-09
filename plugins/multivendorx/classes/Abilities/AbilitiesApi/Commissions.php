@@ -14,6 +14,8 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Commission Abilities controller.
+ *
+ * @version 5.0.22
  */
 class Commissions {
 
