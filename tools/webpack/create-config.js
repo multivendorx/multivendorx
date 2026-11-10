@@ -427,6 +427,15 @@ module.exports = function createWebpackConfig(
 					rootDir,
 					'./src'
 				),
+
+				// `zyra` and `@zyra/*` are the shared UI kit's older import names; all resolve to
+				// the one installed `@multivendorx/zyra` (same aliases the parent repo's config has).
+				zyra: '@multivendorx/zyra',
+				'@zyra/core': '@multivendorx/zyra',
+				'@zyra/components': '@multivendorx/zyra',
+				'@zyra/inputs': '@multivendorx/zyra',
+				'@zyra/table': '@multivendorx/zyra',
+				'@zyra/builders': '@multivendorx/zyra',
 			},
 		},
 
