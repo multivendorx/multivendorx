@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  * for the selected reporting period.
  *
  * @class EnquiryReportEmail class
- * @version 6.0.0
+ * @version 6.1.9
  * @author MultiVendorX
  * @extends \WC_Email
  */
