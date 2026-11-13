@@ -19,15 +19,29 @@ defined( 'ABSPATH' ) || exit;
 class Utill {
 
     public const NOTIFIMA_SETTINGS = array(
-        'automation'                    => 'notifima_automation_settings',
-        'subscription-form-designer'    => 'notifima_subscription_form_designer_settings',
-        'customer-messages'             => 'notifima_customer_messages_settings',
-        'notifications'                 => 'notifima_notifications_settings',
+        'automation'                 => 'notifima_automation_settings',
+        'subscription-form-designer' => 'notifima_subscription_form_designer_settings',
+        'customer-messages'          => 'notifima_customer_messages_settings',
+        'notifications'              => 'notifima_notifications_settings',
     );
 
     public const NOTIFIMA_PRODUCT_META = array(
         'subscribers'          => 'no_of_subscribers',
         'product_discontinued' => 'product_discontinued',
+    );
+
+    public const NOTIFIMA_OTHER_SETTINGS = array(
+        'vulomail_notice_dismissal_time'            => 'notifima_vulomail_notice_dismissed_at',
+    );
+    
+    /**
+     * Custom $wpdb table names (unprefixed), keyed by logical name.
+     * Always reference via `$wpdb->prefix . Utill::TABLES['subscribers']`, never a hardcoded string.
+     *
+     * @var array
+     */
+    public const TABLES = array(
+        'subscribers' => 'notifima_subscribers',
     );
 
     /**
@@ -130,6 +144,36 @@ class Utill {
     }
 
     /**
+     * Generic REST API capability check, shared by every controller/route's
+     * `permission_callback` in this plugin (and notifima-pro's, which
+     * already depend on this class for `validate_nonce()`/`Subscriber`)
+     * instead of each one re-checking `current_user_can()` (and shaping its
+     * own error response) separately.
+     *
+     * Grants access when the current user has at least one of the given
+     * capabilities; otherwise returns a `WP_Error` with the correct 401
+     * (not logged in) or 403 (logged in, but lacking the capability) status.
+     *
+     * @param string|array $capabilities One capability, or an array of capabilities - access is granted if the current user has any one of them.
+     * @param string       $context      Optional context passed through the `notifima_permissions_check` filter.
+     * @return true|\WP_Error
+     */
+    public static function current_user_has_capability( $capabilities, $context = '' ) {
+        $capabilities = apply_filters( 'notifima_permissions_check', $capabilities, $context );
+        foreach ( (array) $capabilities as $capability ) {
+            if ( current_user_can( $capability ) ) { // phpcs:ignore WordPress.WP.Capabilities.Unknown
+                return true;
+            }
+        }
+
+        return new \WP_Error(
+            'notifima_rest_forbidden',
+            __( 'You are not allowed to perform this action.', 'notifima' ),
+            array( 'status' => is_user_logged_in() ? 403 : 401 )
+        );
+    }
+
+    /**
      * Validate REST nonce.
      *
      * @param \WP_REST_Request $request Request object.
@@ -154,26 +198,67 @@ class Utill {
     }
 
     /**
-     * Get all subscribers by product IDs.
+     * Get subscriber details based on filter options.
      *
-     * @param array $product_ids Product IDs.
-     * @return array
+     * @param array $args Filter options.
+     * @return array|int List of matching subscribers or count.
      */
-    public static function get_subscribers( $product_ids ) {
+    public static function get_subscribers( $args ) {
         global $wpdb;
 
-        if ( empty( $product_ids ) ) {
-            return array();
+        $table = $wpdb->prefix . self::TABLES['subscribers'];
+
+        $conditions = array();
+        $values     = array();
+
+        if ( isset( $args['product_ids'] ) ) {
+            $ids          = array_map( 'absint', (array) $args['product_ids'] );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $conditions[] = 'product_id IN (' . $placeholders . ')';
+            $values       = array_merge( $values, $ids );
         }
 
-        $table       = $wpdb->prefix . 'notifima_subscribers';
-        $product_ids = array_map( 'absint', $product_ids );
-        $in_clause   = implode( ',', $product_ids );
+        if ( ! empty( $args['email'] ) ) {
+            $conditions[] = 'email LIKE %s';
+            $values[]     = '%' . $wpdb->esc_like( $args['email'] ) . '%';
+        }
 
-        $query = "SELECT * FROM {$table} WHERE product_id IN ({$in_clause}) ORDER BY id DESC";
+        if ( ! empty( $args['status'] ) && 'all' !== $args['status'] ) {
+            $conditions[] = 'status = %s';
+            $values[]     = (string) $args['status'];
+        }
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        return $wpdb->get_results( $query );
+        if ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) {
+            $conditions[] = 'create_time BETWEEN FROM_UNIXTIME(%d) AND FROM_UNIXTIME(%d)';
+            $values[]     = (int) $args['start_date'];
+            $values[]     = (int) $args['end_date'];
+        }
+
+        $where_sql = $conditions ? ' WHERE ' . implode( ' AND ', $conditions ) : '';
+
+        if ( ! empty( $args['count'] ) ) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            return (int) $wpdb->get_var(
+                $wpdb->prepare(
+                    'SELECT COUNT(*) FROM %i' . $where_sql,
+                    $table,
+                    ...$values
+                )
+            );
+        }
+
+        $has_limit = isset( $args['limit'], $args['offset'] );
+        $limit     = $has_limit ? (int) $args['limit'] : PHP_INT_MAX;
+        $offset    = $has_limit ? (int) $args['offset'] : 0;
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT * FROM %i' . $where_sql . ' LIMIT %d OFFSET %d',
+                $table,
+                ...array_merge( $values, array( $limit, $offset ) )
+            )
+        );
     }
 
     /**
@@ -185,5 +270,130 @@ class Utill {
         require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
         return is_plugin_active( 'dc-woocommerce-multi-vendor/dc_product_vendor.php' );
+    }
+
+    /**
+     * Retrieve formatted subscriber records.
+     *
+     * @param array $args Query and subscriber arguments.
+     * @return array Subscriber items and product IDs.
+     */
+    public static function get_subscriber_records( $args ) {
+
+        $args = wp_parse_args(
+            $args,
+            array(
+                'query'       => array(),
+                'subscribers' => array(),
+            )
+        );
+
+        // Use provided product IDs, otherwise query products.
+        if ( ! empty( $args['subscribers']['product_ids'] ) ) {
+            $product_ids = array_map(
+                'absint',
+                $args['subscribers']['product_ids']
+            );
+        } else {
+            $args['query'] = wp_parse_args(
+                $args['query'],
+                array(
+                    'post_type'      => array( 'product', 'product_variation' ),
+                    'post_status'    => 'publish',
+                    'posts_per_page' => -1,
+                    'fields'         => 'ids',
+                )
+            );
+
+            $product_ids = get_posts( $args['query'] );
+        }
+
+        // No products means there can be no subscribers.
+        if ( empty( $product_ids ) ) {
+            return array(
+                'items'       => array(),
+                'product_ids' => array(),
+            );
+        }
+
+        $subscriber_args = array_merge(
+            array(
+                'product_ids' => $product_ids,
+            ),
+            $args['subscribers']
+        );
+
+        $subscriber_records = self::get_subscribers( $subscriber_args );
+
+        // Batch-load products and prime the post meta cache (thumbnails) for every
+        // distinct product on this page, instead of a separate product lookup and
+        // thumbnail meta query per subscriber row (see .claude/rules/performance.md).
+        $page_product_ids = array_unique( array_map( 'absint', wp_list_pluck( $subscriber_records, 'product_id' ) ) );
+
+        $products_by_id = array();
+
+        if ( ! empty( $page_product_ids ) ) {
+            $page_products = wc_get_products(
+                array(
+                    'include' => $page_product_ids,
+                    'limit'   => count( $page_product_ids ),
+                )
+            );
+
+            foreach ( $page_products as $page_product ) {
+                $products_by_id[ $page_product->get_id() ] = $page_product;
+            }
+
+            update_meta_cache( 'post', $page_product_ids );
+        }
+
+        $subscriber_items = array();
+
+        $statuses = array(
+            'notification_sent'   => __( 'Notification Sent', 'notifima' ),
+            'notification_failed' => __( 'Notification Failed', 'notifima' ),
+            'subscribed'          => __( 'Subscribed', 'notifima' ),
+            'unsubscribed'        => __( 'Unsubscribed', 'notifima' ),
+        );
+
+        foreach ( $subscriber_records as $subscriber ) {
+            $product = $products_by_id[ $subscriber->product_id ] ?? null;
+            $image   = get_the_post_thumbnail_url(
+                $subscriber->product_id,
+                'full'
+            );
+            $user    = get_user_by( 'email', $subscriber->email );
+
+            $date = wp_date(
+                get_option( 'date_format' ),
+                strtotime( $subscriber->create_time )
+            );
+
+            $status_key        = $subscriber->status;
+            $subscriber_status = $statuses[ $status_key ] ?? '-';
+
+            $subscriber_items[] = apply_filters(
+                'notifima_all_subscribers_list',
+                array(
+                    'id'         => $subscriber->id,
+                    'date'       => $date,
+                    'email'      => $subscriber->email,
+                    'phone'      => $subscriber->phone,
+                    'status'     => $subscriber_status,
+                    'status_key' => $status_key,
+                    'reg_user'   => $user ? __( 'Yes', 'notifima' ) : __( 'No', 'notifima' ),
+                    'user_link'  => $user ? get_edit_user_link( $user->ID ) : '',
+                    'product'    => $product ? $product->get_name() : '',
+                    'product_id' => $product ? $product->get_id() : '',
+                    'image'      => ! empty( $image ) ? $image : wc_placeholder_img_src(),
+                ),
+                $subscriber
+            );
+        }
+
+        return array(
+            'items'       => $subscriber_items,
+            'product_ids' => $product_ids,
+        );
     }
 }

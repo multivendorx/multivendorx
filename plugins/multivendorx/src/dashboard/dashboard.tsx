@@ -15,28 +15,28 @@ import {
 import React, { useState, useEffect } from 'react';
 import '../components/dashboard.scss';
 import '../dashboard/dashboard1.scss';
+
+
+import { ButtonInput, CalendarInput } from '@zyra/inputs';
+import { getApiLink, useModules } from '@zyra/core';
 import {
-	ButtonInputUI,
-	Analytics,
-	Card,
-	Column,
-	Container,
-	getApiLink,
-	InfoItem,
-	ComponentStatusView,
-	useModules,
-	TableCard,
-	NavigatorHeader,
-	CalendarInputUI,
-	TableRow,
-	ItemListUI,
-} from 'zyra';
+	AnalyticsComponent,
+	CardComponent,
+	ColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	ModuleGuardComponent,
+	ListComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	dashNavigate,
 	formatCurrency,
 	formatDate,
+	formatStatusLabel,
 	formatTimeAgo,
 	truncateText,
 } from '@/services/commonFunction';
@@ -96,103 +96,100 @@ const Dashboard: React.FC = () => {
 
 	// Table headers
 	const recentOrderHeaders = {
-		id: {
+		order_title: {
 			label: __('Order ID', 'multivendorx'),
-			render: (row) => (
-				<span
-					onClick={() =>
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
+		},
+		action: {
+			type: 'action',
+			label: __('Action', 'multivendorx'),
+			actions: [
+				{
+					label: __('View', 'multivendorx'),
+					icon: 'eye',
+					onClick: (row) =>
 						dashNavigate(navigate, [
 							'orders',
 							'view',
 							String(row.id),
-						])
-					}
-					className="link-item"
-				>
-					#{row.id}
-				</span>
-			),
-		},
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
-		},
-		products: {
-			label: __('Product Name', 'multivendorx'),
-			width: 14,
-			render: (row) =>
-				row.line_items?.length
-					? row.line_items.map((item) => (
-							<InfoItem
-								key={item.id}
-								title={item.name}
-								onClick={() =>
-									dashNavigate(navigate, [
-										'products',
-										'edit',
-										String(item.product_id),
-									])
-								}
-								avatar={{
-									image: item.image?.src || '',
-									iconClass: item.image?.src
-										? ''
-										: 'single-product',
-								}}
-								descriptions={[
-									{
-										label: __('Qty:', 'multivendorx'),
-										value: item.quantity,
-									},
-								]}
-							/>
-						))
-					: '-',
-		},
-		total: {
-			label: __('Total', 'multivendorx'),
-			type: 'currency',
-		},
-		status: {
-			label: __('Order Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
+						]),
+				},
+			],
 		},
 	};
+
+	const recentOrderInfoRows = recentOrderRows.map((row: any) => ({
+		...row,
+		order_title: `#${row.id}`,
+		info_icon: 'order',
+		info_descriptions: [
+			{
+				label: __('Product Name', 'multivendorx'),
+				icon: 'single-product',
+				value: row.line_items?.length
+					? row.line_items
+							.map((item) => `${item.name} × ${item.quantity}`)
+							.join(', ')
+					: '—',
+			},
+			{
+				label: __('Total', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.total),
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.date_created), color: 'blue' },
+		],
+	}));
 	const topProductHeaders = {
 		name: {
 			label: __('Product Name', 'multivendorx'),
-			width: 18,
-			render: (row) => {
-				return (
-					<InfoItem
-						title={row.name}
-						onClick={() =>
-							dashNavigate(navigate, [
-								'products',
-								'edit',
-								String(row.id),
-							])
-						}
-						avatar={{
-							image: row.images?.[0]?.src || '',
-							iconClass: row.images?.[0]?.src
-								? ''
-								: 'single-product',
-						}}
-						descriptions={[
-							{
-								label: __('SKU', 'multivendorx'),
-								value: row.sku || '—',
-							},
-						]}
-					/>
-				);
-			},
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
 		},
-		total_sales: {
-			label: __('Sales', 'multivendorx'),
+		action: {
+			type: 'action',
+			label: __('Action', 'multivendorx'),
+			actions: [
+				{
+					label: __('Edit', 'multivendorx'),
+					icon: 'edit',
+					onClick: (row) =>
+						dashNavigate(navigate, [
+							'products',
+							'edit',
+							String(row.id),
+						]),
+				},
+			],
 		},
 	};
+
+	const topProductInfoRows = topProductRows.map((row: any) => ({
+		...row,
+		info_icon: 'single-product',
+		info_descriptions: [
+			{
+				label: __('SKU', 'multivendorx'),
+				icon: 'single-product',
+				value: row.sku || '—',
+			},
+			{
+				label: __('Sales', 'multivendorx'),
+				icon: 'cart',
+				value: row.total_sales ?? 0,
+			},
+		],
+	}));
 	// Helper function to get dynamic greeting
 	const getGreeting = () => {
 		const hour = new Date().getHours();
@@ -389,7 +386,7 @@ const Dashboard: React.FC = () => {
 				setRecentOrderIds(orders.map((o) => o.id));
 			});
 
-		// Last Withdrawals - keep using InfoItem (no TableCard needed)
+		// Last Withdrawals - keep using InformationItemComponent (no TableCard needed)
 		axios
 			.get(getApiLink(appLocalizer, 'transactions'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
@@ -498,7 +495,7 @@ const Dashboard: React.FC = () => {
 			icon: 'dollar',
 			number: formatCurrency(store?.commission?.total_order_amount || 0),
 			text: __('Total Revenue', 'multivendorx'),
-			color: 'primary',
+			color: 'primary-color',
 			prev30: formatCurrency(
 				storePreviousYear?.commission?.total_order_amount || 0
 			),
@@ -507,21 +504,21 @@ const Dashboard: React.FC = () => {
 			icon: 'order',
 			number: store?.commission?.order_count || 0,
 			text: __('Total Orders', 'multivendorx'),
-			color: 'secondary',
+			color: 'secondary-color',
 			prev30: storePreviousYear?.commission?.order_count || 0,
 		},
 		{
 			icon: 'search-discovery',
 			number: store?.visitors,
 			text: __('Store Views', 'multivendorx'),
-			color: 'accent',
+			color: 'accent-color',
 			prev30: storePreviousYear?.visitors,
 		},
 		{
 			icon: 'commission',
 			number: formatCurrency(store?.commission?.commission_total || 0),
 			text: __('Commission Earned', 'multivendorx'),
-			color: 'support',
+			color: 'support-color',
 			prev30: formatCurrency(
 				storePreviousYear?.commission?.commission_total || 0
 			),
@@ -547,19 +544,19 @@ const Dashboard: React.FC = () => {
 	];
 	return (
 		<>
-			<NavigatorHeader
-				headerTitle={`${getGreeting()}, ${store?.primary_owner_info?.data?.display_name}!`}
+			<NavigatorHeaderComponent
+				headerTitle={`${getGreeting()}, ${store?.primary_owner_info?.display_name}!`}
 				headerDescription={
 					<>
 						{__('You’re viewing:', 'multivendorx')}{' '}
 						<b>
-							{store?.primary_owner_info?.data?.display_name}’s{' '}
+							{store?.primary_owner_info?.display_name}’s{' '}
 							{store?.name || '-'}
 						</b>
 					</>
 				}
 				headerCustomContent={
-					<CalendarInputUI
+					<CalendarInput
 						value={dateRange}
 						onChange={(range: DateRange) => {
 							setDateRange({
@@ -570,9 +567,9 @@ const Dashboard: React.FC = () => {
 					/>
 				}
 			/>
-			<Container className="store-dashboard">
-				<Column>
-					<Analytics
+			<ContainerComponent className="store-dashboard">
+				<ColumnComponent>
+					<AnalyticsComponent
 						variant="dashboard"
 						isLoading={isLoading}
 						data={analyticsData.map((item) => ({
@@ -603,10 +600,14 @@ const Dashboard: React.FC = () => {
 							),
 						}))}
 					/>
-				</Column>
+				</ColumnComponent>
 
-				<Column fullHeight grid={8}>
-					<Card title={__('Sales Overview', 'multivendorx')}>
+				<ColumnComponent fullHeight grid={8}>
+					<CardComponent
+						title={__('Sales Overview', 'multivendorx')}
+						titleIcon="dollar"
+						desc="Track your earnings, orders, and sales over time."
+					>
 						{revenueData && revenueData.length > 0 ? (
 							<ResponsiveContainer height={250}>
 								<BarChart
@@ -656,22 +657,26 @@ const Dashboard: React.FC = () => {
 								</BarChart>
 							</ResponsiveContainer>
 						) : (
-							<ComponentStatusView
+							<ModuleGuardComponent
 								title={__(
 									'Your first sale is just around the corner!',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
-				</Column>
+					</CardComponent>
+				</ColumnComponent>
 
-				<Column fullHeight grid={4}>
-					<Card title={__('Last Withdrawal', 'multivendorx')}>
+				<ColumnComponent fullHeight grid={4}>
+					<CardComponent
+						title={__('Last Withdrawal', 'multivendorx')}
+						titleIcon="wallet"
+						desc="View your most recent payout and transaction details."
+					>
 						<div className="top-customer-wrapper">
 							{lastWithdraws && lastWithdraws.length > 0 ? (
 								lastWithdraws.map((item) => (
-									<InfoItem
+									<InformationItemComponent
 										key={item.id}
 										title={
 											item.payment_method ===
@@ -697,7 +702,7 @@ const Dashboard: React.FC = () => {
 									/>
 								))
 							) : (
-								<ComponentStatusView
+								<ModuleGuardComponent
 									title={__(
 										'Earnings will appear here once you make a withdrawal.',
 										'multivendorx'
@@ -707,7 +712,7 @@ const Dashboard: React.FC = () => {
 						</div>
 
 						{lastWithdraws && lastWithdraws.length > 0 && (
-							<ButtonInputUI
+							<ButtonInput
 								buttons={{
 									icon: 'preview',
 									text: __(
@@ -722,18 +727,24 @@ const Dashboard: React.FC = () => {
 								}}
 							/>
 						)}
-					</Card>
-				</Column>
+					</CardComponent>
+				</ColumnComponent>
 
-				<Column fullHeight grid={4}>
-					<Card title={__('Visitors Map', 'multivendorx')}>
+				<ColumnComponent fullHeight grid={4}>
+					<CardComponent
+						title={__('Visitors Map', 'multivendorx')}
+						titleIcon="global-community"
+						desc="See where your store visitors are located."
+					>
 						<VisitorsMap dateRange={dateRange} />
-					</Card>
-				</Column>
+					</CardComponent>
+				</ColumnComponent>
 
-				<Column fullHeight grid={8}>
-					<Card
+				<ColumnComponent fullHeight grid={8}>
+					<CardComponent
 						title={__('Recent Orders', 'multivendorx')}
+						titleIcon="order"
+						desc="Monitor your latest orders and their current status."
 						iconName="external icon"
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
@@ -745,10 +756,10 @@ const Dashboard: React.FC = () => {
 						{recentOrderRows.length > 0 ? (
 							<TableCard
 								headers={recentOrderHeaders}
-								rows={recentOrderRows}
+								variant="transparent"
+								rows={recentOrderInfoRows}
 								isLoading={isLoading}
 								ids={recentOrderIds}
-								className="transparent-table"
 								showMenu={false}
 								showColumnToggleIcon={false}
 								format={appLocalizer.date_format}
@@ -765,20 +776,22 @@ const Dashboard: React.FC = () => {
 								}}
 							/>
 						) : (
-							<ComponentStatusView
+							<ModuleGuardComponent
 								title={__(
 									'Ready to receive your first order!',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
-				</Column>
+					</CardComponent>
+				</ColumnComponent>
 
 				{/* Best-Selling Products */}
-				<Column fullHeight grid={6}>
-					<Card
+				<ColumnComponent fullHeight grid={6}>
+					<CardComponent
 						title={__('Best-Selling Products', 'multivendorx')}
+						titleIcon="single-product"
+						desc="Track your top products by sales volume."
 						iconName="external icon"
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
@@ -790,28 +803,30 @@ const Dashboard: React.FC = () => {
 						{topProductRows.length > 0 ? (
 							<TableCard
 								headers={topProductHeaders}
-								rows={topProductRows}
+								variant="transparent"
+								rows={topProductInfoRows}
 								isLoading={isLoading}
 								ids={topProductIds}
-								className="transparent-table"
 								showMenu={false}
 								showColumnToggleIcon={false}
 							/>
 						) : (
-							<ComponentStatusView
+							<ModuleGuardComponent
 								title={__(
 									'Start selling to discover your top products!',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
-				</Column>
+					</CardComponent>
+				</ColumnComponent>
 
 				{/* Commission Overview */}
-				<Column fullHeight grid={6}>
-					<Card
+				<ColumnComponent fullHeight grid={6}>
+					<CardComponent
 						title={__('Commission Overview', 'multivendorx')}
+						titleIcon="commission"
+						desc="Compare earned commissions, refunds, and total revenue.."
 						iconName="external icon"
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
@@ -861,13 +876,15 @@ const Dashboard: React.FC = () => {
 								</PieChart>
 							</ResponsiveContainer>
 						</div>
-					</Card>
-				</Column>
+					</CardComponent>
+				</ColumnComponent>
 				{/* Admin Announcements */}
 				{modules.includes('announcement') && (
-					<Column fullHeight grid={4}>
-						<Card
+					<ColumnComponent fullHeight grid={4}>
+						<CardComponent
 							title={__('Admin Announcements', 'multivendorx')}
+							titleIcon="announcement"
+							desc="Stay updated with the latest marketplace announcements."
 							iconName="external icon"
 							onIconClick={() => {
 								const url = appLocalizer.permalink_structure
@@ -878,31 +895,37 @@ const Dashboard: React.FC = () => {
 						>
 							{Array.isArray(announcement) &&
 							announcement.length > 0 ? (
-								<ItemListUI
-									className="notification-wrapper"
+								<ListComponent
+									className="notification"
 									items={announcement.map((item, index) => ({
 										id: item.id || index,
 										title: item.title,
-										desc: item.content,
-										icon: `form-paypal-email admin-badge admin-color${index + 2}`,
-										value: formatTimeAgo(item.date_created),
+										desc: truncateText(item.content, 20),
+										icon: `announcement admin-badge admin-color${index + 2}`,
+										tags: (
+											<span className="admin-badge blue">
+												{formatTimeAgo(item.date_created)}
+											</span>
+										),
 									}))}
 								/>
 							) : (
-								<ComponentStatusView
+								<ModuleGuardComponent
 									title={__(
 										"You're all caught up - check back for updates!",
 										'multivendorx'
 									)}
 								/>
 							)}
-						</Card>
-					</Column>
+						</CardComponent>
+					</ColumnComponent>
 				)}
 				{modules.includes('marketplace-refund') && (
-					<Column fullHeight grid={4}>
-						<Card
+					<ColumnComponent fullHeight grid={4}>
+						<CardComponent
 							title={__('Pending Refunds', 'multivendorx')}
+							titleIcon="marketplace-refund"
+							desc="Review refund requests that need your attention."
 							iconName="external icon"
 							onIconClick={() => {
 								const url = appLocalizer.permalink_structure
@@ -911,52 +934,56 @@ const Dashboard: React.FC = () => {
 								window.open(url);
 							}}
 						>
-							<div className="top-customer-wrapper">
-								{pendingRefund && pendingRefund.length > 0 ? (
-									pendingRefund.map((customer) => (
-										<div
-											key={customer.id}
-											className="customer"
-										>
-											<div className="left-section">
-												<div className="details">
-													<div className="name">
-														{customer.name}
-													</div>
-													<div className="order-number">
-														{customer.reason} |{' '}
-														{formatDate(
-															customer.time
-														)}
-													</div>
-												</div>
-											</div>
-										</div>
-									))
-								) : (
-									<ComponentStatusView
-										title={__(
-											'Refund requests will appear here when submitted.',
-											'multivendorx'
-										)}
+							{pendingRefund && pendingRefund.length > 0 ? (
+								pendingRefund.map((customer) => (
+									<InformationItemComponent
+										key={customer.id}
+										title={customer.name}
+										avatar={{
+											text: String(customer.name ?? '')
+												.charAt(0)
+												.toUpperCase(),
+											iconClass: 'person',
+										}}
+										descriptions={[
+											{
+												label: __('Reason', 'multivendorx'),
+												value: customer.reason,
+											},
+											{
+												label: __('Date', 'multivendorx'),
+												value: formatDate(customer.time),
+											},
+										]}
 									/>
-								)}
-							</div>
-						</Card>
-					</Column>
+								))
+							) : (
+								<ModuleGuardComponent
+									title={__(
+										'Refund requests will appear here when submitted.',
+										'multivendorx'
+									)}
+								/>
+							)}
+						</CardComponent>
+					</ColumnComponent>
 				)}
 				{modules.includes('privacy') &&
 					Array.isArray(access) &&
 					access.includes('name') && (
-						<Column fullHeight grid={4}>
-							<Card title={__('Top Customers', 'multivendorx')}>
+						<ColumnComponent fullHeight grid={4}>
+							<CardComponent
+								title={__('Top Customers', 'multivendorx')}
+								titleIcon="person"
+								desc="Discover your highest-value customers by purchase activity."
+							>
 								{customers && customers.length > 0 ? (
 									customers.map((order, index) => {
 										const name =
 											`${order.billing?.first_name || ''} ${order.billing?.last_name || ''}`.trim() ||
 											__('Guest', 'multivendorx');
 										return (
-											<InfoItem
+											<InformationItemComponent
 												key={index}
 												title={name}
 												avatar={{
@@ -975,18 +1002,22 @@ const Dashboard: React.FC = () => {
 										);
 									})
 								) : (
-									<ComponentStatusView
+									<ModuleGuardComponent
 										title={__(
 											'Top customers will appear here once you receive orders.',
 											'multivendorx'
 										)}
 									/>
 								)}
-							</Card>
-						</Column>
+							</CardComponent>
+						</ColumnComponent>
 					)}
-				<Column fullHeight grid={4}>
-					<Card title={__('Store Activity', 'multivendorx')}>
+				<ColumnComponent fullHeight grid={4}>
+					<CardComponent
+						title={__('Store Activity', 'multivendorx')}
+						titleIcon="notification"
+						desc="Keep track of important events and updates from your store."
+					>
 						<div className="activity-log">
 							{Array.isArray(activities) &&
 							activities.length > 0 ? (
@@ -998,7 +1029,7 @@ const Dashboard: React.FC = () => {
 									</div>
 								))
 							) : (
-								<ComponentStatusView
+								<ModuleGuardComponent
 									title={__(
 										'Activity will show up here as your store grows!',
 										'multivendorx'
@@ -1006,12 +1037,14 @@ const Dashboard: React.FC = () => {
 								/>
 							)}
 						</div>
-					</Card>
-				</Column>
+					</CardComponent>
+				</ColumnComponent>
 				{modules.includes('store-review') && (
-					<Column fullHeight grid={4}>
-						<Card
+					<ColumnComponent fullHeight grid={4}>
+						<CardComponent
 							title={__('Latest Reviews', 'multivendorx')}
+							titleIcon="store-review"
+							desc="Read recent customer feedback on your products."
 							iconName="external icon"
 							onIconClick={() => {
 								const url = appLocalizer.permalink_structure
@@ -1059,7 +1092,7 @@ const Dashboard: React.FC = () => {
 										</div>
 									))
 								) : (
-									<ComponentStatusView
+									<ModuleGuardComponent
 										title={__(
 											"No reviews yet - they'll show up here once received.",
 											'multivendorx'
@@ -1067,10 +1100,10 @@ const Dashboard: React.FC = () => {
 									/>
 								)}
 							</div>
-						</Card>
-					</Column>
+						</CardComponent>
+					</ColumnComponent>
 				)}
-			</Container>
+			</ContainerComponent>
 		</>
 	);
 };

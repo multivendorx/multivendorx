@@ -35,7 +35,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     outputs:
       plugin_slug: ${{ github.event.inputs.plugin }}
@@ -52,16 +52,15 @@ jobs:
         id: versions
         shell: bash
         run: |
-          ROOT_PACKAGE=./package.json
           PLUGIN_PACKAGE=./plugins/${{ github.event.inputs.plugin }}/package.json
 
           NODE_VERSION=$(node -p "
-            const pkg=require('${ROOT_PACKAGE}');
+            const pkg=require('${PLUGIN_PACKAGE}');
             (pkg.engines?.node || pkg.volta?.node || '24').replace(/[^\d.]/g,'')
           ")
 
           PNPM_VERSION=$(node -p "
-            const pkg=require('${ROOT_PACKAGE}');
+            const pkg=require('${PLUGIN_PACKAGE}');
             (pkg.packageManager?.match(/pnpm@(.*)/)?.[1] || '10')
           ")
 
@@ -94,11 +93,15 @@ jobs:
           echo "$(dirname "$(which pnpm)")" >> $GITHUB_PATH
 
       - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: mbstring, xml, curl
+          tools: none
+
+      - name: Install build tools
         shell: bash
-        run: |
-          sudo add-apt-repository ppa:ondrej/php -y
-          sudo apt-get update
-          sudo apt-get install -y php8.4 php8.4-cli php8.4-mbstring php8.4-xml php8.4-curl unzip curl subversion rsync
+        run: sudo apt-get update && sudo apt-get install -y unzip curl subversion rsync
 
       - name: Install WP CLI
         run: |
@@ -106,6 +109,13 @@ jobs:
           chmod +x wp-cli.phar
           sudo mv wp-cli.phar /usr/local/bin/wp
 
+      # zyra now lives in its own repository (github.com/multivendorx/zyra)
+      # and is consumed as the published '@multivendorx/zyra' package from
+      # the public npm registry — it's no longer a local workspace package
+      # built from this repo, so there's no "Build Zyra" step here anymore.
+      # It publishes with `npm publish --access public`, so installing it
+      # needs no auth at all (unlike GitHub Packages, which requires a
+      # token for every install regardless of visibility).
       - name: Install Dependencies
         run: pnpm install --no-frozen-lockfile
 
@@ -118,19 +128,15 @@ jobs:
             react-drag-listview \
             @reactour/tour
 
-      - name: Build Zyra
-        run: pnpm --filter zyra run build
-
       - name: Build Plugin
         run: |
           cd plugins/${{ github.event.inputs.plugin }}
           pnpm run build
 
-      - name: Generate POT File
-        run: |
-          cd plugins/${{ github.event.inputs.plugin }}
-          wp i18n make-pot . languages/${{ github.event.inputs.plugin }}.pot --domain='${{ github.event.inputs.plugin }}'
-
+      # No separate POT-generation step here — build:zip already runs the
+      # plugin's own `makepot` script (correct per-plugin --include list,
+      # domain, and headers), so a standalone `wp i18n make-pot` step here
+      # would just generate a POT that gets immediately overwritten.
       - name: Create ZIP
         run: |
           cd plugins/${{ github.event.inputs.plugin }}

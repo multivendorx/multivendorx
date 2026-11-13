@@ -11,18 +11,16 @@ import {
 	Tooltip,
 } from 'recharts';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
 import {
-	Analytics,
-	Card,
-	Column,
-	Container,
-	getApiLink,
-	InfoItem,
-	ComponentStatusView,
-	TableCard,
-	TableRow,
-	QueryProps,
-} from 'zyra';
+	AnalyticsComponent,
+	CardComponent,
+	ColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	ModuleGuardComponent,
+} from '@zyra/components';
+import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import axios from 'axios';
 import {
 	downloadCSV,
@@ -45,6 +43,8 @@ interface Product {
 	description?: string;
 	stock_status?: string;
 	store_name?: string;
+	store_id?: number;
+	sku?: string;
 	date_created?: string;
 }
 interface ChartDataItem {
@@ -258,52 +258,39 @@ const ProductReport: React.FC = () => {
 	const headers = {
 		name: {
 			label: __('Product', 'multivendorx'),
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
+			width: '40%',
+		},
+		store_name: {
+			label: __('Store', 'multivendorx'),
+			width: '25%',
 			render: (row) => {
+				if (!row.store_name) {
+					return <span>—</span>;
+				}
+
 				return (
-					<InfoItem
-						title={row.name}
-						titleLink={getUrl(row.id, 'product') || ''}
+					<InformationItemComponent
+						title={row.store_name}
+						titleLink={
+							row.store_id
+								? getUrl(row.store_id, 'store', 'edit')
+								: undefined
+						}
 						avatar={{
-							image: row.images?.[0]?.src || '',
-							iconClass: row.images?.[0]?.src
-								? ''
-								: 'single-product',
+							iconClass: 'store-inventory',
 						}}
-						descriptions={[
-							{
-								label: __('SKU:', 'multivendorx'),
-								value: row.sku || '—',
-							},
-						]}
-						isLoading={isDashboardLoading}
+						isLoading={isTableLoading}
 					/>
 				);
 			},
 		},
-		store_name: {
-			label: __('Store', 'multivendorx'),
-			render: (row) => (
-				<InfoItem
-					title={row.store_name}
-					titleLink={getUrl(row.store_id, 'store', 'edit')}
-					avatar={{
-						iconClass: 'store-inventory',
-					}}
-					isLoading={isDashboardLoading}
-				/>
-			),
-		},
-		total_sales: {
-			label: __('Items sold', 'multivendorx'),
-		},
 		price: {
 			label: __('Net sales', 'multivendorx'),
 			type: 'currency',
-		},
-		category: {
-			label: __('Category', 'multivendorx'),
-			render: (row) =>
-				row.categories?.map((cat) => cat.name).join(', ') || '-',
 		},
 		date_created: {
 			label: __('Date Created', 'multivendorx'),
@@ -355,6 +342,19 @@ const ProductReport: React.FC = () => {
 		},
 	];
 
+	// The table folds product details into one info column, so the CSV
+	// export lists its columns explicitly instead of reusing `headers`.
+	const csvHeaders = {
+		id: { label: __('ID', 'multivendorx') },
+		name: { label: __('Product', 'multivendorx') },
+		sku: { label: __('SKU', 'multivendorx') },
+		total_sales: { label: __('Items Sold', 'multivendorx') },
+		category_names: { label: __('Categories', 'multivendorx') },
+		store_name: { label: __('Store', 'multivendorx') },
+		price: { label: __('Net sales', 'multivendorx') },
+		date_created: { label: __('Date Created', 'multivendorx') },
+	};
+
 	const downloadCSVByQuery = (query: QueryProps) => {
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
@@ -364,10 +364,15 @@ const ProductReport: React.FC = () => {
 				params: buildProductQueryParams(query, false),
 			})
 			.then((response) => {
-				const rows = response.data || [];
+				const rows = (response.data || []).map((product: any) => ({
+					...product,
+					category_names: (product.categories || [])
+						.map((cat: { name: string }) => cat.name)
+						.join(', '),
+				}));
 
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`product-${formatLocalDate(new Date())}.csv`
 				);
@@ -409,12 +414,53 @@ const ProductReport: React.FC = () => {
 
 		return params;
 	};
+
+	// Build info rows for the info-type first column
+	const infoRows = rows.map((row: any) => {
+		const soldCount = Number(row.total_sales) || 0;
+
+		const soldBadge = {
+			text: `${soldCount} ${__('item sold', 'multivendorx')}`,
+			color: soldCount === 0 ? 'red' : 'blue',
+		};
+
+		const categories = row.categories || [];
+
+		// If no categories → single "Uncategorized" badge with its own color
+		// Otherwise → all real category badges share the same color
+		const categoryBadges =
+			categories.length > 0
+				? categories.map((cat: { id: number; name: string }) => ({
+						text: cat.name,
+						color: 'green',
+					}))
+				: [
+						{
+							text: __('Uncategorized', 'multivendorx'),
+							color: 'grey',
+						},
+					];
+
+		return {
+			...row,
+			info_icon: 'single-product',
+			info_descriptions: [
+				{
+					label: __('SKU', 'multivendorx'),
+					icon: 'info',
+					value: row.sku || '—',
+				},
+			],
+			info_badges: [soldBadge, ...categoryBadges],
+		};
+	});
+
 	return (
 		<>
-			<Container>
+			<ContainerComponent>
 				{/* Keep entire top dashboard layout */}
-				<Column row>
-					<Analytics
+				<ColumnComponent grid={5}>
+					<AnalyticsComponent
 						cols={2}
 						data={overview.map((item, idx) => ({
 							icon: item.icon,
@@ -424,9 +470,12 @@ const ProductReport: React.FC = () => {
 						}))}
 						isLoading={isDashboardLoading}
 					/>
-
-					<Card
+				</ColumnComponent>
+				<ColumnComponent grid={7}>
+					<CardComponent
 						title={__('Revenue & Sales Comparison', 'multivendorx')}
+						titleIcon="sales"
+						desc="Compare product sales and net revenue across marketplace stores."
 					>
 						{error ? (
 							<p>{error}</p>
@@ -451,24 +500,24 @@ const ProductReport: React.FC = () => {
 								</BarChart>
 							</ResponsiveContainer>
 						) : (
-							<ComponentStatusView
+							<ModuleGuardComponent
 								title={__(
 									'No product sales data found.',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
-				</Column>
+					</CardComponent>
+				</ColumnComponent>
 
 				{/* Categories and brands */}
-				<Column row>
+				<ColumnComponent row>
 					{/* Top Reviewed Products Section */}
-					<Card title="Top Reviewed Products">
+					<CardComponent title="Top Reviewed Products" titleIcon="review" desc="See which products receive the most customer reviews.">
 						{toReviewedProduct.length > 0 ? (
 							toReviewedProduct.map(
 								(product: Product, index: number) => (
-									<InfoItem
+									<InformationItemComponent
 										key={`selling-${product.id}`}
 										title={product.name}
 										avatar={{
@@ -492,19 +541,19 @@ const ProductReport: React.FC = () => {
 								)
 							)
 						) : (
-							<ComponentStatusView
+							<ModuleGuardComponent
 								title={__(
 									'No reviewed products found.',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
-					<Card title="Top Selling Products">
+					</CardComponent>
+					<CardComponent title="Top Selling Products" titleIcon="product" desc="Discover your best-selling products and compare sales across stores.">
 						{toSellingProduct.length > 0 ? (
 							toSellingProduct.map(
 								(product: Product, index: number) => (
-									<InfoItem
+									<InformationItemComponent
 										key={`selling-${product.id}`}
 										title={product.name}
 										avatar={{
@@ -527,37 +576,42 @@ const ProductReport: React.FC = () => {
 								)
 							)
 						) : (
-							<ComponentStatusView
+							<ModuleGuardComponent
 								title={__(
 									'No top selling products found.',
 									'multivendorx'
 								)}
 							/>
 						)}
-					</Card>
-				</Column>
-			</Container>
+					</CardComponent>
+				</ColumnComponent>
 
-			<TableCard
-				headers={headers}
-				rows={rows}
-				title={__('Revenue Distribution', 'multivendorx')}
-				totalRows={totalRows}
-				isLoading={isTableLoading}
-				onQueryUpdate={doRefreshTableData}
-				search={{ placeholder: 'Search Products...' }}
-				filters={filters}
-				buttonActions={buttonActions}
-				rowIds={rowIds}
-				format={appLocalizer.date_format}
-				currency={{
-					currencySymbol: appLocalizer.currency_symbol,
-					priceDecimals: appLocalizer.price_decimals,
-					decimalSeparator: appLocalizer.decimal_separator,
-					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition: appLocalizer.currency_position,
-				}}
-			/>
+				<CardComponent
+					title={__('Revenue Distribution', 'multivendorx')}
+					titleIcon="revenue"
+					desc="Review product-level sales and revenue across your marketplace."
+				>
+					<TableCard
+						headers={headers}
+						rows={infoRows}
+						totalRows={totalRows}
+						isLoading={isTableLoading}
+						onQueryUpdate={doRefreshTableData}
+						search={{ placeholder: 'Search Products...' }}
+						filters={filters}
+						buttonActions={buttonActions}
+						rowIds={rowIds}
+						format={appLocalizer.date_format}
+						currency={{
+							currencySymbol: appLocalizer.currency_symbol,
+							priceDecimals: appLocalizer.price_decimals,
+							decimalSeparator: appLocalizer.decimal_separator,
+							thousandSeparator: appLocalizer.thousand_separator,
+							currencyPosition: appLocalizer.currency_position,
+						}}
+					/>
+				</CardComponent>
+			</ContainerComponent>
 		</>
 	);
 };

@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\RestAPI\Controllers;
 
+use MultiVendorX\Utill;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -36,7 +38,7 @@ class Dashboard extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'multivendorx_get_items_permissions_check' ),
                 ),
             )
         );
@@ -47,8 +49,8 @@ class Dashboard extends \WP_REST_Controller {
      *
      * @param object $request Full details about the request.
      */
-    public function get_items_permissions_check( $request ) {
-        return current_user_can( 'create_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+    public function multivendorx_get_items_permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'create_stores' ) );
     }
 
     /**

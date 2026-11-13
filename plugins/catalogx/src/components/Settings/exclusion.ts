@@ -7,7 +7,7 @@ export default {
     headerTitle: __('Access Rules', 'catalogx'),
 
     headerDescription: __(
-        'Exclude catalog viewing, enquiries, and quotes by user roles and product attributes.',
+        'Exclude catalog viewing, enquiries, and quotes by role, name, product, category, tag or brand.',
         'catalogx'
     ),
 

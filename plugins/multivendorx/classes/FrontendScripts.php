@@ -40,14 +40,17 @@ class FrontendScripts {
     /**
 	 * Get the build path for assets based on environment.
 	 *
+	 * @param string $path_type   'file' for a filesystem path, anything else for a URL.
+	 * @param string $plugin_path Optional. Plugin path override. Default MultiVendorX()->plugin_path.
+	 * @param string $plugin_url  Optional. Plugin URL override. Default MultiVendorX()->plugin_url.
 	 * @return string Relative path to the build directory.
 	 */
     public static function get_asset_path( $path_type = 'url', $plugin_path = '', $plugin_url = '' ) {
         $build_path = 'assets/';
-        if ( $plugin_path === '' ) {
+        if ( '' === $plugin_path ) {
             $plugin_path = MultiVendorX()->plugin_path;
         }
-        if ( $plugin_url === '' ) {
+        if ( '' === $plugin_url ) {
             $plugin_url = MultiVendorX()->plugin_url;
         }
 
@@ -60,13 +63,14 @@ class FrontendScripts {
     /**
 	 * Register and store a script for later use.
 	 *
-	 * @param string $handle       Unique script handle.
-	 * @param string $path         URL to the script file.
-	 * @param array  $deps         Optional. Script dependencies. Default empty array.
-	 * @param string $version      Optional. Script version. Default empty string.
+	 * @param string            $handle       Unique script handle.
+	 * @param string            $path         URL to the script file.
+	 * @param array             $deps         Optional. Script dependencies. Default empty array.
+	 * @param string            $version      Optional. Script version. Default empty string.
+	 * @param bool|array|string $args         Optional. Whether to load in the footer, or an args array (e.g. 'strategy'). Default true.
 	 */
-    public static function register_script( $handle, $path, $deps = array(), $version = '' ) {
-        wp_register_script( $handle, $path, $deps, $version, true );
+    public static function register_script( $handle, $path, $deps = array(), $version = '', $args = true ) {
+        wp_register_script( $handle, $path, $deps, $version, $args );
         wp_set_script_translations( $handle, 'multivendorx' );
     }
 
@@ -166,7 +170,7 @@ class FrontendScripts {
 	 * Loads admin-specific JavaScript assets and chunked dependencies.
 	 */
     public static function register_admin_scripts() {
-		$version = MultiVendorX()->version;
+		$version          = MultiVendorX()->version;
         $index_asset_path = self::get_asset_path( 'file' ) . 'js/index.asset.php';
         $index_asset      = file_exists( $index_asset_path )
             ? include $index_asset_path
@@ -226,6 +230,11 @@ class FrontendScripts {
 		}
 	}
 
+    /**
+     * Get all registered settings tabs' values, keyed by tab name, cached for the request.
+     *
+     * @return array
+     */
     public static function get_admin_settings() {
         if ( null !== self::$settings_cache ) {
             return self::$settings_cache;
@@ -340,7 +349,7 @@ class FrontendScripts {
 
         $store_ids = array();
         $all_meta  = array();
-        if ( ! is_admin() && in_array( 'store_owner', MultiVendorX()->current_user->roles ) ) {
+        if ( ! is_admin() && in_array( 'store_owner', MultiVendorX()->current_user->roles, true ) ) {
             $active_store = MultiVendorX()->active_store;
             $store_ids    = Store::get_store( MultiVendorX()->current_user_id, 'user' );
             if ( empty( $active_store ) && ! empty( $store_ids ) ) {
@@ -463,7 +472,7 @@ class FrontendScripts {
                             'store_id'                 => MultiVendorX()->active_store,
                             'store_page_url'           => MultiVendorX()->store->storeutil->get_store_url( null, '', true ),
                             'admin_url'                => admin_url(),
-                            'edit_order_capability'    => current_user_can( 'edit_shop_orders' ),
+                            'edit_order_capability'    => Utill::current_user_has_capability( array( 'edit_shop_orders' ) ),
                             'permalink_structure'      => get_option( Utill::WORDPRESS_SETTINGS['permalink'] ) ? true : false,
                             'all_verification_methods' => MultiVendorX()->setting->get_setting( 'all_verification_methods' ),
                             'shipping_methods'         => apply_filters( 'multivendorx_store_shipping_options', array() ),
@@ -492,7 +501,7 @@ class FrontendScripts {
                             'placeholder_url  '        => wc_placeholder_img_src(),
                             'default_user_avatar'      => get_avatar_url( 0 ),
                             'order_statuses'           => $formatted,
-                            'active_modules'         => MultiVendorX()->modules->get_active_modules(),
+                            'active_modules'           => MultiVendorX()->modules->get_active_modules(),
                         )
                     ),
                 ),
@@ -600,35 +609,35 @@ class FrontendScripts {
         $localize_scripts = apply_filters( 'multivendorx_localize_scripts', $localize_scripts );
         $config           = $localize_scripts[ $handle ] ?? array();
 
-        $data = array();
+        $localized_data = array();
 
         if ( ! empty( $config['use_ajax'] ) && ! empty( $config['use_rest'] ) ) {
             $base_ajax = self::get_base_ajax_data( $handle );
             unset( $base_ajax['nonce'] );
-            $data = array_merge( $data, $base_ajax );
+            $localized_data = array_merge( $localized_data, $base_ajax );
         } else {
-            $data = array_merge( $data, self::get_base_ajax_data( $handle ) );
+            $localized_data = array_merge( $localized_data, self::get_base_ajax_data( $handle ) );
         }
 
         if ( ! empty( $config['use_rest'] ) ) {
-            $data = array_merge( $data, $base_rest );
+            $localized_data = array_merge( $localized_data, $base_rest );
         }
 
         if ( ! empty( $config['use_currency'] ) ) {
-            $data = array_merge( $data, $currency_data );
+            $localized_data = array_merge( $localized_data, $currency_data );
         }
 
         if ( ! empty( $config['use_settings'] ) ) {
-            $data = array_merge( $data, $settings_data );
+            $localized_data = array_merge( $localized_data, $settings_data );
         }
 
         if ( ! empty( $config['data'] ) ) {
-            $data = array_merge( $data, $config['data'] );
+            $localized_data = array_merge( $localized_data, $config['data'] );
         }
 
         if ( isset( $localize_scripts[ $handle ] ) ) {
             $props = $localize_scripts[ $handle ];
-            self::localize_script( $handle, $props['object_name'], $data );
+            self::localize_script( $handle, $props['object_name'], $localized_data );
         }
     }
 

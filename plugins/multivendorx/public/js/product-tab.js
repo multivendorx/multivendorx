@@ -1,4 +1,4 @@
-/* global multivendorx */
+/* global jQuery, multivendorx */
 jQuery(document).ready(function ($) {
 	$('#linked_store').select2({
 		ajax: {
@@ -8,7 +8,8 @@ jQuery(document).ready(function ($) {
 			data: function (params) {
 				return {
 					term: params.term,
-					action: 'search_stores',
+					action: 'multivendorx_search_stores',
+					nonce: multivendorx.nonce,
 				};
 			},
 			processResults: function (data) {

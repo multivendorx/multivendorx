@@ -37,7 +37,7 @@ jQuery(function ($) {
 			$.ajax({
 				url: reportAbuseFrontend.ajaxurl,
 				type: 'POST',
-				data: { action: 'get_report_reasons' },
+				data: { action: 'multivendorx_get_report_reasons' },
 				success: function (res) {
 					if (res.success) {
 						$.each(res.data, function (i, reason) {

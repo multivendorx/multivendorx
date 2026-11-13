@@ -1,22 +1,22 @@
 /* global appLocalizer */
 import React, { useEffect, useMemo, useState } from 'react';
 import './EventRules.scss';
+import { getApiLink } from '@zyra/core';
+import { FormGroupWrapperComponent, FormGroupComponent, PopupComponent, ColumnComponent } from '@zyra/components';
 import {
-	getApiLink,
-	FormGroupWrapper,
-	FormGroup,
-	BasicInputUI,
-	ButtonInputUI,
-	PopupUI,
-	TextAreaUI,
-	TableCard,
-	Column,
-	QueryProps,
-	BlockBuilderUI,
+	TextInput,
+	ButtonInput,
+	TextAreaInput,
+	EmailInput,
+} from '@zyra/inputs';
+import { TableCard, QueryProps } from '@zyra/table';
+import {
+	EmailBuilder,
+	legacyEmailBlocksToEmailBlocks,
+	emailBlocksToLegacyEmailBlocks,
 	renderBlocksToHTML,
 	htmlToBlocks,
-	EmailsInputUI,
-} from 'zyra';
+} from '@zyra/builders';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { salesReport } from '../../../assets/template/emailTemplate/salesReport';
@@ -25,7 +25,7 @@ const RECIPIENT_CONFIG: Record<string, { icon: string; badge: string }> = {
 	Store: { icon: 'storefront', badge: 'blue' },
 	Admin: { icon: 'person', badge: ' green' },
 	Customer: { icon: 'user-circle', badge: 'yellow' },
-	default: { icon: 'mail', badge: ' default-badge' },
+	default: { icon: 'mail', badge: 'yellow' },
 };
 
 const CHANNEL_CONFIG: Record<
@@ -125,6 +125,8 @@ const EventRules: React.FC = () => {
 	}>({ start: 0, end: 0, field: null });
 	const [isLoading, setIsLoading] = useState(true);
 	const [useTemplate, setUseTemplate] = useState(false);
+	const [tablePage, setTablePage] = useState(1);
+	const [tablePerPage, setTablePerPage] = useState(10);
 
 	// Fetch notifications on mount
 	useEffect(() => {
@@ -176,6 +178,17 @@ const EventRules: React.FC = () => {
 		return notifications.filter((n) => n.tag === activeTag);
 	}, [notifications, activeTag]);
 
+	// The events endpoint returns every rule at once, so the table pages them
+	// client-side.
+	const pagedNotifications = useMemo(
+		() =>
+			filteredNotifications.slice(
+				(tablePage - 1) * tablePerPage,
+				tablePage * tablePerPage
+			),
+		[filteredNotifications, tablePage, tablePerPage]
+	);
+
 	const editNotification = notifications.find(
 		(item) => item.id === notificationId
 	);
@@ -185,6 +198,8 @@ const EventRules: React.FC = () => {
 
 	// Fetch notifications function for TableCard
 	const fetchNotifications = (query: QueryProps) => {
+		setTablePage(Number(query.paged) || 1);
+		setTablePerPage(Number(query.per_page) || 10);
 		setIsLoading(true);
 
 		apiRequest('GET', 'notifications', undefined, {
@@ -388,6 +403,47 @@ const EventRules: React.FC = () => {
 		},
 	};
 
+
+	// System-notification editor data: saved HTML (or the Sales Report
+	// template when picked) as editor blocks, plus this event's own
+	// `[placeholder]` tokens for the "Insert a tag" picker.
+	const systemTemplates = useMemo(
+		() => [
+			{
+				id: salesReport.id,
+				name: salesReport.name,
+				blocks: legacyEmailBlocksToEmailBlocks(salesReport.blocks),
+			},
+		],
+		[]
+	);
+	const systemMessageBlocks = useMemo(() => {
+		if (useTemplate || !formData.email_body) {
+			return systemTemplates[0].blocks;
+		}
+		try {
+			return legacyEmailBlocksToEmailBlocks(
+				htmlToBlocks(formData.email_body)
+			);
+		} catch (e) {
+			console.error('Builder load error:', e);
+			return systemTemplates[0].blocks;
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [formData.id, useTemplate, systemTemplates]);
+	const systemMergeTags = useMemo(
+		() =>
+			(formData.available_placeholders || '')
+				.split(',')
+				.map((item) => item.replace(/[[\]]/g, '').trim())
+				.filter(Boolean)
+				.map((name) => ({
+					token: `[${name}]`,
+					label: name.replace(/_/g, ' '),
+				})),
+		[formData.available_placeholders]
+	);
+
 	return (
 		<div
 			className="notification-container module-container tab-bg"
@@ -453,10 +509,12 @@ const EventRules: React.FC = () => {
 			</div>
 
 			{viewMode === 'list' && (
-				<Column>
+				<ColumnComponent>
 					<TableCard
 						headers={headers}
-						rows={filteredNotifications}
+						rows={pagedNotifications}
+						totalRows={filteredNotifications.length}
+						ids={pagedNotifications.map((notif) => notif.id)}
 						showMenu={false}
 						isLoading={isLoading}
 						onQueryUpdate={fetchNotifications}
@@ -466,11 +524,11 @@ const EventRules: React.FC = () => {
 							setNotificationId(row.id);
 						}}
 					/>
-				</Column>
+				</ColumnComponent>
 			)}
 
 			{openChannel && (
-				<PopupUI
+				<PopupComponent
 					open={!!openChannel}
 					onClose={() => setOpenChannel(null)}
 					width="90%"
@@ -488,105 +546,37 @@ const EventRules: React.FC = () => {
 				>
 					<>
 						{openChannel === 'system' && (
-							<BlockBuilderUI
-								key={formData.id}
-								name="system_message_builder"
-								value={(() => {
-									try {
-										if (
-											formData.email_body &&
-											!useTemplate
-										) {
-											return {
-												emailTemplates: [
-													{
-														id: 'store-registration',
-														blocks: htmlToBlocks(
-															formData.email_body
-														),
-													},
-												],
-												activeEmailTemplateId:
-													'store-registration',
-											};
-										}
-										return {
-											emailTemplates: [salesReport],
-											activeEmailTemplateId:
-												'store-registration',
-										};
-									} catch (e) {
-										console.error('Builder load error:', e);
-
-										return {
-											emailTemplates: [salesReport],
-											activeEmailTemplateId:
-												'store-registration',
-										};
-									}
-								})()}
-								onChange={(data) => {
-									const activeTemplate =
-										data.emailTemplates?.find(
-											(t) =>
-												t.id ===
-												data.activeEmailTemplateId
-										);
-
-									const blocks = activeTemplate?.blocks || [];
-
-									// generate HTML
-									const html = renderBlocksToHTML(blocks);
-
-									const updatedForm = {
-										...formData,
-
-										// SAVE HTML
-										email_body: html,
-									};
-
-									if (!updatedForm.id) {
+							<EmailBuilder
+								key={`${formData.id}-${useTemplate ? 'template' : 'saved'}`}
+								value={systemMessageBlocks}
+								templates={systemTemplates}
+								activeTemplateId={useTemplate ? salesReport.id : undefined}
+								onTemplateSelect={() => setUseTemplate(true)}
+								mergeTags={systemMergeTags}
+								onChange={(blocks) => {
+									if (!formData.id) {
 										return;
 									}
-
+									// Saved as HTML, same as before, so existing
+									// notifications keep loading.
+									const updatedForm = {
+										...formData,
+										email_body: renderBlocksToHTML(
+											emailBlocksToLegacyEmailBlocks(blocks)
+										),
+									};
 									setFormData(updatedForm);
-									handleEmailSave(
-										updatedForm.id,
-										updatedForm
-									);
-								}}
-								field={{
-									key: 'email_body_builder',
-									context: 'email',
-									visibleGroups: ['email'],
-									emailTemplates: [salesReport],
-									availablePlaceholder:
-										formData.available_placeholders
-											? formData.available_placeholders
-													.split(',')
-													.map((item) =>
-														item
-															.replace(
-																/[\[\]]/g,
-																''
-															)
-															.trim()
-													)
-													.filter(Boolean)
-											: [],
-								}}
-								onTemplateSelect={(id) => {
-									setUseTemplate(true); // 🔥 force template mode
+									handleEmailSave(updatedForm.id, updatedForm);
 								}}
 							/>
 						)}
-						<FormGroupWrapper>
+						<FormGroupWrapperComponent>
 							{openChannel === 'sms' && (
-								<FormGroup
+								<FormGroupComponent
 									label={__('SMS Content', 'multivendorx')}
 									htmlFor="sms-content"
 								>
-									<TextAreaUI
+									<TextAreaInput
 										name="sms_content"
 										value={formData.sms_content || ''}
 										onClick={(e) =>
@@ -604,11 +594,11 @@ const EventRules: React.FC = () => {
 											handleAutoSave(formData.id)
 										}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 							)}
 							{openChannel === 'mail' && (
 								<>
-									<FormGroup
+									<FormGroupComponent
 										cols={6}
 										label={__(
 											'Email Subject',
@@ -616,7 +606,7 @@ const EventRules: React.FC = () => {
 										)}
 										htmlFor="email-subject"
 									>
-										<BasicInputUI
+										<TextInput
 											name="email_subject"
 											value={formData.email_subject || ''}
 											onClick={(e) =>
@@ -633,13 +623,13 @@ const EventRules: React.FC = () => {
 												handleAutoSave(formData.id)
 											}
 										/>
-									</FormGroup>
-									<FormGroup
+									</FormGroupComponent>
+									<FormGroupComponent
 										cols={6}
 										label={__('Email Body', 'multivendorx')}
 										htmlFor="email-body"
 									>
-										<TextAreaUI
+										<TextAreaInput
 											name="email_body"
 											value={formData.email_body || ''}
 											onClick={(e) =>
@@ -656,7 +646,7 @@ const EventRules: React.FC = () => {
 												handleAutoSave(formData.id)
 											}
 										/>
-									</FormGroup>
+									</FormGroupComponent>
 								</>
 							)}
 							{systemTags?.length > 0 && (
@@ -672,13 +662,13 @@ const EventRules: React.FC = () => {
 									))}
 								</div>
 							)}
-						</FormGroupWrapper>
+						</FormGroupWrapperComponent>
 					</>
-				</PopupUI>
+				</PopupComponent>
 			)}
 
 			{editingNotification && (
-				<PopupUI
+				<PopupComponent
 					open={!!editingNotification}
 					onClose={() => setEditingNotification(null)}
 					width={32.25}
@@ -689,8 +679,8 @@ const EventRules: React.FC = () => {
 						description: editNotification?.description,
 					}}
 				>
-					<FormGroupWrapper>
-						<FormGroup
+					<FormGroupWrapperComponent>
+						<FormGroupComponent
 							label={__('Delivery method', 'multivendorx')}
 						>
 							<div className="buttons-wrapper left">
@@ -723,8 +713,8 @@ const EventRules: React.FC = () => {
 									);
 								})}
 							</div>
-						</FormGroup>
-						<FormGroup label={__('Recipients', 'multivendorx')}>
+						</FormGroupComponent>
+						<FormGroupComponent label={__('Recipients', 'multivendorx')}>
 							<div className="buttons-wrapper left">
 								{defaultRecipients?.map((r: Recipient) => {
 									const { icon } =
@@ -750,11 +740,11 @@ const EventRules: React.FC = () => {
 									);
 								})}
 							</div>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							label={__('Additional Recipients', 'multivendorx')}
 						>
-							<EmailsInputUI
+							<EmailInput
 								mode="multiple"
 								value={
 									newRecipientValue
@@ -813,9 +803,9 @@ const EventRules: React.FC = () => {
 									}
 								}}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</PopupUI>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</PopupComponent>
 			)}
 
 			{viewMode === 'grid' && (
@@ -890,7 +880,7 @@ const EventRules: React.FC = () => {
 											);
 										})}
 									</div>
-									<ButtonInputUI
+									<ButtonInput
 										buttons={[
 											{
 												icon: 'edit',

@@ -2,7 +2,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { QueryProps, TableCard, TableRow, getApiLink } from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { QueryProps, TableCard, TableRow } from '@zyra/table';
+import { formatDate, truncateText } from '@/services/commonFunction';
 
 interface LatestReviewProps {
 	store_id?: number;
@@ -44,23 +46,36 @@ const LatestReview: React.FC<LatestReviewProps> = ({ store_id }) => {
 	const headers = {
 		customer_name: {
 			label: __('Customer', 'multivendorx'),
-		},
-		overall_rating: {
-			label: __('Rating', 'multivendorx'),
-		},
-		review_content: {
-			label: __('Content', 'multivendorx'),
-		},
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'person',
+		info_descriptions: [
+			{
+				label: __('Rating', 'multivendorx'),
+				icon: 'store-review',
+				value: row.overall_rating ?? '—',
+			},
+			{
+				label: __('Content', 'multivendorx'),
+				icon: 'text',
+				value: truncateText(row.review_content, 20) || '—',
+			},
+		],
+		info_badges: [{ text: formatDate(row.date_created), color: 'blue' }],
+	}));
 
 	return (
 		<TableCard
 			headers={headers}
-			rows={rows}
+			variant="transparent"
+			rows={infoRows}
 			isLoading={isLoading}
 			onQueryUpdate={doRefreshTableData}
 			showMenu={false}

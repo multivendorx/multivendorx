@@ -3,24 +3,22 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
+
+
+import { ButtonInput, SelectInput, TextInput } from '@zyra/inputs';
+import { getApiLink, useModules } from '@zyra/core';
 import {
-	PopupUI,
-	TableCard,
-	useModules,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-	NavigatorHeader,
-	ButtonInputUI,
-	getApiLink,
-	SelectInputUI,
-	BasicInputUI,
-	FormGroup,
-	FormGroupWrapper,
-} from 'zyra';
+	PopupComponent,
+	FormGroupComponent,
+	FormGroupWrapperComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
 	downloadCSV,
+	formatDate,
 	formatLocalDate,
+	formatStatusLabel,
 	toWcIsoDate,
 	dashNavigate,
 } from '../services/commonFunction';
@@ -176,8 +174,7 @@ const Orders: React.FC = () => {
 						label:
 							status === 'all'
 								? __('All', 'multivendorx')
-								: status.charAt(0).toUpperCase() +
-									status.slice(1),
+								: formatStatusLabel(status),
 						count: total,
 					};
 				});
@@ -216,55 +213,20 @@ const Orders: React.FC = () => {
 		{ label: __('Failed', 'multivendorx'), value: 'failed' },
 	];
 
-	const privacyHeaders = privacy?.includes('name')
-		? {
-				customer: {
-					label: __('Customer', 'multivendorx'),
-					render: (row) =>
-						row.billing?.first_name
-							? `${row.billing.first_name} ${row.billing.last_name || ''}`
-							: 'Guest',
-				},
-			}
-		: {};
+	const showCustomer = Boolean(privacy?.includes('name'));
 
 	const headers = {
-		id: {
+		order_title: {
 			label: __('Order ID', 'multivendorx'),
-			render: (row) => (
-				<>
-					<span
-						onClick={() =>
-							dashNavigate(navigate, [
-								'orders',
-								'view',
-								String(row.id),
-							])
-						}
-						className="link-item"
-					>
-						#{row.id}
-					</span>
-					{applyFilters('multivendorx_order_badge', null, row)}
-				</>
-			),
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
-
-		...privacyHeaders,
-
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
-		},
-
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
-		},
-
 		total: {
 			label: __('Total', 'multivendorx'),
-			type: 'currency',
+			type: 'labeled',
+			valueType: 'currency',
 		},
 
 		action: {
@@ -308,7 +270,59 @@ const Orders: React.FC = () => {
 			]),
 		},
 	};
+
+	const infoRows = rows.map((row: any) => {
+		const orderBadge = applyFilters(
+			'multivendorx_order_badge',
+			null,
+			row
+		);
+		return {
+			...row,
+			order_title: `#${row.id}`,
+			info_icon: 'order',
+			info_descriptions: [
+				...(orderBadge ? [{ value: orderBadge }] : []),
+				...(showCustomer
+					? [
+							{
+								label: __('Customer', 'multivendorx'),
+								icon: 'person',
+								value: row.billing?.first_name
+									? `${row.billing.first_name} ${row.billing.last_name || ''}`
+									: __('Guest', 'multivendorx'),
+							},
+						]
+					: []),
+			],
+			info_badges: [
+				{
+					text: formatStatusLabel(row.status),
+					color: `badge-${row.status}`,
+				},
+				{ text: formatDate(row.date_created), color: 'blue' },
+			],
+		};
+	});
+
 	const filters = [
+		{
+			key: 'status',
+			type: 'select',
+			label: __('Select Status', 'multivendorx'),
+			options: [
+				'pending',
+				'processing',
+				'on-hold',
+				'completed',
+				'cancelled',
+				'refunded',
+				'failed',
+			].map((orderStatus) => ({
+				value: orderStatus,
+				label: formatStatusLabel(orderStatus),
+			})),
+		},
 		{
 			key: 'created_at',
 			label: 'Created Date',
@@ -375,7 +389,9 @@ const Orders: React.FC = () => {
 	) => {
 		const params = {
 			search: query.searchValue,
-			status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+			status:
+				query.filter?.status ||
+				(query.categoryFilter === 'all' ? '' : query.categoryFilter),
 			orderby: query.orderby || 'date',
 			order: query.order || 'desc',
 			meta_key: 'multivendorx_store_id',
@@ -389,10 +405,9 @@ const Orders: React.FC = () => {
 		};
 
 		if (includePagination) {
-			params.page = query.page || 1;
+			params.page = query.paged || 1;
 			params.per_page = query.per_page || 10;
 		}
-
 		return params;
 	};
 
@@ -463,6 +478,20 @@ const Orders: React.FC = () => {
 			.replace(/\b\w/g, (char) => char.toUpperCase()),
 	}));
 
+	// The table folds order details into one info column, so the CSV export
+	// lists its columns explicitly (and flattens nested API fields) instead
+	// of reusing `headers`. Customer fields respect the privacy setting.
+	const csvHeaders = {
+		id: { label: __('Order ID', 'multivendorx') },
+		...(showCustomer && {
+			customer_name: { label: __('Customer', 'multivendorx') },
+			customer_email: { label: __('Email', 'multivendorx') },
+		}),
+		status: { label: __('Status', 'multivendorx') },
+		date_created: { label: __('Date', 'multivendorx') },
+		total: { label: __('Total', 'multivendorx') },
+	};
+
 	const downloadCSVByQuery = (query: QueryProps) => {
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
@@ -472,10 +501,17 @@ const Orders: React.FC = () => {
 				params: buildOrderQueryParams(query, false),
 			})
 			.then((response) => {
-				const rows = response.data || [];
+				const rows = (response.data || []).map((order: any) => ({
+					...order,
+					customer_name: order.billing?.first_name
+						? `${order.billing.first_name} ${order.billing.last_name || ''}`.trim()
+						: __('Guest', 'multivendorx'),
+					customer_email: order.billing?.email || '',
+					status: formatStatusLabel(order.status),
+				}));
 
 				downloadCSV(
-					headers,
+					csvHeaders,
 					rows,
 					`order-${formatLocalDate(new Date())}.csv`
 				);
@@ -494,7 +530,7 @@ const Orders: React.FC = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Orders', 'multivendorx')}
 				headerDescription={__(
 					'View, track, and manage all your store orders and earnings in one place.',
@@ -517,7 +553,8 @@ const Orders: React.FC = () => {
 			/>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}
@@ -562,17 +599,17 @@ const Orders: React.FC = () => {
 				}}
 			/>
 
-			<PopupUI
+			<PopupComponent
 				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
 				width={31.25}
 			>
 				{message}
-			</PopupUI>
+			</PopupComponent>
 
 			{tracking && (
-				<PopupUI
+				<PopupComponent
 					open={tracking}
 					onClose={() => setTracking(false)}
 					width={31.25}
@@ -582,7 +619,7 @@ const Orders: React.FC = () => {
 						title: __('Tracking', 'multivendorx'),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',
@@ -602,13 +639,13 @@ const Orders: React.FC = () => {
 						/>
 					}
 				>
-					<FormGroupWrapper>
-						<FormGroup
+					<FormGroupWrapperComponent>
+						<FormGroupComponent
 							cols={6}
 							label={__('Shipping Providers', 'multivendorx')}
 							htmlFor="provider"
 						>
-							<SelectInputUI
+							<SelectInput
 								type="single-select"
 								name="provider"
 								value={formData.provider || ''}
@@ -617,48 +654,48 @@ const Orders: React.FC = () => {
 									handleChange('provider', selected)
 								}
 							/>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							cols={6}
 							label={__('Date', 'multivendorx')}
 							htmlFor="tracking_date"
 						>
-							<BasicInputUI
+							<TextInput
 								type="date"
 								value={formData.tracking_date}
 								onChange={(value: any) =>
 									handleChange('tracking_date', value)
 								}
 							/>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							cols={6}
 							label={__('Tracking URL', 'multivendorx')}
 							htmlFor="tracking_url"
 						>
-							<BasicInputUI
+							<TextInput
 								type="text"
 								value={formData.tracking_url}
 								onChange={(value: any) =>
 									handleChange('tracking_url', value)
 								}
 							/>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							cols={6}
 							label={__('Tracking Number', 'multivendorx')}
 							htmlFor="title"
 						>
-							<BasicInputUI
+							<TextInput
 								type="text"
 								value={formData.tracking_id}
 								onChange={(value: any) =>
 									handleChange('tracking_id', value)
 								}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</PopupUI>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</PopupComponent>
 			)}
 		</>
 	);

@@ -9,6 +9,8 @@ namespace MultiVendorX\Privacy;
 
 use MultiVendorX\Store\Store;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Store Policy Frontend class
  *

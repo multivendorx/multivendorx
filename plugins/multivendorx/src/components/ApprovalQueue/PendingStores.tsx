@@ -2,18 +2,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	FormGroupWrapper,
-	TableCard,
-	ButtonInputUI,
-	TextAreaUI,
-	PopupUI,
-	QueryProps,
-	InfoItem,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { FormGroupWrapperComponent, PopupComponent } from '@zyra/components';
+import { ButtonInput, TextAreaInput } from '@zyra/inputs';
+import { TableCard, QueryProps } from '@zyra/table';
 
-import { formatLocalDate, getUrl } from '@/services/commonFunction';
+import { formatDate, formatLocalDate, getUrl } from '@/services/commonFunction';
 
 const PendingStores: React.FC<object> = () => {
 	const [rows, setRows] = useState([]);
@@ -90,20 +84,11 @@ const PendingStores: React.FC<object> = () => {
 	const headers = {
 		store_name: {
 			label: __('Store', 'multivendorx'),
-			render: (row) => (
-				<InfoItem
-					title={row.store_name}
-					titleLink={getUrl(row.id, 'store', 'edit')}
-					avatar={{
-						iconClass: 'store-inventory',
-					}}
-				/>
-			),
-		},
-		applied_on: {
-			label: __('Applied On', 'multivendorx'),
-			sortable: true,
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			key: 'action',
@@ -173,11 +158,32 @@ const PendingStores: React.FC<object> = () => {
 				setIsLoading(false);
 			});
 	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'store-inventory',
+		info_link: getUrl(row.id, 'store', 'edit'),
+		info_descriptions: row.description
+			? [
+					{
+						label: __('Desc', 'multivendorx'),
+						icon: 'text',
+						value: String(row.description)
+							.replace(/<[^>]*>/g, '')
+							.trim()
+							.slice(0, 60),
+					},
+				]
+			: [],
+		info_badges: [{ text: formatDate(row.applied_on), color: 'blue' }],
+	}));
+
 	return (
 		<>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}
@@ -189,7 +195,7 @@ const PendingStores: React.FC<object> = () => {
 
 			{/* Reject Popup */}
 			{rejectPopupOpen && (
-				<PopupUI
+				<PopupComponent
 					open={rejectPopupOpen}
 					onClose={() => {
 						setRejectPopupOpen(false);
@@ -201,7 +207,7 @@ const PendingStores: React.FC<object> = () => {
 						title: __('Reason', 'multivendorx'),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',
@@ -223,8 +229,8 @@ const PendingStores: React.FC<object> = () => {
 					}
 				>
 					<>
-						<FormGroupWrapper>
-							<TextAreaUI
+						<FormGroupWrapperComponent>
+							<TextAreaInput
 								name="reject_reason"
 								value={rejectReason}
 								onChange={(value: string) =>
@@ -236,9 +242,9 @@ const PendingStores: React.FC<object> = () => {
 								)}
 								rows={4}
 							/>
-						</FormGroupWrapper>
+						</FormGroupWrapperComponent>
 					</>
-				</PopupUI>
+				</PopupComponent>
 			)}
 		</>
 	);

@@ -33,7 +33,7 @@ jQuery(document).ready(function ($) {
 		$.post(
 			customerQueriesFrontend.ajaxurl,
 			{
-				action: 'customer_queries_submit',
+				action: 'multivendorx_customer_queries_submit',
 				product_id: productId,
 				question: question,
 				nonce: customerQueriesFrontend.nonce,
@@ -70,7 +70,7 @@ jQuery(document).ready(function ($) {
 		$.post(
 			customerQueriesFrontend.ajaxurl,
 			{
-				action: 'customer_queries_search',
+				action: 'multivendorx_customer_queries_search',
 				product_id: productId,
 				search: search || '',
 				nonce: customerQueriesFrontend.nonce,
@@ -106,7 +106,7 @@ jQuery(document).ready(function ($) {
 		$.post(
 			customerQueriesFrontend.ajaxurl,
 			{
-				action: 'customer_queries_vote',
+				action: 'multivendorx_customer_queries_vote',
 				queries_id: queriesId,
 				type: type,
 				nonce: customerQueriesFrontend.nonce,

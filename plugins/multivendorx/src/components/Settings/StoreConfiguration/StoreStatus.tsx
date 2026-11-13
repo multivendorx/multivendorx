@@ -3,13 +3,10 @@ import React, { useEffect, JSX } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { SettingProvider, useSetting } from '../../../contexts/SettingContext';
 import { getTemplateData } from '../../../services/templateService';
-import {
-	getAvailableSettings,
-	getSettingById,
-	RenderComponent,
-	useModules,
-	SettingsNavigator,
-} from 'zyra';
+
+import { InputRenderer } from '@zyra/inputs';
+import { getAvailableSettings, getSettingById, useModules } from '@zyra/core';
+import { NavigatorComponent } from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 
 const StoreStatus: React.FC = () => {
@@ -126,7 +123,7 @@ const StoreStatus: React.FC = () => {
 		}, [setting, settingName, currentTab]);
 
 		return settingName === currentTab ? (
-			<RenderComponent
+			<InputRenderer
 				settings={settingModal}
 				proSetting={appLocalizer.pro_settings_list}
 				setting={setting}
@@ -141,7 +138,7 @@ const StoreStatus: React.FC = () => {
 
 	return (
 		<SettingProvider>
-			<SettingsNavigator
+			<NavigatorComponent
 				settingContent={settingContent}
 				currentSetting={initialTab}
 				getForm={GetForm}

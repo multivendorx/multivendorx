@@ -1,5 +1,5 @@
 .notifima-popup-overlay {
-  margin: 0 0;
+  margin: 0;
   position: fixed;
   top: 0;
   left: 0;
@@ -50,4 +50,10 @@
 .notifima-subscribe-form form {
   display: flex;
   flex-direction: column;
+}
+
+@media screen and (width <=37.5rem) {
+  .notifima-popup{
+    width: 95% !important;
+  }
 }

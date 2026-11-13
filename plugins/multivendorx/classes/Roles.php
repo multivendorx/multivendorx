@@ -45,6 +45,8 @@ class Roles {
             );
         }
 
+        $wp_roles->add_cap( 'store_owner', 'read' );
+
         $all_caps = $this->get_custom_capability();
         foreach ( $all_caps as $cap ) {
             $wp_roles->add_cap( 'administrator', $cap );
@@ -101,7 +103,7 @@ class Roles {
             'delete_stores',
         );
 
-        $store_cap = MultiVendorX()->setting->get_option( Utill::MULTIVENDORX_SETTINGS['store-permissions'] );
+        $store_cap        = MultiVendorX()->setting->get_option( Utill::MULTIVENDORX_SETTINGS['store-permissions'] );
         $store_owner_caps = array();
         foreach ( (array) $store_cap as $caps ) {
             $store_owner_caps = array_merge( $store_owner_caps, (array) $caps );
@@ -129,7 +131,7 @@ class Roles {
                     $request_uri  = filter_input( INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_URL ) ?? '';
                     $is_edit_page = strpos( $request_uri, 'element=edit' ) !== false || strpos( $request_uri, '/edit/' ) !== false;
 
-                    if ( defined( 'DOING_AJAX' ) && DOING_AJAX || $is_edit_page ) {
+                    if ( ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || $is_edit_page ) {
                         $caps = array( 'edit_posts' );
                     } else {
                         $caps = array( 'do_not_allow' );

@@ -9,6 +9,8 @@ namespace MultiVendorX\MarketplaceCompliance;
 
 use MultiVendorX\Utill;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Marketplace Compliance Util class
  *
@@ -21,20 +23,20 @@ class Util {
 	/**
 	 * Create a new report abuse record.
 	 *
-	 * @param array $data The data for the new report abuse record.
+	 * @param array $report_data The data for the new report abuse record.
 	 * @return int|false The ID of the new record, or false on failure.
 	 */
-	public static function create_report_abuse( $data = array() ) {
+	public static function create_report_abuse( $report_data = array() ) {
 		global $wpdb;
 
 		$table = $wpdb->prefix . Utill::TABLES['report_abuse'];
 
 		$insert_data = array(
-			'store_id'   => isset( $data['store_id'] ) ? intval( $data['store_id'] ) : 0,
-			'product_id' => isset( $data['product_id'] ) ? intval( $data['product_id'] ) : 0,
-			'name'       => isset( $data['name'] ) ? sanitize_text_field( $data['name'] ) : '',
-			'email'      => isset( $data['email'] ) ? sanitize_email( $data['email'] ) : '',
-			'message'    => isset( $data['message'] ) ? sanitize_textarea_field( $data['message'] ) : '',
+			'store_id'   => isset( $report_data['store_id'] ) ? intval( $report_data['store_id'] ) : 0,
+			'product_id' => isset( $report_data['product_id'] ) ? intval( $report_data['product_id'] ) : 0,
+			'name'       => isset( $report_data['name'] ) ? sanitize_text_field( $report_data['name'] ) : '',
+			'email'      => isset( $report_data['email'] ) ? sanitize_email( $report_data['email'] ) : '',
+			'message'    => isset( $report_data['message'] ) ? sanitize_textarea_field( $report_data['message'] ) : '',
 		);
 
 		$inserted = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
@@ -61,54 +63,64 @@ class Util {
 	public static function get_report_abuse_information( $args = array() ) {
 		global $wpdb;
 
-		$where = array();
-
 		$table = $wpdb->prefix . Utill::TABLES['report_abuse'];
 
-		// Existing filters.
-		if ( isset( $args['store_ids'] ) && ! empty( $args['store_ids'] ) ) {
-			$store_ids = implode( ',', array_map( 'intval', $args['store_ids'] ) );
-			$where[]   = "store_id IN ($store_ids)";
+		$conditions = array();
+		$values     = array();
+
+		if ( ! empty( $args['store_ids'] ) ) {
+			$ids          = array_map( 'intval', (array) $args['store_ids'] );
+			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+			$conditions[] = 'store_id IN (' . $placeholders . ')';
+			$values       = array_merge( $values, $ids );
 		}
 
-	    if ( isset( $args['email'] ) && ! empty( $args['email'] ) ) {
-			$where[] = $wpdb->prepare( 'email = %s', sanitize_email( $args['email'] ) );
+		if ( ! empty( $args['email'] ) ) {
+			$conditions[] = 'email = %s';
+			$values[]     = sanitize_email( $args['email'] );
 		}
 
-		// Date range filter.
+		if ( ! empty( $args['product_id'] ) ) {
+			$conditions[] = 'product_id = %d';
+			$values[]     = absint( $args['product_id'] );
+		}
+
 		if ( isset( $args['date_range'] ) ) {
-			$start   = esc_sql( $args['date_range']['start'] );
-			$end     = esc_sql( $args['date_range']['end'] );
-			$where[] = "DATE(created_at) BETWEEN '$start' AND '$end'";
+			$conditions[] = 'DATE(created_at) BETWEEN %s AND %s';
+			$values[]     = (string) ( $args['date_range']['start'] ?? '' );
+			$values[]     = (string) ( $args['date_range']['end'] ?? '' );
 		}
 
-		// Build base query.
-		$query = isset( $args['count'] ) && $args['count']
-			? "SELECT COUNT(*) FROM $table" // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-			: "SELECT * FROM $table"; // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$where_sql = $conditions ? ' WHERE ' . implode( ' AND ', $conditions ) : '';
 
-		if ( ! empty( $where ) ) {
-			$query .= ' WHERE ' . implode( ' AND ', $where );
+		if ( ! empty( $args['count'] ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$result = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT COUNT(*) FROM %i' . $where_sql,
+					$table,
+					...$values
+				)
+			);
+		} else {
+			// Order by (column and direction both allowlisted); default is newest first.
+			$allowed   = array( 'created_at', 'updated_at', 'id', 'store_id', 'product_id' );
+			$order_by  = ( isset( $args['order_by'] ) && in_array( $args['order_by'], $allowed, true ) ) ? $args['order_by'] : 'created_at';
+			$order_dir = ( isset( $args['order'] ) && 'ASC' === strtoupper( $args['order'] ) ) ? 'ASC' : 'DESC';
+			$has_limit = isset( $args['limit'], $args['offset'] );
+			$limit     = $has_limit ? intval( $args['limit'] ) : PHP_INT_MAX;
+			$offset    = $has_limit ? intval( $args['offset'] ) : 0;
+
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$result = (array) $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT * FROM %i' . $where_sql . ' ORDER BY %i ' . $order_dir . ' LIMIT %d OFFSET %d',
+					$table,
+					...array_merge( $values, array( $order_by, $limit, $offset ) )
+				),
+				ARRAY_A
+			);
 		}
-
-		// Order by.
-		if ( empty( $args['count'] ) && ! empty( $args['order_by'] ) ) {
-			$allowed = array('created_at','updated_at','id','store_id','product_id'); 
-			$order_by = in_array( $args['order_by'], $allowed, true ) ? $args['order_by'] : 'created_at';
-			$order    = $args['order'] ?? 'DESC';
-			$query   .= " ORDER BY $order_by $order";
-		}
-
-		// Limit & offset.
-		if ( isset( $args['limit'], $args['offset'] ) && empty( $args['count'] ) ) {
-			$limit  = intval( $args['limit'] );
-			$offset = intval( $args['offset'] );
-			$query .= " LIMIT $limit OFFSET $offset";
-		}
-
-		$result = isset( $args['count'] ) && $args['count']
-		? (int) $wpdb->get_var( $query ) // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-		: (array) $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );

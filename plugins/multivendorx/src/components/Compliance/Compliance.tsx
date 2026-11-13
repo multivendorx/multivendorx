@@ -1,16 +1,17 @@
 /* global appLocalizer */
+
+import { useModules } from '@zyra/core';
 import {
-	useModules,
-	Container,
-	Column,
-	ComponentStatusView,
-	SettingsNavigator,
-} from 'zyra';
+	ContainerComponent,
+	ColumnComponent,
+	ModuleGuardComponent,
+	NavigatorComponent,
+} from '@zyra/components';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../AdminDashboard/AdminDashboard.scss';
 import { applyFilters } from '@wordpress/hooks';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 
 if (!window.multivendorxComplianceStore) {
@@ -77,6 +78,7 @@ const Compliance = () => {
 	}, []);
 
 	const { modules } = useModules();
+	const navigate = useNavigate();
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
 	const settingContent = applyFilters(
@@ -95,7 +97,7 @@ const Compliance = () => {
 	const getForm = (tabId: string) => {
 		return (
 			applyFilters('multivendorx_compliance_tab_content', null, {
-				tabId, useLocation, Link
+				tabId, useLocation, navigate, Link
 			}) || <div />
 		);
 	};
@@ -103,13 +105,14 @@ const Compliance = () => {
 	return (
 		<>
 			{settingContent.length > 0 ? (
-				<SettingsNavigator
+				<NavigatorComponent
 					settingContent={settingContentWithCounts}
 					currentSetting={location.get('subtab') as string}
 					getForm={getForm}
 					prepareUrl={(subTab: string) =>
 						`?page=multivendorx#&tab=compliance&subtab=${subTab}`
 					}
+					onNavigate={navigate}
 					appLocalizer={appLocalizer}
 					Link={Link}
 					variant={'card'}
@@ -122,9 +125,9 @@ const Compliance = () => {
 					)}
 				/>
 			) : (
-				<Container general>
-					<Column>
-						<ComponentStatusView
+				<ContainerComponent general>
+					<ColumnComponent>
+						<ModuleGuardComponent
 							title={__(
 								'Looks like the compliance module isn’t active yet!',
 								'multivendorx'
@@ -136,8 +139,8 @@ const Compliance = () => {
 							buttonText={__('Enable Now', 'multivendorx')}
 							buttonLink={`${appLocalizer.admin_dashboard_url}#&tab=modules&module=marketplace-compliance`}
 						/>
-					</Column>
-				</Container>
+					</ColumnComponent>
+				</ContainerComponent>
 			)}
 		</>
 	);

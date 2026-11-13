@@ -12,7 +12,7 @@ use CatalogX\Utill;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * catalogx REST API Quote controller.
+ * CatalogX REST API Quote controller.
  *
  * @class       Module class
  * @version     PRODUCT_VERSION
@@ -38,7 +38,7 @@ class Quotes extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'create_item' ),
-                    'permission_callback' => array( $this, 'create_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'catalogx_create_item_permissions_check' ),
                 ),
             )
         );
@@ -49,20 +49,13 @@ class Quotes extends \WP_REST_Controller {
      *
      * @param object $request The request object.
      */
-    public function create_item_permissions_check( $request ) {
-        $user_id = CatalogX()->current_user_id;
-        // For non-logged in user.
-        if ( 0 === $user_id ) {
-            return true;
-        }
-
-        // Check if user is admin or customer.
-        return current_user_can( 'read' ) || current_user_can( 'manage_options' );
+    public function catalogx_create_item_permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'customer', 'wholesale_user', 'manage_options' ), '', 'quote_user_permission' );
     }
 
 
     /**
-     * create an item.
+     * Create an item.
      *
      * @param object $request The request object.
      */
@@ -75,22 +68,13 @@ class Quotes extends \WP_REST_Controller {
         }
 
         try {
-            $form_data = $request->get_param( 'formData' ) ?? $request->get_param( 'enquiry' ) ?? array();
+            $rejection_response = apply_filters( 'catalogx_quote_rejection_response', null, $request );
 
-            // Handle rejection case.
-            $order_id = $request->get_param( 'orderId' );
-            if ( ! empty( $order_id ) ) {
-                $status = $request->get_param( 'status' );
-                $reason = $request->get_param( 'reason' );
-                if ( ! empty( $order_id ) && ! empty( $status ) && ! empty( $reason ) ) {
-                    $order = wc_get_order( $order_id );
-                    $order->update_status( 'wc-quote-rejected' );
-                    $order->set_customer_note( $reason );
-                    $order->save();
-                    /* translators: %s: reject quotation number. */
-                    return rest_ensure_response( array( 'message' => sprintf( __( 'You have confirmed rejection of the quotation No: %d', 'catalogx' ), $order_id ) ) );
-                }
+            if ( null !== $rejection_response ) {
+                return $rejection_response;
             }
+
+            $form_data = $request->get_param( 'formData' ) ?? $request->get_param( 'enquiry' ) ?? array();
 
             if ( empty( $form_data ) ) {
                 return new \WP_Error( 'invalid_data', __( 'Missing form data.', 'catalogx' ), array( 'status' => 400 ) );

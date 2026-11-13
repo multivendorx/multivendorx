@@ -43,9 +43,11 @@
         label {
             margin: 0 !important;
         }
+
         .category-name{
             padding-left: 0.313rem;
         }
+
         .sub-category {
             padding: 0.5rem 0.5rem 0;
         }
@@ -110,6 +112,7 @@
         width: 100%;
     }
 }
+
 // Product Add-ons end
 
 
@@ -135,7 +138,7 @@
     }
 
     .option-wrapper {
-        padding: 1rem 5rem 0 5rem;
+        padding: 1rem 5rem 0;
         display: flex;
         flex-direction: column;
         gap: 0.625rem;

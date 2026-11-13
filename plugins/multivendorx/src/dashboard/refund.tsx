@@ -2,16 +2,19 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	InfoItem,
-	NavigatorHeader,
-	QueryProps,
-	TableCard,
-	TableRow,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
 
-import { dashNavigate, formatLocalDate } from '@/services/commonFunction';
+import { NavigatorHeaderComponent } from '@zyra/components';
+import { QueryProps, TableCard, TableRow } from '@zyra/table';
+
+import {
+	dashNavigate,
+	formatCurrency,
+	formatDate,
+	formatLocalDate,
+	formatStatusLabel,
+	truncateText,
+} from '@/services/commonFunction';
 import { useNavigate } from 'react-router-dom';
 
 const Refund: React.FC = () => {
@@ -24,77 +27,72 @@ const Refund: React.FC = () => {
 		appLocalizer.admin_settings?.privacy?.[
 			'customer_information_access'
 		];
-	const privacyHeaders = privacy?.includes('name')
-		? {
-				customer_name: {
-					label: __('Customer', 'multivendorx'),
-					width: 18,
-					render: (row) => {
-						return (
-							<InfoItem
-								title={row.customer_name}
-								// titleLink={getUrl(row.id, 'product') || ''}
-								avatar={{
-									image: row.images?.[0]?.src || '',
-									iconClass: row.images?.[0]?.src
-										? ''
-										: 'person',
-								}}
-								descriptions={[
-									{
-										label: __('Email', 'multivendorx'),
-										value: row.email,
-									},
-								]}
-							/>
-						);
-					},
-				},
-			}
-		: {};
+	const showCustomer = Boolean(privacy?.includes('name'));
 
 	const headers = {
-		order_id: {
+		order_title: {
 			label: __('Order', 'multivendorx'),
-			isSortable: true,
-			render: (row) => (
-				<span
-					className="link-item"
-					onClick={() =>
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
+		},
+		action: {
+			type: 'action',
+			label: __('Action', 'multivendorx'),
+			actions: [
+				{
+					label: __('View Order', 'multivendorx'),
+					icon: 'eye',
+					onClick: (row) =>
 						dashNavigate(navigate, [
 							'orders',
 							'view',
 							String(row.order_id),
-						])
-					}
-				>
-					#{row.order_id}
-				</span>
-			),
-		},
-
-		...privacyHeaders,
-
-		amount: {
-			label: __('Refund Amount', 'multivendorx'),
-			type: 'currency',
-		},
-
-		customer_reason: {
-			label: __('Refund Reason', 'multivendorx'),
-		},
-
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
-		},
-
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
-			isSortable: true,
+						]),
+				},
+			],
 		},
 	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		order_title: `#${row.order_id}`,
+		info_icon: 'marketplace-refund',
+		info_descriptions: [
+			...(showCustomer
+				? [
+						{
+							label: __('Customer', 'multivendorx'),
+							icon: 'person',
+							value: row.customer_name || '—',
+						},
+						{
+							label: __('Email', 'multivendorx'),
+							icon: 'mail',
+							value: row.email || '—',
+						},
+					]
+				: []),
+			{
+				label: __('Refund Amount', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.amount),
+			},
+			{
+				label: __('Refund Reason', 'multivendorx'),
+				icon: 'question',
+				value: truncateText(row.customer_reason, 20) || '—',
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.date_created), color: 'blue' },
+		],
+	}));
 	const filters = [
 		{
 			key: 'created_at',
@@ -147,7 +145,7 @@ const Refund: React.FC = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Refund', 'multivendorx')}
 				headerDescription={__(
 					'Manage and process refund requests from customers.',
@@ -156,7 +154,8 @@ const Refund: React.FC = () => {
 			/>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

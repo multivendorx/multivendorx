@@ -1,23 +1,24 @@
 /* global appLocalizer */
 import React, { useEffect, useRef, useState } from 'react';
+import { getApiLink, useOutsideClick } from '@zyra/core';
+
 import {
-	TableRow,
-	ButtonInputUI,
-	BasicInputUI,
-	Card,
-	Column,
-	Container,
-	FormGroup,
-	FormGroupWrapper,
-	NavigatorHeader,
-	SelectInputUI,
-	TableCard,
-	TextAreaUI,
-	getApiLink,
-	useOutsideClick,
-	EmailsInputUI,
-	InfoItem,
-} from 'zyra';
+	ButtonInput,
+	TextInput,
+	SelectInput,
+	TextAreaInput,
+	EmailInput,
+} from '@zyra/inputs';
+import {
+	CardComponent,
+	ColumnComponent,
+	ContainerComponent,
+	FormGroupComponent,
+	FormGroupWrapperComponent,
+	InformationItemComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableRow, TableCard } from '@zyra/table';
 import axios from 'axios';
 import { formatCurrency, dashNavigate } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';
@@ -71,7 +72,7 @@ const AddOrder = () => {
 				first_name: selectedCustomer?.first_name,
 				last_name: selectedCustomer?.last_name,
 				address_1: billingAddress.address_1,
-				address_2: billingAddress.address_2 ||'',
+				address_2: billingAddress.address_2 || '',
 				city: billingAddress.city,
 				state: billingAddress.state,
 				postcode: billingAddress.postcode,
@@ -101,7 +102,7 @@ const AddOrder = () => {
 				first_name: selectedCustomer?.first_name,
 				last_name: selectedCustomer?.last_name,
 				address_1: shippingAddress.address_1,
-				address_2: shippingAddress.address_2 ||'',
+				address_2: shippingAddress.address_2 || '',
 				city: shippingAddress.city,
 				state: shippingAddress.state,
 				postcode: shippingAddress.postcode,
@@ -139,7 +140,7 @@ const AddOrder = () => {
 	}, []);
 
 	const customerOptions = [
-		{ label: 'Choose customer...', value: '' },
+		{ label: __('Choose customer...', 'multivendorx'), value: '' },
 		...(customers
 			? customers.map((c) => ({
 				label: `${c.first_name} ${c.last_name}`.trim() || c.email,
@@ -173,7 +174,7 @@ const AddOrder = () => {
 				const includeAdminProducts =
 					onboardingSettings?.store_selling_mode === 'franchise' &&
 					onboardingSettings?.products_available_for_franchise_orders ===
-						'store_and_admin_products';
+					'store_and_admin_products';
 
 				const filtered = products.filter((p) => {
 					const storeId = p.meta_data?.find(
@@ -205,13 +206,22 @@ const AddOrder = () => {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			})
 			.then((res) => {
-				const enabled = res.data.filter((m) => m.enabled === true);
+				const excludedGateways = [
+					'wc-bookings-gateway',
+					'wcappointmentsgateway',
+				];
 
-				const formatted = enabled.map((m) => ({
-					label: m.title,
-					value: m.id,
-					method_title: m.title,
-				}));
+				const formatted = res.data
+					.filter(
+						(m) =>
+							m.enabled &&
+							!excludedGateways.includes(m.id)
+					)
+					.map((m) => ({
+						label: m.title,
+						value: m.id,
+						method_title: m.title,
+					}));
 
 				setPaymentMethods(formatted);
 			});
@@ -238,7 +248,7 @@ const AddOrder = () => {
 	);
 
 	const paymentOptions = [
-		{ label: 'Select Payment Method', value: '' },
+		{ label: __('Select Payment Method', 'multivendorx'), value: '' },
 		...paymentMethods,
 	];
 
@@ -324,10 +334,10 @@ const AddOrder = () => {
 			set_paid: false,
 			customer_note: orderNote || '',
 			meta_data: [
-				{
-					key: 'multivendorx_store_id',
-					value: appLocalizer.store_id,
-				},
+				// {
+				// 	key: 'multivendorx_store_id',
+				// 	value: appLocalizer.store_id,
+				// },
 			],
 		};
 
@@ -476,7 +486,7 @@ const AddOrder = () => {
 								<div className="name">
 									{__('Shipping', 'multivendorx')}
 								</div>
-								<SelectInputUI
+								<SelectInput
 									name="shipping_method"
 									type="single-select"
 									options={availableShippingMethods}
@@ -523,7 +533,7 @@ const AddOrder = () => {
 			render: (row) => {
 				if (row.rowType === 'product') {
 					return (
-						<BasicInputUI
+						<TextInput
 							type="number"
 							min="1"
 							value={row.qty || 1}
@@ -548,7 +558,7 @@ const AddOrder = () => {
 					return formatCurrency(row.price * (row.qty || 1));
 				} else {
 					return (
-						<BasicInputUI
+						<TextInput
 							type="number"
 							min="0"
 							value={row.cost}
@@ -571,15 +581,9 @@ const AddOrder = () => {
 	const taxTableHeaders = {
 		name: {
 			label: __('Rate name', 'multivendorx'),
-		},
-		class: {
-			label: __('Tax class', 'multivendorx'),
-		},
-		code: {
-			label: __('Rate code', 'multivendorx'),
-		},
-		rate: {
-			label: __('Rate %', 'multivendorx'),
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
 		},
 		action: {
 			type: 'action',
@@ -598,6 +602,25 @@ const AddOrder = () => {
 		},
 	};
 
+	const taxRateRows = taxRates.map((row: any) => ({
+		...row,
+		info_icon: 'tax-compliance',
+		info_descriptions: [
+			{
+				label: __('Tax class', 'multivendorx'),
+				value: row.class || '—',
+			},
+			{
+				label: __('Rate code', 'multivendorx'),
+				value: row.code || '—',
+			},
+			{
+				label: __('Rate %', 'multivendorx'),
+				value: row.rate ?? '—',
+			},
+		],
+	}));
+
 	// billing & shipping common card
 	const renderAddressCard = (
 		title: string,
@@ -610,8 +633,10 @@ const AddOrder = () => {
 		const hasCustomer = !!selectedCustomer;
 
 		return (
-			<Card
+			<CardComponent
 				title={__(title, 'multivendorx')}
+				titleIcon="section"
+				desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 				iconName={hasCustomer && !isEditMode ? 'edit' : ''}
 				onIconClick={() => setIsEditMode(true)}
 			>
@@ -624,36 +649,36 @@ const AddOrder = () => {
 				)}
 
 				{hasCustomer && !isEditMode && (
-					<FormGroupWrapper>
-						<FormGroup row label={__('Address', 'multivendorx')}>
+					<FormGroupWrapperComponent>
+						<FormGroupComponent row label={__('Address', 'multivendorx')}>
 							{address.address_1}
-						</FormGroup>
-						<FormGroup row label={__('City', 'multivendorx')}>
+						</FormGroupComponent>
+						<FormGroupComponent row label={__('City', 'multivendorx')}>
 							{address.city}
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							row
 							label={__('Postcode / ZIP', 'multivendorx')}
 						>
 							{address.postcode}
-						</FormGroup>
-						<FormGroup row label={__('State', 'multivendorx')}>
+						</FormGroupComponent>
+						<FormGroupComponent row label={__('State', 'multivendorx')}>
 							{address.state}
-						</FormGroup>
-						<FormGroup row label={__('Country', 'multivendorx')}>
+						</FormGroupComponent>
+						<FormGroupComponent row label={__('Country', 'multivendorx')}>
 							{address.country}
-						</FormGroup>
-					</FormGroupWrapper>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
 				)}
 
 				{isEditMode && (
 					<div ref={editRef}>
-						<FormGroupWrapper>
-							<FormGroup
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__('Address', 'multivendorx')}
 								htmlFor={`${type}-address`}
 							>
-								<BasicInputUI
+								<TextInput
 									name={`${type}_address_1`}
 									value={address.address_1 || ''}
 									onChange={(value: string) => {
@@ -674,14 +699,14 @@ const AddOrder = () => {
 										}
 									}}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup
+							<FormGroupComponent
 								cols={6}
 								label={__('City', 'multivendorx')}
 								htmlFor={`${type}-city`}
 							>
-								<BasicInputUI
+								<TextInput
 									name={`${type}_city`}
 									value={address.city || ''}
 									onChange={(value: string) => {
@@ -702,14 +727,14 @@ const AddOrder = () => {
 										}
 									}}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup
+							<FormGroupComponent
 								cols={6}
 								label={__('Postcode / ZIP', 'multivendorx')}
 								htmlFor={`${type}-postcode`}
 							>
-								<BasicInputUI
+								<TextInput
 									name={`${type}_postcode`}
 									value={address.postcode || ''}
 									onChange={(value: string) => {
@@ -730,14 +755,14 @@ const AddOrder = () => {
 										}
 									}}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup
+							<FormGroupComponent
 								cols={6}
 								label={__('Country / Region', 'multivendorx')}
 								htmlFor={`${type}-country`}
 							>
-								<SelectInputUI
+								<SelectInput
 									name={`${type}_country`}
 									type="single-select"
 									value={address.country}
@@ -761,14 +786,14 @@ const AddOrder = () => {
 										fetchStatesByCountry(selected);
 									}}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup
+							<FormGroupComponent
 								cols={6}
 								label={__('State / County', 'multivendorx')}
 								htmlFor={`${type}-state`}
 							>
-								<SelectInputUI
+								<SelectInput
 									name={`${type}_state`}
 									type="single-select"
 									value={address.state}
@@ -791,17 +816,17 @@ const AddOrder = () => {
 										}
 									}}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
 					</div>
 				)}
-			</Card>
+			</CardComponent>
 		);
 	};
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Add Order', 'multivendorx')}
 				headerDescription={__(
 					'Create a new order manually by adding products, charges, and customer details.',
@@ -815,9 +840,9 @@ const AddOrder = () => {
 					},
 				]}
 			/>
-			<Container>
-				<Column grid={8}>
-					<Card>
+			<ContainerComponent>
+				<ColumnComponent grid={8}>
+					<CardComponent>
 						{(addedProducts.length > 0 ||
 							shippingLines.length > 0) && (
 								<>
@@ -832,7 +857,7 @@ const AddOrder = () => {
 											<span>
 												{__('Subtotal:', 'multivendorx')}
 											</span>
-											<span>${subtotal.toFixed(2)}</span>
+											<span>{formatCurrency(subtotal)}</span>
 										</div>
 
 										<div className="row">
@@ -840,15 +865,12 @@ const AddOrder = () => {
 												{__('Tax:', 'multivendorx')}
 											</span>
 											<span>
-												$
-												{addedProducts
-													.reduce(
-														(sum, p) =>
-															sum +
-															(p.tax_amount || 0),
+												{formatCurrency(
+													addedProducts.reduce(
+														(sum, p) => sum + (p.tax_amount || 0),
 														0
 													)
-													.toFixed(2)}
+												)}
 											</span>
 										</div>
 
@@ -865,15 +887,13 @@ const AddOrder = () => {
 											<strong>
 												{__('Grand Total:', 'multivendorx')}
 											</strong>
-											<strong>
-												${grandTotal.toFixed(2)}
-											</strong>
+											<strong>{formatCurrency(grandTotal)}</strong>
 										</div>
 									</div>
 								</>
 							)}
-						<FormGroupWrapper>
-							<ButtonInputUI
+						<FormGroupWrapperComponent>
+							<ButtonInput
 								position="left"
 								buttons={[
 									{
@@ -904,11 +924,11 @@ const AddOrder = () => {
 							/>
 
 							{showAddProduct && (
-								<FormGroup
+								<FormGroupComponent
 									row
 									label={__('Select Product', 'multivendorx')}
 								>
-									<SelectInputUI
+									<SelectInput
 										name="product_select"
 										type="single-select"
 										options={[
@@ -942,9 +962,9 @@ const AddOrder = () => {
 											setShowAddProduct(false);
 										}}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 							)}
-						</FormGroupWrapper>
+						</FormGroupWrapperComponent>
 
 						{showAddTax && (
 							<div className="tax-wrapper">
@@ -956,12 +976,13 @@ const AddOrder = () => {
 									<>
 										<TableCard
 											headers={taxTableHeaders}
-											rows={taxRates}
+											variant="transparent"
+											rows={taxRateRows}
 											ids={rowIds}
 											showMenu={false}
 										/>
 
-										<ButtonInputUI
+										<ButtonInput
 											buttons={[
 												{
 													text: __(
@@ -987,17 +1008,17 @@ const AddOrder = () => {
 								)}
 							</div>
 						)}
-					</Card>
-				</Column>
-				<Column grid={4}>
-					<Card title={__('Payment Method', 'multivendorx')}>
-						<FormGroupWrapper>
-							<FormGroup
+					</CardComponent>
+				</ColumnComponent>
+				<ColumnComponent grid={4}>
+					<CardComponent title={__('Payment Method', 'multivendorx')} titleIcon="payment" desc="Choose how the order will be paid.">
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								row
 								label={__('Payment Method', 'multivendorx')}
 								htmlFor="payment-method"
 							>
-								<SelectInputUI
+								<SelectInput
 									name="payment_method"
 									type="single-select"
 									options={paymentOptions}
@@ -1009,15 +1030,15 @@ const AddOrder = () => {
 										setSelectedPayment(method || null);
 									}}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
-					</Card>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
+					</CardComponent>
 
-					<Card title={__('Customer details', 'multivendorx')}>
+					<CardComponent title={__('Customer details', 'multivendorx')} titleIcon="customer-support" desc="Select an existing customer or create a new one.">
 						{!selectedCustomer && (
 							<>
-								<FormGroupWrapper>
-									<FormGroup
+								<FormGroupWrapperComponent>
+									<FormGroupComponent
 										row
 										label={__(
 											'Select Customer',
@@ -1025,7 +1046,7 @@ const AddOrder = () => {
 										)}
 										htmlFor="Select-customer"
 									>
-										<SelectInputUI
+										<SelectInput
 											name="new_owner"
 											type="single-select"
 											options={customerOptions}
@@ -1047,10 +1068,10 @@ const AddOrder = () => {
 												}
 											}}
 										/>
-									</FormGroup>
-								</FormGroupWrapper>
+									</FormGroupComponent>
+								</FormGroupWrapperComponent>
 
-								<ButtonInputUI
+								<ButtonInput
 									buttons={{
 										icon: 'plus',
 										text: __(
@@ -1066,7 +1087,7 @@ const AddOrder = () => {
 							</>
 						)}
 						{selectedCustomer && (
-							<InfoItem
+							<InformationItemComponent
 								title={
 									[selectedCustomer.first_name, selectedCustomer.last_name]
 										.filter(Boolean)
@@ -1120,17 +1141,17 @@ const AddOrder = () => {
 								]}
 							/>
 						)}
-					</Card>
+					</CardComponent>
 
 					{showCreateCustomer && !selectedCustomer && (
-						<Card title={__('Create customer', 'multivendorx')}>
-							<FormGroupWrapper>
-								<FormGroup
+						<CardComponent title={__('Create customer', 'multivendorx')} titleIcon="customer-support" desc="Add a new customer to your marketplace.">
+							<FormGroupWrapperComponent>
+								<FormGroupComponent
 									cols={6}
 									label={__('First name', 'multivendorx')}
 									htmlFor="Select-customer"
 								>
-									<BasicInputUI
+									<TextInput
 										name="first_name"
 										value={newCustomer.first_name}
 										onChange={(value) =>
@@ -1140,14 +1161,14 @@ const AddOrder = () => {
 											})
 										}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 
-								<FormGroup
+								<FormGroupComponent
 									cols={6}
 									label={__('Last name', 'multivendorx')}
 									htmlFor="last-name"
 								>
-									<BasicInputUI
+									<TextInput
 										name="last_name"
 										value={newCustomer.last_name}
 										onChange={(value) =>
@@ -1157,13 +1178,13 @@ const AddOrder = () => {
 											})
 										}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 
-								<FormGroup
+								<FormGroupComponent
 									label={__('Email', 'multivendorx')}
 									htmlFor="email"
 								>
-									<EmailsInputUI
+									<EmailInput
 										mode="single"
 										value={
 											newCustomer.email
@@ -1181,13 +1202,13 @@ const AddOrder = () => {
 											});
 										}}
 									/>
-								</FormGroup>
+								</FormGroupComponent>
 
-								<FormGroup
+								<FormGroupComponent
 									label={__('Phone number', 'multivendorx')}
 									htmlFor="phone-number"
 								>
-									<BasicInputUI
+									<TextInput
 										type="number"
 										name="phone"
 										value={newCustomer.phone}
@@ -1198,17 +1219,17 @@ const AddOrder = () => {
 											})
 										}
 									/>
-								</FormGroup>
-							</FormGroupWrapper>
+								</FormGroupComponent>
+							</FormGroupWrapperComponent>
 
-							<ButtonInputUI
+							<ButtonInput
 								buttons={{
 									icon: 'plus',
 									text: __('Create', 'multivendorx'),
 									onClick: () => createCustomer(),
 								}}
 							/>
-						</Card>
+						</CardComponent>
 					)}
 
 					{renderAddressCard(
@@ -1229,9 +1250,9 @@ const AddOrder = () => {
 						'billing'
 					)}
 
-					<Card title={__('Order note', 'multivendorx')}>
-						<FormGroup>
-							<TextAreaUI
+					<CardComponent title={__('Order note', 'multivendorx')} titleIcon="order" desc="Add an internal note or special instructions for this order.">
+						<FormGroupComponent>
+							<TextAreaInput
 								name="order_note"
 								value={orderNote}
 								placeholder={__(
@@ -1240,10 +1261,10 @@ const AddOrder = () => {
 								)}
 								onChange={(value) => setOrderNote(value)}
 							/>
-						</FormGroup>
-					</Card>
-				</Column>
-			</Container>
+						</FormGroupComponent>
+					</CardComponent>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

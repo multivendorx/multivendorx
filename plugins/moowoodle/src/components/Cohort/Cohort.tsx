@@ -1,13 +1,15 @@
+/* global appLocalizer */
 import React, { useState } from 'react';
 import { __ } from '@wordpress/i18n';
+
 import {
-	Column,
-	Container,
-	InfoItem,
-	NavigatorHeader,
-	PopupUI,
-	TableCard,
-} from 'zyra';
+	ColumnComponent,
+	ContainerComponent,
+	InformationItemComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
 import { applyFilters } from '@wordpress/hooks';
 import { dummyCohorts } from './CohortUtil';
@@ -16,11 +18,13 @@ export interface CohortRow {
 	id?: number;
 	moodle_cohort_id?: number;
 	cohort_name?: string;
-	products?: Record<string, string>;
+	product_name?: string;
+	product_url?: string;
 	enrolled_user?: number;
 	view_users_url?: string;
 	product_image?: string;
 	status?: string;
+	date?: string;
 }
 
 const Cohort: React.FC = () => {
@@ -33,31 +37,31 @@ const Cohort: React.FC = () => {
 		cohort_name: {
 			label: __('Cohorts', 'moowoodle'),
 			render: (row: CohortRow) => (
-				<InfoItem
+				<InformationItemComponent
 					title={row.cohort_name}
+					titleLink={row.product_url}
+					width="75%"
 					avatar={{ iconClass: 'cohort' }}
+					badges={[
+						{
+							className: 'blue',
+							text: `${row.enrolled_user || 0} Enrolled users`,
+						},
+					]}
+					descriptions={[
+						{
+							icon: 'single-product',
+							label: __('Product', 'moowoodle'),
+							value: row.product_name || '-',
+						},
+						{
+							icon: 'calendar',
+							label: __('Last sync', 'moowoodle'),
+							value: row.date || '-',
+						},
+					]}
 				/>
 			),
-		},
-
-		products: {
-			label: __('Product', 'moowoodle'),
-			render: (row: CohortRow) => (
-				<>
-					{row.products && Object.keys(row.products).length
-						? Object.entries(row.products).map(([name], index) => (
-								<React.Fragment key={index}>
-									{name}
-								</React.Fragment>
-							))
-						: '-'}
-				</>
-			),
-		},
-
-		enrolled_user: {
-			label: __('Enrolled users', 'moowoodle'),
-			render: (row: CohortRow) => <>{row.enrolled_user || 0}</>,
 		},
 
 		action: {
@@ -68,6 +72,7 @@ const Cohort: React.FC = () => {
 				{
 					label: __('Sync Cohort Data', 'moowoodle'),
 					icon: 'refresh',
+					// eslint-disable-next-line no-unused-vars -- row param required by the action button's callback signature.
 					onClick: (row) => {
 						setopenPopup(true);
 					},
@@ -88,6 +93,7 @@ const Cohort: React.FC = () => {
 							? 'update-product'
 							: 'add-product';
 					},
+					// eslint-disable-next-line no-unused-vars -- row param required by the action button's callback signature.
 					onClick: (row) => {
 						setopenPopup(true);
 					},
@@ -98,7 +104,7 @@ const Cohort: React.FC = () => {
 
 	const defaultTableProps = {
 		headers,
-
+		hideHeader: true,
 		rows: dummyCohorts,
 		totalRows: dummyCohorts.length,
 		search: {
@@ -120,7 +126,7 @@ const Cohort: React.FC = () => {
 	return (
 		<>
 			{openPopup && (
-				<PopupUI
+				<PopupComponent
 					position="lightbox"
 					open={openPopup}
 					onClose={() => setopenPopup(false)}
@@ -128,10 +134,10 @@ const Cohort: React.FC = () => {
 					height="auto"
 				>
 					<ShowProPopup />
-				</PopupUI>
+				</PopupComponent>
 			)}
 
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerIcon="cohort"
 				headerDescription={__(
 					'Cohort information is presented with associated products and student enrollments to support administrative actions.',
@@ -139,14 +145,21 @@ const Cohort: React.FC = () => {
 				)}
 				headerTitle={__('Cohorts', 'moowoodle')}
 			/>
-			<Container general>
-				<Column>
-					<div className="demo-wrapper" onClick={handleTableWrapperClick}>
-						<div className="watermark">{__('This is sample Data','moowoodle' )}</div>
+			<ContainerComponent general>
+				<ColumnComponent>
+					<div
+						className="demo-wrapper"
+						onClick={handleTableWrapperClick}
+					>
+						{!appLocalizer.khali_dabba && (
+							<div className="watermark">
+								{__('This is sample Data', 'moowoodle')}
+							</div>
+						)}
 						<TableCard {...tableProps} />
 					</div>
-				</Column>
-			</Container>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

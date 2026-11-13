@@ -2,21 +2,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	FormGroupWrapper,
-	FormGroup,
-	TableCard,
-	ButtonInputUI,
-	ChoiceToggleUI,
-	PopupUI,
-	TextAreaUI,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { FormGroupWrapperComponent, FormGroupComponent, PopupComponent } from '@zyra/components';
+import { ButtonInput, ToggleInput, TextAreaInput } from '@zyra/inputs';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import Popup from '../../../src/components/Popup/Popup';
-import { formatLocalDate } from '../../../src/services/commonFunction';
+import {
+	formatDate,
+	formatLocalDate,
+	formatStatusLabel,
+	truncateText,
+} from '../../../src/services/commonFunction';
 
 type Review = {
 	id: number;
@@ -146,46 +142,10 @@ const StoreReviews: React.FC = () => {
 	const headers = {
 		customer_name: {
 			label: __('Customer', 'multivendorx'),
-		},
-		store_name: {
-			label: __('Store', 'multivendorx'),
-		},
-		details: {
-			label: __('Details', 'multivendorx'),
-			render: (row) => (
-				<div className="review-details">
-					<div className="review">
-						{[...Array(Math.round(row.overall_rating || 0))].map(
-							(_, i) => (
-								<i
-									key={`filled-${i}`}
-									className="star-icon adminfont-star"
-								/>
-							)
-						)}
-
-						{[
-							...Array(5 - Math.round(row.overall_rating || 0)),
-						].map((_, i) => (
-							<i
-								key={`empty-${i}`}
-								className="star-icon adminfont-star-o"
-							/>
-						))}
-					</div>
-					<div className="title">{row.review_title}</div>
-					<div className="desc">{row.review_content}</div>
-				</div>
-			),
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
-		},
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			sortable: true,
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
@@ -207,6 +167,57 @@ const StoreReviews: React.FC = () => {
 			],
 		},
 	};
+
+	const infoRows = rows.map((row: any) => {
+		const rating = Math.round(row.overall_rating || 0);
+		return {
+			...row,
+			info_icon: 'person',
+			info_descriptions: [
+				{
+					label: __('Store', 'multivendorx'),
+					icon: 'storefront',
+					value: row.store_name || '—',
+				},
+				{
+					label: __('Rating', 'multivendorx'),
+					value: (
+						<span className="review">
+							{[...Array(rating)].map((_, i) => (
+								<i
+									key={`filled-${i}`}
+									className="star-icon adminfont-star"
+								/>
+							))}
+							{[...Array(5 - rating)].map((_, i) => (
+								<i
+									key={`empty-${i}`}
+									className="star-icon adminfont-star-o"
+								/>
+							))}
+						</span>
+					),
+				},
+				{
+					label: __('Review', 'multivendorx'),
+					icon: 'store-review',
+					value: row.review_title || '—',
+				},
+				{
+					label: __('Details', 'multivendorx'),
+					icon: 'text',
+					value: truncateText(row.review_content, 20) || '—',
+				},
+			],
+			info_badges: [
+				{
+					text: formatStatusLabel(row.status),
+					color: `badge-${row.status}`,
+				},
+				{ text: formatDate(row.date_created), color: 'blue' },
+			],
+		};
+	});
 
 	const filters = [
 		{
@@ -313,7 +324,7 @@ const StoreReviews: React.FC = () => {
 
 	return (
 		<>
-			<PopupUI
+			<PopupComponent
 				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
@@ -338,10 +349,11 @@ const StoreReviews: React.FC = () => {
 						setSelectedRv(null);
 					}}
 				/>
-			</PopupUI>
+			</PopupComponent>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}
@@ -353,7 +365,7 @@ const StoreReviews: React.FC = () => {
 			/>
 
 			{selectedReview && (
-				<PopupUI
+				<PopupComponent
 					open={!!selectedReview}
 					onClose={() => setSelectedReview(null)}
 					width={31.25}
@@ -367,7 +379,7 @@ const StoreReviews: React.FC = () => {
 						),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',
@@ -450,15 +462,15 @@ const StoreReviews: React.FC = () => {
 							</div>
 						</div>
 
-						<FormGroupWrapper>
-							<FormGroup
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__(
 									'Respond to customer',
 									'multivendorx'
 								)}
 								htmlFor="reply"
 							>
-								<TextAreaUI
+								<TextAreaInput
 									name="reply"
 									value={replyText}
 									onChange={(value: string) =>
@@ -466,16 +478,16 @@ const StoreReviews: React.FC = () => {
 									}
 									usePlainText={true}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup
+							<FormGroupComponent
 								label={__(
 									'Control if this review appears publicly, stays under moderation, or is excluded from the store page.',
 									'multivendorx'
 								)}
 								htmlFor="control"
 							>
-								<ChoiceToggleUI
+								<ToggleInput
 									options={[
 										{
 											key: 'pending',
@@ -511,10 +523,10 @@ const StoreReviews: React.FC = () => {
 										);
 									}}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
 					</>
-				</PopupUI>
+				</PopupComponent>
 			)}
 		</>
 	);

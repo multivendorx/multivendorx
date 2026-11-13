@@ -1,22 +1,24 @@
+
 import {
-	BasicInputUI,
-	Card,
-	ChoiceToggleUI,
-	ColorSettingInputUI,
-	Column,
-	Container,
-	ExpandablePanelUI,
-	FileInputUI,
-	FormGroup,
-	FormGroupWrapper,
-	MultiCheckBoxUI,
-	TabsUI,
-	TextAreaUI,
+	CardComponent,
+	ColumnComponent,
+	ContainerComponent,
+	FormGroupComponent,
+	FormGroupWrapperComponent,
 	NoticeManager,
-	getApiLink,
-	PopupUI,
-	useModules
-} from 'zyra';
+	PopupComponent,
+	TabsComponent,
+} from '@zyra/components';
+import {
+	TextInput,
+	ToggleInput,
+	PickerInput,
+	ExpandablePanelInput,
+	FileInput,
+	MultiCheckboxInput,
+	TextAreaInput,
+} from '@zyra/inputs';
+import { getApiLink, useModules } from '@zyra/core';
 import ShowProPopup from '../../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
@@ -326,21 +328,22 @@ const Invoice: React.FC = () => {
 	const displayCustomOrder = appLocalizer?.admin_settings?.overview?.display_customer_order;
 
 	return (
-		<Container className="settings-card">
-			<Column>
-				<Card
+		<ContainerComponent className="settings-card">
+			<ColumnComponent>
+				<CardComponent
 					title={__('Invoice preview', 'multivendorx')}
+					titleIcon="review"
 					desc={__(
 						'Preview how the invoice layout will appear to customers and stores',
 						'multivendorx'
 					)}
 				>
-					<TabsUI
+					<TabsComponent
 						tabs={[
 							{
 								label: __('Order Invoice', 'multivendorx'),
 								content: (
-									<ColorSettingInputUI
+									<PickerInput
 										key={formData.invoice_template?.templateKey}
 										filedKey="invoice_template"
 										wrapperClass="form-group-color-setting"
@@ -398,7 +401,7 @@ const Invoice: React.FC = () => {
 							{
 								label: __('Commission', 'multivendorx'),
 								content: (
-									<ColorSettingInputUI
+									<PickerInput
 										key={formData.admin_template?.templateKey}
 										filedKey="admin_template"
 										wrapperClass="form-group-color-setting"
@@ -449,7 +452,7 @@ const Invoice: React.FC = () => {
 							{
 								label: __('Packing Slip', 'multivendorx'),
 								content: (
-									<ColorSettingInputUI
+									<PickerInput
 										key={formData.packing_template?.templateKey}
 										filedKey="packing_template"
 										wrapperClass="form-group-color-setting"
@@ -514,27 +517,28 @@ const Invoice: React.FC = () => {
 							<i className="adminfont-pro-tag"></i>{__('Pro', 'multivendorx')}
 						</span>
 					)}
-				</Card>
-			</Column>
-			<Column grid={8}>
-				<Card
+				</CardComponent>
+			</ColumnComponent>
+			<ColumnComponent grid={8}>
+				<CardComponent
 					title={__('Customer invoice', 'multivendorx')}
+					titleIcon="customer-support"
 					desc={__(
 						'Define when invoices should be automatically created and how they are delivered to customers.',
 						'multivendorx'
 					)}
 				>
-					<FormGroupWrapper>
+					<FormGroupWrapperComponent>
 
 						{displayCustomOrder == 'main_sub' && (
-							<FormGroup
+							<FormGroupComponent
 								cols={6}
 								label={__(
 									'Invoices will be created based on',
 									'multivendorx'
 								)}
 							>
-								<ChoiceToggleUI
+								<ToggleInput
 									options={[
 										{
 											key: 'main-order',
@@ -558,15 +562,15 @@ const Invoice: React.FC = () => {
 										handleChange('invoice_creation_basis', val)
 									}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 						)}
-						<FormGroup
+						<FormGroupComponent
 							label={__(
 								'Generate invoice when order status becomes',
 								'multivendorx'
 							)}
 						>
-							<MultiCheckBoxUI
+							<MultiCheckboxInput
 								selectDeselect={true}
 								options={[
 									{
@@ -627,19 +631,19 @@ const Invoice: React.FC = () => {
 									handleChange('invoice_order_status', val)
 								}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</Card>
-				<Card title={__('Packing slip generator', 'multivendorx')}>
-					<FormGroupWrapper>
-						<FormGroup
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</CardComponent>
+				<CardComponent title={__('Packing slip generator', 'multivendorx')} titleIcon="section" desc="Customize the information included in packing slips to simplify order fulfillment.">
+					<FormGroupWrapperComponent>
+						<FormGroupComponent
 							cols={6}
 							label={__(
 								'What appears on packing slips',
 								'multivendorx'
 							)}
 						>
-							<MultiCheckBoxUI
+							<MultiCheckboxInput
 								selectDeselect={true}
 								options={[
 									{
@@ -676,19 +680,19 @@ const Invoice: React.FC = () => {
 									handleChange('packing_slip', val)
 								}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</Card>
-				<Card title={__('Store commission invoices', 'multivendorx')}>
-					<FormGroupWrapper>
-						<FormGroup
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</CardComponent>
+				<CardComponent title={__('Store commission invoices', 'multivendorx')} titleIcon="commission" desc="Choose how often commission invoices are generated for stores and track marketplace earnings.">
+					<FormGroupWrapperComponent>
+						<FormGroupComponent
 							label="Commission invoices will be issued"
 							desc={__(
 								'Choose how often store receive commission invoices from the marketplace:<ul><li>Per order - Generate a commission invoice for each order.</li><li>Monthly - Generate a single consolidated commission invoice at the end of each month.</li></ul>',
 								'multivendorx'
 							)}
 						>
-							<ChoiceToggleUI
+							<ToggleInput
 								options={[
 									{
 										key: 'per-order',
@@ -709,62 +713,65 @@ const Invoice: React.FC = () => {
 									handleChange('invoice_commission_basis', val)
 								}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</Card>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</CardComponent>
 
-				<Card
+				<CardComponent
 					title={__(
 						'Invoices will include these additional notes',
 						'multivendorx'
 					)}
+					titleIcon="invoice"
 					desc={__(
 						'Customize additional text that appears on the invoice document when customers download it.',
 						'multivendorx'
 					)}
 				>
-					<FormGroupWrapper>
-						<FormGroup
+					<FormGroupWrapperComponent>
+						<FormGroupComponent
 							label={__('Invoice footer text', 'multivendorx')}
 						>
-							<TextAreaUI
+							<TextAreaInput
 								name="invoice_footer"
 								value={formData.invoice_footer || ''}
 								onChange={(val) =>
 									handleChange('invoice_footer', val)
 								}
 							/>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							label={__('Terms and conditions', 'multivendorx')}
 						>
-							<TextAreaUI
+							<TextAreaInput
 								name="invoice_terms"
 								value={formData.invoice_terms || ''}
 								onChange={(val) =>
 									handleChange('invoice_terms', val)
 								}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</Card>
-			</Column>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</CardComponent>
+			</ColumnComponent>
 
-			<Column grid={4}>
-				<Card
+			<ColumnComponent grid={4}>
+				<CardComponent
 					title={__(
 						'Invoices will display these tax details',
 						'multivendorx'
 					)}
+					titleIcon="tax-compliance"
+					desc="Manage the tax and registration details displayed on marketplace and store invoices."
 				>
-					<FormGroupWrapper>
-						<FormGroup
+					<FormGroupWrapperComponent>
+						<FormGroupComponent
 							desc={__(
 								'Choose which tax details invoices can include. <br> <b> For each field you enable: </b> <br> <ul> <li>Stores can enter their own value for their invoices. </li> <li>You can enter the marketplace value for marketplace invoices. </li> </ul> <b> How the values appear: </b><br>  <ul><li> Main order invoices show the marketplace value entered here. </li> <li> Store order invoices show the value provided by the store.</li> </ul>',
 								'multivendorx'
 							)}
 						>
-							<ExpandablePanelUI
+							<ExpandablePanelInput
 								name={invoiceTaxDetailsField.key}
 								methods={invoiceTaxDetailsField.modal}
 								value={formData.invoice_tax_details || []}
@@ -775,19 +782,20 @@ const Invoice: React.FC = () => {
 								editTitleShow={true}
 								addNewTemplate={invoiceTaxDetailsField.addNewTemplate}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</Card>
-				<Card
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</CardComponent>
+				<CardComponent
 					title={__('Invoices PDF format', 'multivendorx')}
+					titleIcon="invoice"
 					desc={__(
 						'Configure the layout and numbering format used for all generated invoices.',
 						'multivendorx'
 					)}
 				>
-					<FormGroupWrapper>
-						<FormGroup label="Page size">
-							<ChoiceToggleUI
+					<FormGroupWrapperComponent>
+						<FormGroupComponent label="Page size">
+							<ToggleInput
 								options={[
 									{
 										key: 'a4',
@@ -808,9 +816,9 @@ const Invoice: React.FC = () => {
 								value={formData.page_size || 'a4'}
 								onChange={(val) => handleChange('page_size', val)}
 							/>
-						</FormGroup>
-						<FormGroup label="Orientation">
-							<ChoiceToggleUI
+						</FormGroupComponent>
+						<FormGroupComponent label="Orientation">
+							<ToggleInput
 								options={[
 									{
 										key: 'portrait',
@@ -832,8 +840,8 @@ const Invoice: React.FC = () => {
 								value={formData.orientation || 'portrait'}
 								onChange={(val) => handleChange('orientation', val)}
 							/>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							cols={6}
 							label="Invoice numbers will include this prefix"
 							desc={__(
@@ -841,7 +849,7 @@ const Invoice: React.FC = () => {
 								'multivendorx'
 							)}
 						>
-							<BasicInputUI
+							<TextInput
 								name="invoice_prefix"
 								value={formData.invoice_prefix || ''}
 								onChange={(val) =>
@@ -852,44 +860,46 @@ const Invoice: React.FC = () => {
 									'multivendorx'
 								)}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</Card>
-				<Card
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</CardComponent>
+				<CardComponent
 					title={__(
 						'Invoice branding: logo & signature',
 						'multivendorx'
 					)}
+					titleIcon="invoice"
+					desc="Add your company logo and signature to create professional, branded invoices."
 				>
-					<FormGroupWrapper>
-						<FormGroup
+					<FormGroupWrapperComponent>
+						<FormGroupComponent
 							label="Company logo"
 							desc={__('Upload your company logo', 'multivendorx')}
 						>
-							<FileInputUI
+							<FileInput
 								imageSrc={formData?.invoice_logo || ''}
 								onChange={(img) => {
 									handleChange('invoice_logo', img);
 								}}
 							/>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							label="Invoice signature"
 							desc={__('Upload invoice signature', 'multivendorx')}
 						>
-							<FileInputUI
+							<FileInput
 								imageSrc={formData?.invoice_signature|| ''}
 								onChange={(img)=>{
 									handleChange('invoice_signature', img);
 								}}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</Card>
-			</Column>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</CardComponent>
+			</ColumnComponent>
 
 			{showProPopup && (
-				<PopupUI
+				<PopupComponent
 					position="lightbox"
 					open={showProPopup}
 					onClose={() => setShowProPopup(false)}
@@ -897,10 +907,10 @@ const Invoice: React.FC = () => {
 					height="auto"
 				>
 					<ShowProPopup />
-				</PopupUI>
+				</PopupComponent>
 			)}
 			{showModulePopup && (
-				<PopupUI
+				<PopupComponent
 					position="lightbox"
 					open={showModulePopup}
 					onClose={() => setShowModulePopup(false)}
@@ -910,9 +920,9 @@ const Invoice: React.FC = () => {
 					<ShowProPopup
 						moduleName='invoice'
 					/>
-				</PopupUI>
+				</PopupComponent>
 			)}
-		</Container>
+		</ContainerComponent>
 	);
 };
 

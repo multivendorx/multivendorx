@@ -40,11 +40,14 @@ class Install {
      * Class constructor
      */
     public function __construct() {
-		// phpcs:ignore WordPress.WP.CronInterval.ChangeDetected
-        add_filter( 'cron_schedules', array( $this, 'register_custom_schedule' ) );
         add_action( 'init', array( $this, 'run_migration' ) );
     }
 
+    /**
+     * Run first-time install or version-gated migration on plugin init.
+     *
+     * @return void
+     */
     public function run_migration() {
         $previous_version = get_option( 'notifima_version', false );
         if ( ! $previous_version ) {
@@ -54,7 +57,6 @@ class Install {
         } else {
             $this->do_migration( $previous_version );
         }
-        $this->start_cron_job();
 
         update_option( 'notifima_version', NOTIFIMA_PLUGIN_VERSION );
 
@@ -71,9 +73,14 @@ class Install {
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
         if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->prefix . 'stockalert_subscribers' ) ) ) {
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->query(
-                "ALTER TABLE `{$wpdb->prefix}stockalert_subscribers` RENAME TO `{$wpdb->prefix}notifima_subscribers`"
+                $wpdb->prepare(
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
+                    'ALTER TABLE %i RENAME TO %i',
+                    $wpdb->prefix . 'stockalert_subscribers',
+                    $wpdb->prefix . Utill::TABLES['subscribers']
+                )
             );
         } else {
             self::create_database_table();
@@ -91,12 +98,13 @@ class Install {
 
     /**
      * Runs the database migration process.
+     *
+     * @param string $previous_version The previously installed plugin version.
      */
     public static function do_migration( $previous_version ) {
 
         // write migration code from 3.0.1.
         if ( version_compare( $previous_version, '3.1.0', '<' ) ) {
-
             $appearance_settings = get_option( 'notifima_appearance_settings', array() );
 
             $appearance_settings['is_double_optin']               = ! empty( $appearance_settings['is_double_optin'] ) ? 'confirm_via_email' : 'subscribe_immediately';
@@ -106,6 +114,9 @@ class Install {
             $appearance_settings['display_subscription_form_as']  = 'inline';
 
             $mailchimp_settings = get_option( 'notifima_mailchimp_settings', array() );
+            if ( ! is_array( $mailchimp_settings ) ) {
+                $mailchimp_settings = array();
+            }
 
             update_option( Utill::NOTIFIMA_SETTINGS['automation'], array_merge( $appearance_settings, $mailchimp_settings ) );
 
@@ -122,14 +133,13 @@ class Install {
 
             delete_option( 'notifima_mailchimp_settings' );
 
-
-            $email_settings     = get_option('notifima_email_settings', array() );
+            $email_settings = get_option( 'notifima_email_settings', array() );
 
             $email_settings['additional_alert_email'] = ! empty( $appearance_settings['additional_alert_email'] ) ? $appearance_settings['additional_alert_email'] : '';
 
             update_option( Utill::NOTIFIMA_SETTINGS['notifications'], $email_settings );
 
-            $customer_messages_settings     = get_option('notifima_form_submission_settings', array() );
+            $customer_messages_settings = get_option( 'notifima_form_submission_settings', array() );
 
             update_option( Utill::NOTIFIMA_SETTINGS['customer-messages'], $customer_messages_settings );
 
@@ -159,6 +169,80 @@ class Install {
             );
             update_option( Utill::NOTIFIMA_SETTINGS['subscription-form-designer'], $registration_from_settings );
         }
+
+        if ( version_compare( $previous_version, '3.1.6', '<' ) ) {
+            global $wpdb;
+
+            $automation_settings = get_option( Utill::NOTIFIMA_SETTINGS['automation'], array() );
+
+            if ( 'out_of_stock' === $automation_settings['is_enable_backorders'] ) {
+                $automation_settings['is_enable_backorders'] = array( 'outofstock' );
+            } elseif ( 'out_of_stock_and_backorder' === $automation_settings['is_enable_backorders'] ) {
+                $automation_settings['is_enable_backorders'] = array( 'outofstock', 'onbackorder' );
+            }
+
+            update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
+
+            $table_name = $wpdb->prefix . Utill::TABLES['subscribers'];
+
+            // Add phone column.
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            $wpdb->query(
+                $wpdb->prepare(
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
+                    'ALTER TABLE %i
+                    ADD COLUMN `phone` varchar(30) DEFAULT NULL AFTER `email`',
+                    $table_name
+                )
+            );
+
+            // Rename mailsent status to notification_sent.
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            $wpdb->query(
+                $wpdb->prepare(
+                    'UPDATE %i
+                    SET `status` = %s
+                    WHERE `status` = %s',
+                    $table_name,
+                    'notification_sent',
+                    'mailsent'
+                )
+            );
+        }
+
+        if ( version_compare( $previous_version, '3.1.7', '<' ) ) {
+            global $wpdb;
+
+            $table_name = $wpdb->prefix . Utill::TABLES['subscribers'];
+
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            $column = $wpdb->get_results(
+                $wpdb->prepare(
+                    'SHOW COLUMNS FROM %i LIKE %s',
+                    $table_name,
+                    'retry_count'
+                )
+            );
+
+            if ( empty( $column ) ) {
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+                $wpdb->query(
+                    $wpdb->prepare(
+                        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
+                        'ALTER TABLE %i
+                        ADD `retry_count` int(11) NOT NULL DEFAULT 0 AFTER `status`',
+                        $table_name
+                    )
+                );
+            }
+            $automation_settings = get_option( Utill::NOTIFIMA_SETTINGS['automation'], array() );
+
+			$automation_settings['notification_delivery_method'] = 'all';
+			$automation_settings['notification_retry_enable']    = 'no';
+
+			update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
+            delete_option( 'notifima_cron_start' );
+        }
     }
 
     /**
@@ -182,61 +266,59 @@ class Install {
     public static function subscriber_migration() {
         global $wpdb;
 
+        $table = $wpdb->prefix . Utill::TABLES['subscribers'];
+
         try {
             // Get woosubscribe post and post meta.
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-            $subscribe_datas = $wpdb->get_results(
-                "SELECT posts.ID as id,
-                    posts.post_date as date,
-                    posts.post_title as email,
-                    posts.post_status as status,
-                    posts.post_author as user_id,
-                    pm.meta_value as product_id
-                FROM {$wpdb->prefix}posts as posts, {$wpdb->prefix}postmeta as pm
-                WHERE posts.post_type = 'woostockalert'
-                AND pm.post_id = posts.ID
-                AND pm.meta_key = 'wooinstock_product_id'
-                ",
+            $legacy_subscriber_rows = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT posts.ID as id,
+                        posts.post_date as date,
+                        posts.post_title as email,
+                        posts.post_status as status,
+                        posts.post_author as user_id,
+                        pm.meta_value as product_id
+                    FROM %i as posts, %i as pm
+                    WHERE posts.post_type = 'woostockalert'
+                    AND pm.post_id = posts.ID
+                    AND pm.meta_key = 'wooinstock_product_id'
+                    ",
+                    $wpdb->posts,
+                    $wpdb->postmeta
+                ),
                 ARRAY_A
             );
 
-            // Prepare insert value.
-            $values = '';
-
-            foreach ( $subscribe_datas as $subscribe_data ) {
-                $product_id = $subscribe_data['product_id'];
-                $user_id    = $subscribe_data['user_id'];
-                $email      = $subscribe_data['email'];
-                $status     = self::STATUS_MAP[ $subscribe_data['status'] ];
-                $date       = $subscribe_data['date'];
-
-                $values .= "( {$product_id}, {$user_id},  '{$email}', '{$status}', '{$date}' ),";
-            }
-
-            // If result exist then insert those result into custom table.
-            if ( $values ) {
-                // Remove last ','.
-                $values = substr( $values, 0, -1 );
-
+            // Insert the legacy subscribers into the custom table, one row at a time.
+            foreach ( $legacy_subscriber_rows as $legacy_subscriber_row ) {
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->query(
-                    "INSERT IGNORE INTO {$wpdb->prefix}notifima_subscribers (product_id, user_id, email, status, create_time ) VALUES {$values} "
+                    $wpdb->prepare(
+                        'INSERT IGNORE INTO %i (product_id, user_id, email, status, create_time ) VALUES ( %d, %d, %s, %s, %s )',
+                        $table,
+                        (int) $legacy_subscriber_row['product_id'],
+                        (int) $legacy_subscriber_row['user_id'],
+                        $legacy_subscriber_row['email'],
+                        self::STATUS_MAP[ $legacy_subscriber_row['status'] ],
+                        $legacy_subscriber_row['date']
+                    )
                 );
             }
 
             // Delete the post seperatly, If there is problem in migration post will not delete permanently.
-            foreach ( $subscribe_datas as $subscribe_data ) {
-                wp_delete_post( $subscribe_data['id'] );
+            foreach ( $legacy_subscriber_rows as $legacy_subscriber_row ) {
+                wp_delete_post( $legacy_subscriber_row['id'] );
             }
 
             // Get subscriber count.
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $subscriber_counts = $wpdb->get_results(
                 $wpdb->prepare(
-                    "SELECT product_id, COUNT(*) as count from {$wpdb->prefix}notifima_subscribers
+                    'SELECT product_id, COUNT(*) as count from %i
                     WHERE status = %s
-                    GROUP BY product_id",
-                    array( 'subscribed' )
+                    GROUP BY product_id',
+                    array( $table, 'subscribed' )
                 )
             );
 
@@ -266,12 +348,15 @@ class Install {
             $collate = $wpdb->get_charset_collate();
         }
 
-        $sql_subscribers = 'CREATE TABLE IF NOT EXISTS `' . $wpdb->prefix . "notifima_subscribers` (
+        $table           = $wpdb->prefix . Utill::TABLES['subscribers'];
+        $sql_subscribers = "CREATE TABLE IF NOT EXISTS `{$table}` (
                 `id` bigint(20) NOT NULL AUTO_INCREMENT,
                 `product_id` bigint(20) NOT NULL,
                 `user_id` bigint(20) NOT NULL DEFAULT 0,
                 `email` varchar(50) NOT NULL,
+                `phone` varchar(30) DEFAULT NULL,
                 `status` varchar(20) NOT NULL,
+                 `retry_count` int(11) NOT NULL DEFAULT 0,
                 `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE KEY unique_product_email_status (product_id, email, status),
                 PRIMARY KEY (`id`)
@@ -285,25 +370,6 @@ class Install {
         dbDelta( $sql_subscribers );
     }
 
-    /**
-     * Function that schedules the notification cron job.
-     *
-     * @return void
-     */
-    private function start_cron_job() {
-        wp_clear_scheduled_hook( 'notifima_start_notification_cron_job' );
-
-        if ( ! wp_next_scheduled( 'notifima_start_notification_cron_job' ) ) {
-            wp_schedule_event(
-                time(),
-                'notifima_ten_minutes',
-                'notifima_start_notification_cron_job'
-            );
-        }
-
-        update_option( 'notifima_cron_start', true );
-    }
-
 
     /**
      * Set default settings for the plugin or module.
@@ -314,7 +380,7 @@ class Install {
 
         // Default messages for settings array.
         $automation_settings = array(
-            'is_enable_backorders'          => 'out_of_stock',
+            'is_enable_backorders'          => array( 'outofstock' ),
             'is_enable_no_interest'         => 'hide_count',
             'is_double_optin'               => 'subscribe_immediately',
             'is_remove_admin_email'         => false,
@@ -323,6 +389,8 @@ class Install {
             'is_guest_subscriptions_enable' => 'logged_in',
             'lead_time_format'              => 'static',
             'display_subscription_form_as'  => 'inline',
+            'notification_delivery_method'  => 'all',
+            'notification_retry_enable'     => 'no',
             // Form customization settings.
             'email_placeholder_text'        => Notifima()->default_value['email_placeholder_text'],
             'alert_text'                    => Notifima()->default_value['alert_text'],
@@ -553,7 +621,7 @@ class Install {
         $previous_email_settings      = get_option( 'woo_stock_manager_email_tab_settings', $previous_email_settings );
 
         if ( version_compare( $previous_version, '3.0.0', '<=' ) ) {
-            $previous_mailchimp_settings = get_option( 'woo_stock_manager_mailchimp_tab_settings', array() );
+            $previous_mailchimp_settings                = get_option( 'woo_stock_manager_mailchimp_tab_settings', array() );
             $appearance_settings['is_mailchimp_enable'] = ! empty( $previous_mailchimp_settings ['is_mailchimp_enable'] ) ? 'mailchimp' : 'store_only';
 
             $appearance_settings['mailchimp'] = array(
@@ -570,6 +638,8 @@ class Install {
             $appearance_settings['is_enable_backorders']          = ! empty( $previous_appearance_settings['is_enable_backorders'] ) ? 'out_of_stock_and_backorder' : 'out_of_stock';
             $appearance_settings['is_guest_subscriptions_enable'] = ! empty( $previous_appearance_settings['is_guest_subscriptions_enable'] ) ? 'logged_in' : 'everyone';
             $appearance_settings['display_subscription_form_as']  = 'inline';
+            $appearance_settings['notification_delivery_method']  = 'all';
+            $appearance_settings['notification_retry_enable']     = 'no';
 
             delete_option( 'woo_stock_manager_appearance_tab_settings' );
             delete_option( 'woo_stock_manager_form_submission_tab_settings' );
@@ -585,9 +655,14 @@ class Install {
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $posts = $wpdb->get_results(
-                "SELECT ID, post_content FROM {$wpdb->posts} 
-                 WHERE post_content LIKE '%display_stock_manager_form%' 
-                 OR post_content LIKE '%display_stock_alert_form%'"
+                $wpdb->prepare(
+                    'SELECT ID, post_content FROM %i
+                     WHERE post_content LIKE %s
+                     OR post_content LIKE %s',
+                    $wpdb->posts,
+                    '%display_stock_manager_form%',
+                    '%display_stock_alert_form%'
+                )
             );
 
             foreach ( $posts as $post ) {
@@ -613,21 +688,5 @@ class Install {
 
         $email_settings['additional_alert_email'] = ! empty( $previous_appearance_settings['additional_alert_email'] ) ? $previous_appearance_settings['additional_alert_email'] : '';
         update_option( Utill::NOTIFIMA_SETTINGS['notifications'], array_merge( $previous_email_settings, $email_settings ) );
-
-    }
-
-    /**
-     * Add additional schedule interval.
-     *
-     * @param array $schedules All schedules.
-     * @return array Modified schedules.
-     */
-    public function register_custom_schedule( $schedules ) {
-        $schedules['notifima_ten_minutes'] = array(
-            'interval' => 10 * MINUTE_IN_SECONDS,
-            'display'  => __( 'Every 10 Minutes', 'notifima' ),
-        );
-
-        return $schedules;
     }
 }

@@ -1,19 +1,17 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
 import {
-	FormGroup,
-	FormGroupWrapper,
-	getApiLink,
-	InfoItem,
-	Notice,
-	PopupUI,
-	SectionUI,
-	TableCard,
-	TableRow,
-	Column,
-	Container
-} from 'zyra';
+	FormGroupComponent,
+	FormGroupWrapperComponent,
+	NoticeComponent,
+	PopupComponent,
+	SectionComponent,
+	ColumnComponent,
+	ContainerComponent,
+} from '@zyra/components';
+import { TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
 import { formatCurrency, getUrl } from '../../services/commonFunction';
 
@@ -162,61 +160,76 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 	}, [commissionId]);
 
 	const popupColumns = {
-		id: {
+		name: {
 			label: __('Product', 'multivendorx'),
-			width: 14,
-			render: (row) => {
-				return (
-					<InfoItem
-						title={row.name}
-						titleLink={getUrl(row.product_id, 'product') || ''}
-						avatar={{
-							image: row.image?.src || '',
-							iconClass: 'single-product',
-						}}
-						descriptions={[
-							{
-								label: __('SKU:', 'multivendorx'),
-								value: row.sku || '—',
-							},
-						]}
-					/>
-				);
-			},
-		},
-		price: {
-			label: __('Cost', 'multivendorx'),
-			type: 'currency',
-		},
-		quantity: {
-			label: __('Qty', 'multivendorx'),
-		},
-		total: {
-			label: __('Total', 'multivendorx'),
-			type: 'currency',
-		},
-		total_tax: {
-			label: __('Tax', 'multivendorx'),
-			type: 'currency',
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
 		},
 	};
+
+	const orderItemRows = orderItems.map((row: any) => ({
+		...row,
+		info_icon: 'single-product',
+		info_link: getUrl(row.product_id, 'product') || '',
+		info_descriptions: [
+			{
+				label: __('SKU', 'multivendorx'),
+				icon: 'single-product',
+				value: row.sku || '—',
+			},
+			{
+				label: __('Cost', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.price),
+			},
+			{
+				label: __('Qty', 'multivendorx'),
+				icon: 'cart',
+				value: row.quantity ?? '—',
+			},
+			{
+				label: __('Total', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.total),
+			},
+			{
+				label: __('Tax', 'multivendorx'),
+				icon: 'tax-compliance',
+				value: formatCurrency(row.total_tax),
+			},
+		],
+	}));
 
 	const shippingColumns = {
 		method_title: {
 			label: __('Method', 'multivendorx'),
-		},
-		total: {
-			label: __('Amount', 'multivendorx'),
-			type: 'currency',
-		},
-		total_tax: {
-			label: __('Tax', 'multivendorx'),
-			type: 'currency',
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
 		},
 	};
 
+	const shippingRows = shippingItems.map((row: any) => ({
+		...row,
+		info_icon: 'shipping',
+		info_descriptions: [
+			{
+				label: __('Amount', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.total),
+			},
+			{
+				label: __('Tax', 'multivendorx'),
+				icon: 'tax-compliance',
+				value: formatCurrency(row.total_tax),
+			},
+		],
+	}));
+
 	return (
-		<PopupUI
+		<PopupComponent
 			open={open}
 			onClose={onClose}
 			width="40%"
@@ -230,14 +243,14 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 				),
 			}}
 		>
-			<Container className="className">
-				<Column grid={6}>
-					<FormGroupWrapper>
-						<SectionUI
+			<ContainerComponent className="className">
+				<ColumnComponent grid={6}>
+					<FormGroupWrapperComponent>
+						<SectionComponent
 							title={__('Order Overview', 'multivendorx')}
 						/>
 
-						<FormGroup
+						<FormGroupComponent
 							row
 							label={__('Associated Order', 'multivendorx')}
 							className="space-between"
@@ -257,9 +270,9 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 							) : (
 								'-'
 							)}
-						</FormGroup>
+						</FormGroupComponent>
 
-						<FormGroup
+						<FormGroupComponent
 							row
 							label={__('Order Status', 'multivendorx')}
 							className="space-between"
@@ -276,17 +289,17 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 										) // capitalize first letter of each word
 									: ''}
 							</span>
-						</FormGroup>
-					</FormGroupWrapper>
-				</Column>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</ColumnComponent>
 
-				<Column  grid={6}>
-					<FormGroupWrapper>
-						<SectionUI
+				<ColumnComponent  grid={6}>
+					<FormGroupWrapperComponent>
+						<SectionComponent
 							title={__('Commission Overview', 'multivendorx')}
 						/>
 
-						<FormGroup
+						<FormGroupComponent
 							row
 							label={__('Commission Status', 'multivendorx')}
 							className="space-between"
@@ -306,8 +319,8 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 										) // capitalize each word
 									: ''}
 							</span>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							row
 							label={__('Marketplace Commission', 'multivendorx')}
 							className="space-between"
@@ -317,20 +330,20 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 									commissionData?.marketplace_commission ?? 0
 								)
 							)}</b>
-						</FormGroup>
+						</FormGroupComponent>
 
-						<FormGroup row label={__('Shipping', 'multivendorx')} className="space-between">
+						<FormGroupComponent row label={__('Shipping', 'multivendorx')} className="space-between">
 							<b>{formatCurrency(commissionData?.shipping_amount)}</b>
-						</FormGroup>
+						</FormGroupComponent>
 
-						<FormGroup row label={__('Tax', 'multivendorx')} className="space-between">
+						<FormGroupComponent row label={__('Tax', 'multivendorx')} className="space-between">
 							<b>{formatCurrency(
 								Number(commissionData?.tax_amount || 0)
 							)}</b>
-						</FormGroup>
+						</FormGroupComponent>
 
 						{commissionData?.marketplace_refunded > 0 && (
-							<FormGroup
+							<FormGroupComponent
 								row
 								label={__('Commission refund', 'multivendorx')}
 								className="space-between"
@@ -338,16 +351,16 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 								<b>{formatCurrency(
 									commissionData.marketplace_refunded
 								)}</b>
-							</FormGroup>
+							</FormGroupComponent>
 						)}
 
-						<FormGroup row label={__('Total', 'multivendorx')} className="space-between">
+						<FormGroupComponent row label={__('Total', 'multivendorx')} className="space-between">
 							<b>{formatCurrency(commissionData?.total_order_amount)}</b>
-						</FormGroup>
-					</FormGroupWrapper>
-				</Column>
-				</Container>
-			<SectionUI title={__('Order Details', 'multivendorx')} />
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
+				</ColumnComponent>
+				</ContainerComponent>
+			<SectionComponent title={__('Order Details', 'multivendorx')} />
 			{storeData?.email && (
 				<div className="desc">
 					<i className="adminfont-mail"></i>
@@ -357,7 +370,8 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 			)}
 			<TableCard
 				headers={popupColumns}
-				rows={orderItems}
+				variant="transparent"
+				rows={orderItemRows}
 				showMenu={false}
 				currency={{
 					currencySymbol: appLocalizer.currency_symbol,
@@ -372,7 +386,8 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 				shippingItems.length > 0 && (
 					<TableCard
 						headers={shippingColumns}
-						rows={shippingItems}
+						variant="transparent"
+						rows={shippingRows}
 						title={__('Shipping', 'multivendorx')}
 						currency={{
 							currencySymbol:
@@ -387,7 +402,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 						}}
 					/>
 				)}	
-		</PopupUI>
+		</PopupComponent>
 	);
 };
 

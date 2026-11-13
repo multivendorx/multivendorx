@@ -69,6 +69,7 @@ class Utill {
         'tour_completed'      => 'catalogx_tour_completed',
         'plugin_db_version'   => 'catalogx_version',
         'log_file'            => 'catalogx_log_file',
+        'vulomail_notice_dismissal_time'     => 'catalogx_vulomail_notice_dismissed_at',
     );
 
     /**
@@ -81,7 +82,7 @@ class Utill {
     public const ACTIVE_MODULES_DB_KEY = 'catalogx_all_active_module_list';
 
     /**
-     * Write log entry to Catalogx log file.
+     * Write log entry to CatalogX log file.
      *
      * @param mixed  $message Log message, Exception, or WP_Error.
      * @param string $log_type Log level/type.
@@ -253,8 +254,12 @@ class Utill {
         // Use the theme template if it exists, otherwise use the plugin template.
         $located = file_exists( $theme_template ) ? $theme_template : CatalogX()->plugin_path . 'templates/' . $template_name;
 
-        // Load the template.
-        load_template( $located, false, $args );
+        // load_template() doesn't extract $args like wc_get_template() does.
+        if ( $args && is_array( $args ) ) {
+            extract( $args ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
+        }
+
+        include $located;
     }
 
 
@@ -331,9 +336,9 @@ class Utill {
     public static function get_translated_string( $context, $name, $default_value ) {
         if ( function_exists( 'icl_t' ) ) {
             return icl_t( $context, $name, $default_value );
-        } else {
-            return __( $default_value, 'catalogx' );
         }
+
+        return $default_value;
     }
     /**
      * Validate REST nonce.
@@ -390,6 +395,11 @@ class Utill {
 		return strtr( $date_format, $map );
 	}
 
+    /**
+     * Get the {field_label} replacement tags available in the enquiry form builder.
+     *
+     * @return array
+     */
     public static function get_tags_enquiry_form() {
         $tags = array();
 
@@ -440,5 +450,41 @@ class Utill {
                 'status' => 500,
             )
         );
+    }
+
+    /**
+     * Generic REST API capability check, shared by CatalogX controllers/routes
+     * through their `permission_callback`, instead of each controller
+     * re-checking `current_user_can()` and building its own error response.
+     *
+     * Grants access when the current user has at least one of the given
+     * capabilities; otherwise returns a `WP_Error` with the appropriate
+     * 401 (not logged in) or 403 (logged in, but lacking the capability) status.
+     *
+     * @param string|array $capabilities One capability, or an array of
+     *                                   capabilities. Access is granted if the
+     *                                   current user has any one of them.
+     * @param string       $context      Optional context used by the permissions
+     *                                   filter.
+     * @param string       $setting_key  Optional setting key for additional access check.
+     * @return true|\WP_Error
+     */
+    public static function current_user_has_capability( $capabilities, $context = '', $setting_key = '' ) {
+        $user_id = CatalogX()->current_user_id;
+
+        // Allow non-logged-in users when permission is set to everyone.
+        if ( 0 === $user_id && ! empty( $setting_key ) && 'everyone' === CatalogX()->setting->get_setting( $setting_key, 'everyone' ) ) {
+            return true;
+        }
+
+        $capabilities = apply_filters( 'catalogx_permissions_check', $capabilities, $context );
+
+        foreach ( (array) $capabilities as $capability ) {
+            if ( current_user_can( $capability ) ) { // phpcs:ignore WordPress.WP.Capabilities.Unknown
+                return true;
+            }
+        }
+
+        return false;
     }
 }

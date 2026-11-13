@@ -51,7 +51,7 @@ class Frontend {
     public function register_script( $scripts ) {
         $scripts['multivendorx-review-frontend-script'] = array(
             'src'  => FrontendScripts::get_asset_path() . 'js/modules/StoreReview/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
-            'deps' => array( 'jquery','wp-i18n' ),
+            'deps' => array( 'jquery', 'wp-i18n' ),
         );
 
         return $scripts;
@@ -83,7 +83,6 @@ class Frontend {
      */
     public function enqueue_scripts() {
         if ( is_product() || Utill::is_store_page() ) {
-            FrontendScripts::load_scripts();
             FrontendScripts::enqueue_script( 'multivendorx-review-frontend-script' );
             FrontendScripts::localize_scripts( 'multivendorx-review-frontend-script' );
         }
@@ -250,6 +249,12 @@ class Frontend {
         return $store;
     }
 
+    /**
+     * Add pending store review count to the customer tab count.
+     *
+     * @param int $total Existing customer tab count.
+     * @return int Updated count including pending reviews.
+     */
     public function customer_count( $total ) {
         $base_args     = array( 'count' => true );
         $pending_args  = array_merge(
@@ -258,7 +263,7 @@ class Frontend {
 				'status' => 'pending',
 			)
         );
-        $pending_count = Util::get_review_information( $pending_args );
+        $pending_count = Util::query_reviews( $pending_args );
         return (int) $total + $pending_count;
     }
 }

@@ -36,7 +36,12 @@ class Logs extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'permission_callback' => array( $this, 'multivendorx_get_items_permissions_check' ),
+                ),
+				array(
+					'methods'             => \WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'delete_item' ),
+					'permission_callback' => array( $this, 'multivendorx_delete_item_permissions_check' ),
                 ),
 			)
         );
@@ -47,8 +52,38 @@ class Logs extends \WP_REST_Controller {
      *
      * @param mixed $request all requests params from api.
      */
-    public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' );
+    public function multivendorx_get_items_permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
+    }
+
+    /**
+     * Delete_item_permissions_check checks the delete item permissions.
+     *
+     * @param mixed $request all requests params from api.
+     */
+    public function multivendorx_delete_item_permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
+    }
+
+    /**
+     * Clear the log file.
+     *
+     * @param mixed $request all requests params from api.
+     * @return \WP_Error|\WP_REST_Response
+     */
+    public function delete_item( $request ) {
+        global $wp_filesystem;
+        $nonce = $request->get_header( 'X-WP-Nonce' );
+        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+            return new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
+        }
+        if ( ! $wp_filesystem ) {
+            require_once ABSPATH . '/wp-admin/includes/file.php';
+            WP_Filesystem();
+        }
+        $wp_filesystem->delete( MultiVendorX()->log_file );
+        delete_option( Utill::MULTIVENDORX_OTHER_SETTINGS['log_file'] ); // Remove log file reference from options table.
+        return rest_ensure_response( true );
     }
 
     /**
@@ -60,7 +95,7 @@ class Logs extends \WP_REST_Controller {
     public function get_items( $request ) {
         global $wp_filesystem;
         $nonce     = $request->get_header( 'X-WP-Nonce' );
-        $log_count = $request->get_param( 'logcount' );
+        $log_count = absint( $request->get_param( 'logcount' ) );
         $log_count = $log_count ? $log_count : 100;
         if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
             return new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
@@ -69,7 +104,7 @@ class Logs extends \WP_REST_Controller {
             require_once ABSPATH . '/wp-admin/includes/file.php';
             WP_Filesystem();
         }
-        $action = $request->get_param( 'action' );
+        $action = sanitize_key( (string) $request->get_param( 'action' ) );
         switch ( $action ) {
             case 'download':
                 return $this->download_log( $request );

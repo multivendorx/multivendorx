@@ -15,6 +15,14 @@ const REGISTRATION_BLOCK_GROUPS = [
                 placeholder: 'Enter your name here',
             },
             {
+                id: 'phone',
+                icon: 'form-phone',
+                value: 'phone',
+                label: 'Phone',
+                fixedName: 'Phone',
+                placeholder: 'Enter your phone number',
+            },
+            {
                 id: 'recaptcha',
                 icon: 'captcha-automatic-code',
                 value: 'recaptcha',
@@ -22,7 +30,7 @@ const REGISTRATION_BLOCK_GROUPS = [
                 fixedName: 'reCaptcha',
             },
         ],
-    }
+    },
 ];
 
 export default {

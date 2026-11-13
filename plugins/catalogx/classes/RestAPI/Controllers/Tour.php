@@ -57,7 +57,7 @@ class Tour extends \WP_REST_Controller {
 	 * @return bool
 	 */
 	public function catalogx_permissions_check( $request ) {
-		return current_user_can( 'manage_options' );
+		return Utill::current_user_has_capability( 'manage_options' );
 	}
 
 	/**

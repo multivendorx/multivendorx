@@ -7,6 +7,8 @@
 
 namespace MooWoodle\Core;
 
+defined( 'ABSPATH' ) || exit;
+
 use MooWoodle\Util;
 use MooWoodle\FrontendScripts;
 
@@ -19,8 +21,8 @@ use MooWoodle\FrontendScripts;
  */
 class Course {
 	/**
-     * Course constructor.
-     */
+	 * Course constructor.
+	 */
 	public function __construct() {
 		// Add Link Moodle Course in WooCommerce edit product tab.
 		add_action( 'add_meta_boxes', array( $this, 'add_additional_metabox' ) );
@@ -28,10 +30,10 @@ class Course {
 	}
 
 	/**
-     * Enqueues all assets for admin.
-     *
-     * @return void
-     */
+	 * Enqueues all assets for admin.
+	 *
+	 * @return void
+	 */
 	public function enqueue_admin_assets() {
 		$screen = get_current_screen();
 		if ( ! empty( $screen ) && 'product' === $screen->post_type ) {
@@ -57,110 +59,100 @@ class Course {
 
 		$table_name = $wpdb->prefix . Util::TABLES['course'];
 
-		$where        = array();
-		$query_params = array();
+		$is_count = ! empty( $query_args['count'] );
 
-		$is_count      = ! empty( $query_args['count'] );
-		$select_fields = '*';
+		$conditions = array();
+		$values     = array();
 
-		if ( ! empty( $query_args['fields'] ) ) {
-			if ( is_array( $query_args['fields'] ) ) {
-				$select_fields = implode( ', ', array_map( 'sanitize_key', $query_args['fields'] ) );
-			} else {
-				$select_fields = sanitize_key( $query_args['fields'] );
-			}
-		}
-
-		$sql = $is_count
-			? "SELECT COUNT(*) FROM {$table_name}"
-			: "SELECT {$select_fields} FROM {$table_name}";
-
-		if ( ! empty( $query_args['id'] ) ) {
+		if ( isset( $query_args['id'] ) ) {
 			$ids          = array_map( 'intval', (array) $query_args['id'] );
 			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-
-			$where[]      = "id IN ($placeholders)";
-			$query_params = array_merge( $query_params, $ids );
+			$conditions[] = 'id IN (' . $placeholders . ')';
+			$values       = array_merge( $values, $ids );
 		}
 
-		$supported_filters = array(
-			'moodle_course_id' => '%d',
-			'category_id'      => '%d',
-			'product_id'       => '%d',
-			'startdate'        => '%d',
-			'enddate'          => '%d',
-		);
-
-		foreach ( $supported_filters as $field => $format ) {
+		foreach ( array( 'moodle_course_id', 'category_id', 'product_id', 'startdate', 'enddate' ) as $field ) {
 			if ( isset( $query_args[ $field ] ) ) {
-				$where[]        = "{$field} = {$format}";
-				$query_params[] = (int) $query_args[ $field ];
+				$conditions[] = $field . ' = %d';
+				$values[]     = (int) $query_args[ $field ];
 			}
 		}
 
-		if ( isset( $query_args['shortname'] ) ) {
-			$where[]        = 'shortname LIKE %s';
-			$query_params[] = '%' . $wpdb->esc_like( $query_args['shortname'] ) . '%';
-		}
-
-		if ( isset( $query_args['fullname'] ) ) {
-			$where[]        = 'fullname LIKE %s';
-			$query_params[] = '%' . $wpdb->esc_like( $query_args['fullname'] ) . '%';
-		}
-
-		if ( isset( $query_args['expired'] ) && $query_args['expired'] ) {
-			$where[]        = 'enddate > %d';
-			$query_params[] = 0;
-
-			$where[]        = 'enddate <= %d';
-			$query_params[] = time();
-		}
-
-		if ( isset( $query_args['has_product'] ) && $query_args['has_product'] ) {
-			$where[]        = 'product_id > %d';
-			$query_params[] = 0;
-		}
-		
-		if ( ! empty( $where ) ) {
-			$condition = strtoupper( $query_args['condition'] ?? 'AND' );
-			if ( ! in_array( $condition, array( 'AND', 'OR' ), true ) ) {
-				$condition = 'AND';
-			}
-			$sql .= ' WHERE ' . implode( " $condition ", $where );
-		}
-
-		if ( isset( $query_args['limit'] ) ) {
-			$sql           .= ' LIMIT %d';
-			$query_params[] = (int) $query_args['limit'];
-
-			if ( isset( $query_args['offset'] ) ) {
-				$sql           .= ' OFFSET %d';
-				$query_params[] = (int) $query_args['offset'];
+		foreach ( array( 'shortname', 'fullname' ) as $field ) {
+			if ( isset( $query_args[ $field ] ) ) {
+				$conditions[] = $field . ' LIKE %s';
+				$values[]     = '%' . $wpdb->esc_like( $query_args[ $field ] ) . '%';
 			}
 		}
 
-		if ( ! empty( $query_params ) ) {
-			$sql = $wpdb->prepare( $sql, $query_params );
+		if ( ! empty( $query_args['expired'] ) ) {
+			$conditions[] = 'enddate > 0 AND enddate <= %d';
+			$values[]     = time();
 		}
+
+		if ( ! empty( $query_args['has_product'] ) ) {
+			$conditions[] = 'product_id > 0';
+		}
+
+		$join      = ( 'OR' === strtoupper( $query_args['condition'] ?? 'AND' ) ) ? ' OR ' : ' AND ';
+		$where_sql = $conditions ? ' WHERE ' . implode( $join, $conditions ) : '';
 
 		if ( $is_count ) {
-			$course_count = $wpdb->get_var( $sql );
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$course_count = $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT COUNT(*) FROM %i' . $where_sql,
+					$table_name,
+					...$values
+				)
+			);
 			return $course_count ?? 0;
 		}
 
-		return $wpdb->get_results( $sql, ARRAY_A ) ?: array();
+		$has_limit = isset( $query_args['limit'] );
+		$limit     = $has_limit ? (int) $query_args['limit'] : PHP_INT_MAX;
+		$offset    = ( $has_limit && isset( $query_args['offset'] ) ) ? (int) $query_args['offset'] : 0;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$courses = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT * FROM %i' . $where_sql . ' LIMIT %d OFFSET %d',
+				$table_name,
+				...array_merge( $values, array( $limit, $offset ) )
+			),
+			ARRAY_A
+		);
+
+		return $courses ? self::select_columns( $courses, $query_args['fields'] ?? '*' ) : array();
+	}
+
+	/**
+	 * Keep only the requested columns of each course row.
+	 *
+	 * @param array        $rows   Course rows.
+	 * @param string|array $fields Column name(s), or '*' for every column.
+	 * @return array
+	 */
+	private static function select_columns( $rows, $fields ) {
+		if ( '*' === $fields ) {
+			return $rows;
+		}
+
+		$columns = array_flip( array_map( 'sanitize_key', (array) $fields ) );
+
+		return array_map( fn( $row ) => array_intersect_key( $row, $columns ), $rows );
 	}
 
 	/**
 	 * Insert or update a course record by Moodle course ID.
 	 *
 	 * @param array $course_data Course data. Must include 'moodle_course_id'.
-	 * @return int|false Rows affected or false on failure.
+	 * @return int|false Course ID on success, false on failure.
 	 */
 	public static function update_course( $course_data ) {
 		global $wpdb;
 
-		$moodle_course_id = (int) $course_data['moodle_course_id'];
+		$moodle_course_id = (int) ( $course_data['moodle_course_id'] ?? 0 );
 		if ( empty( $moodle_course_id ) ) {
 			return false;
 		}
@@ -204,31 +196,33 @@ class Course {
 		}
 
 		$synced_course_ids = array();
-        foreach ( $moodle_courses as $course ) {
-            if ( empty( $course['format'] ) || 'site' === $course['format'] ) {
-                continue;
-            }
+		foreach ( $moodle_courses as $course ) {
+			if ( empty( $course['format'] ) || 'site' === $course['format'] ) {
+				continue;
+			}
 
-            $course_data = array(
-                'moodle_course_id' => (int) $course['id'],
-                'shortname'        => sanitize_text_field( $course['shortname'] ?? '' ),
-                'category_id'      => (int) ( $course['categoryid'] ?? 0 ),
-                'fullname'         => sanitize_text_field( $course['fullname'] ?? '' ),
-                'startdate'        => (int) ( $course['startdate'] ?? 0 ),
-                'enddate'          => (int) ( $course['enddate'] ?? 0 ),
-            );
+			$course_data = array(
+				'moodle_course_id' => (int) $course['id'],
+				'shortname'        => sanitize_text_field( $course['shortname'] ?? '' ),
+				'category_id'      => (int) ( $course['categoryid'] ?? 0 ),
+				'fullname'         => sanitize_text_field( $course['fullname'] ?? '' ),
+				'startdate'        => (int) ( $course['startdate'] ?? 0 ),
+				'enddate'          => (int) ( $course['enddate'] ?? 0 ),
+			);
 
-            $synced_course_ids[] = self::update_course( $course_data );
+			$synced_course_ids[] = self::update_course( $course_data );
 
-            Util::increment_sync_count( 'course' );
-        }
+			Util::increment_sync_count( 'course' );
+		}
 		if ( $force_delete ) {
 			self::cleanup_courses( $synced_course_ids );
 		}
-    }
+	}
 
 	/**
-	 * Creates custom tab for product types.
+	 * Add the "Moodle Enrollment Mapping" meta box to the product edit screen.
+	 *
+	 * @return void
 	 */
 	public function add_additional_metabox() {
 		add_meta_box(
@@ -241,25 +235,25 @@ class Course {
 		);
 	}
 
-    /**
-     * Add meta box panel.
-     *
-     * @return void
-     */
+	/**
+	 * Add meta box panel.
+	 *
+	 * @return void
+	 */
 	public function render_product_metabox() {
 		echo '<div id="moodle-enrollment-mapping-tab"></div>';
 	}
 
 	/**
-     * Delete all courses whose IDs are not present in $exclude_ids array.
-     *
-     * @param array $exclude_ids course ids.
-     * @return void
-     */
-    public static function cleanup_courses( $exclude_ids ) {
-        global $wpdb;
+	 * Delete all courses whose IDs are not present in $exclude_ids array.
+	 *
+	 * @param array $exclude_ids course ids.
+	 * @return void
+	 */
+	public static function cleanup_courses( $exclude_ids ) {
+		global $wpdb;
 
-        $exclude_ids = array_map( 'intval', (array) $exclude_ids );
+		$exclude_ids = array_map( 'intval', (array) $exclude_ids );
 		if ( empty( $exclude_ids ) ) {
 			return;
 		}
@@ -270,12 +264,12 @@ class Course {
 		);
 
 		$existing_ids  = wp_list_pluck( $existing_ids, 'id' );
-        $ids_to_delete = array_diff( $existing_ids, $exclude_ids );
-        $table_name    = $wpdb->prefix . Util::TABLES['course'];
+		$ids_to_delete = array_diff( $existing_ids, $exclude_ids );
+		$table_name    = $wpdb->prefix . Util::TABLES['course'];
 
-        foreach ( $ids_to_delete as $course_id ) {
+		foreach ( $ids_to_delete as $course_id ) {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            $wpdb->delete( $table_name, array( 'id' => $course_id ) );
-        }
-    }
+			$wpdb->delete( $table_name, array( 'id' => $course_id ) );
+		}
+	}
 }

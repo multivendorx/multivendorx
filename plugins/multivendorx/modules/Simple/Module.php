@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\Simple;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Simple Module class
  *

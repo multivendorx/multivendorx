@@ -13,6 +13,10 @@ use MultiVendorX\Store\Store;
 use MultiVendorX\Privacy\Util;
 use MultiVendorX\Store\StoreUtil;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 global $product;
 $html  = '';
 $store = Store::get_store( $product->get_id(), 'product' );
@@ -85,7 +89,7 @@ if ( $store ) {
         }
 
         if ( in_array( 'show_store_description', $store_branding_details, true ) && ! empty( $details['description'] ) ) {
-            $html .= '<div class="store-description">' . apply_filters( 'the_content', $details['description'] ) . '</div>';
+            $html .= '<div class="store-description">' . wp_kses_post( apply_filters( 'the_content', $details['description'] ) ) . '</div>';
         }
 
         if ( in_array( 'show_store_phone', $store_contact_details, true ) && ! empty( $details['phone'] ) ) {

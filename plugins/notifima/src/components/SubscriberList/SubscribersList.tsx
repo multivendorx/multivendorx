@@ -1,18 +1,19 @@
 /* global appLocalizer */
 import { useState } from 'react';
+import { getApiLink } from '@zyra/core';
+
 import {
-    Column,
-    Container,
-    InfoItem,
-    NavigatorHeader,
-    PopupUI,
-    TableCard,
-    getApiLink
-} from 'zyra';
+    ColumnComponent,
+    ContainerComponent,
+    InformationItemComponent,
+    PopupComponent,
+    NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard } from '@zyra/table';
 import ShowProPopup from '../Popup/Popup';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import { defaultCategoryCounts, subscriptions } from './SubscribersListUtil';
+import { csvHeaders, defaultCategoryCounts, subscriptions } from './SubscribersListUtil';
 import axios from 'axios';
 
 interface HeaderColumn {
@@ -28,6 +29,7 @@ interface HeaderConfig {
 interface RowData {
     [key: string]: string | number | boolean | null | undefined;
 }
+
 export const formatLocalDate = (date?: Date) =>
     date ? date.toISOString().split('T')[0] : '';
 
@@ -40,20 +42,21 @@ export const downloadCSV = (
         return;
     }
 
-    // Only include headers with csv: true
+    // Exclude columns explicitly hidden from CSV.
     const csvColumns = Object.entries(headers)
-        .filter(([_, h]) => h.csvDisplay !== false)
+        .filter(([, h]) => h.csvDisplay !== false)
         .map(([key, h]) => ({ key, label: h.label }));
 
-    // Header row
-    const csvRows = [csvColumns.map((c) => `"${c.label}"`).join(',')];
 
+    // Header row
+    const csvRows = [csvColumns.map((column) => column.label).join(',')];
+    
     // Data rows
     rows.forEach((row) => {
         const rowData = csvColumns
             .map((col) => {
                 const value = row[col.key];
-                return `"${value != null ? value : ''}"`;
+                return String(value ?? '');
             })
             .join(',');
         csvRows.push(rowData);
@@ -78,8 +81,9 @@ const SubscribersList = () => {
     const headers = {
         product: {
             label: __('Product', 'notifima'),
+            width: "70%",
             render: (row) => (
-                <InfoItem
+                <InformationItemComponent
                     title={row.product}
                     avatar={{
                         iconClass: 'single-product',
@@ -89,23 +93,36 @@ const SubscribersList = () => {
                             label: __('SKU', 'notifima'),
                             value: row.sku,
                         },
+                        {
+                            label: __('Email', 'notifima'),
+                            value: row.email,
+                        },
+                        {
+                            label: __('Phone', 'notifima'),
+                            value: row.phone,
+                        },
+                    ]}
+                    badges={[
+                        {
+                            text: row.status,
+                            className: `badge-${row.status_key}`,
+                        },
                     ]}
                 />
             ),
         },
-        email: {
-            label: __('Email', 'notifima'),
+        date: {
+            label: __('Date', 'notifima'),
             render: (row) => {
                 return (
-                    <div className="icon-wrapper"><i className='adminfont-mail yellow'></i>{row.email}</div>
+                    <>
+                        <div className='table-details'>
+                            <span className='label'>{__('Date:', 'notifima')}</span>
+                            {row.date || '-'}
+                        </div>
+                    </>
                 );
             },
-        },
-        date: { label: __('Date', 'notifima') },
-        status: {
-            label: __('Status', 'notifima'),
-            statusClass: (row) => `${row.status_key}`,
-            type: 'status',
         },
     };
 
@@ -114,13 +131,12 @@ const SubscribersList = () => {
         axios
             .get(getApiLink(appLocalizer, 'subscribers'), {
                 headers: { 'X-WP-Nonce': appLocalizer.nonce },
-                params: { export: true },
             })
             .then((response) => {
                 const rows = response.data || [];
 
                 downloadCSV(
-                    headers,
+                    csvHeaders,
                     rows,
                     'subscriber.csv'
                 );
@@ -141,6 +157,7 @@ const SubscribersList = () => {
     const defaultTableProps = {
         headers,
         categoryCounts: defaultCategoryCounts,
+        hideHeader: true,
         filters,
         search: {
             placeholder: __('Search...', 'notifima'),
@@ -173,7 +190,7 @@ const SubscribersList = () => {
         if (!appLocalizer.khali_dabba) {
             return (
                 <div className="demo-wrapper" onClick={() => setOpenPopup(true)}>
-                     <div className="watermark">{__('This is sample Data','notifima' )}</div>
+                    <div className="watermark">{__('This is sample Data', 'notifima')}</div>
                     <TableCard {...tableProps} />
                 </div>
             );
@@ -189,7 +206,7 @@ const SubscribersList = () => {
     return (
         <>
             {openPopup && (
-                <PopupUI
+                <PopupComponent
                     position="lightbox"
                     open={openPopup}
                     onClose={() => setOpenPopup(false)}
@@ -197,9 +214,9 @@ const SubscribersList = () => {
                     height="auto"
                 >
                     <ShowProPopup />
-                </PopupUI>
+                </PopupComponent>
             )}
-            <NavigatorHeader
+            <NavigatorHeaderComponent
                 headerIcon="subscriber"
                 headerDescription={__(
                     'Manage product subscription requests, track subscriber statuses, and monitor email notifications sent to interested customers.',
@@ -214,11 +231,11 @@ const SubscribersList = () => {
                     },
                 ]}
             />
-            <Container general>
-                <Column>
+            <ContainerComponent general>
+                <ColumnComponent>
                     {renderTableContent()}
-                </Column>
-            </Container>
+                </ColumnComponent>
+            </ContainerComponent>
         </>
     );
 };

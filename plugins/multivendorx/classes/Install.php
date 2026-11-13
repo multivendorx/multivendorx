@@ -80,20 +80,23 @@ class Install {
 
             $table = $wpdb->prefix . Utill::TABLES['store'];
 
-            $wpdb->query(
-                "
-                ALTER TABLE {$table}
+            $wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+                $wpdb->prepare(
+                    '
+                ALTER TABLE %i
                 MODIFY name VARCHAR(100) NOT NULL,
                 MODIFY slug VARCHAR(100) NOT NULL
-            "
+            ',
+                    $table
+                )
             );
         }
 
         if ( version_compare( $previous_version, '5.0.7', '<' ) ) {
             global $wpdb;
-            $collate          = $wpdb->get_charset_collate();
+            $collate = $wpdb->get_charset_collate();
 
-            $sql_logs= "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['activity_logs'] . "` (
+            $sql_logs = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['activity_logs'] . "` (
                 `ID` bigint(20) NOT NULL AUTO_INCREMENT,
                 `store_id` BIGINT UNSIGNED NOT NULL DEFAULT 0,
                 `message` text NOT NULL,
@@ -109,14 +112,14 @@ class Install {
             dbDelta( $sql_logs );
 
             $previous_settings = get_option( Utill::MULTIVENDORX_SETTINGS['store-identity'], array() );
-            $new_settings = array(
+            $new_settings      = array(
                 'verification_methods' => array(
-                    'address-proof' => array(
+                    'address-proof'         => array(
                         'title'       => 'Address proof of business location',
                         'description' => 'Confirms the store’s physical or operational business address.',
                     ),
 
-                    'trade-license' => array(
+                    'trade-license'         => array(
                         'title'       => 'Trade license or permit',
                         'description' => 'Validates that the store is authorized to operate and conduct business legally.',
                     ),
@@ -125,17 +128,17 @@ class Install {
                         'title'       => 'Business registration certificate',
                         'description' => 'Confirms the store is legally registered as a business entity.',
                     ),
-                )
+                ),
             );
             update_option( Utill::MULTIVENDORX_SETTINGS['store-identity'], array_merge( $previous_settings, $new_settings ) );
 
-            $previous_tax_settings = get_option( Utill::MULTIVENDORX_SETTINGS['tax-compliance'], array() );
+            $previous_tax_settings   = get_option( Utill::MULTIVENDORX_SETTINGS['tax-compliance'], array() );
             $tax_compliance_settings = array(
-                'bank_documents' => array(
+                'bank_documents'     => array(
                     'bank_statement',
                 ),
 
-                'tax_documents' => array(
+                'tax_documents'      => array(
                     'vat_certificate',
                 ),
 
@@ -149,25 +152,25 @@ class Install {
         if ( version_compare( $previous_version, '5.0.8', '<' ) ) {
             $previous_settings = get_option( Utill::MULTIVENDORX_SETTINGS['product-compliance'], array() );
             $product_compliance_settings['prohibited_product_categories'] = array(
-                'product_image' => array(
-                    'label'      => 'Product Image',
+                'product_image'                 => array(
+                    'label'     => 'Product Image',
                     'mandatory' => true,
                 ),
-                'product_description'   => array(
-                    'label'      => 'Product description',
-                    'mandatory' => true
+                'product_description'           => array(
+                    'label'     => 'Product description',
+                    'mandatory' => true,
                 ),
-                'specifications' => array(
-                    'label'      => 'Specifications'
+                'specifications'                => array(
+                    'label' => 'Specifications',
                 ),
                 'manufacturer_importer_details' => array(
-                    'label'      => 'Manufacturer / importer details'
+                    'label' => 'Manufacturer / importer details',
                 ),
-                'ingredients_materials' => array(
-                    'label'      => 'Ingredients / materials'
+                'ingredients_materials'         => array(
+                    'label' => 'Ingredients / materials',
                 ),
-                'usage_instructions' => array(
-                    'label'      => 'Usage instructions'
+                'usage_instructions'            => array(
+                    'label' => 'Usage instructions',
                 ),
             );
             update_option( Utill::MULTIVENDORX_SETTINGS['product-compliance'], array_merge( $previous_settings, $product_compliance_settings ) );
@@ -176,29 +179,29 @@ class Install {
         if ( version_compare( $previous_version, '5.0.10', '<' ) ) {
             global $wpdb;
 
-            $store_table = $wpdb->prefix . Utill::TABLES['store'];
+            $store_table      = $wpdb->prefix . Utill::TABLES['store'];
             $method_field_map = array(
-                'bank-transfer'  => array(
+                'bank-transfer'      => array(
                     'title'  => 'Bank Transfer',
                     'label'  => 'Bank Transfer',
                     'fields' => array( 'account_type', 'bank_name', 'account_holder_name', 'account_number', 'routing_number', 'destination_currency', 'bank_address', 'iban' ),
                 ),
-                'paypal-payout'  => array(
+                'paypal-payout'      => array(
                     'title'  => 'Paypal Payout',
                     'label'  => 'Paypal Payout',
                     'fields' => array( 'paypal_email' ),
                 ),
-                'stripe-connect' => array(
+                'stripe-connect'     => array(
                     'title'  => 'Stripe Connect',
                     'label'  => 'Stripe Connect',
                     'fields' => array( Utill::STORE_SETTINGS_KEYS['stripe_account_id'] ),
                 ),
-                'custom-gateway' => array(
+                'custom-gateway'     => array(
                     'title'  => 'Custom Gateway',
                     'label'  => 'Custom Gateway',
                     'fields' => array(),
                 ),
-                'cash'           => array(
+                'cash'               => array(
                     'title'  => 'Cash',
                     'label'  => 'Cash',
                     'fields' => array(),
@@ -216,7 +219,7 @@ class Install {
             );
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            $store_ids = $wpdb->get_col( "SELECT ID FROM {$store_table}" );
+            $store_ids = $wpdb->get_col( $wpdb->prepare( 'SELECT ID FROM %i', $store_table ) );
 
             foreach ( (array) $store_ids as $store_id ) {
                 $store = new Store( (int) $store_id );
@@ -257,8 +260,86 @@ class Install {
                 $store->update_meta( Utill::STORE_SETTINGS_KEYS['payment_methods'], $payment_methods );
             }
         }
+
+        if ( version_compare( $previous_version, '5.0.21', '<' ) ) {
+            $events_delivery_settings = get_option( Utill::MULTIVENDORX_SETTINGS['events-delivery'], array() );
+            $has_email_recipient      = ! empty( $events_delivery_settings['receiver_email_address'] );
+            $has_sms_recipient        = ! empty( $events_delivery_settings['sms_receiver_phone_number'] );
+
+            if ( $has_email_recipient || $has_sms_recipient ) {
+                update_option( 'multivendorx_vulomail_migration_status', 'pending' );
+                update_option( 'multivendorx_vulomail_migration_reason', 'migrate' );
+            }
+
+            $this->migrate_email_template_customizer_settings();
+            $this->migrate_event_rule_email_bodies();
+        }
     }
 
+    /**
+     * Move email templates saved by the Email Template Customizer out of the
+     * registration form's setting.
+     *
+     * The customizer used to save under `store_registration_from`, the same key
+     * as the registration form, so its `emailTemplates` ended up inside the
+     * registration settings. They now live in their own settings group under
+     * `email_templates`.
+     *
+     * @return void
+     */
+    private function migrate_email_template_customizer_settings() {
+        $registration_key      = Utill::MULTIVENDORX_SETTINGS['registration'];
+        $customizer_key        = Utill::MULTIVENDORX_SETTINGS['email-template-customizer'];
+        $registration_settings = get_option( $registration_key, array() );
+        $legacy_templates      = $registration_settings['store_registration_from'] ?? array();
+
+        if ( ! is_array( $legacy_templates ) || ! isset( $legacy_templates['emailTemplates'] ) ) {
+            return;
+        }
+
+        $customizer_settings = get_option( $customizer_key, array() );
+
+        // Never overwrite templates already saved in the new location.
+        if ( empty( $customizer_settings['email_templates'] ) ) {
+            $customizer_settings['email_templates'] = array(
+                'emailTemplates'        => $legacy_templates['emailTemplates'],
+                'activeEmailTemplateId' => $legacy_templates['activeEmailTemplateId'] ?? '',
+            );
+            update_option( $customizer_key, $customizer_settings );
+        }
+
+        unset( $registration_settings['store_registration_from']['emailTemplates'], $registration_settings['store_registration_from']['activeEmailTemplateId'] );
+        update_option( $registration_key, $registration_settings );
+    }
+
+    /**
+     * Give saved event-rule email bodies real CSS units.
+     *
+     * Earlier versions stored sizes like `margin-bottom:3` (rem, unit left off),
+     * which mail clients ignore. This rewrites them once, in the database.
+     *
+     * @return void
+     */
+    private function migrate_event_rule_email_bodies() {
+        global $wpdb;
+
+        $table  = $wpdb->prefix . Utill::TABLES['system_events'];
+        $events = $wpdb->get_results( $wpdb->prepare( 'SELECT id, email_body FROM %i WHERE email_body IS NOT NULL AND email_body <> %s', $table, '' ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+        foreach ( (array) $events as $event ) {
+            $converted_body = Notifications::add_missing_css_units( $event['email_body'] );
+
+            if ( $converted_body !== $event['email_body'] ) {
+                $wpdb->update( $table, array( 'email_body' => $converted_body ), array( 'id' => (int) $event['id'] ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+            }
+        }
+    }
+
+    /**
+     * Run first-time install (table/page/default-settings creation) or version-gated migration.
+     *
+     * @return void
+     */
     public function run_migration() {
         if ( ! get_option( 'multivendorx_version', false ) ) {
             $this->create_database_table();
@@ -266,6 +347,13 @@ class Install {
             $this->plugin_create_pages();
             $this->set_default_modules();
             $this->set_default_settings();
+
+            // A brand new site has no prior email/SMS settings to migrate, but VuloMail is
+            // still installed as the delivery plugin going forward -- Integrations\VuloMailMigration
+            // picks this up on the next wp-admin visit and shows an install-only notice, not the
+            // "your settings were migrated" one used for sites upgrading from before 5.0.21.
+            update_option( 'multivendorx_vulomail_migration_status', 'pending' );
+            update_option( 'multivendorx_vulomail_migration_reason', 'install' );
         } else {
             $this->do_migration();
         }
@@ -504,7 +592,7 @@ class Install {
             KEY ip (ip)
         ) $collate;";
 
-        $sql_logs= "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['activity_logs'] . "` (
+        $sql_logs = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['activity_logs'] . "` (
             `ID` bigint(20) NOT NULL AUTO_INCREMENT,
             `store_id` BIGINT UNSIGNED NOT NULL DEFAULT 0,
             `message` text NOT NULL,
@@ -512,7 +600,6 @@ class Install {
             `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (`ID`)
         ) $collate;";
-
 
         // Include upgrade functions if not loaded.
         if ( ! function_exists( 'dbDelta' ) ) {
@@ -545,9 +632,12 @@ class Install {
         $wpdb->query( 'DROP TRIGGER IF EXISTS update_store_balance' );
         $table = $wpdb->prefix . Utill::TABLES['transaction'];
         // Create the trigger.
-        $sql = "
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+        $wpdb->query(
+            $wpdb->prepare(
+                "
         CREATE TRIGGER update_store_balance
-        BEFORE INSERT ON {$table}
+        BEFORE INSERT ON %i
         FOR EACH ROW
         BEGIN
             DECLARE last_balance DECIMAL(20,2);
@@ -555,7 +645,7 @@ class Install {
 
             SELECT balance, locking_balance
             INTO last_balance, last_locking_balance
-            FROM {$table}
+            FROM %i
             WHERE store_id = NEW.store_id
             ORDER BY id DESC
             LIMIT 1;
@@ -615,10 +705,11 @@ class Install {
                 SET NEW.locking_balance = last_locking_balance;
             END IF;
         END;
-        ";
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        $wpdb->query( $sql );
+        ",
+                $table,
+                $table
+            )
+        );
     }
 
     /**
@@ -652,13 +743,13 @@ class Install {
                     'enable' => true,
                 ),
             ),
-            'verification_methods' => array(
-                'address-proof' => array(
+            'verification_methods'     => array(
+                'address-proof'         => array(
                     'title'       => 'Address proof of business location',
                     'description' => 'Confirms the store’s physical or operational business address.',
                 ),
 
-                'trade-license' => array(
+                'trade-license'         => array(
                     'title'       => 'Trade license or permit',
                     'description' => 'Validates that the store is authorized to operate and conduct business legally.',
                 ),
@@ -1183,7 +1274,7 @@ class Install {
 
         $registration_from_settings = array(
             'store_registration_from' => array(
-                'formfieldlist'  => $registration_form,
+                'formfieldlist' => $registration_form,
                 'buttonsetting' => array(),
             ),
         );
@@ -1274,25 +1365,25 @@ class Install {
         );
         $product_compliance_settings['who_can_report']       = 'logged_in';
         $product_compliance_settings['prohibited_product_categories'] = array(
-            'product_image' => array(
-                'label'      => 'Product Image',
+            'product_image'                 => array(
+                'label'     => 'Product Image',
 			    'mandatory' => true,
             ),
-            'product_description'   => array(
-                'label'      => 'Product description',
-			    'mandatory' => true
+            'product_description'           => array(
+                'label'     => 'Product description',
+			    'mandatory' => true,
             ),
-            'specifications' => array(
-                'label'      => 'Specifications'
+            'specifications'                => array(
+                'label' => 'Specifications',
             ),
             'manufacturer_importer_details' => array(
-                'label'      => 'Manufacturer / importer details'
+                'label' => 'Manufacturer / importer details',
             ),
-            'ingredients_materials' => array(
-                'label'      => 'Ingredients / materials'
+            'ingredients_materials'         => array(
+                'label' => 'Ingredients / materials',
             ),
-            'usage_instructions' => array(
-                'label'      => 'Usage instructions'
+            'usage_instructions'            => array(
+                'label' => 'Usage instructions',
             ),
         );
 
@@ -1313,11 +1404,11 @@ class Install {
         );
 
         $tax_compliance_settings = array(
-            'bank_documents' => array(
+            'bank_documents'     => array(
                 'bank_statement',
             ),
 
-            'tax_documents' => array(
+            'tax_documents'      => array(
                 'vat_certificate',
             ),
 
@@ -1737,18 +1828,18 @@ class Install {
 
         if ( ! empty( $previous_store_settings['mvx_store_sidebar_position'] ) ) {
             $position = $previous_store_settings['mvx_store_sidebar_position'];
-            if ( $position === 'At Left' ) {
+            if ( 'At Left' === $position ) {
                 $appearance_settings['store_sidebar'] = 'left';
-            } elseif ( $position === 'At Right' ) {
+            } elseif ( 'At Right' === $position ) {
                 $appearance_settings['store_sidebar'] = 'right';
             }
         }
 
         if ( ! empty( $previous_store_settings['choose_map_api'] ) ) {
-            if ( 'google_map_set' == $previous_store_settings['choose_map_api']['value'] ) {
+            if ( 'google_map_set' === $previous_store_settings['choose_map_api']['value'] ) {
                 $map_settings['choose_map_api'] = 'google_map';
             }
-            if ( 'mapbox_api_set' == $previous_store_settings['choose_map_api']['value'] ) {
+            if ( 'mapbox_api_set' === $previous_store_settings['choose_map_api']['value'] ) {
                 $map_settings['choose_map_api'] = 'mapbox';
             }
             $map_settings['google_map_api_key'] = $previous_store_settings['google_map_api_key'];
@@ -2062,7 +2153,7 @@ class Install {
 		if ( ! empty( $old_fields ) ) {
 			$new_form = array(
 				'store_registration_from' => array(
-					'formfieldlist'  => array(),
+					'formfieldlist' => array(),
 					'buttonsetting' => array(),
 				),
 			);
@@ -2203,7 +2294,8 @@ class Install {
             'store_owner' => $store_owner_caps,
         );
 
-        if ( $role = get_role( 'store_owner' ) ) {
+        $role = get_role( 'store_owner' );
+        if ( $role ) {
             foreach ( $role->capabilities as $cap => $_ ) {
                 $role->remove_cap( $cap );
             }

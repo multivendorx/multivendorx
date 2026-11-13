@@ -12,6 +12,10 @@
 use MultiVendorX\Store\Store;
 use MultiVendorX\StoreReview\Util;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $product_ids = $args['product_ids'];
 ?>
 

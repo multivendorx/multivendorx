@@ -2,27 +2,27 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
+
 import {
-	getApiLink,
-	NavigatorHeader,
-	TextAreaUI,
-	ChoiceToggleUI,
-	Container,
-	Column,
-	FormGroupWrapper,
-	FormGroup,
-	TableCard,
-	BasicInputUI,
-	ButtonInputUI,
-	PopupUI,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-} from 'zyra';
+	TextAreaInput,
+	ToggleInput,
+	TextInput,
+	ButtonInput,
+} from '@zyra/inputs';
+import {
+	ContainerComponent,
+	ColumnComponent,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import Popup from '../../../src/components/Popup/Popup';
 import {
+	formatDate,
 	formatLocalDate,
-	truncateText,
 } from '../../../src/services/commonFunction';
 
 type KBForm = {
@@ -198,19 +198,10 @@ export const KnowledgeBase: React.FC = () => {
 	const headers = {
 		title: {
 			label: __('Name your article', 'multivendorx'),
-		},
-		content: {
-			label: __('Write your explanation or tutorial', 'multivendorx'),
-			type: 'content',
-			render: (row) => truncateText(row.content, 30),
-		},
-		status_label: {
-			label: __('Status', 'multivendorx'),
-			type: 'status', statusClass: (row) => `${row.status}`,
-		},
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			type: 'action',
@@ -233,6 +224,27 @@ export const KnowledgeBase: React.FC = () => {
 			],
 		},
 	};
+
+	const truncateChars = (text: string, limit: number) => {
+		const plain = (text || '').replace(/<[^>]*>/g, '').trim();
+		return plain.length > limit ? `${plain.slice(0, limit)}...` : plain;
+	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		title: truncateChars(row.title, 15),
+		info_icon: 'knowledgebase',
+		info_descriptions: [
+			{
+				icon: 'text',
+				value: truncateChars(row.content, 30) || '—',
+			},
+		],
+		info_badges: [
+			{ text: row.status_label, color: `badge-${row.status}` },
+			{ text: formatDate(row.date_created), color: 'blue' },
+		],
+	}));
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -318,7 +330,7 @@ export const KnowledgeBase: React.FC = () => {
 	];
 	return (
 		<>
-			<PopupUI
+			<PopupComponent
 				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
@@ -344,9 +356,9 @@ export const KnowledgeBase: React.FC = () => {
 						setSelectedKb(null);
 					}}
 				/>
-			</PopupUI>
+			</PopupComponent>
 
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerIcon="knowledgebase"
 				headerTitle={__('Knowledge Base', 'multivendorx')}
 				headerDescription={__(
@@ -366,7 +378,7 @@ export const KnowledgeBase: React.FC = () => {
 			/>
 
 			{addEntry && (
-				<PopupUI
+				<PopupComponent
 					open={addEntry}
 					onClose={handleCloseForm}
 					width={31.25}
@@ -384,7 +396,7 @@ export const KnowledgeBase: React.FC = () => {
 						),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',
@@ -405,12 +417,12 @@ export const KnowledgeBase: React.FC = () => {
 					}
 				>
 					<>
-						<FormGroupWrapper>
-							<FormGroup
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__('Title', 'multivendorx')}
 								htmlFor="Title"
 							>
-								<BasicInputUI
+								<TextInput
 									name="title"
 									value={formData.title}
 									onChange={(val) =>
@@ -421,12 +433,12 @@ export const KnowledgeBase: React.FC = () => {
 										massage: validationErrors.title,
 									}}
 								/>
-							</FormGroup>
-							<FormGroup
+							</FormGroupComponent>
+							<FormGroupComponent
 								label={__('Content', 'multivendorx')}
 								htmlFor="Content"
 							>
-								<TextAreaUI
+								<TextAreaInput
 									name="content"
 									value={formData.content}
 									onChange={(val) =>
@@ -443,12 +455,12 @@ export const KnowledgeBase: React.FC = () => {
 										massage: validationErrors.content,
 									}}
 								/>
-							</FormGroup>
-							<FormGroup
+							</FormGroupComponent>
+							<FormGroupComponent
 								label={__('Status', 'multivendorx')}
 								htmlFor="status"
 							>
-								<ChoiceToggleUI
+								<ToggleInput
 									options={[
 										{
 											key: 'publish',
@@ -477,16 +489,17 @@ export const KnowledgeBase: React.FC = () => {
 										handleChange('status', val)
 									}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
 					</>
-				</PopupUI>
+				</PopupComponent>
 			)}
-			<Container general>
-				<Column>
+			<ContainerComponent general>
+				<ColumnComponent>
 					<TableCard
 						headers={headers}
-						rows={rows}
+						variant="transparent"
+						rows={infoRows}
 						totalRows={totalRows}
 						isLoading={isLoading}
 						onQueryUpdate={doRefreshTableData}
@@ -503,8 +516,8 @@ export const KnowledgeBase: React.FC = () => {
 						}}
 						format={appLocalizer.date_format}
 					/>
-				</Column>
-			</Container>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

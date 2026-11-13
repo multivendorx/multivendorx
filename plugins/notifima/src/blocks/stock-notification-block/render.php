@@ -5,6 +5,8 @@
  * @package Notifima
  */
 
+defined( 'ABSPATH' ) || exit;
+
 // Extract the productId from attributes.
 $product_id = isset( $attributes['productId'] ) ? intval( $attributes['productId'] ) : null;
 

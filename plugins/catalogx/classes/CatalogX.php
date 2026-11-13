@@ -119,9 +119,9 @@ final class CatalogX {
         }
 
         $strings = array(
-            'add_to_quote'    => 'Add to Quote',
-            'view_quote'      => 'View Quote',
-            'send_an_enquiry' => 'Send an enquiry',
+            'add_to_quote'    => __( 'Add to Quote', 'catalogx' ),
+            'view_quote'      => __( 'View Quote', 'catalogx' ),
+            'send_an_enquiry' => __( 'Send an enquiry', 'catalogx' ),
         );
 
         foreach ( $strings as $key => $value ) {
@@ -179,7 +179,7 @@ final class CatalogX {
         $this->services['shortcode']       = new Shortcode();
         $this->services['session']         = new Core\Session();
         $this->services['quotecart']       = new Core\QuoteCart();
-        $this->services['promotions']      = new Promotions();
+        $this->services['communications']  = new Communications();
         // Load all active modules.
         $this->services['modules']->load_active_modules();
 

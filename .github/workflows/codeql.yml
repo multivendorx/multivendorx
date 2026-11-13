@@ -22,6 +22,9 @@ on:
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
+    # Fork PRs get a read-only GITHUB_TOKEN, so the SARIF upload always fails with
+    # "Resource not accessible by integration"; the scan still runs on push/schedule.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     # Runner size impacts CodeQL analysis time. To learn more, please see:
     #   - https://gh.io/recommended-hardware-resources-for-running-codeql
     #   - https://gh.io/supported-runners-and-hardware-resources

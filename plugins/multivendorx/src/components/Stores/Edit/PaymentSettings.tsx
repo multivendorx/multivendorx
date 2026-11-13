@@ -1,19 +1,17 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getApiLink } from '@zyra/core';
 import {
-	getApiLink,
-	Container,
-	Column,
-	Card,
-	FormGroupWrapper,
-	FormGroup,
-	BasicInputUI,
-	Notice,
+	ContainerComponent,
+	ColumnComponent,
+	CardComponent,
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	NoticeComponent,
 	NoticeManager,
-	PrePostTextUI,
-	ExpandablePanelUI,
-} from 'zyra';
+} from '@zyra/components';
+import { TextInput, DecoratedInput, ExpandablePanelInput } from '@zyra/inputs';
 import { __, sprintf } from '@wordpress/i18n';
 
 interface PaymentField {
@@ -61,7 +59,7 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 		(appLocalizer.store_payment_settings as StorePaymentConfig) || {};
 
 	const filteredStorePayment = Object.fromEntries(
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		 
 		Object.entries(storePayment).filter(([_, value]) => value !== null)
 	);
 
@@ -125,11 +123,11 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 	};
 	return (
 		<>
-			<Container>
-				<Column grid={8}>
-					<Card title={__('Withdrawal methods', 'multivendorx')}>
+			<ContainerComponent>
+				<ColumnComponent grid={8}>
+					<CardComponent title={__('Withdrawal methods', 'multivendorx')} titleIcon="withdraw" desc="Manage the payment methods available for store payouts.">
 						{paymentAddNewOptions.length === 0 && (
-							<Notice
+							<NoticeComponent
 								type="info"
 								displayPosition="inline-notice"
 								message={sprintf(
@@ -142,7 +140,7 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 								)}
 							/>
 						)}
-						<ExpandablePanelUI
+						<ExpandablePanelInput
 							name="payment_methods"
 							methods={[]}
 							value={formData.payment_methods || {}}
@@ -160,14 +158,16 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 								},
 							}}
 						/>
-					</Card>
-				</Column>
+					</CardComponent>
+				</ColumnComponent>
 				{/* Commission Amount */}
-				<Column grid={4}>
-					<Card
+				<ColumnComponent grid={4}>
+					<CardComponent
 						title={__('Store-specific commission', 'multivendorx')}
+						titleIcon="commission"
+						desc="Set a custom commission rate for this store or use the global default."
 					>
-						<Notice
+						<NoticeComponent
 							type="info"
 							displayPosition="inline-notice"
 							message={sprintf(
@@ -179,14 +179,14 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 								`${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=store-commissions`
 							)}
 						/>
-						<FormGroupWrapper>
-							<FormGroup
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								cols={6}
 								label={__('Fixed', 'multivendorx')}
 								htmlFor="Fixed"
 								className="commission-input-group"
 							>
-								<BasicInputUI
+								<TextInput
 									preText={appLocalizer.currency_symbol}
 									name="commission_fixed"
 									value={formData.commission_fixed}
@@ -194,19 +194,19 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 										handleChange('commission_fixed', value)
 									}
 								/>
-								<PrePostTextUI
+								<DecoratedInput
 									type="preposttext"
 									textType="post"
 									preText={undefined}
 									postText="+"
 								/>
-							</FormGroup>
-							<FormGroup
+							</FormGroupComponent>
+							<FormGroupComponent
 								cols={6}
 								label={__('Percentage', 'multivendorx')}
 								htmlFor="Percentage"
 							>
-								<BasicInputUI
+								<TextInput
 									postText="%"
 									name="commission_percentage"
 									value={formData.commission_percentage}
@@ -217,11 +217,11 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 										)
 									}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
-					</Card>
-				</Column>
-			</Container>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
+					</CardComponent>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

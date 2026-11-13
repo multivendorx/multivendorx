@@ -8,6 +8,7 @@
 namespace MooWoodle;
 
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
+use MooWoodle\Abilities\Abilities;
 use MooWoodle\RestAPI\Rest;
 
 defined( 'ABSPATH' ) || exit;
@@ -142,6 +143,7 @@ final class MooWoodle {
 		$this->services['util']             = new Util();
         $this->services['setting']          = new Setting();
 		$this->services['rest']             = new Rest();
+        $this->services['abilities']        = new Abilities();
 		$this->services['course']           = new Core\Course();
 		$this->services['category']         = new Core\Category();
 		$this->services['product']          = new Core\Product();
@@ -281,7 +283,7 @@ final class MooWoodle {
      * @return object | null
      */
 	public static function init( $file ) {
-        if ( null === self::$instance ) {
+        if ( empty( self::$instance ) ) {
             self::$instance = new self( $file );
         }
 
@@ -299,7 +301,12 @@ final class MooWoodle {
         return $emails;
     }
 
-    // Alternative of __get()
+    /**
+     * Alternative of __get().
+     *
+     * @param string $service_key Service key to look up.
+     * @return mixed|null
+     */
     public function get_service( $service_key ) {
         return $this->services[ $service_key ] ?? null;
     }

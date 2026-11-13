@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\BuddyPress;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX BuddyPress Module class
  *

@@ -1,14 +1,16 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
+
+import { ButtonInput } from '@zyra/inputs';
 import {
-	ButtonInputUI,
-	Card,
-	Column,
-	Modules,
-	ItemListUI,
-	Container,
+	CardComponent,
+	ColumnComponent,
+	ListComponent,
+	ContainerComponent,
 	NoticeManager,
-} from 'zyra';
+	ModuleGridComponent,
+	BadgeComponent,
+} from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { getModuleData } from '../../services/templateService';
 import axios from 'axios';
@@ -230,9 +232,9 @@ const DashboardTab: React.FC<object> = () => {
 	];
 
 	return (
-		<Container>
-			<Column grid={8}>
-				<Card>
+		<ContainerComponent>
+			<ColumnComponent grid={8}>
+				<CardComponent>
 					<div className="pro-banner-wrapper">
 						<div className="content">
 							<div className="heading">
@@ -267,13 +269,14 @@ const DashboardTab: React.FC<object> = () => {
 							<img src={Mascot} alt="" />
 						</div>
 					</div>
-				</Card>
+				</CardComponent>
 				{!appLocalizer.khali_dabba && (
-					<Card
+					<CardComponent
 						title={__(
 							'Build a professional marketplace',
 							'multivendorx'
 						)}
+						titleIcon="pro-tag"
 						badge={[
 							{
 								text: 'Starting at $299/year',
@@ -285,7 +288,7 @@ const DashboardTab: React.FC<object> = () => {
 							'multivendorx'
 						)}
 					>
-						<ItemListUI
+						<ListComponent
 							className="feature-list"
 							items={featuresList.map(
 								({ icon, title, desc }) => ({
@@ -320,12 +323,14 @@ const DashboardTab: React.FC<object> = () => {
 								)}
 							</div>
 						</div>
-					</Card>
+					</CardComponent>
 				)}
-				<Card
+				<CardComponent
 					title={__('Modules', 'multivendorx')}
+					titleIcon="section"
+					desc="Extend your marketplace with powerful modules and additional features."
 					action={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'eye',
@@ -341,7 +346,7 @@ const DashboardTab: React.FC<object> = () => {
 						/>
 					}
 				>
-					<Modules
+					<ModuleGridComponent
 						modulesArray={modulesArray}
 						appLocalizer={appLocalizer}
 						apiLink="modules"
@@ -349,17 +354,18 @@ const DashboardTab: React.FC<object> = () => {
 						pluginName="multivendorx"
 						variant="mini-module"
 					/>
-				</Card>
-			</Column>
+				</CardComponent>
+			</ColumnComponent>
 
 			{/* Right Side */}
-			<Column grid={4}>
-				<Card title={__('Extend your website', 'multivendorx')}>
-					<Column row>
+			<ColumnComponent grid={4}>
+				<CardComponent title={__('Extend your website', 'multivendorx')} titleIcon="section" desc="Discover tools and add-ons to expand your website’s capabilities.">
+					<ColumnComponent>
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								background
+								border
 								items={[
 									{
 										title: __(
@@ -373,10 +379,10 @@ const DashboardTab: React.FC<object> = () => {
 										img: catalogx,
 										tags: (
 											<>
-												<span className="admin-badge red">
-													<i className="adminfont-pro-tag"></i>{' '}
-													{__('Pro', 'multivendorx')}
-												</span>
+												<BadgeComponent
+													color="red"
+													text={__('Pro', 'multivendorx')}
+												/>
 												<a
 													href="https://catalogx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx"
 													target="_blank"
@@ -393,12 +399,13 @@ const DashboardTab: React.FC<object> = () => {
 								]}
 							/>
 						) : (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								background
+								border
 								items={[
 									{
-										title: __('CatalogX', 'multivendorx'),
+										title: 'CatalogX',
 										desc: __(
 											'Turn your store into a product catalog with enquiry-based sales',
 											'multivendorx'
@@ -406,9 +413,10 @@ const DashboardTab: React.FC<object> = () => {
 										img: catalogx,
 										tags: (
 											<>
-												<span className="admin-badge green">
-													{__('Free', 'multivendorx')}
-												</span>
+												<BadgeComponent
+													color="green"
+													text={__('Free', 'multivendorx')}
+												/>
 												<a
 													href="#"
 													onClick={(e) => {
@@ -450,9 +458,10 @@ const DashboardTab: React.FC<object> = () => {
 						)}
 
 						{pluginStatus['woocommerce-product-stock-alert'] ? (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								background
+								border
 								items={[
 									{
 										title: __(
@@ -466,10 +475,10 @@ const DashboardTab: React.FC<object> = () => {
 										img: notifima,
 										tags: (
 											<>
-												<span className="admin-badge red">
-													<i className="adminfont-pro-tag"></i>{' '}
-													{__('Pro', 'multivendorx')}
-												</span>
+												<BadgeComponent
+													color="red"
+													text={__('Pro', 'multivendorx')}
+												/>
 												<a
 													href="https://notifima.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx"
 													target="_blank"
@@ -486,12 +495,13 @@ const DashboardTab: React.FC<object> = () => {
 								]}
 							/>
 						) : (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								background
+								border
 								items={[
 									{
-										title: __('Notifima', 'multivendorx'),
+										title: 'Notifima',
 										desc: __(
 											'Advanced stock alerts and wishlist features for WooCommerce',
 											'multivendorx'
@@ -499,9 +509,10 @@ const DashboardTab: React.FC<object> = () => {
 										img: notifima,
 										tags: (
 											<>
-												<span className="admin-badge green">
-													{__('Free', 'multivendorx')}
-												</span>
+												<BadgeComponent
+													color="green"
+													text={__('Free', 'multivendorx')}
+												/>
 												<a
 													href="#"
 													onClick={(e) => {
@@ -541,14 +552,14 @@ const DashboardTab: React.FC<object> = () => {
 								]}
 							/>
 						)}
-					</Column>
-				</Card>
+					</ColumnComponent>
+				</CardComponent>
 
 				{/* Quick Links */}
-				<Card title={__('Need help getting started?', 'multivendorx')}>
+				<CardComponent title={__('Need help getting started?', 'multivendorx')} titleIcon="help" desc="Find guides, resources, and support to help you set up your marketplace.">
 					<div className="quick-link">
 						{resources.map((res) => (
-							<ItemListUI
+							<ListComponent
 								className="mini-card list"
 								border
 								items={[
@@ -575,9 +586,9 @@ const DashboardTab: React.FC<object> = () => {
 							/>
 						))}
 					</div>
-				</Card>
-			</Column>
-		</Container>
+				</CardComponent>
+			</ColumnComponent>
+		</ContainerComponent>
 	);
 };
 

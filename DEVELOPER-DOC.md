@@ -55,14 +55,12 @@ add phpcbf script into composer.json for beautify php code
   11. composer require --dev yoast/phpunit-polyfills ( Provides polyfills for PHPUnit features across multiple versions. )
   12. composer require --dev brain/monkey ( A powerful mocking framework for WordPress functions (which are normally not mockable). )
 
-  // run this command in terminal
-  // it create a install-wp-tests.sh file into bin folder
-  13.  wp scaffold plugin-tests notifima ( generate bin/install-wp-tests.sh tests/bootstrap.php and test-sample.php )
-  or for only install-wp-tests.sh
-       curl -o ./bin/install-wp-tests.sh https://raw.githubusercontent.com/wp-cli/scaffold-command/master/templates/install-wp-tests.sh
+  // one-time setup, shared by every plugin in the monorepo
+  // see ../tools/bin/install-wp-tests.sh (run from the monorepo root, not per-plugin)
+  13.  ../tools/bin/install-wp-tests.sh is already committed in the monorepo - no need to scaffold/download a per-plugin copy
 
   //for run test
-  14. bash bin/install-wp-tests.sh wordpress_test root '' localhost latest
+  14. bash ../../tools/bin/install-wp-tests.sh wordpress_test root '' localhost latest
   15. ./vendor/bin/phpunit ( pnpm run test )
 
 
@@ -136,7 +134,7 @@ if ( false !== $_phpunit_polyfills_path ) {
 }
 
 if ( ! file_exists( "{$_tests_dir}/includes/functions.php" ) ) {
-	echo "Could not find {$_tests_dir}/includes/functions.php, have you run bin/install-wp-tests.sh ?" . PHP_EOL; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo "Could not find {$_tests_dir}/includes/functions.php, have you run tools/bin/install-wp-tests.sh from the monorepo root?" . PHP_EOL; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	exit( 1 );
 }
 

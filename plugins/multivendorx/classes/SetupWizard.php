@@ -61,7 +61,7 @@ class SetupWizard {
             FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
             wp_enqueue_script( 'setup-wizard-script', FrontendScripts::get_asset_path() . 'js/block/setup-wizard/index.js', array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ), MultiVendorX()->version, true );
             wp_set_script_translations( 'setup-wizard-script', 'multivendorx' );
-            wp_localize_script(
+            FrontendScripts::localize_script(
                 'setup-wizard-script',
                 'appLocalizer',
                 array(

@@ -34,19 +34,34 @@ class StoreUtil {
 		$owners   = $args['users'] ?? array();
 
 		// Remove old users not in list.
-		$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-            $wpdb->prepare(
-                "DELETE FROM {$table} WHERE store_id = %d AND role_id = %s AND user_id NOT IN (" . implode( ',', array_map( 'intval', $owners ) ) . ')', // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
-                $store_id,
-                $role_id
-            )
-		);
+		$kept_user_ids = array_values( array_filter( array_map( 'absint', (array) $owners ) ) );
+
+		if ( empty( $kept_user_ids ) ) {
+			$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+				$wpdb->prepare(
+					'DELETE FROM %i WHERE store_id = %d AND role_id = %s',
+					$table,
+					$store_id,
+					$role_id
+				)
+			);
+		} else {
+			$placeholders = implode( ',', array_fill( 0, count( $kept_user_ids ), '%d' ) );
+
+			$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+				$wpdb->prepare(
+					"DELETE FROM %i WHERE store_id = %d AND role_id = %s AND user_id NOT IN ($placeholders)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+					array_merge( array( $table, $store_id, $role_id ), $kept_user_ids )
+				)
+			);
+		}
 
 		// Insert new users.
 		foreach ( $owners as $user_id ) {
 			$exists = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->prepare(
-                    "SELECT ID FROM {$table} WHERE store_id = %d AND role_id = %s AND user_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                    'SELECT ID FROM %i WHERE store_id = %d AND role_id = %s AND user_id = %d',
+                    $table,
                     $store_id,
                     $role_id,
                     $user_id
@@ -84,7 +99,8 @@ class StoreUtil {
 		$primary_owner_id = self::get_primary_owner( $store_id );
 		$users            = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT user_id FROM $table WHERE store_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                'SELECT user_id FROM %i WHERE store_id = %d',
+                $table,
                 $store_id
             ),
             ARRAY_A
@@ -111,7 +127,7 @@ class StoreUtil {
 
 		$table = "{$wpdb->prefix}" . Utill::TABLES['store'];
 		$store = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-            "SELECT * FROM {$table}", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $wpdb->prepare( 'SELECT * FROM %i', $table ),
             ARRAY_A
 		);
 
@@ -334,7 +350,9 @@ class StoreUtil {
 
         // Get registration form data (serialized meta).
 		$store_meta     = $store->get_meta( Utill::STORE_SETTINGS_KEYS['registration_data'] );
-		$submitted_data = ! empty( $store_meta ) ? $store_meta : array();
+        $submitted_data = ! empty( $store_meta ) ? $store_meta : array();
+
+        $submitted_data = Utill::safe_unserialize( $submitted_data );
 
         $meta_keys = array(
             Utill::STORE_SETTINGS_KEYS['phone'],
@@ -442,8 +460,24 @@ class StoreUtil {
 		require_once ABSPATH . 'wp-admin/includes/image.php';
 		require_once ABSPATH . 'wp-admin/includes/media.php';
 
-		// Handle the file upload.
+		$files_array = array(
+			'name'     => sanitize_file_name( (string) ( $files_array['name'] ?? '' ) ),
+			'type'     => sanitize_mime_type( (string) ( $files_array['type'] ?? '' ) ),
+			'tmp_name' => sanitize_text_field( (string) ( $files_array['tmp_name'] ?? '' ) ),
+			'error'    => absint( $files_array['error'] ?? UPLOAD_ERR_NO_FILE ),
+			'size'     => absint( $files_array['size'] ?? 0 ),
+		);
+
+		if ( UPLOAD_ERR_OK !== $files_array['error'] || ! is_uploaded_file( $files_array['tmp_name'] ) ) {
+			return 0;
+		}
+
+		// wp_handle_upload() also checks the real file type against allowed MIMEs.
 		$upload = wp_handle_upload( $files_array, array( 'test_form' => false ) );
+
+		if ( ! empty( $upload['error'] ) || empty( $upload['file'] ) ) {
+			return 0;
+		}
 
 		// Prepare the attachment.
 		$file_path = $upload['file'];
@@ -485,7 +519,8 @@ class StoreUtil {
 		$table_name    = $wpdb->prefix . Utill::TABLES['store_users'];
 		$primary_owner = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT primary_owner FROM $table_name WHERE store_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                'SELECT primary_owner FROM %i WHERE store_id = %d',
+                $table_name,
                 $store_id
             )
 		);
@@ -495,6 +530,42 @@ class StoreUtil {
 		}
 
 		return $primary_owner;
+	}
+
+
+	/**
+	 * Whether the current user may read/manage a specific store's data.
+	 *
+	 * True for site administrators, or for a user who is the store's primary
+	 * owner or a listed staff member. Used to scope REST access to a single
+	 * store's records rather than trusting a bare `edit_stores`/`manage_options`
+	 * capability check, since `edit_stores` is also granted to the `store_owner`
+	 * role itself.
+	 *
+	 * @param int $store_id Store ID.
+	 * @return bool
+	 */
+	public static function current_user_can_manage_store( $store_id ) {
+		if ( Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+			return true;
+		}
+
+		$store_id = (int) $store_id;
+		if ( ! $store_id ) {
+			return false;
+		}
+
+		$user_id = get_current_user_id();
+		if ( ! $user_id ) {
+			return false;
+		}
+
+		if ( (int) self::get_primary_owner( $store_id ) === $user_id ) {
+			return true;
+		}
+
+		$store_users = self::get_store_users( $store_id );
+		return in_array( $user_id, (array) $store_users['users'], true );
 	}
 
 	/**
@@ -513,7 +584,8 @@ class StoreUtil {
 		// Check if store_id already exists.
 		$exists = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT ID FROM $table_name WHERE store_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                'SELECT ID FROM %i WHERE store_id = %d',
+                $table_name,
                 $store_id
             )
 		);
@@ -555,74 +627,80 @@ class StoreUtil {
 	public static function get_store_information( $args = array() ) {
 		global $wpdb;
 
-		$where = array();
+		$table = $wpdb->prefix . Utill::TABLES['store'];
+
+		$conditions = array();
+		$values     = array();
 
 		if ( isset( $args['ID'] ) ) {
-			$ids     = is_array( $args['ID'] ) ? $args['ID'] : array( $args['ID'] );
-			$ids     = implode( ',', array_map( 'intval', $ids ) );
-			$where[] = "ID IN ($ids)";
+			$ids          = array_map( 'intval', (array) $args['ID'] );
+			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+			$conditions[] = 'ID IN (' . $placeholders . ')';
+			$values       = array_merge( $values, $ids );
 		}
 
-        if ( isset( $args['exclude_ids'] ) ) {
-            $ids     = is_array( $args['exclude_ids'] ) ? $args['exclude_ids'] : array( $args['exclude_ids'] );
-            $ids     = implode( ',', array_map( 'intval', $ids ) );
-            $where[] = "ID NOT IN ($ids)";
-        }
+		if ( isset( $args['exclude_ids'] ) ) {
+			$ids          = array_map( 'intval', (array) $args['exclude_ids'] );
+			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+			$conditions[] = 'ID NOT IN (' . $placeholders . ')';
+			$values       = array_merge( $values, $ids );
+		}
 
 		if ( isset( $args['status'] ) ) {
-			$where[] = "status = '" . esc_sql( $args['status'] ) . "'";
+			$conditions[] = 'status = %s';
+			$values[]     = (string) $args['status'];
 		}
 
 		if ( isset( $args['name'] ) ) {
-			$where[] = "name LIKE '%" . esc_sql( $args['name'] ) . "%'";
+			$conditions[] = 'name LIKE %s';
+			$values[]     = '%' . $wpdb->esc_like( (string) $args['name'] ) . '%';
 		}
 
 		if ( isset( $args['slug'] ) ) {
-			$where[] = "slug = '" . esc_sql( $args['slug'] ) . "'";
+			$conditions[] = 'slug = %s';
+			$values[]     = (string) $args['slug'];
 		}
 
 		if ( isset( $args['searchField'] ) ) {
-			$search  = esc_sql( $args['searchField'] );
-			$where[] = "(name LIKE '%$search%')";
+			$conditions[] = 'name LIKE %s';
+			$values[]     = '%' . $wpdb->esc_like( (string) $args['searchField'] ) . '%';
 		}
 
 		if ( isset( $args['start_date'] ) && isset( $args['end_date'] ) ) {
-			$where[] = "create_time BETWEEN '" . esc_sql( $args['start_date'] ) . "' AND '" . esc_sql( $args['end_date'] ) . "'";
+			$conditions[] = 'create_time BETWEEN %s AND %s';
+			$values[]     = (string) $args['start_date'];
+			$values[]     = (string) $args['end_date'];
 		}
 
-		$table = $wpdb->prefix . Utill::TABLES['store'];
+		$join      = ( 'OR' === strtoupper( trim( $args['condition'] ?? 'AND' ) ) ) ? ' OR ' : ' AND ';
+		$where_sql = $conditions ? ' WHERE ' . implode( $join, $conditions ) : '';
 
 		if ( isset( $args['count'] ) ) {
-			$query = "SELECT COUNT(*) FROM {$table}";
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$results = $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT COUNT(*) FROM %i' . $where_sql,
+					$table,
+					...$values
+				)
+			);
 		} else {
-			$query = "SELECT * FROM {$table}";
-		}
-
-		if ( ! empty( $where ) ) {
-			$condition = $args['condition'] ?? ' AND ';
-			$query    .= ' WHERE ' . implode( $condition, $where );
-		}
-
-		// ADD SORTING SUPPORT HERE.
-		if ( ! empty( $args['order_by'] ) ) {
-			// Only allow safe columns to sort by (avoid SQL injection).
 			$allowed_columns = array( 'ID', 'name', 'status', 'slug', 'create_time' );
-			$order_by        = in_array( $args['order_by'], $allowed_columns, true ) ? $args['order_by'] : 'ID';
-			$order           = ( isset( $args['order'] ) && strtolower( $args['order'] ) === 'desc' ) ? 'DESC' : 'ASC';
-			$query          .= " ORDER BY {$order_by} {$order}";
-		}
+			$order_by        = ( ! empty( $args['order_by'] ) && in_array( $args['order_by'], $allowed_columns, true ) ) ? $args['order_by'] : 'ID';
+			$order_dir       = ( isset( $args['order'] ) && 'desc' === strtolower( $args['order'] ) ) ? 'DESC' : 'ASC';
+			$has_limit       = isset( $args['limit'] ) && isset( $args['offset'] );
+			$limit           = $has_limit ? intval( $args['limit'] ) : PHP_INT_MAX;
+			$offset          = $has_limit ? intval( $args['offset'] ) : 0;
 
-		// Keep your pagination logic.
-		if ( isset( $args['limit'] ) && isset( $args['offset'] ) && empty( $args['count'] ) ) {
-			$limit  = intval( $args['limit'] );
-			$offset = intval( $args['offset'] );
-			$query .= " LIMIT $limit OFFSET $offset";
-		}
-
-		if ( isset( $args['count'] ) ) {
-			$results = $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
-		} else {
-			$results = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$results = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT * FROM %i' . $where_sql . ' ORDER BY %i ' . $order_dir . ' LIMIT %d OFFSET %d',
+					$table,
+					...array_merge( $values, array( $order_by, $limit, $offset ) )
+				),
+				ARRAY_A
+			);
 		}
 
 		/** Centralized error logging (only once) */
@@ -690,25 +768,26 @@ class StoreUtil {
 
         $table_name = $wpdb->prefix . Utill::TABLES['visitors_stats'];
 
-        $start_date = ! empty( $args['start_date'] ) ? $args['start_date'] : null;
-        $end_date   = ! empty( $args['end_date'] ) ? $args['end_date'] : null;
+        $start_date = (string) ( $args['start_date'] ?? '' );
+        $end_date   = (string) ( $args['end_date'] ?? '' );
+        $by_dates   = ( '' !== $start_date && '' !== $end_date ) ? 1 : 0;
 
-        $query = "
-            SELECT COUNT(DISTINCT user_id) as total
-            FROM {$table_name}
-            WHERE store_id = %d
-        ";
-
-        $params = array( $store_id );
-
-        if ( $start_date && $end_date ) {
-            $query   .= ' AND created BETWEEN %s AND %s';
-            $params[] = $start_date;
-            $params[] = $end_date;
-        }
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        $result = $wpdb->get_var( $wpdb->prepare( $query, $params ) );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $result = $wpdb->get_var(
+            $wpdb->prepare(
+                '
+                SELECT COUNT(DISTINCT user_id) as total
+                FROM %i
+                WHERE store_id = %d
+                AND ( %d = 0 OR created BETWEEN %s AND %s )
+                ',
+                $table_name,
+                $store_id,
+                $by_dates,
+                $start_date,
+                $end_date
+            )
+        );
 
         return (int) $result;
     }
@@ -720,7 +799,7 @@ class StoreUtil {
 	 * @return string Formatted phone number with country code.
 	 */
 	public static function get_phone( $phone_meta ) {
-		$data = maybe_unserialize( $phone_meta );
+		$data = (array) Utill::safe_unserialize( $phone_meta );
 
 		$country = $data['country_code'] ?? '';
 		$phone   = $data['phone'] ?? $data['whatsapp_number'] ?? '';
@@ -813,9 +892,10 @@ class StoreUtil {
         $lat_key = Utill::STORE_SETTINGS_KEYS['location_lat'];
         $lng_key = Utill::STORE_SETTINGS_KEYS['location_lng'];
 
-        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-        $sql = $wpdb->prepare(
-            "
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        return $wpdb->get_col(
+            $wpdb->prepare(
+                "
             SELECT s.ID,
             (
                 %f * ACOS(
@@ -826,12 +906,12 @@ class StoreUtil {
                     SIN( RADIANS( lat.meta_value ) )
                 )
             ) AS distance
-            FROM {$store_table} s
-            INNER JOIN {$meta_table} lat
+            FROM %i s
+            INNER JOIN %i lat
                 ON s.ID = lat.store_id
                 AND lat.meta_key = %s
                 AND lat.meta_value != ''
-            INNER JOIN {$meta_table} lng
+            INNER JOIN %i lng
                 ON s.ID = lng.store_id
                 AND lng.meta_key = %s
                 AND lng.meta_value != ''
@@ -839,20 +919,27 @@ class StoreUtil {
             HAVING distance <= %f
             ORDER BY distance ASC
             ",
-            $earth_radius,
-            $lat,
-            $lng,
-            $lat,
-            $lat_key,
-            $lng_key,
-            $radius
+                $earth_radius,
+                $lat,
+                $lng,
+                $lat,
+                $store_table,
+                $meta_table,
+                $lat_key,
+                $meta_table,
+                $lng_key,
+                $radius
+            )
         );
-        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        return $wpdb->get_col( $sql );
     }
 
+    /**
+     * Reassign a former store owner's media attachments to the store's new owner.
+     *
+     * @param int $old_owner Previous primary owner's user ID.
+     * @param int $new_owner New primary owner's user ID.
+     * @return void
+     */
     public static function reassign_attachments_to_new_owner( $old_owner, $new_owner ) {
         if ( ! $old_owner || ! $new_owner || $old_owner == $new_owner ) {
             return;
@@ -881,6 +968,12 @@ class StoreUtil {
         }
     }
 
+    /**
+     * Count pending stores, products, coupons, withdrawal and deactivation requests
+     * awaiting marketplace-admin action, for the admin "approval queue" badge.
+     *
+     * @return int
+     */
     public static function get_approval_queue_count() {
         $pending_stores   = (int) self::get_store_information(
             array(
@@ -920,8 +1013,9 @@ class StoreUtil {
 
         $pending_coupons = (int) $query->found_posts;
 
-        $all_stores               = self::get_store_information();
-        $pending_withdrawal_count = $pending_deactivation_request_count = 0;
+        $all_stores                         = self::get_store_information();
+        $pending_withdrawal_count           = 0;
+        $pending_deactivation_request_count = 0;
 
         foreach ( $all_stores as $store ) {
             $store_meta = Store::get_store( (int) $store['ID'] );
@@ -948,6 +1042,11 @@ class StoreUtil {
         );
     }
 
+    /**
+     * Compliance tab badge count. Always 0 unless a filter provides one.
+     *
+     * @return int
+     */
     public static function get_compliance_tab_count() {
         $total = 0;
         return apply_filters(
@@ -956,6 +1055,11 @@ class StoreUtil {
         );
     }
 
+    /**
+     * Customer tab badge count. Always 0 unless a filter provides one.
+     *
+     * @return int
+     */
     public static function get_customer_tab_count() {
         $total = 0;
         return apply_filters(
@@ -981,32 +1085,35 @@ class StoreUtil {
         global $wpdb;
         $table = $wpdb->prefix . Utill::TABLES['store_meta'];
 
-        // Start building the query
-        $conditions = array( 'meta_key = %s' );
-        $params     = array( $meta_key );
+        // Match mode: 0 = key only, 1 = exact value, 2 = LIKE value.
+        $match_mode  = 0;
+        $meta_filter = '';
 
-        // Handle meta_value if provided
         if ( null !== $meta_value ) {
-            // Serialize non-scalar values (arrays/objects)
+            // Serialize non-scalar values (arrays/objects).
             if ( ! is_scalar( $meta_value ) ) {
                 $meta_value = maybe_serialize( $meta_value );
             }
 
-            if ( $like ) {
-                $conditions[] = 'meta_value LIKE %s';
-                $params[]     = '%' . $wpdb->esc_like( (string) $meta_value ) . '%';
-            } else {
-                $conditions[] = 'meta_value = %s';
-                $params[]     = $meta_value;
-            }
+            $match_mode  = $like ? 2 : 1;
+            $meta_filter = $like ? '%' . $wpdb->esc_like( (string) $meta_value ) . '%' : (string) $meta_value;
         }
 
-        // Join conditions with AND
-        $where_clause = implode( ' AND ', $conditions );
-
-        // Direct query execution
-        $sql     = "SELECT DISTINCT store_id FROM {$table} WHERE {$where_clause}";
-        $results = $wpdb->get_col( $wpdb->prepare( $sql, $params ) );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $results = $wpdb->get_col(
+            $wpdb->prepare(
+                'SELECT DISTINCT store_id FROM %i
+                WHERE meta_key = %s
+                AND ( %d <> 1 OR meta_value = %s )
+                AND ( %d <> 2 OR meta_value LIKE %s )',
+                $table,
+                $meta_key,
+                $match_mode,
+                $meta_filter,
+                $match_mode,
+                $meta_filter
+            )
+        );
 
         return $results ? array_map( 'intval', $results ) : array();
     }

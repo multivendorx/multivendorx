@@ -1,17 +1,17 @@
-=== CatalogX - Catalog Mode, Enquiry & Quotes for WooCommerce ===
+=== CatalogX Product Catalog, Product Enquiry & Quotes for WooCommerce ===
 Contributors: wcmp
 Tags: product catalog mode , product enquiry for woocommerce, request a quote, b2b ,  wholesale pricing
 Donate link: https://multivendorx.com/donate?utm_source=wporg&utm_medium=plugindescription&utm_campaign=catalogxwporg
-Requires at least: 6.4
-Tested up to: 7.0.0
+Requires at least: 6.4.0
+Tested up to: 7.1.4
 Requires PHP: 8.0
-Stable tag: 6.1.0
+Stable tag: 6.1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-WooCommerce Catalog Mode, product enquiry, and request a quote plugin. Hide prices, disable cart, and collect enquiries easily.
+WooCommerce Product Catalog, product enquiry, and request a quote plugin. Hide prices, disable cart, and collect enquiries easily.
 == Description ==
-= WOOCOMMERCE CATALOG MODE PLUGIN FOR WORDPRESS – WITH PRODUCT ENQUIRY & REQUEST A QUOTE =
+= WOOCOMMERCE CATALOG PLUGIN FOR WORDPRESS – WITH PRODUCT ENQUIRY & REQUEST A QUOTE =
 Easily switch your WooCommerce store to catalog mode and enable product enquiry and quote request functionality - no coding required.
 
 CatalogX allows you to turn your WooCommerce store into a product catalog with enquiry and quotation features. You can hide prices, remove the “Add to Cart” button, and add customizable enquiry or request-a-quote buttons anywhere on your site. This is useful for B2B, wholesale, or catalog-only stores.
@@ -226,6 +226,41 @@ Answer: Simply enable the 'Product Enquiry Button When Product is Out Of Stock' 
 7. Enquiry Dashboard
 
 == Changelog ==
+
+= 6.1.8 - 2026-11-03 =
+* Added     - Compatibility of WordPress 7.1.4.
+
+= 6.1.7 - 2026-10-22 =
+* Added     - Compatibility of WordPress 7.1.3.
+* Added     - Compatibility with WooCommerce 11.2.1.
+* Fixed     - Issue causing product details not to display on the My Quote page.
+* Added     - Option for administrators to hide product prices on shop and single product pages.
+
+= 6.1.6 - 2026-10-06 =
+* Fixed     - Security vulnerabilities reported by a member of the WordPress community.
+
+= 6.1.5 - 2026-09-24 =
+* Added     - Compatibility of WordPress 7.1.2.
+* Added     - Compatibility with WooCommerce 11.1.2.
+* Fixed     - Translation support issues for different strings.
+* Fixed     - Issue with the Setup Tour.
+
+= 6.1.4 - 2026-09-01 =
+* Fixed     - Resolved an issue with the Enquiry button displaying incorrectly on the Shop page when using the Twenty Twenty-Five theme with Catalog Mode and an Access Rule exception enabled. #2325
+
+= 6.1.3 - 2026-08-25 =
+* Added     - Compatibility of WordPress 7.1.0.
+* Added     - Compatibility with WooCommerce 11.0.1.
+* Fixed     - Security vulnerability reported by WordPress Community member Shikhali Jamalzade
+
+= 6.1.2 - 2026-08-04 =
+* Fixed     - Issue with the translation of certain frontend strings. #2270.
+
+= 6.1.1 - 2026-07-21 =
+* Added     - Compatibility of WordPress 7.0.2.
+* Added     - Compatibility with WooCommerce 10.9.4.
+* Added     - Support for an excluded products shortcode to create a page displaying products excluded through the Access Rules functionality #56.
+
 
 = 6.1.0 - 2026-07-06 =
 * Added     - Compatibility of WordPress 7.0.0.

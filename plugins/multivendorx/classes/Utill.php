@@ -8,6 +8,7 @@
 namespace MultiVendorX;
 
 use MultiVendorX\Store\Store;
+use MultiVendorX\Store\StoreUtil;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -96,6 +97,7 @@ class Utill {
         'invoices'                      => 'multivendorx_invoices_settings',
         'tax-information'               => 'multivendorx_tax_information_settings',
         'printful'                      => 'multivendorx_printful_settings',
+        'email-template-customizer'     => 'multivendorx_email_template_customizer_settings'
     );
 
     const MULTIVENDORX_OTHER_SETTINGS = array(
@@ -232,8 +234,6 @@ class Utill {
 
     const USER_SETTINGS_KEYS = array(
         'active_store'                   => 'multivendorx_active_store',
-        'first_name'                     => 'first_name',
-        'last_name'                      => 'last_name',
         'social_verification'            => 'social_verification_connections',
         'following_stores'               => 'multivendorx_following_stores',
         'multivendorx_user_location_lat' => 'multivendorx_user_location_lat',
@@ -358,6 +358,20 @@ class Utill {
     }
 
     /**
+     * Object-injection-safe replacement for maybe_unserialize().
+     *
+     * @param mixed $data Raw or already-decoded value.
+     * @return mixed
+     */
+    public static function safe_unserialize( $data ) {
+        if ( is_serialized( $data ) ) {
+            return @unserialize( trim( $data ), array( 'allowed_classes' => false ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize, WordPress.PHP.NoSilencedErrors.Discouraged
+        }
+
+        return $data;
+    }
+
+    /**
      * Check pro plugin is active or not.
      *
      * @return bool
@@ -403,21 +417,6 @@ class Utill {
         load_template( $located, false, $args );
     }
 
-
-    /**
-     * Utility function to wrap a string in single quotes.
-     *
-     * @param string $value The input string to be wrapped.
-     *
-     * @return string The string wrapped in single quotes, or the original value if not a string.
-     */
-    public static function add_single_quotes( $value ) {
-        if ( is_string( $value ) ) {
-            return "'" . $value . "'";
-        }
-
-        return $value;
-    }
 
     /**
      * Check if current page is store dashboard page.
@@ -555,7 +554,7 @@ class Utill {
 	 * @return string|null Formatted date time string as per WordPress settings, or null if invalid.
 	 */
 	public static function multivendorx_rest_prepare_date_response( $date, $utc = false ) {
-        if ( empty( $date ) || $date === '0000-00-00 00:00:00' || $date === '0000-00-00' ) {
+        if ( empty( $date ) || '0000-00-00 00:00:00' === $date || '0000-00-00' === $date ) {
             return '-';
         }
 		// Convert date to timestamp.
@@ -574,6 +573,11 @@ class Utill {
 		}
 	}
 
+    /**
+     * Detect which third-party multivendor plugin (if any) is active, for migration/compatibility checks.
+     *
+     * @return string One of 'Dokan', 'WCFMMarketplace', 'WCVendors', or '' if none detected.
+     */
     public static function get_active_multivendor() {
         if ( self::is_active_plugin( 'dokan-lite/dokan.php' ) ) {
             return 'Dokan';
@@ -590,6 +594,11 @@ class Utill {
         return '';
     }
 
+    /**
+     * Get the default set of store-restriction permission flags.
+     *
+     * @return array
+     */
     public function get_permissions() {
         $permissions = array(
             'hide_store_products'    => false,
@@ -603,9 +612,17 @@ class Utill {
         return apply_filters( 'multivendorx_modify_permissions', $permissions );
     }
 
+    /**
+     * Insert a row into the store activity log table.
+     *
+     * @param int    $store_id Store ID.
+     * @param string $message  Log message.
+     * @param string $tag      Optional log tag/category.
+     * @return void
+     */
     public function set_activity_logs( $store_id, $message, $tag = '' ) {
         global $wpdb;
-        $table_name = $wpdb->prefix . Utill::TABLES['activity_logs'];
+        $table_name = $wpdb->prefix . self::TABLES['activity_logs'];
 
         $wpdb->insert(
             $table_name,
@@ -622,16 +639,96 @@ class Utill {
         );
     }
 
+    /**
+     * Get the most recent activity log rows for a store.
+     *
+     * @param int $store_id Store ID.
+     * @param int $limit    Maximum number of rows to return.
+     * @return array
+     */
     public function get_activity_logs( $store_id, $limit = 10 ) {
         global $wpdb;
-        $table_name = $wpdb->prefix . Utill::TABLES['activity_logs'];
+        $table_name = $wpdb->prefix . self::TABLES['activity_logs'];
 
         return $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$table_name} WHERE store_id = %d ORDER BY id DESC LIMIT %d",
+                'SELECT * FROM %i WHERE store_id = %d ORDER BY id DESC LIMIT %d',
+                $table_name,
                 $store_id,
                 $limit
             )
         );
+    }
+    /**
+     * Shared REST/ability capability check: true if the user has any one of the given capabilities.
+     *
+     * @param string|array $capabilities One capability, or an array of capabilities.
+     * @param string       $context      Permission check context.
+     * @return true|\WP_Error
+     */
+    public static function current_user_has_capability( $capabilities, $context = '' ) {
+        $capabilities = apply_filters( 'multivendorx_permissions_check', $capabilities, $context );
+
+        foreach ( (array) $capabilities as $capability ) {
+            if ( current_user_can( $capability ) ) { // phpcs:ignore WordPress.WP.Capabilities.Unknown
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * An ability's execute_callback must return plain data, not a REST response object.
+     *
+     * @param mixed $response Whatever a prepare_*_response() method returned.
+     * @return mixed
+     */
+    public static function ability_response( $response ) {
+        return $response instanceof \WP_REST_Response ? $response->get_data() : $response;
+    }
+
+    /**
+     * Resolve the store an ability should act on: explicit store_id, else the caller's own store.
+     *
+     * @param array $input Ability input.
+     * @return int
+     */
+    public static function resolve_ability_store_id( $input ) {
+        $requested_store_id = (int) ( $input['store_id'] ?? 0 );
+
+        if ( $requested_store_id ) {
+            return $requested_store_id;
+        }
+
+        // No store_id from an admin means "every store".
+        if ( self::current_user_has_capability( array( 'manage_options' ) ) ) {
+            return $requested_store_id;
+        }
+
+        $user_id = get_current_user_id();
+        $stores  = Store::get_store( $user_id, 'user' );
+
+        if ( empty( $stores ) ) {
+            return 0;
+        }
+
+        // The saved active store only counts if it's still one of this user's stores.
+        $store_id = (int) get_user_meta( $user_id, self::USER_SETTINGS_KEYS['active_store'], true );
+        if ( $store_id && in_array( $store_id, array_column( $stores, 'id' ), false ) ) {
+            return $store_id;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Shared permission check for store-scoped abilities.
+     *
+     * @param array $input Ability input.
+     * @return bool
+     */
+    public static function store_permissions_check( $input ) {
+        return StoreUtil::current_user_can_manage_store( self::resolve_ability_store_id( $input ) );
     }
 }

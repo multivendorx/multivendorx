@@ -10,6 +10,8 @@ namespace MultiVendorX;
 use MultiVendorX\Store\Store;
 use MultiVendorX\Store\StoreUtil;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Frontend class
  *
@@ -24,8 +26,8 @@ class Frontend {
     public function __construct() {
         // Redirect store dashboard page.
         add_filter( 'template_include', array( $this, 'store_dashboard_template' ) );
-        add_filter( 'woocommerce_login_redirect', array( $this, 'redirect_store_dashboard' ), 10 );
-        add_filter( 'login_redirect', array( $this, 'redirect_store_dashboard' ), 10 );
+        add_filter( 'woocommerce_login_redirect', array( $this, 'redirect_store_dashboard' ), 10, 2 );
+        add_filter( 'login_redirect', array( $this, 'redirect_store_dashboard' ), 10, 3 );
 
         // Modify related products section in single product page.
         add_filter( 'woocommerce_related_products', array( $this, 'show_related_products' ), 99, 3 );
@@ -57,8 +59,100 @@ class Frontend {
         add_filter( 'multivendorx_dashboard_menu', array( $this, 'hide_menu' ), 20 );
         add_filter( 'wp_insert_attachment_data', array( $this, 'attach_store_owner_id' ), 10, 1 );
         add_action( 'woocommerce_account_dashboard', array( $this, 'add_dashboard_button' ) );
+
+        if ( is_plugin_active( 'woocommerce-product-stock-alert/product_stock_alert.php' ) ) {
+            add_filter( 'notifima_permissions_check', array( $this, 'add_permission_capability' ), 10, 2 );
+            add_filter( 'notifima_subscribers_args', array( $this, 'get_subscribers_args' ), 10, 2 );
+        }
+        if ( is_plugin_active( 'woocommerce-catalog-enquiry/Woocommerce_Catalog_Enquiry.php' ) ) {
+            add_filter( 'catalogx_permissions_check', array( $this, 'add_permission_capability' ), 10, 2 );
+            add_filter( 'catalogx_enquiry_query_args', array( $this, 'get_enquiry_args' ), 10, 2 );
+        }
     }
 
+    /**
+     * Grant the active store owner the 'edit_stores' capability for notifima/catalogx contexts.
+     *
+     * @param array|string $capability Capability or capabilities being checked.
+     * @param string       $context    Permission check context.
+     * @return array|string
+     */
+    public function add_permission_capability( $capability, $context ) {
+        if ( empty( $context ) ) {
+            return $capability;
+        }
+
+        $active_store = MultiVendorX()->active_store;
+
+        if ( empty( $active_store ) || ! StoreUtil::current_user_can_manage_store( $active_store ) ) {
+            return $capability;
+        }
+
+        if ( in_array( $context, array( 'get_subscribers', 'get_enquiry_messages' ), true ) ) {
+            $capability[] = 'edit_stores';
+        }
+
+        return $capability;
+    }
+
+    /**
+     * Modify enquiry query arguments for the active store.
+     *
+     * @param array            $args    Query arguments.
+     * @param \WP_REST_Request $request Request object.
+     * @return array
+     */
+    public function get_enquiry_args( $args, $request ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+        $store_id = MultiVendorX()->active_store;
+
+        if ( $store_id ) {
+            $args['product_ids'] = get_posts(
+                array(
+                    'post_type'      => 'product',
+                    'post_status'    => 'any',
+                    'fields'         => 'ids',
+                    'posts_per_page' => -1,
+                    'meta_query'     => array(
+                        array(
+                            'key'     => 'multivendorx_store_id',
+                            'value'   => $store_id,
+                            'compare' => '=',
+                        ),
+                    ),
+                )
+            );
+        }
+
+        return $args;
+    }
+
+    /**
+     * Modify subscribers product query arguments.
+     *
+     * @param array            $args    Query arguments.
+     * @param \WP_REST_Request $request Request object.
+     * @return array
+     */
+    public function get_subscribers_args( $args, $request ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+        $store_id = MultiVendorX()->active_store;
+
+        if ( $store_id ) {
+            $args['query']['meta_query'][] = array(
+                'key'     => 'multivendorx_store_id',
+                'value'   => $store_id,
+                'compare' => '=',
+            );
+        }
+
+        return $args;
+    }
+
+    /**
+     * Apply under-review/suspended store restriction settings to the permissions array.
+     *
+     * @param array $permissions Default permission flags.
+     * @return array
+     */
     public function modify_permissions( $permissions ) {
         $review_settings  = MultiVendorX()->setting->get_setting( 'restriction_for_under_review', array() );
         $suspend_settings = MultiVendorX()->setting->get_setting( 'restriction_for_suspended', array() );
@@ -82,6 +176,12 @@ class Frontend {
         return $permissions;
     }
 
+    /**
+     * Hide dashboard menu items disabled by the current store's permission restrictions.
+     *
+     * @param array $menu Dashboard menu items.
+     * @return array
+     */
     public function hide_menu( $menu ) {
         $permissions = MultiVendorX()->util->get_permissions();
         if ( $permissions['disable_payouts'] ) {
@@ -108,7 +208,6 @@ class Frontend {
 	 * @return void
 	 */
 	public function load_scripts() {
-		FrontendScripts::load_scripts();
 		FrontendScripts::enqueue_script( 'multivendorx-store-products-script' );
         if ( is_account_page() ) {
             FrontendScripts::enqueue_style( 'multivendorx-store-tabs-style' );
@@ -343,18 +442,53 @@ class Frontend {
     /**
      * Redirect Store dashboard
      *
+     * Handles both `login_redirect` (redirect, requested_redirect_to, user) and
+     * `woocommerce_login_redirect` (redirect, user) - the freshly logged-in user
+     * is read from whichever extra argument is a WP_User, never from
+     * MultiVendorX()->current_user/active_store, since those are cached once on
+     * `init` (before this request's login is processed) and are still the
+     * pre-login/anonymous values when this filter runs.
+     *
      * @param string $redirect redirect url.
+     * @param mixed  ...$args  Remaining filter args; one of them is the logged-in WP_User.
      *
      * @return string
      */
-    public function redirect_store_dashboard( $redirect ) {
+    public function redirect_store_dashboard( $redirect, ...$args ) {
         if ( Utill::is_store_registration_page() ) {
             return $redirect;
         }
-        if ( in_array( 'store_owner', MultiVendorX()->current_user->roles, true ) && MultiVendorX()->active_store ) {
-            return get_permalink( MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) );
+
+        $user = null;
+
+        foreach ( $args as $arg ) {
+            if ( $arg instanceof \WP_User ) {
+                $user = $arg;
+                break;
+            }
         }
-        return $redirect;
+
+        if ( ! $user || ! in_array( 'store_owner', (array) $user->roles, true ) ) {
+            return $redirect;
+        }
+
+        $active_store = get_user_meta( $user->ID, Utill::USER_SETTINGS_KEYS['active_store'], true );
+
+        if ( ! $active_store ) {
+            // Not set yet (e.g. first-ever login) - fall back to the user's first store,
+            // same as FrontendScripts does when localizing the dashboard's own scripts.
+            $store_ids = Store::get_store( $user->ID, 'user' );
+
+            if ( empty( $store_ids ) ) {
+                return $redirect;
+            }
+
+            $first_store  = reset( $store_ids );
+            $active_store = $first_store['id'];
+            update_user_meta( $user->ID, Utill::USER_SETTINGS_KEYS['active_store'], $active_store );
+        }
+
+        return get_permalink( MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) );
     }
 
     /**
@@ -464,17 +598,16 @@ class Frontend {
 	 *
 	 * @since 3.0.0
 	 * @param int   $store_id Store ID.
-	 * @param array $data     Visitor data object.
+	 * @param array $visitor_data     Visitor data object.
 	 */
-	public function multivendorx_save_visitor_stats( $store_id, $data ) {
+	public function multivendorx_save_visitor_stats( $store_id, $visitor_data ) {
 		global $wpdb;
 
 		$table_name = $wpdb->prefix . Utill::TABLES['visitors_stats'];
 
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "INSERT INTO {$table_name} 
+                'INSERT INTO %i
             ( store_id
             , user_id
             , user_cookie
@@ -498,32 +631,32 @@ class Frontend {
             , %s
             , %s
             , %s
-            , %s 
             , %s
             , %s
             , %s
             , %s
             , %s
             , %s
-            ) ON DUPLICATE KEY UPDATE `created` = now()",
+            , %s
+            ) ON DUPLICATE KEY UPDATE `created` = now()',
+                $table_name,
                 $store_id,
-                $data->user_id,
-                $data->user_cookie,
-                $data->session_id,
-                $data->query,
-                $data->lat,
-                $data->lon,
-                $data->city,
-                $data->zip,
-                $data->region,
-                $data->regionName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-                $data->countryCode, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-                $data->country,
-                $data->isp,
-                $data->timezone
+                $visitor_data->user_id,
+                $visitor_data->user_cookie,
+                $visitor_data->session_id,
+                $visitor_data->query,
+                $visitor_data->lat,
+                $visitor_data->lon,
+                $visitor_data->city,
+                $visitor_data->zip,
+                $visitor_data->region,
+                $visitor_data->regionName, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+                $visitor_data->countryCode, // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+                $visitor_data->country,
+                $visitor_data->isp,
+                $visitor_data->timezone
             )
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 
 	/**
@@ -566,21 +699,39 @@ class Frontend {
 		return ob_get_clean();
 	}
 
+    /**
+     * Scope the media library (Add Media modal) to the user's own store.
+     *
+     * @param array $query WP_Query args for the media library AJAX request.
+     * @return array
+     */
     public function multivendorx_restrict_store_media( $query ) {
-        if ( in_array( 'store_owner', MultiVendorX()->current_user->roles, true ) ) {
+        $roles       = (array) MultiVendorX()->current_user->roles;
+        $staff_roles = array( 'store_manager', 'product_manager', 'customer_support', 'order_assistant', 'inactive_staff' );
+
+        if ( in_array( 'store_owner', $roles, true ) ) {
             $query['author'] = MultiVendorX()->current_user_id;
+        } elseif ( array_intersect( $staff_roles, $roles ) ) {
+            $primary_owner   = StoreUtil::get_primary_owner( MultiVendorX()->active_store );
+            $query['author'] = $primary_owner ? (int) $primary_owner : 0;
         }
 
         return $query;
     }
 
-    public function attach_store_owner_id( $data ) {
+    /**
+     * Attribute a staff-uploaded attachment to the store's primary owner and track media usage.
+     *
+     * @param array $attachment_data Attachment data to be inserted.
+     * @return array
+     */
+    public function attach_store_owner_id( $attachment_data ) {
         if ( ! empty( array_intersect( array( 'store_manager', 'product_manager', 'customer_support', 'order_assistant', 'inactive_staff' ), MultiVendorX()->current_user->roles ) ) ) {
             $store         = new Store( MultiVendorX()->active_store );
             $primary_owner = StoreUtil::get_primary_owner( MultiVendorX()->active_store );
 
             if ( ! empty( $primary_owner ) ) {
-                $data['post_author'] = (int) $primary_owner;
+                $attachment_data['post_author'] = (int) $primary_owner;
             }
 
             $total_size = $this->get_user_media_space_used( $primary_owner );
@@ -588,9 +739,15 @@ class Frontend {
                 $store->update_meta( 'media_space_used', $total_size );
             }
         }
-        return $data;
+        return $attachment_data;
     }
 
+    /**
+     * Calculate total media library disk space (in MB) used by a user's attachments.
+     *
+     * @param int $user_id User ID.
+     * @return float Size in megabytes.
+     */
     public function get_user_media_space_used( $user_id ) {
         $attachments = get_posts(
             array(
@@ -609,9 +766,14 @@ class Frontend {
             }
         }
 
-        // Return size in MB
+        // Return size in MB.
         return round( $total_size / 1024 / 1024, 2 );
     }
+    /**
+     * Show a "Manage your store" button on the WooCommerce My Account dashboard for store owners.
+     *
+     * @return void
+     */
     public function add_dashboard_button() {
 
         $user = MultiVendorX()->current_user;
@@ -620,7 +782,7 @@ class Frontend {
             return;
         }
 
-        $dashboard_url = home_url( '/dashboard' );
+        $dashboard_url = get_permalink( MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) );
 
         echo '<h3>' . esc_html__( 'Manage your store', 'multivendorx' ) . '</h3>';
 

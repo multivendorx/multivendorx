@@ -1,4 +1,9 @@
 <?php
+/**
+ * Server-side render for the enquiry button block.
+ *
+ * @package CatalogX
+ */
 
 use CatalogX\Enquiry\Module;
 

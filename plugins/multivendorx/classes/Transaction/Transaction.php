@@ -137,7 +137,7 @@ class Transaction {
         $transaction_id = $wpdb->insert_id;
 
         if ( $transaction_id ) {
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->update( $wpdb->prefix . Utill::TABLES['commission'], array( 'status' => 'paid' ), array( 'id' => $commission_id ), array( '%s' ), array( '%d' ) );
         }
 
@@ -169,15 +169,16 @@ class Transaction {
 	 */
     public static function get_transaction_db( $commission_id ) {
         global $wpdb;
-        /* phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared */
+        /* phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching */
         $transaction = $wpdb->get_row(
             $wpdb->prepare(
-                'SELECT * FROM `' . $wpdb->prefix . Utill::TABLES['transaction'] . '` WHERE commission_id = %d',
+                'SELECT * FROM %i WHERE commission_id = %d',
+                $wpdb->prefix . Utill::TABLES['transaction'],
                 $commission_id
             ),
             ARRAY_A
         );
-        /* phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared */
+        /* phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching */
 
         if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
@@ -196,97 +197,81 @@ class Transaction {
     public static function get_transaction_information( $args ) {
         global $wpdb;
 
-        $where = array();
-
-        // Extract and sanitize order/orderBy early so they don't go into WHERE.
-        $allowed = array('created_at', 'entry_type', 'transaction_type', 'id', 'store_id', 'order_id', 'commission_id'); 
-        $order_by = in_array( $args['order_by'], $allowed, true ) ? $args['order_by'] : '';
-        $order    = isset( $args['order'] ) ? strtoupper( $args['order'] ) : 'ASC';
-
-        // Remove non-column keys.
-        unset( $args['order_by'], $args['order'] );
-
-        // Filter by id(s).
-        if ( isset( $args['id'] ) ) {
-            $ids     = is_array( $args['id'] ) ? $args['id'] : array( $args['id'] );
-            $ids     = implode( ',', array_map( 'intval', $ids ) );
-            $where[] = "id IN ($ids)";
-        }
-
-        // Filter by store_id.
-        if ( isset( $args['store_id'] ) ) {
-            $where[] = ' ( store_id = ' . esc_sql( intval( $args['store_id'] ) ) . ' ) ';
-        }
-
-        // Filter by order_id.
-        if ( isset( $args['order_id'] ) ) {
-            $where[] = ' ( order_id = ' . esc_sql( intval( $args['order_id'] ) ) . ' ) ';
-        }
-
-        // Filter by commission_id.
-        if ( isset( $args['commission_id'] ) ) {
-            $where[] = ' ( commission_id = ' . esc_sql( intval( $args['commission_id'] ) ) . ' ) ';
-        }
-
-        // Filter by transaction_type.
-        if ( isset( $args['transaction_type'] ) ) {
-            $where[] = " ( transaction_type = '" . esc_sql( $args['transaction_type'] ) . "' ) ";
-        }
-
-        // Filter by entry_type (Cr/Dr).
-        if ( isset( $args['entry_type'] ) ) {
-            $where[] = " ( entry_type = '" . esc_sql( $args['entry_type'] ) . "' ) ";
-        }
-
-        // Filter by status.
-        if ( isset( $args['status'] ) ) {
-            $where[] = " ( status = '" . esc_sql( $args['status'] ) . "' ) ";
-        }
-
-        // Filter by date range.
-        if ( isset( $args['start_date'] ) ) {
-            $where[] = " ( created_at >= '" . esc_sql( $args['start_date'] ) . "' ) ";
-        }
-        if ( isset( $args['end_date'] ) ) {
-            $where[] = " ( created_at <= '" . esc_sql( $args['end_date'] ) . "' ) ";
-        }
-
         $table = $wpdb->prefix . Utill::TABLES['transaction'];
 
-        // Base query (count or select).
-        if ( isset( $args['count'] ) ) {
-            $query = "SELECT COUNT(*) FROM $table";
-        } else {
-            $query = "SELECT * FROM $table";
+        $conditions = array();
+        $values     = array();
+
+        if ( isset( $args['id'] ) ) {
+            $ids          = array_map( 'intval', (array) $args['id'] );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $conditions[] = 'id IN (' . $placeholders . ')';
+            $values       = array_merge( $values, $ids );
         }
 
-        // Add WHERE.
-        if ( ! empty( $where ) ) {
-            $condition = $args['condition'] ?? ' AND ';
-            $query    .= ' WHERE ' . implode( $condition, $where );
+        if ( isset( $args['store_id'] ) ) {
+            $conditions[] = 'store_id = %d';
+            $values[]     = intval( $args['store_id'] );
         }
 
-        // Add ORDER BY (only for non-count queries).
-        if ( ! isset( $args['count'] ) && ! empty( $order_by ) ) {
-            // Only allow ASC or DESC.
-            if ( ! in_array( $order, array( 'ASC', 'DESC' ), true ) ) {
-                $order = 'ASC';
+        if ( isset( $args['order_id'] ) ) {
+            $conditions[] = 'order_id = %d';
+            $values[]     = intval( $args['order_id'] );
+        }
+
+        if ( isset( $args['commission_id'] ) ) {
+            $conditions[] = 'commission_id = %d';
+            $values[]     = intval( $args['commission_id'] );
+        }
+
+        foreach ( array( 'transaction_type', 'entry_type', 'status' ) as $filter_key ) {
+            if ( isset( $args[ $filter_key ] ) && '' !== $args[ $filter_key ] ) {
+                $conditions[] = $filter_key . ' = %s';
+                $values[]     = (string) $args[ $filter_key ];
             }
-            $query .= " ORDER BY {$order_by} {$order}";
         }
 
-        // Add limit & offset (only for non-count).
-        if ( ! isset( $args['count'] ) && isset( $args['limit'], $args['offset'] ) ) {
-            $limit  = intval( $args['limit'] );
-            $offset = intval( $args['offset'] );
-            $query .= " LIMIT {$limit} OFFSET {$offset}";
+        if ( isset( $args['start_date'] ) && '' !== $args['start_date'] ) {
+            $conditions[] = 'created_at >= %s';
+            $values[]     = (string) $args['start_date'];
         }
 
-        // Run query.
+        if ( isset( $args['end_date'] ) && '' !== $args['end_date'] ) {
+            $conditions[] = 'created_at <= %s';
+            $values[]     = (string) $args['end_date'];
+        }
+
+        $join      = ( 'OR' === strtoupper( trim( $args['condition'] ?? 'AND' ) ) ) ? ' OR ' : ' AND ';
+        $where_sql = $conditions ? ' WHERE ' . implode( $join, $conditions ) : '';
+
         if ( isset( $args['count'] ) ) {
-            return (int) ( $wpdb->get_var( $query ) ?? 0 );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            return (int) $wpdb->get_var(
+                $wpdb->prepare(
+                    'SELECT COUNT(*) FROM %i' . $where_sql,
+                    $table,
+                    ...$values
+                )
+            );
         }
-        $result = $wpdb->get_results( $query, ARRAY_A ) ?? array();// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+
+        // Ordering is optional; without a valid order_by rows come back by id.
+        $allowed   = array( 'created_at', 'entry_type', 'transaction_type', 'id', 'store_id', 'order_id', 'commission_id' );
+        $order_by  = in_array( $args['order_by'] ?? '', $allowed, true ) ? $args['order_by'] : 'id';
+        $order_dir = ( isset( $args['order'] ) && 'DESC' === strtoupper( $args['order'] ) ) ? 'DESC' : 'ASC';
+        $has_limit = isset( $args['limit'], $args['offset'] );
+        $limit     = $has_limit ? intval( $args['limit'] ) : PHP_INT_MAX;
+        $offset    = $has_limit ? intval( $args['offset'] ) : 0;
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $result = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT * FROM %i' . $where_sql . ' ORDER BY %i ' . $order_dir . ' LIMIT %d OFFSET %d',
+                $table,
+                ...array_merge( $values, array( $order_by, $limit, $offset ) )
+            ),
+            ARRAY_A
+        ) ?? array();
 
         if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
@@ -307,34 +292,36 @@ class Transaction {
         $table_name = esc_sql( $wpdb->prefix . Utill::TABLES['transaction'] );
 
         if ( $total ) {
-            /* phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
+            /* phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching */
             $total_earning = $wpdb->get_var(
                 $wpdb->prepare(
-                    "SELECT SUM(amount) 
-                    FROM {$table_name} 
-                    WHERE store_id = %d",
+                    'SELECT SUM(amount)
+                    FROM %i
+                    WHERE store_id = %d',
+                    $table_name,
                     $store_id
                 )
             );
-            /* phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
+            /* phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching */
 
             return $total_earning;
         }
 
-        /* phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
+        /* phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching */
         $result = $wpdb->get_row(
             $wpdb->prepare(
-                "
+                '
                 SELECT balance, locking_balance
-                FROM {$table_name}
+                FROM %i
                 WHERE store_id = %d
                 ORDER BY id DESC
                 LIMIT 1
-                ",
+                ',
+                $table_name,
                 $store_id
             )
         );
-        /* phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
+        /* phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching */
 
         if ( ! $result ) {
             return array(

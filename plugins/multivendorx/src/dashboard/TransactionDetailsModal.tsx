@@ -1,7 +1,16 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { FormGroup, FormGroupWrapper, PopupUI, SectionUI } from 'zyra';
-import { formatCurrency, formatDate } from '@/services/commonFunction';
+import {
+	FormGroupComponent,
+	FormGroupWrapperComponent,
+	PopupComponent,
+	SectionComponent,
+} from '@zyra/components';
+import {
+	formatCurrency,
+	formatDate,
+	formatStatusLabel,
+} from '@/services/commonFunction';
 
 type TransactionRow = {
 	id: number;
@@ -23,7 +32,7 @@ type Props = {
 const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 	return (
 		<>
-			<PopupUI
+			<PopupComponent
 				open={open}
 				onClose={onClose}
 				width={33}
@@ -38,13 +47,13 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 				}}
 			>
 				<>
-					<SectionUI title={__('Order Overview', 'multivendorx')} />
+					<SectionComponent title={__('Order Overview', 'multivendorx')} />
 
-					<FormGroupWrapper>
-						<FormGroup row label={__('Date', 'multivendorx')}>
+					<FormGroupWrapperComponent>
+						<FormGroupComponent row label={__('Date', 'multivendorx')}>
 							{formatDate(transaction.created_at)}
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							row
 							label={__('Order Details', 'multivendorx')}
 						>
@@ -57,29 +66,29 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 							) : (
 								'-'
 							)}
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							row
 							label={__('Transaction Type', 'multivendorx')}
 						>
 							{transaction.transaction_type}
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							row
 							label={__('Payment Mode', 'multivendorx')}
 						>
 							{transaction.payment_mode}
-						</FormGroup>
-						<FormGroup row label={__('Credit', 'multivendorx')}>
+						</FormGroupComponent>
+						<FormGroupComponent row label={__('Credit', 'multivendorx')}>
 							{formatCurrency(transaction.credit)}
-						</FormGroup>
-						<FormGroup row label={__('Debit', 'multivendorx')}>
+						</FormGroupComponent>
+						<FormGroupComponent row label={__('Debit', 'multivendorx')}>
 							{formatCurrency(transaction.debit)}
-						</FormGroup>
-						<FormGroup row label={__('Balance', 'multivendorx')}>
+						</FormGroupComponent>
+						<FormGroupComponent row label={__('Balance', 'multivendorx')}>
 							{formatCurrency(transaction.balance)}
-						</FormGroup>
-						<FormGroup row label={__('Status', 'multivendorx')}>
+						</FormGroupComponent>
+						<FormGroupComponent row label={__('Status', 'multivendorx')}>
 							<span
 								className={`admin-badge ${
 									transaction.status === 'Completed'
@@ -87,19 +96,12 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 										: 'red'
 								}`}
 							>
-								{transaction.status
-									? transaction.status
-											.replace(/^wc-/, '') // remove prefix
-											.replace(/_/g, ' ') // underscores → spaces
-											.replace(/\b\w/g, (c) =>
-												c.toUpperCase()
-											) // capitalize
-									: ''}
+								{formatStatusLabel(transaction.status)}
 							</span>
-						</FormGroup>
-					</FormGroupWrapper>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
 				</>
-			</PopupUI>
+			</PopupComponent>
 		</>
 	);
 };

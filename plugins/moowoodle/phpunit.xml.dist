@@ -13,7 +13,7 @@
     </php>
 	<testsuites>
 		<testsuite name="testing">
-			<directory prefix="test-" suffix=".php">./tests/php/src</directory>
+			<directory prefix="class-" suffix="-test.php">./tests/php/unit-tests</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

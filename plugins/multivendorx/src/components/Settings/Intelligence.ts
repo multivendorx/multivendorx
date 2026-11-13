@@ -10,8 +10,16 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'intelligence',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'intelligence',
+			title: __('AI provider API keys', 'multivendorx'),
+		},
 		// --- Gemini API Key Section ---
 		{
 			key: 'gemini_api_key',
@@ -60,6 +68,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'ai',
 			title: __('Product AI', 'multivendorx'),
 			desc: __(
 				'AI can be used to suggest product titles, descriptions, and other details automatically. The AI provider and model can be selected here.',
@@ -141,6 +150,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'image',
 			title: __('Image AI', 'multivendorx'),
 			desc: __(
 				'Product images can be enhanced automatically to look professional, improving visual appeal and customer engagement.',

@@ -8,6 +8,7 @@
 namespace CatalogX\Enquiry;
 
 use CatalogX\FrontendScripts;
+use CatalogX\Utill;
 
 /**
  * CatalogX Enquiry Module Frontend class
@@ -17,7 +18,18 @@ use CatalogX\FrontendScripts;
  * @author      MultiVendorX
  */
 class Frontend {
+    /**
+     * Cached 'enquiry_user_permission' setting value.
+     *
+     * @var string
+     */
     private $enquiry_user_permission;
+
+    /**
+     * Cached 'is_enable_out_of_stock' setting value.
+     *
+     * @var string
+     */
     private $enable_out_of_stock;
 
     /**
@@ -36,7 +48,7 @@ class Frontend {
 
         add_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_button_in_shop_page' ) );
 
-        if ( ! ( wp_is_block_theme() || file_exists( get_theme_file_path( 'theme.json' ) ) ) ) {
+        if ( ! wp_is_block_theme() ) {
             add_action( 'woocommerce_single_product_summary', array( $this, 'catalogx_add_enquiry_button' ) );
         }
 
@@ -100,10 +112,10 @@ class Frontend {
             return;
         }
 
-        $button_text = \CatalogX\Utill::get_translated_string(
+        $button_text = Utill::get_translated_string(
             'catalogx',
             'send_an_enquiry',
-            'Send an enquiry'
+            __( 'Send an enquiry', 'catalogx' )
         );
         ?>
         <div id="catalogx-enquiry">
@@ -323,10 +335,14 @@ class Frontend {
             return;
         }
 
-        $button_text = \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
+        $button_text = Utill::get_translated_string( 'catalogx', 'send_an_enquiry', __( 'Send an enquiry', 'catalogx' ) );
         if ( is_shop() ) {
             $product_link = get_permalink( $product->get_id() );
-            echo '<a href="' . esc_url( $product_link ) . '" class="enquiry-btn single_add_to_cart_button button wp-block-button__link wp-element-button" >' . esc_html( $button_text ) . '</a>';
+            echo '<div class="catalogx-enquiry">';
+			echo '<a href="' . esc_url( $product_link ) . '" class="catalogx-enquiry-btn button wp-block-button__link wp-element-button">';
+			echo esc_html( $button_text );
+			echo '</a>';
+			echo '</div>';
         }
     }
 }

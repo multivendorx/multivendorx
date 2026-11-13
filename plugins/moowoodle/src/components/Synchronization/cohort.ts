@@ -3,9 +3,9 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'synchronize-cohort',
 	priority: 30,
-	headerTitle: __('Cohorts Synchronization', 'moowoodle'),
+	headerTitle: __('Cohorts', 'moowoodle'),
 	headerDescription: __(
-		'Fetch Moodle cohort on demand & generate products on demand.',
+		'Manage how Moodle cohorts sync into products.',
 		'moowoodle'
 	),
 	headerIcon: 'cohort',

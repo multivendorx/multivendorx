@@ -2,15 +2,16 @@
 import React, { useEffect, JSX } from 'react';
 import { __ } from '@wordpress/i18n';
 import { getTemplateData } from '../../services/templateService';
+
+import { InputRenderer } from '@zyra/inputs';
 import {
 	getAvailableSettings,
 	getSettingById,
-	RenderComponent,
 	useModules,
-	SettingsNavigator,
 	SettingProvider,
-	useSetting
-} from 'zyra';
+	useSetting,
+} from '@zyra/core';
+import { NavigatorComponent } from '@zyra/components';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
 
@@ -53,7 +54,7 @@ const Synchronization: React.FC<SettingsProps> = () => {
 		return (
 			<>
 				{settingName === currentTab ? (
-					<RenderComponent
+					<InputRenderer
 						settings={settingModal}
 						proSetting={appLocalizer.pro_settings_list}
 						setting={setting}
@@ -61,6 +62,7 @@ const Synchronization: React.FC<SettingsProps> = () => {
 						appLocalizer={appLocalizer}
 						modules={modules}
 						Popup={ShowProPopup}
+						groupBySections={settingModal?.groupBySections}
 					/>
 				) : (
 					<>{__('Loading...', 'moowoodle')}</>
@@ -70,7 +72,7 @@ const Synchronization: React.FC<SettingsProps> = () => {
 	};
 	return (
 		<SettingProvider>
-			<SettingsNavigator
+			<NavigatorComponent
 				settingContent={settingsArray}
 				currentSetting={location.get('subtab') as string}
 				getForm={GetForm}
@@ -79,7 +81,7 @@ const Synchronization: React.FC<SettingsProps> = () => {
 				}
 				appLocalizer={appLocalizer}
 				Link={Link}
-				settingName={'synchronization'}
+				settingName={'Synchronization'}
 				className="admin-settings"
 			/>
 		</SettingProvider>

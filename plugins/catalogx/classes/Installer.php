@@ -50,6 +50,11 @@ class Installer {
         add_action( 'init', array( $this, 'run_migration' ) );
     }
 
+    /**
+     * Run version-gated migrations/upgrades on 'init'.
+     *
+     * @return void
+     */
     public function run_migration() {
         // Get the previous version and current version.
         self::$previous_version = get_option( self::VERSION_KEY, '' );
@@ -78,7 +83,7 @@ class Installer {
      * @return void
      */
     private function create_database_tables() {
-        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
         global $wpdb;
 
         // Include upgrade functions if not loaded.
@@ -94,27 +99,45 @@ class Installer {
 
         if ( ! empty( get_option( 'mvx_catalog_general_tab_settings' ) ) ) {
             // table migration.
+            $message_table = $wpdb->prefix . Utill::TABLES['message'];
+
             // Rename the table.
             $wpdb->query(
-                "ALTER TABLE `{$wpdb->prefix}catelog_cust_vendor_answers` RENAME TO `{$wpdb->prefix}" . Utill::TABLES['message'] . '`'
+                $wpdb->prepare(
+                    'ALTER TABLE %i RENAME TO %i',
+                    $wpdb->prefix . 'catelog_cust_vendor_answers',
+                    $message_table
+                )
             );
 
             // Add column to table.
             $wpdb->query(
-                "ALTER TABLE `{$wpdb->prefix}" . Utill::TABLES['message'] . '`
-                ADD COLUMN attachment bigint(20);'
+                $wpdb->prepare(
+                    'ALTER TABLE %i
+                    ADD COLUMN attachment bigint(20)',
+                    $message_table
+                )
             );
             $wpdb->query(
-                "ALTER TABLE `{$wpdb->prefix}" . Utill::TABLES['message'] . '`
-                ADD COLUMN reaction varchar(20);'
+                $wpdb->prepare(
+                    'ALTER TABLE %i
+                    ADD COLUMN reaction varchar(20)',
+                    $message_table
+                )
             );
             $wpdb->query(
-                "ALTER TABLE `{$wpdb->prefix}" . Utill::TABLES['message'] . '`
-                ADD COLUMN star boolean;'
+                $wpdb->prepare(
+                    'ALTER TABLE %i
+                    ADD COLUMN star boolean',
+                    $message_table
+                )
             );
             $wpdb->query(
-                "ALTER TABLE `{$wpdb->prefix}" . Utill::TABLES['message'] . '`
-                ADD COLUMN reply text DEFAULT NULL;'
+                $wpdb->prepare(
+                    'ALTER TABLE %i
+                    ADD COLUMN reply text DEFAULT NULL',
+                    $message_table
+                )
             );
         } else {
             // Create message table.
@@ -339,22 +362,27 @@ class Installer {
         // Migration by specific version control.
         $previous_version = get_option( self::VERSION_KEY, '' );
         if ( version_compare( $previous_version, '6.0.7', '<' ) ) {
-            // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
+            // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
             global $wpdb;
+            $rule_table    = $wpdb->prefix . Utill::TABLES['rule'];
             $column_exists = $wpdb->get_results(
                 $wpdb->prepare(
-                    "SHOW COLUMNS FROM `{$wpdb->prefix}" . Utill::TABLES['rule'] . '` LIKE %s',
+                    'SHOW COLUMNS FROM %i LIKE %s',
+                    $rule_table,
                     'brand_id'
                 )
             );
             if ( empty( $column_exists ) ) {
                 $wpdb->query(
-                    "ALTER TABLE `{$wpdb->prefix}" . Utill::TABLES['rule'] . '`
-                    ADD COLUMN brand_id bigint(20);'
+                    $wpdb->prepare(
+                        'ALTER TABLE %i
+                        ADD COLUMN brand_id bigint(20)',
+                        $rule_table
+                    )
                 );
             }
             $this->create_database_tables();
-            // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
+            // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
 
             $old_keys = array(
                 'catalogx_enquiry-catalog-customization_settings' => Utill::CATALOGX_SETTINGS['enquiry-catalog-customization'],
@@ -574,7 +602,6 @@ class Installer {
              *
              * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
              * phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
-             * phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
              * phpcs:disable WordPress.DB.DirectDatabaseQuery.SchemaChange
              */
             global $wpdb;
@@ -583,15 +610,19 @@ class Installer {
 
             $column_exists = $wpdb->get_var(
                 $wpdb->prepare(
-                    "SHOW COLUMNS FROM {$table_name} LIKE %s",
+                    'SHOW COLUMNS FROM %i LIKE %s',
+                    $table_name,
                     'quentity'
                 )
             );
 
             if ( $column_exists ) {
                 $wpdb->query(
-                    "ALTER TABLE {$table_name}
-                    CHANGE COLUMN quentity quantity INT(11) NOT NULL"
+                    $wpdb->prepare(
+                        'ALTER TABLE %i
+                        CHANGE COLUMN quentity quantity INT(11) NOT NULL',
+                        $table_name
+                    )
                 );
             }
             // phpcs:enable
@@ -601,7 +632,6 @@ class Installer {
              *
              * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
              * phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
-             * phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
              * phpcs:disable WordPress.DB.DirectDatabaseQuery.SchemaChange
              */
 
@@ -609,16 +639,20 @@ class Installer {
 
             $column_exists = $wpdb->get_var(
                 $wpdb->prepare(
-                    "SHOW COLUMNS FROM {$table_name} LIKE %s",
+                    'SHOW COLUMNS FROM %i LIKE %s',
+                    $table_name,
                     'is_read'
                 )
             );
 
             if ( ! $column_exists ) {
                 $wpdb->query(
-                    "ALTER TABLE {$table_name}
-                    ADD COLUMN is_read TINYINT(1) NOT NULL DEFAULT 0
-                    AFTER status"
+                    $wpdb->prepare(
+                        'ALTER TABLE %i
+                        ADD COLUMN is_read TINYINT(1) NOT NULL DEFAULT 0
+                        AFTER status',
+                        $table_name
+                    )
                 );
             }
 
@@ -670,7 +704,7 @@ class Installer {
         $previous_settings = get_option( 'mvx_catalog_general_tab_settings', array() );
 
         // Enable enquiry module based on previous setting.
-        if ( isset( $previous_settings['is_enable_enquiry'] ) && reset( $previous_settings['is_enable_enquiry'] ) === 'is_enable_enquiry' ) {
+        if ( isset( $previous_settings['is_enable_enquiry'] ) && 'is_enable_enquiry' === reset( $previous_settings['is_enable_enquiry'] ) ) {
             $active_modules = get_option( Utill::ACTIVE_MODULES_DB_KEY, array() );
             update_option( Utill::ACTIVE_MODULES_DB_KEY, array_unique( array_merge( $active_modules, array( 'enquiry' ) ) ) );
         }
@@ -696,18 +730,22 @@ class Installer {
             // Get enquiry post and post meta.
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $enquirys_datas = $wpdb->get_results(
-                "SELECT p.ID as id,
-                    p.post_author as user_id,
-                    p.post_date as date,
-                    MAX(CASE WHEN pm.meta_key = '_enquiry_username' THEN pm.meta_value END) as username,
-                    MAX(CASE WHEN pm.meta_key = '_enquiry_useremail' THEN pm.meta_value END) as useremail,
-                    MAX(CASE WHEN pm.meta_key = '_user_enquiry_fields' THEN pm.meta_value END) as additional_fields,
-                    MAX(CASE WHEN pm.meta_key = '_enquiry_product' THEN pm.meta_value END) as product_ids,
-                    MAX(CASE WHEN pm.meta_key = '_enquiry_product_quantity' THEN pm.meta_value END) as product_quantitys
-                FROM {$wpdb->prefix}posts as p
-                JOIN {$wpdb->prefix}postmeta as pm ON p.ID = pm.post_id
-                WHERE p.post_type = 'wcce_enquiry'
-                GROUP BY p.ID",
+                $wpdb->prepare(
+                    "SELECT p.ID as id,
+                        p.post_author as user_id,
+                        p.post_date as date,
+                        MAX(CASE WHEN pm.meta_key = '_enquiry_username' THEN pm.meta_value END) as username,
+                        MAX(CASE WHEN pm.meta_key = '_enquiry_useremail' THEN pm.meta_value END) as useremail,
+                        MAX(CASE WHEN pm.meta_key = '_user_enquiry_fields' THEN pm.meta_value END) as additional_fields,
+                        MAX(CASE WHEN pm.meta_key = '_enquiry_product' THEN pm.meta_value END) as product_ids,
+                        MAX(CASE WHEN pm.meta_key = '_enquiry_product_quantity' THEN pm.meta_value END) as product_quantitys
+                    FROM %i as p
+                    JOIN %i as pm ON p.ID = pm.post_id
+                    WHERE p.post_type = 'wcce_enquiry'
+                    GROUP BY p.ID",
+                    $wpdb->posts,
+                    $wpdb->postmeta
+                ),
                 ARRAY_A
             );
 

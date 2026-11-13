@@ -1,18 +1,16 @@
 /* global appLocalizer */
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { getApiLink } from '@zyra/core';
 import {
-	BasicInputUI,
-	Column,
-	Container,
-	DynamicRowSetting,
-	FormGroup,
-	FormGroupWrapper,
-	getApiLink,
-	ChoiceToggleUI,
+	ColumnComponent,
+	ContainerComponent,
+	FormGroupComponent,
+	FormGroupWrapperComponent,
 	NoticeManager,
-	SectionUI,
-} from 'zyra';
+	SectionComponent,
+} from '@zyra/components';
+import { TextInput, DynamicRowInput, ToggleInput } from '@zyra/inputs';
 import ShippingRatesByCountry from './ShippingRatesByCountry';
 import DistanceByZoneShipping from './DistanceByZoneShipping';
 import { __ } from '@wordpress/i18n';
@@ -37,6 +35,27 @@ interface DistanceRule {
 	max_distance: string;
 	cost: string;
 }
+const SettingsGroup = ({
+	icon,
+	title,
+	desc,
+	children,
+}: {
+	icon: string;
+	title: string;
+	desc?: string;
+	children: React.ReactNode;
+}) => (
+	<div className="settings-section-group">
+		<div className="settings-left-section">
+			<SectionComponent icon={icon} title={title} desc={desc} />
+		</div>
+		<div className="settings-right-section">
+			<FormGroupWrapperComponent>{children}</FormGroupWrapperComponent>
+		</div>
+	</div>
+);
+
 const ShippingDelivery = () => {
 	const [formData, setFormData] = useState<FormData>({});
 
@@ -120,10 +139,18 @@ const ShippingDelivery = () => {
 			{/* Only show ChoiceToggle if shipping_methods has options */}
 			{appLocalizer.shipping_methods &&
 			appLocalizer.shipping_methods.length > 0 ? (
-				<Container>
-					<Column>
-						<FormGroupWrapper>
-							<FormGroup
+				<ContainerComponent>
+					<ColumnComponent>
+						<>
+							<SettingsGroup
+								icon="shipping"
+								title={__('Shipping', 'multivendorx')}
+								desc={__(
+									'Manage your store’s shipping method, pricing rules, and location-based rates.',
+									'multivendorx'
+								)}
+							>
+							<FormGroupComponent
 								row
 								label={__('Method Type', 'multivendorx')}
 								htmlFor="shipping_options"
@@ -132,7 +159,7 @@ const ShippingDelivery = () => {
 									'multivendorx'
 								)}
 							>
-								<ChoiceToggleUI
+								<ToggleInput
 									options={appLocalizer.shipping_methods}
 									value={formData.shipping_options || ''}
 									onChange={(value: string) =>
@@ -142,7 +169,8 @@ const ShippingDelivery = () => {
 										)
 									}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
+							</SettingsGroup>
 
 							{/* Zone by Shipping */}
 							{formData.shipping_options === 'shipping_by_zone' &&
@@ -155,7 +183,8 @@ const ShippingDelivery = () => {
 								'shipping_by_country' &&
 								selectedMethodExists && (
 									<>
-										<SectionUI
+										<SettingsGroup
+											icon="dollar"
 											title={__(
 												'Default Shipping Rules',
 												'multivendorx'
@@ -164,9 +193,8 @@ const ShippingDelivery = () => {
 												'Set base rates that apply to all orders',
 												'multivendorx'
 											)}
-										/>
-
-										<FormGroup
+										>
+										<FormGroupComponent
 											row
 											label={__(
 												`Default Shipping Price (${appLocalizer.currency_symbol})`,
@@ -178,7 +206,7 @@ const ShippingDelivery = () => {
 												'multivendorx'
 											)}
 										>
-											<BasicInputUI
+											<TextInput
 												type="number"
 												name="multivendorx_shipping_type_price"
 												placeholder="0.00"
@@ -193,9 +221,9 @@ const ShippingDelivery = () => {
 													)
 												}
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												`Per Product Additional Price (${appLocalizer.currency_symbol})`,
@@ -207,7 +235,7 @@ const ShippingDelivery = () => {
 												'multivendorx'
 											)}
 										>
-											<BasicInputUI
+											<TextInput
 												type="number"
 												name="multivendorx_additional_product"
 												placeholder="0.00"
@@ -222,9 +250,9 @@ const ShippingDelivery = () => {
 													)
 												}
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												`Per Qty Additional Price (${appLocalizer.currency_symbol})`,
@@ -236,7 +264,7 @@ const ShippingDelivery = () => {
 												'multivendorx'
 											)}
 										>
-											<BasicInputUI
+											<TextInput
 												type="number"
 												name="multivendorx_additional_qty"
 												placeholder="0.00"
@@ -251,9 +279,9 @@ const ShippingDelivery = () => {
 													)
 												}
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												`Free Shipping Minimum Order Amount (${appLocalizer.currency_symbol})`,
@@ -265,7 +293,7 @@ const ShippingDelivery = () => {
 												'multivendorx'
 											)}
 										>
-											<BasicInputUI
+											<TextInput
 												type="number"
 												name="free_shipping_amount"
 												placeholder={__(
@@ -283,9 +311,9 @@ const ShippingDelivery = () => {
 													)
 												}
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												`Local Pickup Cost (${appLocalizer.currency_symbol})`,
@@ -297,7 +325,7 @@ const ShippingDelivery = () => {
 												'multivendorx'
 											)}
 										>
-											<BasicInputUI
+											<TextInput
 												type="number"
 												name="local_pickup_cost"
 												placeholder="0.00"
@@ -312,9 +340,11 @@ const ShippingDelivery = () => {
 													)
 												}
 											/>
-										</FormGroup>
+										</FormGroupComponent>
+										</SettingsGroup>
 
-										<SectionUI
+										<SettingsGroup
+											icon="global-community"
 											title={__(
 												'Country-Specific Rates',
 												'multivendorx'
@@ -323,9 +353,9 @@ const ShippingDelivery = () => {
 												'Country-specific rates will be added to the Default Shipping Price. If state/region rates are defined, the final shipping cost will be State Rate + Default Shipping Price.',
 												'multivendorx'
 											)}
-										/>
-
-										<ShippingRatesByCountry />
+										>
+											<ShippingRatesByCountry />
+										</SettingsGroup>
 									</>
 								)}
 
@@ -334,7 +364,7 @@ const ShippingDelivery = () => {
 								'shipping_by_distance' &&
 								selectedMethodExists && (
 									<>
-										<SectionUI
+										<SectionComponent
 											title={__(
 												'Distance-wise Shipping Configuration',
 												'multivendorx'
@@ -342,7 +372,7 @@ const ShippingDelivery = () => {
 										/>
 
 										{/* Default Cost */}
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												`Default Cost (${appLocalizer.currency_symbol}) *`,
@@ -354,7 +384,7 @@ const ShippingDelivery = () => {
 												'multivendorx'
 											)}
 										>
-											<BasicInputUI
+											<TextInput
 												type="number"
 												name="distance_default_cost"
 												placeholder="0.00"
@@ -370,10 +400,10 @@ const ShippingDelivery = () => {
 												}
 												min="0"
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 
 										{/* Distance Type */}
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												'Distance Type',
@@ -385,7 +415,7 @@ const ShippingDelivery = () => {
 												'multivendorx'
 											)}
 										>
-											<ChoiceToggleUI
+											<ToggleInput
 												options={[
 													{
 														key: 'K',
@@ -414,10 +444,10 @@ const ShippingDelivery = () => {
 													)
 												}
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 
 										{/* Max Distance */}
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												'Max Distance',
@@ -429,7 +459,7 @@ const ShippingDelivery = () => {
 												'multivendorx'
 											)}
 										>
-											<BasicInputUI
+											<TextInput
 												type="number"
 												name="distance_max"
 												placeholder="0"
@@ -444,10 +474,10 @@ const ShippingDelivery = () => {
 												}
 												min="0"
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 
 										{/* Local Pickup Cost */}
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												`Local Pickup Cost (${appLocalizer.currency_symbol}) (Optional)`,
@@ -459,7 +489,7 @@ const ShippingDelivery = () => {
 												'multivendorx'
 											)}
 										>
-											<BasicInputUI
+											<TextInput
 												type="number"
 												name="distance_local_pickup_cost"
 												placeholder="0.00"
@@ -475,10 +505,10 @@ const ShippingDelivery = () => {
 												}
 												min="0"
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 
 										{/* Distance–Cost Rules */}
-										<FormGroup
+										<FormGroupComponent
 											row
 											label={__(
 												'Distance–Cost Rules',
@@ -489,7 +519,7 @@ const ShippingDelivery = () => {
 												'multivendorx'
 											)}
 										>
-											<DynamicRowSetting
+											<DynamicRowInput
 												keyName="distance_rules"
 												addLabel={__(
 													'Add Rule',
@@ -543,12 +573,12 @@ const ShippingDelivery = () => {
 													autoSave(updated);
 												}}
 											/>
-										</FormGroup>
+										</FormGroupComponent>
 									</>
 								)}
-						</FormGroupWrapper>
-					</Column>
-				</Container>
+						</>
+					</ColumnComponent>
+				</ContainerComponent>
 			) : (
 				<div className="desc">
 					{__(

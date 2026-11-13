@@ -37,14 +37,17 @@ class FrontEnd {
      * @return void
      */
     public function enqueue_frontend_scripts() {
-        if ( is_product() || has_shortcode( get_post()->post_content, 'notifima_subscription_form' ) ) {
+        $post = get_post();
+
+        if ( is_product() || has_shortcode( $post->post_content ?? '', 'notifima_subscription_form' ) ) {
             FrontendScripts::load_scripts();
             FrontendScripts::admin_load_scripts();
             FrontendScripts::enqueue_script( 'notifima-components-script' );
-			FrontendScripts::enqueue_style( 'notifima-components-style' );
-			FrontendScripts::enqueue_script( 'notifima-subscribe-form' );
+            FrontendScripts::enqueue_style( 'notifima-components-style' );
+            FrontendScripts::enqueue_script( 'notifima-subscribe-form' );
             FrontendScripts::localize_scripts( 'notifima-subscribe-form' );
         }
+
         FrontendScripts::enqueue_style( 'notifima-frontend-style' );
     }
 
@@ -71,26 +74,27 @@ class FrontEnd {
             return;
         }
 
-        $backorders_enabled = Notifima()->setting->get_setting( 'is_enable_backorders', '' );
+        $backorders_enabled = Notifima()->setting->get_setting( 'is_enable_backorders', array() );
 
         $stock_status = $product_obj->get_stock_status();
-        if ( 'onbackorder' === $stock_status && 'out_of_stock' === $backorders_enabled ) {
+
+        if ( 'onbackorder' === $stock_status && ! in_array( 'onbackorder', $backorders_enabled, true ) ) {
             return;
         }
 
-        echo $this->get_subscription_form( $product_obj );
+        echo wp_kses_post( $this->get_subscription_form( $product_obj ) );
     }
 
     /**
      * Display Request Stock Form for grouped product.
      *
-     * @param string $value default html.
+     * @param string $column_price_html Existing grouped product column price HTML.
      * @param object $child individual child of grouped product.
      */
-    public function append_grouped_product_subscription_form( $value, $child ) {
-        $value = $value . $this->get_subscription_form( $child );
+    public function append_grouped_product_subscription_form( $column_price_html, $child ) {
+        $column_price_html = $column_price_html . $this->get_subscription_form( $child );
 
-        return $value;
+        return $column_price_html;
     }
 
     /**
@@ -102,7 +106,7 @@ class FrontEnd {
      * @return string HTML of subscription form.
      */
     public function get_subscription_form( $product, $variation = null ) {
-        if ( ! Subscriber::is_product_outofstock( $variation ? $variation : $product ) ) {
+        if ( ! $product->is_type( 'variable' ) && ! Subscriber::is_product_outofstock( $variation ? $variation : $product ) ) {
             return '';
         }
 
@@ -191,7 +195,8 @@ class FrontEnd {
      * @return string
      */
     public function get_product_lead_time() {
-        global $product;
+        $product_id = get_queried_object_id();
+        $product    = wc_get_product( $product_id );
 
         if ( ! $product instanceof \WC_Product ) {
             return '';

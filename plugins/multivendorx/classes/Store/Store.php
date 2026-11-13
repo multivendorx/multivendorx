@@ -69,6 +69,11 @@ class Store {
         }
     }
 
+    /**
+     * Whether this instance is backed by a loaded store row.
+     *
+     * @return bool
+     */
     public function exists() {
         return ! empty( $this->id ) && $this->id > 0;
     }
@@ -114,13 +119,15 @@ class Store {
 
         $table = $wpdb->prefix . Utill::TABLES['store'];
 
-        $sql = $wpdb->prepare(
-            "SELECT * FROM {$table} WHERE ID = %d LIMIT 1",
-            $store_id
-        );
-
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $row = $wpdb->get_row( $sql, ARRAY_A );
+        $row = $wpdb->get_row(
+            $wpdb->prepare(
+                'SELECT * FROM %i WHERE ID = %d LIMIT 1',
+                $table,
+                $store_id
+            ),
+            ARRAY_A
+        );
         if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( $wpdb->last_error, 'ERROR' );
         }
@@ -185,9 +192,9 @@ class Store {
         $table = esc_sql( $wpdb->prefix . Utill::TABLES['store'] );
 
         $data = array(
-            Utill::STORE_SETTINGS_KEYS['name']        => $this->data['name'] ?? '',
+            Utill::STORE_SETTINGS_KEYS['name']        => sanitize_text_field( $this->data['name'] ?? '' ),
             Utill::STORE_SETTINGS_KEYS['slug']        => $this->data['slug'] ?? sanitize_title( $this->data['name'] ?? '' ),
-            Utill::STORE_SETTINGS_KEYS['description'] => $this->data['description'] ?? '',
+            Utill::STORE_SETTINGS_KEYS['description'] => wp_kses_post( $this->data['description'] ?? '' ),
             Utill::STORE_SETTINGS_KEYS['who_created'] => $this->data['who_created'] ?? 'admin',
             Utill::STORE_SETTINGS_KEYS['status']      => $this->data['status'] ?? 'active',
         );
@@ -251,20 +258,21 @@ class Store {
 
         $table = $wpdb->prefix . Utill::TABLES['store_meta'];
 
-        $sql = $wpdb->prepare(
-            "SELECT meta_key, meta_value FROM {$table} WHERE store_id = %d",
-            $this->id
-        );
-
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $rows = $wpdb->get_results( $sql, ARRAY_A );
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT meta_key, meta_value FROM %i WHERE store_id = %d',
+                $table,
+                $this->id
+            ),
+            ARRAY_A
+        );
 
         $meta = array();
 
         foreach ( $rows as $row ) {
-            $meta[ $row['meta_key'] ] = maybe_unserialize( $row['meta_value'] );
-        }
-
+			$meta[ $row['meta_key'] ] = Utill::safe_unserialize( $row['meta_value'] );
+		}
         $this->meta_data = $meta;
         return $this->meta_data;
     }
@@ -288,19 +296,16 @@ class Store {
 
 		$table = $wpdb->prefix . Utill::TABLES['store_meta'];
 
-		if ( is_array( $value ) || is_object( $value ) ) {
-			$value = maybe_serialize( $value );
-		}
+		$value = maybe_serialize( $value );
 
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$exists = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT ID FROM {$table} WHERE store_id = %d AND meta_key = %s",
+                'SELECT ID FROM %i WHERE store_id = %d AND meta_key = %s',
+                $table,
                 $this->id,
                 $key
             )
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		if ( $exists ) {
 			$wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.SlowDBQuery.slow_db_query_meta_value
@@ -378,7 +383,8 @@ class Store {
             switch ( $type ) {
                 case 'slug':
                     $query = $wpdb->prepare(
-                        "SELECT ID FROM {$table} WHERE slug = %s LIMIT 1",
+                        'SELECT ID FROM %i WHERE slug = %s LIMIT 1',
+                        $table,
                         $value
                     );
 
@@ -413,7 +419,8 @@ class Store {
 
                     $results = $wpdb->get_col(
                         $wpdb->prepare(
-                            "SELECT ID FROM {$table} WHERE name LIKE %s AND status = %s",
+                            'SELECT ID FROM %i WHERE name LIKE %s AND status = %s',
+                            $table,
                             $like,
                             'active'
                         )
@@ -433,39 +440,37 @@ class Store {
                     return $stores;
 
                 case 'primary_owner':
-                    $status = sanitize_text_field( $value );
-					// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-					$stores = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+                    $status                          = sanitize_text_field( $value );
+					$stores                          = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 						$wpdb->prepare(
-                            "SELECT * FROM $table WHERE who_created = %d AND status = %s",
+                            'SELECT * FROM %i WHERE who_created = %d AND status = %s',
+                            $table,
                             MultiVendorX()->current_user_id,
                             $status
 						),
 						ARRAY_A
 					);
-					// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                     self::$store_cache[ $cache_key ] = $stores ? $stores : array();
                     return self::$store_cache[ $cache_key ];
 
                 case 'user':
                     $user_id           = (int) $value;
 					$excluded_statuses = array( 'permanently_rejected', 'deactivated' );
-					$placeholders      = implode( ', ', array_fill( 0, count( $excluded_statuses ), '%s' ) );
-					$params            = array_merge( array( $user_id ), $excluded_statuses );
+					$params            = array_merge( array( $store_users, $table, $user_id ), $excluded_statuses );
 
-					// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-					$sql = "
+					$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+                        $wpdb->prepare(
+                            '
                         SELECT
                             su.store_id AS id,
                             s.name AS name
-                        FROM {$store_users} su
-                        INNER JOIN {$table} s ON s.ID = su.store_id
+                        FROM %i su
+                        INNER JOIN %i s ON s.ID = su.store_id
                         WHERE su.user_id = %d
-                        AND s.status NOT IN ($placeholders)
-                    ";
-
-					$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-                        $wpdb->prepare( $sql, $params ), // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+                        AND s.status NOT IN (%s, %s)
+                    ',
+                            $params
+                        ),
                         ARRAY_A
 					);
 
@@ -497,23 +502,25 @@ class Store {
 		$table = $wpdb->prefix . Utill::TABLES['store'];
 
 		if ( $exclude_id ) {
-			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$query = $wpdb->prepare(
-                "SELECT COUNT(*) FROM {$table} WHERE slug = %s AND ID != %d",
-                $slug,
-                $exclude_id
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$exists = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT COUNT(*) FROM %i WHERE slug = %s AND ID != %d',
+					$table,
+					$slug,
+					$exclude_id
+				)
 			);
-			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		} else {
-			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$query = $wpdb->prepare(
-                "SELECT COUNT(*) FROM {$table} WHERE slug = %s",
-                $slug
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$exists = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT COUNT(*) FROM %i WHERE slug = %s',
+					$table,
+					$slug
+				)
 			);
-			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		}
-
-		$exists = (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
@@ -631,15 +638,21 @@ class Store {
         return true;
     }
 
+    /**
+     * Get the store's configured payment method(s) from the 'payment_methods' meta.
+     *
+     * @param string $type When 'name', returns the id of the method flagged 'primary' (or '' if none).
+     *                     Otherwise returns all methods keyed by id, with internal-only keys stripped.
+     * @return array|string
+     */
     public function get_payment_method( $type = '' ) {
         $payment_methods = $this->meta_data['payment_methods'] ?? array();
-
         if ( empty( $payment_methods ) || ! is_array( $payment_methods ) ) {
             return array();
         }
 
         $exclude_keys = array( 'isCustom', 'title', 'description', 'label', 'desc', 'primary' );
-        if ( !empty( $type ) ) {
+        if ( ! empty( $type ) ) {
             foreach ( $payment_methods as $method_id => $method ) {
                 if ( ! empty( $method['primary'] ) && 'name' === $type ) {
                     return $method_id;
@@ -657,6 +670,13 @@ class Store {
         return $result;
     }
 
+    /**
+     * Merge fields into an already-configured payment method.
+     *
+     * @param string $method_id Payment method id (e.g. 'stripe-connect').
+     * @param array  $data      Fields to merge into the method's existing settings.
+     * @return bool False if the method isn't configured for this store yet.
+     */
     public function update_payment_method( $method_id, array $data ) {
         $payment_methods = $this->meta_data['payment_methods'] ?? array();
 

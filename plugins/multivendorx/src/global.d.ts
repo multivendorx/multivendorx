@@ -23,6 +23,7 @@ declare global {
 		nonce: string;
 		khali_dabba: string | boolean;
 		tab_name: string;
+		order_statuses?: { label: string; value: string }[];
 		admin_settings: any;
 		all_store_meta: any;
 		pages_list: {

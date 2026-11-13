@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\RestAPI\Controllers;
 
+use MultiVendorX\Utill;
+
 defined( 'ABSPATH' ) || exit;
 /**
  * MultiVendorX REST API ImportDummyData Controller.
@@ -35,12 +37,12 @@ class ImportDummyData extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'process_action' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'multivendorx_get_items_permissions_check' ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_status' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'permission_callback' => array( $this, 'multivendorx_get_items_permissions_check' ),
                 ),
             )
         );
@@ -51,15 +53,28 @@ class ImportDummyData extends \WP_REST_Controller {
      *
      * @param object $request Full details about the request.
      */
-    public function get_items_permissions_check( $request ) {
-        return current_user_can( 'manage_options' );
+    public function multivendorx_get_items_permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
+
+    /**
+     * Allowlist of importer methods this endpoint may dispatch to.
+     *
+     * @var string[]
+     */
+    private $allowed_actions = array(
+        'import_store_owners',
+        'import_stores',
+        'import_products',
+        'import_commissions',
+        'import_orders',
+        'import_reviews',
+    );
 
     /**
      * Process a specific REST API action request.
      *
-     * Verifies the nonce, checks the requested action, and delegates to the
-     * corresponding method if it exists.
+     * Verifies the nonce and delegates to the requested method, if allowed.
      *
      * @param \WP_REST_Request $request The REST request object containing the action and any parameters.
      *
@@ -78,9 +93,9 @@ class ImportDummyData extends \WP_REST_Controller {
             return $error;
         }
 
-        $action = $request->get_param( 'action' );
+        $action = sanitize_key( (string) $request->get_param( 'action' ) );
 
-        if ( method_exists( $this, $action ) ) {
+        if ( in_array( $action, $this->allowed_actions, true ) ) {
             return $this->$action( $request );
         }
 
@@ -101,7 +116,7 @@ class ImportDummyData extends \WP_REST_Controller {
      * @return array Status response with keys 'success', 'running', and 'status'.
      */
     public function get_status( $request ) {
-        $task   = $request->get_param( 'task' );
+        $task   = sanitize_key( (string) $request->get_param( 'task' ) );
         $status = get_transient( 'multivendorx_import_status_' . $task ) ? get_transient( 'multivendorx_import_status_' . $task ) : array();
         return array(
             'success' => true,

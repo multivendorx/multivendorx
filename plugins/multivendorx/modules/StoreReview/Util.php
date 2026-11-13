@@ -22,6 +22,104 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Util {
 
+	/**
+	 * Largest accepted review image, in bytes.
+	 */
+	const MAX_REVIEW_IMAGE_SIZE = 5 * MB_IN_BYTES;
+
+	/**
+	 * Sanitize submitted per-parameter ratings, dropping anything outside 1-5.
+	 *
+	 * @param mixed $ratings Raw ratings keyed by parameter name.
+	 * @return array Sanitized ratings (parameter => int 1-5).
+	 */
+	public static function sanitize_rating_values( $ratings ) {
+		$sanitized_ratings = array();
+
+		foreach ( (array) $ratings as $parameter => $rating ) {
+			$parameter = sanitize_text_field( (string) $parameter );
+			$rating    = absint( $rating );
+
+			if ( '' === $parameter || $rating < 1 || $rating > 5 ) {
+				continue;
+			}
+
+			$sanitized_ratings[ $parameter ] = $rating;
+		}
+
+		return $sanitized_ratings;
+	}
+
+	/**
+	 * Upload submitted review images (JPEG/PNG/GIF/WebP only, size-capped).
+	 *
+	 * @param array $review_images A $_FILES-style entry (name/tmp_name/error/size, each an array).
+	 * @return array URLs of the uploaded images.
+	 */
+	public static function upload_review_images( $review_images ) {
+		$review_images = (array) $review_images;
+		$file_names    = array_map( 'sanitize_file_name', (array) ( $review_images['name'] ?? array() ) );
+		$file_tmp      = array_map( 'strval', (array) ( $review_images['tmp_name'] ?? array() ) );
+		$file_errors   = array_map( 'absint', (array) ( $review_images['error'] ?? array() ) );
+		$file_sizes    = array_map( 'absint', (array) ( $review_images['size'] ?? array() ) );
+
+		if ( empty( $file_names ) ) {
+			return array();
+		}
+
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+
+		$allowed_image_mimes = array(
+			'jpg|jpeg|jpe' => 'image/jpeg',
+			'gif'          => 'image/gif',
+			'png'          => 'image/png',
+			'webp'         => 'image/webp',
+		);
+
+		$uploaded_image_urls = array();
+
+		foreach ( $file_names as $index => $file_name ) {
+			$tmp_path = $file_tmp[ $index ] ?? '';
+			$size     = $file_sizes[ $index ] ?? 0;
+
+			if ( '' === $file_name || '' === $tmp_path
+				|| UPLOAD_ERR_OK !== ( $file_errors[ $index ] ?? UPLOAD_ERR_NO_FILE )
+				|| $size > self::MAX_REVIEW_IMAGE_SIZE
+				|| ! is_uploaded_file( $tmp_path )
+			) {
+				continue;
+			}
+
+			// Check the real file contents, not the client-supplied type.
+			$file_type = wp_check_filetype_and_ext( $tmp_path, $file_name, $allowed_image_mimes );
+			if ( empty( $file_type['type'] ) ) {
+				continue;
+			}
+
+			$file = array(
+				'name'     => $file_type['proper_filename'] ? $file_type['proper_filename'] : $file_name,
+				'type'     => $file_type['type'],
+				'tmp_name' => $tmp_path,
+				'error'    => UPLOAD_ERR_OK,
+				'size'     => $size,
+			);
+
+			$upload = wp_handle_upload(
+                $file,
+                array(
+					'test_form' => false,
+					'mimes'     => $allowed_image_mimes,
+                )
+			);
+
+			if ( empty( $upload['error'] ) && ! empty( $upload['url'] ) ) {
+				$uploaded_image_urls[] = esc_url_raw( $upload['url'] );
+			}
+		}
+
+		return $uploaded_image_urls;
+	}
+
     /**
      * Check if a user has purchased from a specific store
      *
@@ -89,7 +187,8 @@ class Util {
 
 		$result = (bool) $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT COUNT(*) FROM {$table_review} WHERE store_id = %d AND customer_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                'SELECT COUNT(*) FROM %i WHERE store_id = %d AND customer_id = %d',
+                $table_review,
                 $store_id,
                 $user_id
             )
@@ -179,32 +278,10 @@ class Util {
 
 		$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT * FROM {$table_review} WHERE store_id = %d AND status = 'approved' ORDER BY date_created DESC LIMIT %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                "SELECT * FROM %i WHERE store_id = %d AND status = 'approved' ORDER BY date_created DESC LIMIT %d",
+                $table_review,
                 $store_id,
                 $limit
-            )
-		);
-
-		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
-			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
-		}
-
-		return $result;
-	}
-
-	/**
-	 * Get individual parameter ratings for a review
-	 *
-	 * @param int $review_id Review ID.
-	 */
-	public static function get_ratings_for_review( $review_id ) {
-		global $wpdb;
-		$table_rating = $wpdb->prefix . Utill::TABLES['rating'];
-
-		$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            $wpdb->prepare(
-                "SELECT * FROM {$table_rating} WHERE review_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                $review_id
             )
 		);
 
@@ -233,19 +310,24 @@ class Util {
 				continue;
 			}
 
-        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$avg = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->prepare(
-                    "SELECT AVG(rating_value) FROM {$table_rating}
-        INNER JOIN {$table_review} ON {$table_review}.review_id = {$table_rating}.review_id
-        WHERE {$table_review}.store_id = %d
-        AND {$table_rating}.parameter = %s
-        AND {$table_review}.status = 'approved'",
+                    "SELECT AVG(rating_value) FROM %i
+        INNER JOIN %i ON %i.review_id = %i.review_id
+        WHERE %i.store_id = %d
+        AND %i.parameter = %s
+        AND %i.status = 'approved'",
+                    $table_rating,
+                    $table_review,
+                    $table_review,
+                    $table_rating,
+                    $table_review,
                     $store_id,
-                    $param_value
+                    $table_rating,
+                    $param_value,
+                    $table_review
                 )
 			);
-        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 			$averages[ $param_value ] = $avg ? round( $avg, 2 ) : 0;
 		}
@@ -268,7 +350,8 @@ class Util {
 
 		$overall = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT AVG(overall_rating) FROM {$table_review} WHERE store_id = %d AND status = 'approved'", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                "SELECT AVG(overall_rating) FROM %i WHERE store_id = %d AND status = 'approved'",
+                $table_review,
                 $store_id
             )
 		);
@@ -294,19 +377,18 @@ class Util {
 		global $wpdb;
 		$table_review = $wpdb->prefix . Utill::TABLES['review'];
 
-        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$result = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->prepare(
-                "SELECT status FROM {$table_review}
-        WHERE store_id = %d 
-        AND customer_id = %d 
-        ORDER BY date_created DESC 
-        LIMIT 1",
+                'SELECT status FROM %i
+        WHERE store_id = %d
+        AND customer_id = %d
+        ORDER BY date_created DESC
+        LIMIT 1',
+                $table_review,
                 $store_id,
                 $user_id
             )
 		);
-        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
@@ -320,103 +402,83 @@ class Util {
      *
      * @param array $args Query arguments.
      */
-    public static function get_review_information( $args ) {
+    public static function query_reviews( $args ) {
         global $wpdb;
-        $where = array();
-
-        // Filter by review IDs.
-        if ( isset( $args['review_id'] ) ) {
-            $ids     = is_array( $args['review_id'] ) ? $args['review_id'] : array( $args['review_id'] );
-            $ids     = implode( ',', array_map( 'intval', $ids ) );
-            $where[] = "review_id IN ($ids)";
-        }
-
-        // Filter by store_id.
-        if ( isset( $args['store_id'] ) ) {
-            $where[] = 'store_id = ' . intval( $args['store_id'] );
-        }
-
-        // Filter by customer_id.
-        if ( isset( $args['customer_id'] ) ) {
-            $where[] = 'customer_id = ' . intval( $args['customer_id'] );
-        }
-
-        // Filter by order_id.
-        if ( isset( $args['order_id'] ) ) {
-            $where[] = 'order_id = ' . intval( $args['order_id'] );
-        }
-
-        // Filter by review status (pending, approved, rejected, etc.).
-        if ( isset( $args['status'] ) && '' !== $args['status'] ) {
-            $where[] = "status = '" . esc_sql( $args['status'] ) . "'";
-        }
-
-        // Filter by reported flag.
-        if ( isset( $args['reported'] ) ) {
-            $where[] = 'reported = ' . intval( $args['reported'] );
-        }
-
-        // Filter by start_date.
-        if ( ! empty( $args['start_date'] ) ) {
-            $where[] = "date_created >= '" . esc_sql( $args['start_date'] ) . "'";
-        }
-
-        // Filter by end_date.
-        if ( ! empty( $args['end_date'] ) ) {
-            $where[] = "date_created <= '" . esc_sql( $args['end_date'] ) . "'";
-        }
-        // Filter by overall_rating ("X stars & up" style).
-        if ( isset( $args['overall_rating'] ) && '' !== $args['overall_rating'] ) {
-            $rating = floatval( $args['overall_rating'] );
-
-            // Handle invalid ratings gracefully.
-            if ( $rating < 1 ) {
-                $rating = 1;
-            }
-
-            // Flipkart-style filter: show reviews with rating >= selected value.
-            $where[] = "overall_rating >= {$rating}";
-        }
-
-        // Table name (update according to your DB structure).
         $table = $wpdb->prefix . Utill::TABLES['review'];
 
-        // Build query.
+        $conditions = array();
+        $values     = array();
+
+        if ( isset( $args['review_id'] ) ) {
+            $ids          = array_map( 'intval', (array) $args['review_id'] );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $conditions[] = 'review_id IN (' . $placeholders . ')';
+            $values       = array_merge( $values, $ids );
+        }
+
+        foreach ( array( 'store_id', 'customer_id', 'order_id' ) as $filter_key ) {
+            if ( isset( $args[ $filter_key ] ) ) {
+                $conditions[] = $filter_key . ' = %d';
+                $values[]     = intval( $args[ $filter_key ] );
+            }
+        }
+
+        if ( isset( $args['status'] ) && '' !== $args['status'] ) {
+            $conditions[] = 'status = %s';
+            $values[]     = (string) $args['status'];
+        }
+
+        if ( isset( $args['reported'] ) ) {
+            $conditions[] = 'reported = %d';
+            $values[]     = intval( $args['reported'] );
+        }
+
+        if ( ! empty( $args['start_date'] ) ) {
+            $conditions[] = 'date_created >= %s';
+            $values[]     = (string) $args['start_date'];
+        }
+
+        if ( ! empty( $args['end_date'] ) ) {
+            $conditions[] = 'date_created <= %s';
+            $values[]     = (string) $args['end_date'];
+        }
+
+        // "X stars & up": rating >= selected value, never below 1.
+        if ( isset( $args['overall_rating'] ) && '' !== $args['overall_rating'] ) {
+            $conditions[] = 'overall_rating >= %f';
+            $values[]     = max( 1, floatval( $args['overall_rating'] ) );
+        }
+
+        $join      = ( 'OR' === strtoupper( trim( $args['condition'] ?? 'AND' ) ) ) ? ' OR ' : ' AND ';
+        $where_sql = $conditions ? ' WHERE ' . implode( $join, $conditions ) : '';
+
         if ( isset( $args['count'] ) ) {
-            $query = "SELECT COUNT(*) FROM $table";
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $results = $wpdb->get_var(
+                $wpdb->prepare(
+                    'SELECT COUNT(*) FROM %i' . $where_sql,
+                    $table,
+                    ...$values
+                )
+            );
         } else {
-            $query = "SELECT * FROM $table";
-        }
-
-        // Add WHERE conditions.
-        if ( ! empty( $where ) ) {
-            $condition = $args['condition'] ?? ' AND ';
-            $query    .= ' WHERE ' . implode( $condition, $where );
-        }
-
-        // Order results safely.
-        if ( ! isset( $args['count'] ) ) {
             $allowed_columns = array( 'date_created', 'overall_rating', 'status', 'store_id', 'customer_id' );
-            $order_by        = isset( $args['order_by'] ) && in_array( $args['order_by'], $allowed_columns, true )
-                ? $args['order_by']
-                : 'date_created';
+            $order_by        = ( isset( $args['order_by'] ) && in_array( $args['order_by'], $allowed_columns, true ) ) ? $args['order_by'] : 'date_created';
+            $order_dir       = ( isset( $args['order_dir'] ) && 'ASC' === strtoupper( $args['order_dir'] ) ) ? 'ASC' : 'DESC';
+            $has_limit       = isset( $args['limit'] ) && isset( $args['offset'] );
+            $limit           = $has_limit ? intval( $args['limit'] ) : PHP_INT_MAX;
+            $offset          = $has_limit ? intval( $args['offset'] ) : 0;
 
-            $order_dir = isset( $args['order_dir'] ) && in_array( strtoupper( $args['order_dir'] ), array( 'ASC', 'DESC' ), true )
-                ? strtoupper( $args['order_dir'] )
-                : 'DESC';
-
-            $query .= ' ORDER BY ' . esc_sql( $order_by ) . ' ' . esc_sql( $order_dir );
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $results = $wpdb->get_results(
+                $wpdb->prepare(
+                    'SELECT * FROM %i' . $where_sql . ' ORDER BY %i ' . $order_dir . ' LIMIT %d OFFSET %d',
+                    $table,
+                    ...array_merge( $values, array( $order_by, $limit, $offset ) )
+                ),
+                ARRAY_A
+            );
         }
-
-        // Limit & offset.
-        if ( isset( $args['limit'] ) && isset( $args['offset'] ) && ! isset( $args['count'] ) ) {
-            $query .= ' LIMIT ' . intval( $args['limit'] ) . ' OFFSET ' . intval( $args['offset'] );
-        }
-
-        // Run query first (no return yet).
-		$results = isset( $args['count'] )
-		? $wpdb->get_var( $query ) // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-		: $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 
         // Log DB error if any.
         if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
@@ -432,33 +494,33 @@ class Util {
 	/**
 	 * Update a review.
 	 *
-	 * @param int   $id   The review ID to update.
-	 * @param array $data The data to update.
+	 * @param int   $id               The review ID to update.
+	 * @param array $fields_to_update The data to update.
 	 */
-	public static function update_review( $id, $data ) {
+	public static function update_review( $id, $fields_to_update ) {
 		global $wpdb;
 
 		$table = $wpdb->prefix . Utill::TABLES['review'];
 
-		if ( empty( $data ) ) {
+		if ( empty( $fields_to_update ) ) {
 			return false;
 		}
 
 		$update_data   = array();
 		$update_format = array();
 
-		if ( isset( $data['reply'] ) ) {
-			$update_data['reply'] = sanitize_textarea_field( $data['reply'] );
+		if ( isset( $fields_to_update['reply'] ) ) {
+			$update_data['reply'] = sanitize_textarea_field( $fields_to_update['reply'] );
 			$update_format[]      = '%s';
 		}
 
-		if ( isset( $data['reply_date'] ) ) {
-			$update_data['reply_date'] = sanitize_text_field( $data['reply_date'] );
+		if ( isset( $fields_to_update['reply_date'] ) ) {
+			$update_data['reply_date'] = sanitize_text_field( $fields_to_update['reply_date'] );
 			$update_format[]           = '%s';
 		}
 
-		if ( isset( $data['status'] ) ) {
-			$update_data['status'] = sanitize_text_field( $data['status'] );
+		if ( isset( $fields_to_update['status'] ) ) {
+			$update_data['status'] = sanitize_text_field( $fields_to_update['status'] );
 			$update_format[]       = '%s';
 		}
 
@@ -505,7 +567,7 @@ class Util {
 		}
 
 		// Begin transaction (optional but good practice if supported).
-		$wpdb->query( 'START TRANSACTION' ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		$wpdb->query( 'START TRANSACTION' ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		// Delete from ratings first.
 		$wpdb->delete( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
@@ -522,11 +584,11 @@ class Util {
 		);
 
 		if ( false === $deleted ) {
-			$wpdb->query( 'ROLLBACK' ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			$wpdb->query( 'ROLLBACK' ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			return false;
 		}
 
-		$wpdb->query( 'COMMIT' ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		$wpdb->query( 'COMMIT' ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );

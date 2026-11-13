@@ -56,6 +56,5 @@ $is_prices_including_tax = esc_html( get_option( 'woocommerce_prices_include_tax
 	<a target="_blank" href="mailto:<?php echo esc_html( $args['customer_email'] ); ?>"><?php echo ! empty( $args['customer_email'] ) ? esc_html( $args['customer_email'] ) : 'test@example.com'; ?></a>
 </p>
 
-</p>
 <?php
 do_action( 'woocommerce_email_footer' );

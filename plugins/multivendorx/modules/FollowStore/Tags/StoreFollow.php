@@ -13,6 +13,8 @@ use Elementor\Core\DynamicTags\Tag;
 use Elementor\Modules\DynamicTags\Module;
 use MultiVendorX\Elementor\StoreHelper;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * StoreFollow tag class.
  *

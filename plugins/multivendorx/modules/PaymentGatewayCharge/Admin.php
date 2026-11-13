@@ -12,6 +12,8 @@ namespace MultiVendorX\PaymentGatewayCharge;
 use MultiVendorX\Commission\CommissionUtil;
 use MultiVendorX\Utill;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Gateway Fee Admin class.
  *
@@ -77,7 +79,7 @@ class Admin {
             }
 
             // Decode applied rules safely using JSON.
-            $rules = maybe_unserialize( $filtered['data']['rules_applied'] );
+            $rules = Utill::safe_unserialize( $filtered['data']['rules_applied'] );
 
             $rules['gateway_fee'] = array(
                 'fixed'      => $fixed_fee,

@@ -43,7 +43,7 @@ class Rest {
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'create_item' ),
-                    'permission_callback' => array( $this, 'create_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'catalogx_create_item_permissions_check' ),
                 ),
             )
         );
@@ -54,21 +54,14 @@ class Rest {
      *
      * @return bool True if the user has permission, false otherwise.
      */
-    public function create_item_permissions_check() {
-        $user_id = CatalogX()->current_user_id;
-        // For non-logged in user.
-        if ( 0 === $user_id && 'everyone' === CatalogX()->setting->get_setting( 'enquiry_user_permission', 'everyone' ) ) {
-            return true;
-        }
-
-        // Check if user is admin or customer.
-        return current_user_can( 'read' ) || current_user_can( 'manage_options' );
+    public function catalogx_create_item_permissions_check() {
+        return Utill::current_user_has_capability( array( 'customer', 'wholesale_user', 'manage_options' ), '', 'enquiry_user_permission' );
     }
 
     /**
      * Save enquiry form data
      *
-     * quantity string required
+     * Quantity string required
      * Retrieve the quantity of product
      * productId string required
      * Retrieve the product id of enquiry
@@ -145,7 +138,11 @@ class Rest {
                 'user_additional_fields' => serialize( $additional_fields ),
             );
 
-            $product_variations = get_transient( 'variation_list' ) ?: array();
+            if ( ! WC()->session ) {
+                WC()->initialize_session();
+            }
+
+            $product_variations = WC()->session ? WC()->session->get( 'catalogx_variation_list', array() ) : array();
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
             $result = $wpdb->insert( "{$wpdb->prefix}" . Utill::TABLES['enquiry'], $enquiry_record );
 
@@ -166,7 +163,7 @@ class Rest {
                     }
                 }
 
-                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->insert(
                     "{$wpdb->prefix}" . Utill::TABLES['message'],
                     array(

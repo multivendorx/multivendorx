@@ -25,9 +25,9 @@ class Hooks {
      */
     public function __construct() {
         add_action( 'woocommerce_checkout_create_order_line_item', array( $this, 'add_metadata_for_line_item' ), 10, 4 );
-        add_action( 'woocommerce_checkout_create_order_shipping_item', array( $this, 'add_metadate_for_shipping_item' ), 10, 4 );
+        add_action( 'woocommerce_checkout_create_order_shipping_item', array( $this, 'add_metadata_for_shipping_item' ), 10, 4 );
 
-        if ( current_user_can( 'manage_options' ) ) {
+        if ( Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
             $analytics_hooks = array(
                 // Orders & Revenue.
                 'woocommerce_analytics_clauses_where_orders_stats_total',
@@ -91,6 +91,7 @@ class Hooks {
         // If this order is a suborder.
         if ( $order->get_parent_id() ) {
             // Reset recorded sales flag so WooCommerce skips counting.
+            $order->get_data_store()->set_stock_reduced( $order_id, true );
             $order->get_data_store()->set_recorded_sales( $order, true );
         }
     }
@@ -122,7 +123,7 @@ class Hooks {
      * @param mixed $order Order Object.
      * @return void
      */
-    public function add_metadate_for_shipping_item( $item, $package_key, $package, $order ) {
+    public function add_metadata_for_shipping_item( $item, $package_key, $package, $order ) {
         $store_id = $package['store_id'] ?? $package_key;
         if ( $order && $order->get_parent_id() === 0 ) {
             $item->add_meta_data( Utill::POST_META_SETTINGS['store_id'], $store_id, true );
@@ -145,7 +146,7 @@ class Hooks {
 		$table_name = $wpdb->prefix . 'wc_order_stats';
 
 		// Inject the constraint: parent_id must be 0.
-		$clauses[] = "AND {$table_name}.parent_id = 0";
+		$clauses[] = $wpdb->prepare( 'AND %i.parent_id = 0', $table_name );
 
 		return $clauses;
 	}
@@ -176,10 +177,11 @@ class Hooks {
             return;
         }
 
-        MultiVendorX()->order->create_store_orders( $order );
-
-        $order->update_meta_data( Utill::ORDER_META_SETTINGS['has_sub_order'], true );
-        $order->save();
+        $store_order = MultiVendorX()->order->create_store_orders( $order );
+        if ( $store_order ) {
+            $order->update_meta_data( Utill::ORDER_META_SETTINGS['has_sub_order'], true );
+            $order->save();
+        }
     }
 
     /**
@@ -392,6 +394,13 @@ class Hooks {
         }
     }
 
+    /**
+     * Relabel internal order-item meta keys for display in the order edit screen.
+     *
+     * @param array $formatted_meta Formatted order item meta, keyed by meta id.
+     * @param mixed $item           Order item object.
+     * @return array
+     */
     public function get_formatted_meta_data( $formatted_meta, $item ) {
         foreach ( $formatted_meta as $key => $meta ) {
             if ( $meta->key === 'multivendorx_sold_by' ) {

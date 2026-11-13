@@ -16,8 +16,16 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'appearance',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'appearance',
+			title: __('Marketplace Branding', 'multivendorx'),
+		},
 		{
 			key: 'store_dashboard_site_logo',
 			type: 'attachment',
@@ -31,6 +39,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'paint-brush',
 			title: __('Store Customizer', 'multivendorx'),
 			desc: __(
 				'Control how your store looks and feels. Set the banner style, logo placement, and customize the dashboard color scheme to match your brand identity.',
@@ -49,7 +58,7 @@ export default {
 		},
 		{
 			key: 'store_banner_template',
-			type: 'color-setting',
+			type: 'picker-setting',
 			label: 'Shop banner section',
 			settingDescription:
 				'Choose how the store’s shop page appears, including banner, logo, and description.',
@@ -103,7 +112,7 @@ export default {
 		},
 		{
 			key: 'store_color_settings',
-			type: 'color-setting',
+			type: 'picker-setting',
 			label: 'Dashboard color scheme',
 			settingDescription:
 				'Choose a dashboard color scheme from predefined sets or customize your own. Each scheme defines the button style, and hover effects for a consistent look.',

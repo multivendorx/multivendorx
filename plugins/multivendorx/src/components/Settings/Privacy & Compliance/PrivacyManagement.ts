@@ -9,8 +9,16 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'privacy',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'privacy',
+			title: __('Store Profile Visibility', 'multivendorx'),
+		},
 		{
 			key: 'store_branding_details',
 			type: 'checkbox',
@@ -148,6 +156,7 @@ export default {
 		{
 			key: 'separator_store_policy_override',
 			type: 'section',
+			icon: 'supervised-user-circle',
 			desc: __(
 				'Protect your shoppers by deciding how much of their information stores can access.',
 				'multivendorx'

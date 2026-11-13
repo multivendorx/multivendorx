@@ -46,7 +46,7 @@ class Settings extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'update_item' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+					'permission_callback' => array( $this, 'multivendorx_update_item_permissions_check' ),
 				),
 			)
         );
@@ -58,12 +58,12 @@ class Settings extends \WP_REST_Controller {
                 array(
                     'methods'             => 'POST',
                     'callback'            => array( $this, 'set_modules' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'multivendorx_set_modules_permissions_check' ),
                 ),
                 array(
                     'methods'             => 'GET',
                     'callback'            => array( $this, 'get_modules' ),
-                    'permission_callback' => array( $this, 'get_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'multivendorx_get_item_permissions_check' ),
                 ),
             )
         );
@@ -74,11 +74,25 @@ class Settings extends \WP_REST_Controller {
      *
      * @param object $request The REST request object.
      */
-    public function update_item_permissions_check( $request ) {
-        return current_user_can( 'manage_options' ) || current_user_can( 'edit_stores' );// phpcs:ignore WordPress.WP.Capabilities.Unknown
+    public function multivendorx_update_item_permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 
-    public function get_item_permissions_check( $request ) {
+    /**
+     * Check if a given request has access to activate/deactivate marketplace modules.
+     *
+     * @param object $request The REST request object.
+     */
+    public function multivendorx_set_modules_permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
+    }
+
+    /**
+     * Check if a given request has access to read the active modules list.
+     *
+     * @param object $request The REST request object.
+     */
+    public function multivendorx_get_item_permissions_check( $request ) {
         return is_user_logged_in() && ! empty(
             array_intersect(
                 array( 'customer', 'administrator', 'store_owner', 'facilitator' ),
@@ -138,9 +152,20 @@ class Settings extends \WP_REST_Controller {
                 return;
             }
             $get_settings_data = $request->get_param( 'setting' );
-            $settingsname      = $request->get_param( 'settingName' );
+            $settingsname      = sanitize_key( (string) $request->get_param( 'settingName' ) );
             $settingsname      = str_replace( '-', '_', $settingsname );
             $optionname        = 'multivendorx_' . $settingsname . '_settings';
+
+            // Changing role capabilities is more sensitive than a regular settings
+            // write, so it needs manage_options regardless of what the route otherwise allows.
+            if ( ( 'store_permissions' === $settingsname || 'user_permissions' === $settingsname )
+                && ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to change role permissions.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
+            }
 
             // Save the settings in database.
             MultiVendorX()->setting->update_option( $optionname, $get_settings_data );
@@ -227,13 +252,13 @@ class Settings extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $module_id = $request->get_param( 'id' );
-            $action    = $request->get_param( 'action' );
+            $module_id = sanitize_key( (string) $request->get_param( 'id' ) );
+            $action    = sanitize_key( (string) $request->get_param( 'action' ) );
 
             // Setup wizard module.
-            $modules = $request->get_param( 'modules' ) ?? array();
+            $modules  = array_filter( array_map( 'sanitize_key', (array) ( $request->get_param( 'modules' ) ?? array() ) ) );
             $response = rest_ensure_response( array() );
-            $result = MultiVendorX()->modules->activate_modules( $modules );
+            $result   = MultiVendorX()->modules->activate_modules( $modules );
             $response->set_data( $result );
             // Handle the actions.
             switch ( $action ) {
@@ -247,6 +272,17 @@ class Settings extends \WP_REST_Controller {
                     $response->set_data( $result );
                     break;
             }
+
+            /**
+             * Fires after a module's activation status has changed.
+             *
+             * @since 5.0.0
+             *
+             * @param string $module_id The module ID.
+             * @param string $action    The requested action. Possible values are 'activate' or 'deactivate'.
+             */
+            do_action( 'multivendorx_module_status_change', $module_id, $action );
+
             return $response;
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );

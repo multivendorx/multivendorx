@@ -2,21 +2,22 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	FormGroupWrapper,
-	FormGroup,
-	ButtonInputUI,
-	PopupUI,
-	TextAreaUI,
-	TableCard,
-	NavigatorHeader,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
 
-import { formatLocalDate } from '@/services/commonFunction';
+import { ButtonInput, TextAreaInput } from '@zyra/inputs';
+import {
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	PopupComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
+
+import {
+	formatDate,
+	formatLocalDate,
+	formatStatusLabel,
+} from '@/services/commonFunction';
 
 type Review = {
 	id: number;
@@ -95,45 +96,12 @@ const StoreReview: React.FC = () => {
 	};
 
 	const headers = {
-		customer_name: {
-			label: __('Customer', 'multivendorx'),
-		},
-		details: {
-			label: __('Details', 'multivendorx'),
-			render: (row: any) => (
-				<div className="review-details">
-					<div className="review">
-						{[...Array(Math.round(row.overall_rating || 0))].map(
-							(_, i) => (
-								<i
-									key={`filled-${i}`}
-									className="star-icon adminfont-star"
-								/>
-							)
-						)}
-
-						{[
-							...Array(5 - Math.round(row.overall_rating || 0)),
-						].map((_, i) => (
-							<i
-								key={`empty-${i}`}
-								className="star-icon adminfont-star-o"
-							/>
-						))}
-					</div>
-					<div className="title">{row.review_title}</div>
-					<div className="desc">{row.review_content}</div>
-				</div>
-			),
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
-		},
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			sortable: true,
-			type: 'date',
+		review_title: {
+			label: __('Review', 'multivendorx'),
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
@@ -147,6 +115,26 @@ const StoreReview: React.FC = () => {
 			],
 		},
 	};
+
+	const infoRows = rows.map((row: any) => {
+		const rating = Math.round(row.overall_rating || 0);
+		return {
+			...row,
+			info_icon: 'person',
+			info_descriptions: row.review_content || '—',
+			info_badges: [
+				{
+					text: formatStatusLabel(row.status),
+					color: `badge-${row.status}`,
+				},
+				{ text: formatDate(row.date_created), color: 'blue' },
+				{
+					text: `${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}`,
+					color: 'purple',
+				},
+			],
+		};
+	});
 
 	const filters = [
 		{
@@ -245,7 +233,7 @@ const StoreReview: React.FC = () => {
 
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Store Review', 'multivendorx')}
 				headerDescription={__(
 					'See all customer reviews and ratings submitted for your store in one centralized list.',
@@ -255,7 +243,8 @@ const StoreReview: React.FC = () => {
 
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}
@@ -266,7 +255,7 @@ const StoreReview: React.FC = () => {
 				format={appLocalizer.date_format}
 			/>
 			{selectedReview && (
-				<PopupUI
+				<PopupComponent
 					open={!!selectedReview}
 					onClose={() => setSelectedReview(null)}
 					width={31.25}
@@ -280,7 +269,7 @@ const StoreReview: React.FC = () => {
 						),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',
@@ -359,25 +348,25 @@ const StoreReview: React.FC = () => {
 							</div>
 						</div>
 
-						<FormGroupWrapper>
-							<FormGroup
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__(
 									'Respond to customer',
 									'multivendorx'
 								)}
 								htmlFor="reply"
 							>
-								<TextAreaUI
+								<TextAreaInput
 									name="reply"
 									inputClass="input-text"
 									value={replyText}
 									onChange={(value) => setReplyText(value)}
 									usePlainText={true}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
 					</>
-				</PopupUI>
+				</PopupComponent>
 			)}
 		</>
 	);

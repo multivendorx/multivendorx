@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\SharedListing;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX SharedListing Module class
  *

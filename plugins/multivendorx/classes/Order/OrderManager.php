@@ -133,7 +133,7 @@ class OrderManager {
                 }
             }
         }
-
+        $create_or_update = false;
         foreach ( $item_info as $store_id => $items ) {
             if ( in_array( $store_id, $existing_orders, true ) ) {
                 $suborder_ids = array_keys( $existing_orders, $store_id, true );
@@ -147,7 +147,8 @@ class OrderManager {
             }
 
             $store_order->save();
-            $store = new Store( $store_id );
+            $create_or_update = true;
+            $store            = new Store( $store_id );
             if ( ! $store->exists() ) {
                 continue;
             }
@@ -161,6 +162,7 @@ class OrderManager {
 				)
             );
         }
+        return $create_or_update;
     }
 
     /**
@@ -430,7 +432,7 @@ class OrderManager {
         $product_ids = array();
         foreach ( $line_items as $item ) {
             $product_id = $item->get_product_id();
-            if ( ! empty( $product_id )){
+            if ( ! empty( $product_id ) ) {
                 $product_ids[] = $product_id;
             }
         }

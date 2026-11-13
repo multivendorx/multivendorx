@@ -177,6 +177,12 @@ class MVX {
         update_option( 'mvx_migration_status', $migration_status );
     }
 
+    /**
+     * Migrate the remaining legacy MVX tables in batches: shipping zone methods,
+     * announcements, knowledgebase posts, visitor stats, Q&A, and SPMV product mappings.
+     *
+     * @return void
+     */
     public function migrate_other_tables() {
         global $wpdb;
 
@@ -185,7 +191,8 @@ class MVX {
         $zone_table = $wpdb->prefix . 'mvx_shipping_zone_methods';
         $results    = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$zone_table} LIMIT %d OFFSET %d",
+                'SELECT * FROM %i LIMIT %d OFFSET %d',
+                $zone_table,
                 self::BATCH_SIZE,
                 $offset
             )
@@ -282,7 +289,8 @@ class MVX {
 
         $rows = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$old_visitors_table} LIMIT %d OFFSET %d",
+                'SELECT * FROM %i LIMIT %d OFFSET %d',
+                $old_visitors_table,
                 self::BATCH_SIZE,
                 $offset
             )
@@ -333,7 +341,8 @@ class MVX {
 
         $questions = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$questions_table} LIMIT %d OFFSET %d",
+                'SELECT * FROM %i LIMIT %d OFFSET %d',
+                $questions_table,
                 self::BATCH_SIZE,
                 $offset
             )
@@ -342,13 +351,14 @@ class MVX {
 		foreach ( $questions as $question ) {
 			$answer = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 				$wpdb->prepare(
-                    "SELECT * FROM {$answers_table} WHERE ques_ID = %d ORDER BY ans_created ASC LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                    'SELECT * FROM %i WHERE ques_ID = %d ORDER BY ans_created ASC LIMIT 1',
+                    $answers_table,
                     $question->ques_ID // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				)
 			);
 
-			$ques_votes = $question->ques_vote ? maybe_unserialize( $question->ques_vote ) : array();
-			$ans_votes  = $answer ? maybe_unserialize( $answer->ans_vote ) : array();
+			$ques_votes = $question->ques_vote ? Utill::safe_unserialize( $question->ques_vote ) : array();
+			$ans_votes  = $answer ? Utill::safe_unserialize( $answer->ans_vote ) : array();
 
 			$merged_votes = array_merge( $ques_votes, $ans_votes );
 			$total_votes  = count( $merged_votes );
@@ -402,10 +412,11 @@ class MVX {
 
         $spmv_products = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT product_map_id, product_id, created 
-                FROM {$old_spmv_table}
+                'SELECT product_map_id, product_id, created
+                FROM %i
                 ORDER BY product_map_id, ID
-                LIMIT %d OFFSET %d",
+                LIMIT %d OFFSET %d',
+                $old_spmv_table,
                 self::BATCH_SIZE,
                 $offset
             )
@@ -595,6 +606,11 @@ class MVX {
         }
     }
 
+    /**
+     * Migrate a batch of legacy MVX vendors into MultiVendorX stores.
+     *
+     * @return void
+     */
     public function migrate_vendors() {
         global $wpdb;
         $offset = (int) get_option( 'mvx_vendor_offset', 0 );
@@ -619,9 +635,10 @@ class MVX {
             // Get all user meta.
             $user_meta = $wpdb->get_results(
                 $wpdb->prepare(
-                    "SELECT meta_key, meta_value 
-                    FROM {$wpdb->usermeta} 
-                    WHERE user_id = %d",
+                    'SELECT meta_key, meta_value
+                    FROM %i
+                    WHERE user_id = %d',
+                    $wpdb->usermeta,
                     $user_id
                 ),
                 ARRAY_A
@@ -629,7 +646,8 @@ class MVX {
             $term_id   = get_user_meta( $user_id, '_vendor_term_id', true );
             $term      = $wpdb->get_row(
                 $wpdb->prepare(
-                    "SELECT name, slug FROM {$wpdb->terms} WHERE term_id = %d",
+                    'SELECT name, slug FROM %i WHERE term_id = %d',
+                    $wpdb->terms,
                     $term_id
                 )
             );
@@ -705,7 +723,7 @@ class MVX {
 
             foreach ( $user_meta as $row ) {
                 $meta_key    = $row['meta_key'];
-                $meta_values = maybe_unserialize( $row['meta_value'] );
+                $meta_values = Utill::safe_unserialize( $row['meta_value'] );
                 // report abuse table data insert.
                 if ( 'report_abuse_data' === $meta_key ) {
                     $table = $wpdb->prefix . Utill::TABLES['report_abuse'];
@@ -837,9 +855,9 @@ class MVX {
                 }
 
                 if ( 'shipping_options' == $new_meta_key ) {
-                    if ( $meta_values == 'distance_by_zone' ) {
+                    if ( 'distance_by_zone' == $meta_values ) {
                         $meta_values = 'shipping_by_zone';
-                    } elseif ( $meta_values == 'distance_by_shipping' ) {
+                    } elseif ( 'distance_by_shipping' == $meta_values ) {
                         $meta_values = 'shipping_by_distance';
                     } else {
                         $meta_values = 'shipping_by_country';
@@ -870,6 +888,11 @@ class MVX {
         }
     }
 
+    /**
+     * Migrate a batch of legacy vendor-follow relationships into `multivendorx_following_stores` user meta.
+     *
+     * @return void
+     */
     public function migrate_followers() {
         $offset = (int) get_option( 'mvx_follow_offset', 0 );
 
@@ -909,6 +932,12 @@ class MVX {
         }
     }
 
+    /**
+     * Migrate a batch of legacy `dc_commission` posts into the commission table,
+     * plus a matching transaction row for already-paid orders.
+     *
+     * @return void
+     */
     public function migrate_commissions() {
         global $wpdb;
 
@@ -1036,6 +1065,11 @@ class MVX {
         }
     }
 
+    /**
+     * Migrate a batch of legacy order refunds, copying the store id from the parent order.
+     *
+     * @return void
+     */
     public function migrate_refunds() {
         $offset     = (int) get_option( 'mvx_refund_offset', 0 );
         $refund_ids = wc_get_orders(
@@ -1064,6 +1098,11 @@ class MVX {
         }
     }
 
+    /**
+     * Migrate a batch of legacy vendor ledger rows into the transaction table.
+     *
+     * @return void
+     */
     public function migrate_ledger() {
         global $wpdb;
         $offset = (int) get_option( 'mvx_ledger_offset', 0 );
@@ -1073,7 +1112,8 @@ class MVX {
 
         $transactions = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$old_ledger_table} LIMIT %d OFFSET %d",
+                'SELECT * FROM %i LIMIT %d OFFSET %d',
+                $old_ledger_table,
                 self::BATCH_SIZE,
                 $offset
             ),
@@ -1083,7 +1123,7 @@ class MVX {
         $store_cache = array();
 
         foreach ( $transactions as $row ) {
-            if ( $row['ref_status'] !== 'completed' ) {
+            if ( 'completed' !== $row['ref_status'] ) {
                 continue;
             }
             $author_id = (int) $row['vendor_id'];
@@ -1137,6 +1177,11 @@ class MVX {
         }
     }
 
+    /**
+     * Migrate a batch of products' and coupons' store ownership from post_author to store meta.
+     *
+     * @return void
+     */
     public function migrate_product_coupon_vendor() {
         $offset = (int) get_option( 'mvx_product_migration_offset', 0 );
 
@@ -1164,7 +1209,7 @@ class MVX {
         foreach ( $products as $product_id ) {
             $author_id = get_post_field( 'post_author', $product_id );
 
-            // Only assign if author is store_owner
+            // Only assign if author is store_owner.
             if ( in_array( $author_id, $store_owners, true ) ) {
                 $active_store = get_user_meta( $author_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
                 update_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], $active_store );
@@ -1204,6 +1249,11 @@ class MVX {
         }
     }
 
+    /**
+     * Migrate a batch of legacy vendor-rating comments into the store review table.
+     *
+     * @return void
+     */
     public function migrate_reviews() {
         global $wpdb;
 

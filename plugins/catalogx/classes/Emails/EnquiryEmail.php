@@ -1,4 +1,9 @@
 <?php
+/**
+ * Email to admin notifying them of a new product enquiry.
+ *
+ * @package CatalogX
+ */
 
 namespace CatalogX\Emails;
 
@@ -16,10 +21,39 @@ use MultiVendorX\Store\Store;
  */
 class EnquiryEmail extends \WC_Email {
 
+    /**
+     * Enquired product's id.
+     *
+     * @var int
+     */
     public $product_id;
+
+    /**
+     * Email attachments.
+     *
+     * @var array
+     */
     public $attachments;
+
+    /**
+     * Submitted enquiry data.
+     *
+     * @var array
+     */
     public $enquiry_data;
+
+    /**
+     * Customer's display name.
+     *
+     * @var string
+     */
     public $cust_name;
+
+    /**
+     * Customer's email address.
+     *
+     * @var string
+     */
     public $cust_email;
 
     /**
@@ -32,17 +66,22 @@ class EnquiryEmail extends \WC_Email {
 
         $base_template_path = apply_filters( 'catalogx_email_template_base_path', CatalogX()->plugin_path . 'templates/' );
 
-        // Set the appropriate template paths
+        // Set the appropriate template paths.
         $this->template_html  = 'emails/enquiry-email.php';
         $this->template_plain = 'emails/plain/enquiry-email.php';
         $this->template_base  = $base_template_path;
 
-        // Call parent constructor
+        // Call parent constructor.
         parent::__construct();
     }
 
     /**
      * Trigger the email.
+     *
+     * @param string $recipient    Recipient email address.
+     * @param array  $enquiry_data Submitted enquiry data.
+     * @param array  $attachments  Email attachments.
+     * @return bool|void
      */
     public function trigger( $recipient, $enquiry_data, $attachments ) {
         $this->recipient      = $recipient;

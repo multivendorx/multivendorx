@@ -1,3 +1,4 @@
+/* global appLocalizer */
 import { useLocation } from 'react-router-dom';
 
 import Settings from './components/Settings/Settings';
@@ -9,7 +10,7 @@ import { useState } from 'react';
 import { searchIndex, SearchItem } from './searchIndex';
 import MoowoodleLogo from './assets/images/moowoodle-logo.png';
 import { __ } from '@wordpress/i18n';
-import { AdminHeader, Notice } from 'zyra';
+import { NoticeComponent, HeaderComponent } from '@zyra/components';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import HelpSupport from './components/HelpSupport/HelpSupport';
 
@@ -55,13 +56,11 @@ const bannerItem = [
 		'moowoodle'
 	),
 ];
-const isBannerDismissed = localStorage.getItem('banner_dismissed') === 'true';
-
 const App = () => {
 	const currentTabParams = new URLSearchParams(useLocation().hash);
-	const [query, setQuery] = useState('');
+	const [, setQuery] = useState('');
 	const [results, setResults] = useState<SearchItem[]>([]);
-	const [selectValue, setSelectValue] = useState('all');
+	const selectValue = 'all';
 
 	document
 		.querySelectorAll('#toplevel_page_moowoodle>ul>li>a')
@@ -129,13 +128,13 @@ const App = () => {
 		{
 			toggleIcon: 'admin-icon adminfont-user-circle',
 			tooltipName: __('Support', 'moowoodle'),
-			tooltipPosition: 'end',
+			tooltipPosition: 'bottom',
 			items: profileItems,
 		},
 	];
 	return (
 		<>
-			<AdminHeader
+			<HeaderComponent
 				brandImg={MoowoodleLogo}
 				results={results}
 				onQueryUpdate={handleSearchChange}
@@ -144,8 +143,7 @@ const App = () => {
 				pro={appLocalizer.pro_data.version}
 				utilityList={utilityList}
 			/>
-			{/* {!isBannerDismissed && ( */}
-			<Notice
+			<NoticeComponent
 				uniqueKey="banner"
 				type="banner"
 				validity="lifetime"
@@ -156,7 +154,6 @@ const App = () => {
 					window.location.href = appLocalizer.shop_url;
 				}}
 			/>
-			{/* )} */}
 			<Route />
 		</>
 	);

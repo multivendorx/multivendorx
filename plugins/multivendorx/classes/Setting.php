@@ -58,12 +58,9 @@ class Setting {
 
         $setting_keys = $this->get_settings_keys();
 
-        $all_options = get_options( $setting_keys );
         // Get all setting from option table.
         foreach ( $setting_keys as $key ) {
-            $this->settings[ $key ] = isset( $all_options[ $key ] )
-                ? $all_options[ $key ]
-                : array();
+            $this->settings[ $key ] = get_option( $key, array() );
         }
     }
 
@@ -169,12 +166,14 @@ class Setting {
      */
     public function update_option( $key, $value ) {
 
-        // Check key exist in register settings keys.
-        if ( in_array( $key, $this->get_settings_keys(), true ) ) {
-
-            // Update the container.
-            $this->settings[ $key ] = $value;
+        // Refuse to persist a key that isn't a registered setting, so a
+        // caller-supplied setting name can't be used to write an arbitrary option.
+        if ( ! in_array( $key, $this->get_settings_keys(), true ) ) {
+            return;
         }
+
+        // Update the container.
+        $this->settings[ $key ] = $value;
 
         // Update the option.
         update_option( $key, $value );

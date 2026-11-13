@@ -46,14 +46,17 @@ class FrontendScripts {
     /**
      * Get the build path for assets based on environment.
      *
+     * @param string $path_type   'file' for a filesystem path, anything else for a URL.
+     * @param string $plugin_path Plugin path to build from; defaults to CatalogX()->plugin_path.
+     * @param string $plugin_url  Plugin URL to build from; defaults to CatalogX()->plugin_url.
      * @return string Relative path to the build directory.
      */
     public static function get_asset_path( $path_type = 'url', $plugin_path = '', $plugin_url = '' ) {
         $build_path = 'assets/';
-        if ( $plugin_path === '' ) {
+        if ( empty( $plugin_path ) ) {
             $plugin_path = CatalogX()->plugin_path;
         }
-        if ( $plugin_url === '' ) {
+        if ( empty( $plugin_url ) ) {
             $plugin_url = CatalogX()->plugin_url;
         }
 
@@ -424,7 +427,7 @@ class FrontendScripts {
         $localize_scripts = apply_filters(
             'catalogx_localize_scripts',
             array(
-                'catalogx-admin-script'                 => array(
+                'catalogx-admin-script'                  => array(
                     'object_name' => 'appLocalizer',
                     'data'        => array_merge(
                         $base_rest,
@@ -465,11 +468,11 @@ class FrontendScripts {
                         )
                     ),
                 ),
-                'catalogx-enquiry-frontend-script'      => array(
+                'catalogx-enquiry-frontend-script'       => array(
                     'object_name' => 'enquiryFrontend',
                     'data'        => self::get_base_ajax_data( 'catalogx-enquiry-frontend-script' ),
                 ),
-                'catalogx-enquiry-form-script'          => array(
+                'catalogx-enquiry-form-script'           => array(
                     'object_name' => 'enquiryFormData',
                     'data'        => array_merge(
                         $base_rest,
@@ -491,7 +494,7 @@ class FrontendScripts {
                         )
                     ),
                 ),
-                'catalogx-add-to-quote-cart-script'     => array(
+                'catalogx-add-to-quote-cart-script'      => array(
                     'object_name' => 'addToQuoteCart',
                     'data'        => array_merge(
                         $base_rest,
@@ -501,23 +504,23 @@ class FrontendScripts {
                         )
                     ),
                 ),
-                'catalogx-enquiry-button-editor-script' => array(
+                'catalogx-enquiry-button-editor-script'  => array(
                     'object_name' => 'enquiryButton',
                     'data'        => $base_rest,
                 ),
-                'catalogx-quote-button-editor-script'   => array(
+                'catalogx-quote-button-editor-script'    => array(
                     'object_name' => 'quoteButton',
                     'data'        => $base_rest,
                 ),
-                'catalogx-enquiry-button-view-script'   => array(
+                'catalogx-enquiry-button-view-script'    => array(
                     'object_name' => 'enquiryButton',
                     'data'        => $base_rest,
                 ),
-                'catalogx-quote-button-view-script'     => array(
+                'catalogx-quote-button-view-script'      => array(
                     'object_name' => 'quoteButton',
                     'data'        => $base_rest,
                 ),
-                'catalogx-quote-cart-editor-script'     => array(
+                'catalogx-quote-cart-editor-script'      => array(
                     'object_name' => 'quoteCart',
                     'data'        => array_merge(
                         $base_rest,
@@ -529,7 +532,7 @@ class FrontendScripts {
                         )
                     ),
                 ),
-                'catalogx-quote-cart-view-script'       => array(
+                'catalogx-quote-cart-view-script'        => array(
                     'object_name' => 'quoteCart',
                     'data'        => array_merge(
                         $base_rest,
@@ -540,6 +543,10 @@ class FrontendScripts {
                             'khali_dabba'          => Utill::is_khali_dabba(),
                         )
                     ),
+                ),
+                'catalogx-excluded-products-view-script' => array(
+                    'object_name' => 'excludedProducts',
+                    'data'        => $base_rest,
                 ),
             )
         );

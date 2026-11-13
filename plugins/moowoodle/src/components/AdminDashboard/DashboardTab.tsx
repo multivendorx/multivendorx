@@ -1,6 +1,12 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
-import { Card, Column, ItemListUI, Container, NoticeManager } from 'zyra';
+import {
+	CardComponent,
+	ColumnComponent,
+	ListComponent,
+	ContainerComponent,
+	NoticeManager,
+} from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 import axios from 'axios';
 import MoowoodleIcon from '../../assets/images/moowoodle-icon.png';
@@ -215,9 +221,9 @@ const DashboardTab: React.FC<object> = () => {
 	];
 
 	return (
-		<Container>
-			<Column grid={8}>
-				<Card>
+		<ContainerComponent>
+			<ColumnComponent grid={8}>
+				<CardComponent>
 					<div className="pro-banner-wrapper">
 						<div className="content">
 							<div className="heading">
@@ -241,13 +247,14 @@ const DashboardTab: React.FC<object> = () => {
 							<img src={MoowoodleIcon} alt="" />
 						</div>
 					</div>
-				</Card>
+				</CardComponent>
 				{!appLocalizer.khali_dabba && (
-					<Card
+					<CardComponent
 						title={__(
 							'Build a smarter eLearning platform',
 							'moowoodle'
 						)}
+						titleIcon="form"
 						badge={[
 							{
 								text: 'Starting at $299/year',
@@ -259,7 +266,7 @@ const DashboardTab: React.FC<object> = () => {
 							'moowoodle'
 						)}
 					>
-						<ItemListUI
+						<ListComponent
 							className="feature-list"
 							items={featuresList.map(
 								({ icon, title, desc }) => ({
@@ -291,21 +298,25 @@ const DashboardTab: React.FC<object> = () => {
 								{__('15-day money-back guarantee', 'moowoodle')}
 							</div>
 						</div>
-					</Card>
+					</CardComponent>
 				)}
-			</Column>
+			</ColumnComponent>
 
 			{/* Right Side */}
-			<Column grid={4}>
-				<Card title={__('Extend your website', 'moowoodle')}>
-					<Column row>
+			<ColumnComponent grid={4}>
+				<CardComponent
+					title={__('Extend your website', 'moowoodle')}
+					titleIcon="section"
+					desc="Discover more tools to grow your marketplace."
+				>
+					<ColumnComponent>
 						{pluginStatus['woocommerce-catalog-enquiry'] ? (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								background
 								items={[
 									{
-										title: __('CatalogX Pro', 'moowoodle'),
+										title: 'CatalogX Pro',
 										desc: __(
 											'Advanced product catalog with enhanced enquiry features and premium templates',
 											'moowoodle'
@@ -330,12 +341,12 @@ const DashboardTab: React.FC<object> = () => {
 								]}
 							/>
 						) : (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								background
 								items={[
 									{
-										title: __('CatalogX', 'moowoodle'),
+										title: 'CatalogX',
 										desc: __(
 											'Turn your store into a product catalog with enquiry-based sales',
 											'moowoodle'
@@ -387,12 +398,12 @@ const DashboardTab: React.FC<object> = () => {
 						)}
 
 						{pluginStatus['woocommerce-product-stock-alert'] ? (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								background
 								items={[
 									{
-										title: __('Notifima Pro', 'moowoodle'),
+										title: 'Notifima Pro',
 										desc: __(
 											'Advanced stock alerts, wishlist features, and premium notification system',
 											'moowoodle'
@@ -417,12 +428,12 @@ const DashboardTab: React.FC<object> = () => {
 								]}
 							/>
 						) : (
-							<ItemListUI
+							<ListComponent
 								className="mini-card"
 								background
 								items={[
 									{
-										title: __('Notifima', 'moowoodle'),
+										title: 'Notifima',
 										desc: __(
 											'Advanced stock alerts and wishlist features for WooCommerce',
 											'moowoodle'
@@ -472,14 +483,18 @@ const DashboardTab: React.FC<object> = () => {
 								]}
 							/>
 						)}
-					</Column>
-				</Card>
+					</ColumnComponent>
+				</CardComponent>
 
 				{/* Quick Links */}
-				<Card title={__('Need help getting started?', 'moowoodle')}>
+				<CardComponent
+					title={__('Need help getting started?', 'moowoodle')}
+					titleIcon="help"
+					desc="Find the guides and support you need to build your marketplace."
+				>
 					<div className="quick-link">
 						{resources.map((res) => (
-							<ItemListUI
+							<ListComponent
 								className="mini-card list"
 								border
 								items={[
@@ -506,9 +521,9 @@ const DashboardTab: React.FC<object> = () => {
 							/>
 						))}
 					</div>
-				</Card>
-			</Column>
-		</Container>
+				</CardComponent>
+			</ColumnComponent>
+		</ContainerComponent>
 	);
 };
 

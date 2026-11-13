@@ -7,24 +7,26 @@
 
 namespace MooWoodle;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MooWoodle Endpoint class
  *
- * @class       Emails class
+ * @class       Endpoint class
  * @version     3.3.0
  * @author      DualCube
  */
 class Endpoint {
 	/**
-     * Holds the endpoint name.
-     *
-     * @var string
-     */
+	 * Holds the endpoint name.
+	 *
+	 * @var string
+	 */
 	private $endpoint_slug = 'my-courses';
 
 	/**
-     * Endpoint constructor.
-     */
+	 * Endpoint constructor.
+	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_endpoint' ) );
 		add_filter( 'woocommerce_account_menu_items', array( $this, 'add_account_menu_item' ) );
@@ -33,8 +35,10 @@ class Endpoint {
 	}
 
 	/**
-     * Register the endpoint.
-     */
+	 * Register the My Account `my-courses` rewrite endpoint.
+	 *
+	 * @return void
+	 */
 	public function register_endpoint() {
 		add_rewrite_endpoint( $this->endpoint_slug, EP_ROOT | EP_PAGES );
 	}
@@ -46,6 +50,10 @@ class Endpoint {
 	 * @return array Modified menu items with My Courses.
 	 */
 	public function add_account_menu_item( $menu_items ) {
+		if ( ! Util::current_user_has_capability( array( 'customer', 'manage_options' ) ) ) {
+			return $menu_items;
+		}
+
 		$position = (int) MooWoodle()->setting->get_setting( 'my_courses_priority', 0 );
 
 		return array_merge(
@@ -64,18 +72,24 @@ class Endpoint {
 	 * @return void
 	 */
 	public function render_my_courses_content() {
+		if ( ! Util::current_user_has_capability( array( 'customer', 'manage_options' ) ) ) {
+			return;
+		}
+
 		echo '<div id="moowoodle-my-course"></div>';
 	}
 
 	/**
-     * Enqueues all frontend assets for this endpoint.
-     *
-     * @return void
-     */
+	 * Enqueues all frontend assets for this endpoint.
+	 *
+	 * @return void
+	 */
 	public function enqueue_assets() {
-		if ( is_account_page() ) {
+		if ( is_account_page() && Util::current_user_has_capability( array( 'customer', 'manage_options' ) ) ) {
+			FrontendScripts::enqueue_script( 'moowoodle-vendor' );
 			FrontendScripts::enqueue_script( 'moowoodle-my-courses' );
 			FrontendScripts::localize_scripts( 'moowoodle-my-courses' );
+			FrontendScripts::enqueue_style( 'moowoodle-my-courses' );
 		}
 	}
 }

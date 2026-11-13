@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\MarketplaceRefund;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Refund Module class
  *

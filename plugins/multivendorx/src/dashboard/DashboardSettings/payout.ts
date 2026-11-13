@@ -12,6 +12,9 @@ interface PaymentField {
 	type?: string;
 	label: string;
 	placeholder?: string;
+	message?:string,
+	noticeType?:string,
+	displayPosition?:string,
 	options?: Array<{ key: string; label: string; value: string }>; // For choice-toggle type
 }
 
@@ -38,8 +41,8 @@ const filteredStorePayment = Object.fromEntries(
 // Map a provider's own fields into panel form fields, translating the
 // 'embedded' type into a rendered component the same way the old flat field
 // list did.
-const toPanelFields = (provider: PaymentProvider): PaymentField[] =>
-	(provider.fields ?? []).map((field) => {
+const toPanelFields = (provider: PaymentProvider): PaymentField[] => {
+	const fields = (provider.fields ?? []).map((field) => {
 		const key = `${field.key}`;
 
 		if (field.type === 'embedded') {
@@ -61,6 +64,21 @@ const toPanelFields = (provider: PaymentProvider): PaymentField[] =>
 			key,
 		};
 	});
+
+	return [
+		...fields,
+		{
+			key: `${provider.id}_notice`,
+			type: 'notice',
+			message: __(
+				'Please mark this payment method as Primary before connecting it to receive your commission.',
+				'multivendorx'
+			),
+			noticeType: 'info',
+			displayPosition: 'inline-notice',
+		},
+	];
+};
 
 const paymentAddNewOptions = Object.values(filteredStorePayment).map(
 	(provider) => ({

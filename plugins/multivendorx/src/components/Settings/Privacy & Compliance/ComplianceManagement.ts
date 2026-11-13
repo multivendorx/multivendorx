@@ -11,8 +11,16 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'compliance',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'compliance',
+			title: __('Store Compliance', 'multivendorx'),
+		},
 		{
 			key: 'store_compliance_management',
 			type: 'expandable-panel',
@@ -299,6 +307,7 @@ export default {
 		{
 			key: 'separator_product_compliance',
 			type: 'section',
+			icon: 'product',
 			desc: __(
 				'Product compliance settings.',
 				'multivendorx'

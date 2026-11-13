@@ -2,18 +2,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
+import { getApiLink } from '@zyra/core';
+import { FormGroupComponent, FormGroupWrapperComponent, PopupComponent } from '@zyra/components';
+import { ButtonInput, TextAreaInput } from '@zyra/inputs';
+import { QueryProps, TableCard, TableRow } from '@zyra/table';
 import {
-	ButtonInputUI,
-	FormGroup,
-	FormGroupWrapper,
-	getApiLink,
-	PopupUI,
-	QueryProps,
-	TableCard,
-	TableRow,
-	TextAreaUI,
-} from 'zyra';
-import { getUrl, toWcIsoDate } from '../../../src/services/commonFunction';
+	formatCurrency,
+	formatDate,
+	formatStatusLabel,
+	getUrl,
+	toWcIsoDate,
+} from '../../../src/services/commonFunction';
 
 interface OrderMeta {
 	key: string;
@@ -37,6 +36,8 @@ interface StoreApi {
 }
 
 interface OrderRow extends RefundOrder {
+	store_id?: number;
+	status?: string;
 	store_name?: string;
 	total?: number;
 	commission_amount?: number;
@@ -142,63 +143,24 @@ const PendingRefund: React.FC<object> = () => {
 	};
 
 	const headers = {
-		id: {
+		order_title: {
 			label: __('Order', 'multivendorx'),
-			isSortable: true,
-			render: (row) => (
-				<a
-					href={getUrl(row.id, 'order')}
-					target="_blank"
-					rel="noopener noreferrer"
-					className="link-item"
-				>
-					#{row.id}
-				</a>
-			),
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
-		store_name: {
-			label: __('Store', 'multivendorx'),
-			render: (row) => (
-				<a
-					href={getUrl(row.store_id, 'store', 'edit')}
-					target="_blank"
-					rel="noopener noreferrer"
-					className="link-item"
-				>
-					{row.store_name}
-				</a>
-			),
-		},
-		total: {
-			label: __('Amount', 'multivendorx'),
-			type: 'currency',
-		},
-		commission_amount: {
-			label: __('Commission', 'multivendorx'),
-			type: 'currency',
-		},
-		reason: {
+		refund_reason: {
 			label: __('Refund Reason', 'multivendorx'),
-			render: (row: OrderRow) =>
-				getMetaValue(
-					row.meta_data,
-					appLocalizer.order_meta.customer_refund_reason
-				),
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
-		},
-		date_created: {
-			label: __('Date', 'multivendorx'),
-			isSortable: true,
-			type: 'date',
+			type: 'labeled',
+			valueType: 'text',
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
 			render: (row: any) => {
 				return (
-					<ButtonInputUI
+					<ButtonInput
 						buttons={[
 							{
 								icon: 'preview',
@@ -298,11 +260,57 @@ const PendingRefund: React.FC<object> = () => {
 			});
 	};
 
+	const infoRows = rows.map((row: OrderRow) => ({
+		...row,
+		order_title: `#${row.id}`,
+		refund_reason:
+			getMetaValue(
+				row.meta_data,
+				appLocalizer.order_meta.customer_refund_reason
+			) || '—',
+		info_icon: 'marketplace-refund',
+		info_link: getUrl(row.id, 'order'),
+		info_descriptions: [
+			{
+				label: __('Store', 'multivendorx'),
+				icon: 'storefront',
+				value: (
+					<a
+						href={getUrl(row.store_id, 'store', 'edit')}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="link-item"
+					>
+						{row.store_name}
+					</a>
+				),
+			},
+			{
+				label: __('Amount', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.total),
+			},
+			{
+				label: __('Commission', 'multivendorx'),
+				icon: 'commission',
+				value: formatCurrency(row.commission_amount),
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.date_created), color: 'blue' },
+		],
+	}));
+
 	return (
 		<>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}
@@ -318,7 +326,7 @@ const PendingRefund: React.FC<object> = () => {
 					currencyPosition: appLocalizer.currency_position,
 				}}
 			/>
-			<PopupUI
+			<PopupComponent
 				open={popupOpen}
 				onClose={handleCloseForm}
 				width={40}
@@ -332,7 +340,7 @@ const PendingRefund: React.FC<object> = () => {
 					),
 				}}
 				footer={
-					<ButtonInputUI
+					<ButtonInput
 						buttons={[
 							{
 								icon: 'external-link',
@@ -374,8 +382,8 @@ const PendingRefund: React.FC<object> = () => {
 				}
 			>
 				{viewOrder && (
-					<FormGroupWrapper>
-						<FormGroup label={__('Refund Reason', 'multivendorx')}>
+					<FormGroupWrapperComponent>
+						<FormGroupComponent label={__('Refund Reason', 'multivendorx')}>
 							<div className="refund-reason-box">
 								{getMetaValue(
 									viewOrder.meta_data,
@@ -383,8 +391,8 @@ const PendingRefund: React.FC<object> = () => {
 										.customer_refund_reason
 								)}
 							</div>
-						</FormGroup>
-						<FormGroup
+						</FormGroupComponent>
+						<FormGroupComponent
 							label={__('Additional Information', 'multivendorx')}
 						>
 							<div className="refund-additional-info">
@@ -394,9 +402,9 @@ const PendingRefund: React.FC<object> = () => {
 										.multivendorx_customer_refund_addi_info
 								)}
 							</div>
-						</FormGroup>
+						</FormGroupComponent>
 						{viewOrder?.refund_images?.length > 0 && (
-							<FormGroup
+							<FormGroupComponent
 								label={
 									viewOrder.refund_images.length === 1
 										? 'Attachment'
@@ -433,13 +441,13 @@ const PendingRefund: React.FC<object> = () => {
 										)
 									)}
 								</div>
-							</FormGroup>
+							</FormGroupComponent>
 						)}
-						<FormGroup
+						<FormGroupComponent
 							label={__('Reject Message', 'multivendorx')}
 							htmlFor="content"
 						>
-							<TextAreaUI
+							<TextAreaInput
 								name="content"
 								value={formData.content}
 								onChange={(value: string) =>
@@ -452,10 +460,10 @@ const PendingRefund: React.FC<object> = () => {
 									]['tinymce_api_section'] ?? ''
 								}
 							/>
-						</FormGroup>
-					</FormGroupWrapper>
+						</FormGroupComponent>
+					</FormGroupWrapperComponent>
 				)}
-			</PopupUI>
+			</PopupComponent>
 		</>
 	);
 };

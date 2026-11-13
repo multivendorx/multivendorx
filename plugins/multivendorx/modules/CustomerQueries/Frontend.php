@@ -9,6 +9,8 @@ namespace MultiVendorX\CustomerQueries;
 
 use MultiVendorX\FrontendScripts;
 
+defined( 'ABSPATH' ) || exit;
+
 
 /**
  * MultiVendorX Questions & Answers Frontend class
@@ -66,7 +68,6 @@ class Frontend {
      */
     public function load_scripts() {
         if ( is_product() ) {
-            FrontendScripts::load_scripts();
             FrontendScripts::enqueue_script( 'multivendorx-customer-queries-frontend-script' );
             FrontendScripts::localize_scripts( 'multivendorx-customer-queries-frontend-script' );
         }
@@ -87,7 +88,7 @@ class Frontend {
         if ( isset( $product ) && $product instanceof \WC_Product ) {
             $product_id = $product->get_id();
 
-            $queries_count = Util::get_question_information(
+            $queries_count = Util::query_questions(
                 array(
 					'product_ids'         => array( $product_id ),
 					'question_visibility' => 'public',
@@ -127,7 +128,7 @@ class Frontend {
 				'no_answer' => true,
 			)
         );
-        $unanswered_count = (int) Util::get_question_information( $unanswered_args );
+        $unanswered_count = (int) Util::query_questions( $unanswered_args );
         return (int) $total + $unanswered_count;
     }
 }

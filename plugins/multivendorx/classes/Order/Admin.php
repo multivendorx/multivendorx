@@ -142,11 +142,11 @@ class Admin {
 		$commission = CommissionUtil::get_commission_db( $regenerate_commission_id );
 
 		if ( 'unpaid' !== $commission->status ) {
-			$row = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$transaction_table = $wpdb->prefix . Utill::TABLES['transaction'];
+			$row               = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->prepare(
-                    "SELECT *
-                        FROM $wpdb->prefix . Utill::TABLES['transaction']
-                        WHERE commission_id = %d",
+                    'SELECT * FROM %i WHERE commission_id = %d',
+                    $transaction_table,
                     $regenerate_commission_id
                 )
 			);

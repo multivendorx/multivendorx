@@ -1,34 +1,14 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { Card, Column, Container, NavigatorHeader } from 'zyra';
+
+import {
+	CardComponent,
+	ColumnComponent,
+	ContainerComponent,
+	NavigatorHeaderComponent,
+} from '@zyra/components';
 
 const HelpSupport: React.FC = () => {
-	const videos = [
-		{
-			link: 'https://youtu.be/fL7wPVYopTU?si=zbX9j87shmQ3i-wl',
-			title: __('How to Set Up moowoodle Marketplace', 'moowoodle'),
-			des: __(
-				'A step-by-step guide to setting up your multivendor marketplace.',
-				'moowoodle'
-			),
-		},
-		{
-			link: 'https://youtu.be/fL7wPVYopTU?si=zbX9j87shmQ3i-wl',
-			title: __('How to Set Up moowoodle Marketplace', 'moowoodle'),
-			des: __(
-				'A step-by-step guide to setting up your multivendor marketplace.',
-				'moowoodle'
-			),
-		},
-		{
-			link: 'https://youtu.be/fL7wPVYopTU?si=zbX9j87shmQ3i-wl',
-			title: __('How to Set Up moowoodle Marketplace', 'moowoodle'),
-			des: __(
-				'A step-by-step guide to setting up your multivendor marketplace.',
-				'moowoodle'
-			),
-		},
-	];
 	const DocumentationItems = [
 		{
 			icon: 'document',
@@ -71,7 +51,7 @@ const HelpSupport: React.FC = () => {
 	];
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerIcon="customer-support"
 				headerTitle={__('Help & Support', 'moowoodle')}
 				headerDescription={__(
@@ -80,9 +60,13 @@ const HelpSupport: React.FC = () => {
 				)}
 			/>
 
-			<Container general>
-				<Column row>
-					<Card title={__('Community & forums', 'moowoodle')}>
+			<ContainerComponent general>
+				<ColumnComponent row>
+					<CardComponent
+						title={__('Community & forums', 'moowoodle')}
+						titleIcon="section"
+						desc="Connect with users and get help from the community."
+					>
 						<div className="support-wrapper">
 							{supportItems.map((item, index) => (
 								<div className="support-item" key={index}>
@@ -109,8 +93,12 @@ const HelpSupport: React.FC = () => {
 								</div>
 							))}
 						</div>
-					</Card>
-					<Card title={__('Documentation & Learning', 'moowoodle')}>
+					</CardComponent>
+					<CardComponent
+						title={__('Documentation & Learning', 'moowoodle')}
+						titleIcon="document"
+						desc="Explore guides, tutorials, and technical resources."
+					>
 						<div className="support-wrapper">
 							{DocumentationItems.map((item, index) => (
 								<div className="support-item" key={index}>
@@ -136,9 +124,9 @@ const HelpSupport: React.FC = () => {
 								</div>
 							))}
 						</div>
-					</Card>
-				</Column>
-			</Container>
+					</CardComponent>
+				</ColumnComponent>
+			</ContainerComponent>
 		</>
 	);
 };

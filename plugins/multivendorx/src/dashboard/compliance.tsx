@@ -1,17 +1,17 @@
 /* global appLocalizer */
 import React, { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
+
+import { ButtonInput, ExpandablePanelInput } from '@zyra/inputs';
 import {
-	Analytics,
-	ButtonInputUI,
-	Card,
-	Column,
-	Container,
-	ExpandablePanelUI,
-	ItemListUI,
-	Notice,
-	SettingsNavigator,
-} from 'zyra';
+	AnalyticsComponent,
+	CardComponent,
+	ColumnComponent,
+	ContainerComponent,
+	ListComponent,
+	NoticeComponent,
+	NavigatorComponent,
+} from '@zyra/components';
 
 const Compliance = (React.FC = () => {
 	const SimpleLink = ({ to, children, onClick, className }) => (
@@ -288,8 +288,8 @@ const Compliance = (React.FC = () => {
 		switch (tabId) {
 			case 'product-compliance':
 				return (
-					<Container>
-						<Notice
+					<ContainerComponent>
+						<NoticeComponent
 							type="info"
 							displayPosition="inline-notice"
 							message={__(
@@ -297,12 +297,13 @@ const Compliance = (React.FC = () => {
 								'multivendorx'
 							)}
 						/>
-						<Column row>
-							<Card
+						<ColumnComponent row>
+							<CardComponent
 								title={__(
 									'Product Images & Descriptions',
 									'multivendorx'
 								)}
+								titleIcon="product"
 								// desc={__('Each product listing must have at least one clear image and an accurate description matching the actual item being sold.', 'multivendorx')}
 								action={
 									<>
@@ -312,7 +313,7 @@ const Compliance = (React.FC = () => {
 									</>
 								}
 							>
-								<Notice
+								<NoticeComponent
 									type="warning"
 									displayPosition="inline-notice"
 									message={__(
@@ -320,14 +321,16 @@ const Compliance = (React.FC = () => {
 										'multivendorx'
 									)}
 								/>
-							</Card>
-							<Card
+							</CardComponent>
+							<CardComponent
 								title={__(
 									'Product Authenticity Certificates',
 									'multivendorx'
 								)}
+								titleIcon="product"
+								desc="Upload certificates to verify product authenticity and build customer trust."
 							>
-								<ItemListUI
+								<ListComponent
 									className="mini-card"
 									// background
 									border
@@ -349,7 +352,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -381,7 +384,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -397,15 +400,17 @@ const Compliance = (React.FC = () => {
 										},
 									]}
 								/>
-							</Card>
-						</Column>
+							</CardComponent>
+						</ColumnComponent>
 
-						<Column row>
-							<Card
+						<ColumnComponent row>
+							<CardComponent
 								title={__(
 									'Safety Certifications',
 									'multivendorx'
 								)}
+								titleIcon="section"
+								desc="Upload safety certificates to demonstrate product compliance and safety standards."
 								action={
 									<>
 										<span className="admin-badge yellow">
@@ -414,7 +419,7 @@ const Compliance = (React.FC = () => {
 									</>
 								}
 							>
-								<ItemListUI
+								<ListComponent
 									className="mini-card"
 									// background
 									border
@@ -436,7 +441,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -453,7 +458,7 @@ const Compliance = (React.FC = () => {
 										},
 									]}
 								/>
-								<Notice
+								<NoticeComponent
 									type="info"
 									displayPosition="inline-notice"
 									message={__(
@@ -461,15 +466,17 @@ const Compliance = (React.FC = () => {
 										'multivendorx'
 									)}
 								/>
-							</Card>
+							</CardComponent>
 
-							<Card
+							<CardComponent
 								title={__(
 									'Product Abuse Reporting',
 									'multivendorx'
 								)}
+								titleIcon="product"
+								desc="Allow customers to report products that violate marketplace policies."
 							>
-								<ItemListUI
+								<ListComponent
 									className="badge-list"
 									items={[
 										{
@@ -504,7 +511,7 @@ const Compliance = (React.FC = () => {
 										},
 									]}
 								/>
-								<Notice
+								<NoticeComponent
 									type="warning"
 									displayPosition="inline-notice"
 									message={__(
@@ -512,14 +519,14 @@ const Compliance = (React.FC = () => {
 										'multivendorx'
 									)}
 								/>
-							</Card>
-						</Column>
-					</Container>
+							</CardComponent>
+						</ColumnComponent>
+					</ContainerComponent>
 				);
 			case 'tax-compliance':
 				return (
-					<Container>
-						<Notice
+					<ContainerComponent>
+						<NoticeComponent
 							type="error"
 							displayPosition="inline-notice"
 							title={__(
@@ -531,12 +538,14 @@ const Compliance = (React.FC = () => {
 								'multivendorx'
 							)}
 						/>
-						<Column grid={6}>
-							<Card
+						<ColumnComponent grid={6}>
+							<CardComponent
 								title={__(
 									'Bank Account Details',
 									'multivendorx'
 								)}
+								titleIcon="profile"
+								desc="Add bank details for payout processing and verification."
 								action={
 									<>
 										<span className="admin-badge yellow">
@@ -548,7 +557,7 @@ const Compliance = (React.FC = () => {
 									</>
 								}
 							>
-								<ItemListUI
+								<ListComponent
 									className="mini-card"
 									// background
 									border
@@ -570,7 +579,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -587,14 +596,16 @@ const Compliance = (React.FC = () => {
 										},
 									]}
 								/>
-							</Card>
-							<Card
+							</CardComponent>
+							<CardComponent
 								title={__(
 									'Business Registration',
 									'multivendorx'
 								)}
+								titleIcon="form"
+								desc="Upload business registration documents to verify your business identity."
 							>
-								<ItemListUI
+								<ListComponent
 									className="mini-card"
 									// background
 									border
@@ -616,7 +627,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -633,15 +644,17 @@ const Compliance = (React.FC = () => {
 										},
 									]}
 								/>
-							</Card>
-						</Column>
+							</CardComponent>
+						</ColumnComponent>
 
-						<Column grid={6}>
-							<Card
+						<ColumnComponent grid={6}>
+							<CardComponent
 								title={__(
 									'Tax Identification Documents ',
 									'multivendorx'
 								)}
+								titleIcon="tax-compliance"
+								desc="Upload tax documents to verify your business tax details."
 								action={
 									<>
 										<span className="admin-badge blue">
@@ -650,14 +663,14 @@ const Compliance = (React.FC = () => {
 									</>
 								}
 							>
-								<ItemListUI
+								<ListComponent
 									className="mini-card"
 									// background
 									border
 									items={[
 										{
 											title: __(
-												'PAN Card',
+												'PAN CardComponent',
 												'multivendorx'
 											),
 											desc: __(
@@ -672,7 +685,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -704,7 +717,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -736,7 +749,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -753,15 +766,15 @@ const Compliance = (React.FC = () => {
 										},
 									]}
 								/>
-							</Card>
+							</CardComponent>
 							<div> </div>
-						</Column>
-					</Container>
+						</ColumnComponent>
+					</ContainerComponent>
 				);
 			case 'my-products':
 				return (
 					<>
-						<Analytics
+						<AnalyticsComponent
 							cols={3}
 							data={overviewData.map((item, idx) => ({
 								icon: item.icon,
@@ -770,7 +783,7 @@ const Compliance = (React.FC = () => {
 								text: __(item.label, 'multivendorx'),
 							}))}
 						/>
-						<Notice
+						<NoticeComponent
 							type="error"
 							displayPosition="inline-notice"
 							message={__(
@@ -782,15 +795,17 @@ const Compliance = (React.FC = () => {
 				);
 			case 'store-verification':
 				return (
-					<Container>
-						<Column grid={6}>
-							<Card
+					<ContainerComponent>
+						<ColumnComponent grid={6}>
+							<CardComponent
 								title={__(
 									'Identity Verification',
 									'multivendorx'
 								)}
+								titleIcon="identity-verification"
+								desc="Upload identity documents to verify your identity and build trust."
 							>
-								<ItemListUI
+								<ListComponent
 									className="mini-card"
 									// background
 									border
@@ -812,7 +827,7 @@ const Compliance = (React.FC = () => {
 															'multivendorx'
 														)}
 													</span>
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -841,7 +856,7 @@ const Compliance = (React.FC = () => {
 													{/* <span className="admin-badge green">
                                                         {__('Under Review', 'multivendorx')}
                                                     </span> */}
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -870,7 +885,7 @@ const Compliance = (React.FC = () => {
 													{/* <span className="admin-badge green">
                                                         {__('Under Review', 'multivendorx')}
                                                     </span> */}
-													<ButtonInputUI
+													<ButtonInput
 														buttons={[
 															{
 																icon: 'export',
@@ -887,17 +902,19 @@ const Compliance = (React.FC = () => {
 										},
 									]}
 								/>
-							</Card>
-						</Column>
+							</CardComponent>
+						</ColumnComponent>
 
-						<Column grid={6}>
-							<Card
+						<ColumnComponent grid={6}>
+							<CardComponent
 								title={__(
 									'Social Verification',
 									'multivendorx'
 								)}
+								titleIcon="identity-verification"
+								desc="Link your social profiles to verify your online presence and build trust."
 							>
-								<ExpandablePanelUI
+								<ExpandablePanelInput
 									key={inputField.key}
 									name={inputField.key}
 									// proSetting={isProSetting(inputField.proSetting ?? false)}
@@ -917,9 +934,9 @@ const Compliance = (React.FC = () => {
 										// }
 									}}
 								/>
-							</Card>
-						</Column>
-					</Container>
+							</CardComponent>
+						</ColumnComponent>
+					</ContainerComponent>
 				);
 			case 'legal-compliance':
 				return <div>store-verification</div>;
@@ -929,7 +946,7 @@ const Compliance = (React.FC = () => {
 	};
 	return (
 		<>
-			<SettingsNavigator
+			<NavigatorComponent
 				settingContent={settingContent}
 				currentSetting={currentTab}
 				getForm={getForm}

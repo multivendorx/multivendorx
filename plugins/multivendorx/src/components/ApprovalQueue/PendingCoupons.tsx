@@ -2,18 +2,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	getApiLink,
-	TableCard,
-	ButtonInputUI,
-	PopupUI,
-	TextAreaUI,
-	TableRow,
-	QueryProps,
-	InfoItem,
-} from 'zyra';
+import { getApiLink } from '@zyra/core';
+import { PopupComponent } from '@zyra/components';
+import { ButtonInput, TextAreaInput } from '@zyra/inputs';
+import { TableCard, TableRow, QueryProps } from '@zyra/table';
 
-import { getUrl, toWcIsoDate } from '@/services/commonFunction';
+import {
+	formatCurrency,
+	formatDate,
+	formatStatusLabel,
+	getUrl,
+	toWcIsoDate,
+} from '@/services/commonFunction';
 type StoreOption = {
 	label: string;
 	value: number;
@@ -104,38 +104,17 @@ const PendingCoupons: React.FC<object> = () => {
 	const headers = {
 		code: {
 			label: __('Code', 'multivendorx'),
-			render: (row) => {
-				return (
-					<InfoItem
-						title={row.code}
-						titleLink={getUrl(row.id, 'coupon') || ''}
-						descriptions={[
-							{
-								label: __('By', 'multivendorx'),
-								value: row.store_name,
-							},
-						]}
-					/>
-				);
-			},
-		},
-		discount_type: {
-			label: __('Discount Type', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
-		},
-		amount: {
-			label: __('Amount', 'multivendorx'),
-			type: 'currency',
-		},
-		date_created: {
-			label: __('Date created', 'multivendorx'),
-			type: 'date',
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
 			render: (row) => {
 				return (
-					<ButtonInputUI
+					<ButtonInput
 						buttons={[
 							{
 								icon: 'check',
@@ -224,11 +203,37 @@ const PendingCoupons: React.FC<object> = () => {
 			});
 	};
 
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'coupon',
+		info_link: getUrl(row.id, 'coupon') || '',
+		info_descriptions: [
+			{
+				label: __('By', 'multivendorx'),
+				icon: 'storefront',
+				value: row.store_name || '—',
+			},
+			{
+				label: __('Amount', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.amount),
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.discount_type),
+				color: `badge-${row.status}`,
+			},
+			{ text: formatDate(row.date_created), color: 'blue' },
+		],
+	}));
+
 	return (
 		<>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}
@@ -246,7 +251,7 @@ const PendingCoupons: React.FC<object> = () => {
 			/>
 			{/* Reject Coupon Popup */}
 			{rejectPopupOpen && (
-				<PopupUI
+				<PopupComponent
 					open={rejectPopupOpen}
 					onClose={() => {
 						setRejectPopupOpen(false);
@@ -259,7 +264,7 @@ const PendingCoupons: React.FC<object> = () => {
 						title: __('Reason', 'multivendorx'),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'close',
@@ -283,7 +288,7 @@ const PendingCoupons: React.FC<object> = () => {
 						/>
 					}
 				>
-					<TextAreaUI
+					<TextAreaInput
 						name="reject_reason"
 						value={rejectReason}
 						onChange={(value: string) => setRejectReason(value)}
@@ -293,7 +298,7 @@ const PendingCoupons: React.FC<object> = () => {
 						)}
 						rows={4}
 					/>
-				</PopupUI>
+				</PopupComponent>
 			)}
 		</>
 	);

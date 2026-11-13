@@ -10,6 +10,8 @@ namespace MultiVendorX\FollowStore;
 use MultiVendorX\FrontendScripts;
 use MultiVendorX\Utill;
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * MultiVendorX Follow Store Frontend class
  *
@@ -28,9 +30,33 @@ class Frontend {
 
         add_filter( 'multivendorx_register_scripts', array( $this, 'register_script' ) );
         add_filter( 'multivendorx_localize_scripts', array( $this, 'localize_scripts' ) );
+        add_filter( 'multivendorx_register_styles', array( $this, 'register_login_modal_style' ) );
         // Load scripts.
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_login_modal_style' ) );
         add_action( 'wp_footer', array( $this, 'render_login_modal' ) );
+    }
+
+    /**
+     * Register the login modal's stylesheet.
+     *
+     * @param array $styles Existing frontend styles.
+     * @return array
+     */
+    public function register_login_modal_style( $styles ) {
+        $styles['multivendorx-follow-store-login-modal'] = array(
+            'src' => FrontendScripts::get_asset_path() . 'styles/modules/FollowStore/' . MULTIVENDORX_PLUGIN_SLUG . '-login-modal.min.css',
+        );
+        return $styles;
+    }
+
+    /**
+     * Enqueue the login modal's CSS.
+     */
+    public function enqueue_login_modal_style() {
+        if ( Utill::is_store_page() && ! is_user_logged_in() ) {
+            FrontendScripts::enqueue_style( 'multivendorx-follow-store-login-modal' );
+        }
     }
 	/**
 	 * Register follow store frontend script
@@ -41,7 +67,7 @@ class Frontend {
     public function register_script( $scripts ) {
         $scripts['multivendorx-follow-store-frontend-script'] = array(
             'src'  => FrontendScripts::get_asset_path() . 'js/modules/FollowStore/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
-            'deps' => array( 'jquery','wp-i18n' ),
+            'deps' => array( 'jquery', 'wp-i18n' ),
         );
 
         return $scripts;
@@ -69,7 +95,6 @@ class Frontend {
      */
     public function load_scripts() {
         if ( Utill::is_store_page() ) {
-            FrontendScripts::load_scripts();
             FrontendScripts::enqueue_script( 'multivendorx-follow-store-frontend-script' );
             FrontendScripts::localize_scripts( 'multivendorx-follow-store-frontend-script' );
         }
@@ -108,6 +133,13 @@ class Frontend {
      * @return void
      */
     public function render_login_modal() {
+        // Only needed as a "log in to follow" prompt on a store page for anonymous visitors -
+        // rendering it elsewhere (e.g. the vendor dashboard) unconditionally on every page's
+        // wp_footer causes a flash of this unstyled WooCommerce My Account markup before the
+        // modal's own CSS (display:none) has a chance to load.
+        if ( ! Utill::is_store_page() || is_user_logged_in() ) {
+            return;
+        }
         ?>
         <div id="multivendorx-login-modal" class="multivendorx-modal">
             <div class="multivendorx-modal-content">
@@ -117,11 +149,6 @@ class Frontend {
                 </div>
             </div>
         </div>
-        <style>
-        .multivendorx-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; }
-        .multivendorx-modal-content { background:#fff; margin:10% auto; padding:20px; width:400px; border-radius:5px; position:relative; }
-        .multivendorx-close { position:absolute; top:10px; right:15px; cursor:pointer; font-size:20px; }
-        </style>
         <?php
     }
 }

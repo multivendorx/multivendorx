@@ -1,4 +1,9 @@
 <?php
+/**
+ * Server-side render for the request-a-quote button block.
+ *
+ * @package CatalogX
+ */
 
 use CatalogX\Quote\Module;
 

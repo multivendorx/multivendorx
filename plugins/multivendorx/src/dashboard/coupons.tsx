@@ -2,30 +2,35 @@
 import React, { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
+
 import {
-	ButtonInputUI,
-	BasicInputUI,
-	FormGroup,
-	FormGroupWrapper,
-	PopupUI,
-	SelectInputUI,
-	TextAreaUI,
-	ChoiceToggleUI,
-	TableCard,
-	NavigatorHeader,
-	TableRow,
-	QueryProps,
-	CategoryCount,
-	TabsUI,
-	RandomInputKeyGeneratorUI,
-	InfoItem,
-	EmailsInputUI,
-	Notice
-} from 'zyra';
+	ButtonInput,
+	TextInput,
+	SelectInput,
+	TextAreaInput,
+	ToggleInput,
+	RandomkeyInput,
+	EmailInput,
+} from '@zyra/inputs';
+import {
+	FormGroupComponent,
+	FormGroupWrapperComponent,
+	PopupComponent,
+	NoticeComponent,
+	NavigatorHeaderComponent,
+	TabsComponent,
+} from '@zyra/components';
+import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 
 import axios from 'axios';
 import Popup from '../components/Popup/Popup';
-import { toWcIsoDate } from '@/services/commonFunction';
+import {
+	formatCurrency,
+	formatDate,
+	formatStatusLabel,
+	toWcIsoDate,
+	truncateText,
+} from '@/services/commonFunction';
 
 const COUPON_STATUS_MAP: Record<string, string> = {
 	all: __('All', 'multivendorx'),
@@ -34,9 +39,9 @@ const COUPON_STATUS_MAP: Record<string, string> = {
 	pending: __('Pending', 'multivendorx'),
 };
 const discountOptions = [
-	{ label: 'Percentage discount', value: 'percent' },
+	{ label: __('Percentage discount', 'multivendorx'), value: 'percent' },
 	// { label: 'Fixed cart discount', value: 'fixed_cart' },
-	{ label: 'Fixed product discount', value: 'fixed_product' },
+	{ label: __('Fixed product discount', 'multivendorx'), value: 'fixed_product' },
 ];
 
 const formatDateForInput = (dateString?: string | null) => {
@@ -244,13 +249,13 @@ const AllCoupon: React.FC = () => {
 
 		const request = formData.id
 			? axios.post(
-					`${appLocalizer.apiUrl}/wc/v3/coupons/${formData.id}`,
-					payload,
-					{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-				)
+				`${appLocalizer.apiUrl}/wc/v3/coupons/${formData.id}`,
+				payload,
+				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+			)
 			: axios.post(`${appLocalizer.apiUrl}/wc/v3/coupons`, payload, {
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				});
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			});
 
 		request
 			.then(() => {
@@ -289,13 +294,13 @@ const AllCoupon: React.FC = () => {
 			id: 'general',
 			label: __('General', 'multivendorx'),
 			content: (
-				<FormGroupWrapper>
-					<FormGroup
+				<FormGroupWrapperComponent>
+					<FormGroupComponent
 						label={__('Discount type', 'multivendorx')}
 						htmlFor="discount_type"
 						notice={validationErrors.discount_type}
 					>
-						<SelectInputUI
+						<SelectInput
 							name="discount_type"
 							value={formData.discount_type}
 							options={discountOptions}
@@ -306,13 +311,13 @@ const AllCoupon: React.FC = () => {
 								})
 							}
 						/>
-					</FormGroup>
+					</FormGroupComponent>
 
-					<FormGroup
+					<FormGroupComponent
 						label={__('Coupon amount', 'multivendorx')}
 						htmlFor="coupon_amount"
 					>
-						<BasicInputUI
+						<TextInput
 							type="number"
 							name="coupon_amount"
 							value={formData.coupon_amount}
@@ -323,13 +328,13 @@ const AllCoupon: React.FC = () => {
 								})
 							}
 						/>
-					</FormGroup>
+					</FormGroupComponent>
 
-					<FormGroup
+					<FormGroupComponent
 						label={__('Allow free shipping', 'multivendorx')}
 						htmlFor="free_shipping"
 					>
-						<ChoiceToggleUI
+						<ToggleInput
 							options={[
 								{
 									key: 'yes',
@@ -350,13 +355,13 @@ const AllCoupon: React.FC = () => {
 								})
 							}
 						/>
-					</FormGroup>
+					</FormGroupComponent>
 
-					<FormGroup
+					<FormGroupComponent
 						label={__('Coupon expiry date', 'multivendorx')}
 						htmlFor="expiry_date"
 					>
-						<BasicInputUI
+						<TextInput
 							type="date"
 							name="expiry_date"
 							value={formData.expiry_date}
@@ -367,20 +372,20 @@ const AllCoupon: React.FC = () => {
 								})
 							}
 						/>
-					</FormGroup>
-				</FormGroupWrapper>
+					</FormGroupComponent>
+				</FormGroupWrapperComponent>
 			),
 		},
 		{
 			id: 'limits',
 			label: __('Usage Limits', 'multivendorx'),
 			content: (
-				<FormGroupWrapper>
-					<FormGroup
+				<FormGroupWrapperComponent>
+					<FormGroupComponent
 						label={__('Usage limit per coupon', 'multivendorx')}
 						htmlFor="usage_limit"
 					>
-						<BasicInputUI
+						<TextInput
 							type="number"
 							name="usage_limit"
 							value={formData.usage_limit}
@@ -391,13 +396,13 @@ const AllCoupon: React.FC = () => {
 								})
 							}
 						/>
-					</FormGroup>
+					</FormGroupComponent>
 
-					<FormGroup
+					<FormGroupComponent
 						label={__('Limit usage to X items', 'multivendorx')}
 						htmlFor="limit_usage_to_x_items"
 					>
-						<BasicInputUI
+						<TextInput
 							type="number"
 							name="limit_usage_to_x_items"
 							value={formData.limit_usage_to_x_items}
@@ -408,13 +413,13 @@ const AllCoupon: React.FC = () => {
 								})
 							}
 						/>
-					</FormGroup>
+					</FormGroupComponent>
 
-					<FormGroup
+					<FormGroupComponent
 						label={__('Usage limit per user', 'multivendorx')}
 						htmlFor="usage_limit_per_user"
 					>
-						<BasicInputUI
+						<TextInput
 							type="number"
 							name="usage_limit_per_user"
 							value={formData.usage_limit_per_user}
@@ -425,20 +430,20 @@ const AllCoupon: React.FC = () => {
 								})
 							}
 						/>
-					</FormGroup>
-				</FormGroupWrapper>
+					</FormGroupComponent>
+				</FormGroupWrapperComponent>
 			),
 		},
 		{
 			id: 'restriction',
 			label: __('Usage Restriction', 'multivendorx'),
 			content: (
-				<FormGroupWrapper>
-					<FormGroup
+				<FormGroupWrapperComponent>
+					<FormGroupComponent
 						label={__('Minimum spend', 'multivendorx')}
 						htmlFor="minimum_amount"
 					>
-						<BasicInputUI
+						<TextInput
 							type="number"
 							name="minimum_amount"
 							value={formData.minimum_amount}
@@ -449,13 +454,13 @@ const AllCoupon: React.FC = () => {
 								})
 							}
 						/>
-					</FormGroup>
+					</FormGroupComponent>
 
-					<FormGroup
+					<FormGroupComponent
 						label={__('Maximum spend', 'multivendorx')}
 						htmlFor="maximum_amount"
 					>
-						<BasicInputUI
+						<TextInput
 							type="number"
 							name="maximum_amount"
 							value={formData.maximum_amount}
@@ -466,13 +471,13 @@ const AllCoupon: React.FC = () => {
 								})
 							}
 						/>
-					</FormGroup>
+					</FormGroupComponent>
 
-					<FormGroup
+					<FormGroupComponent
 						label={__('Individual use only', 'multivendorx')}
 						htmlFor="individual_use"
 					>
-						<ChoiceToggleUI
+						<ToggleInput
 							options={[
 								{
 									key: 'yes',
@@ -493,13 +498,13 @@ const AllCoupon: React.FC = () => {
 								})
 							}
 						/>
-					</FormGroup>
+					</FormGroupComponent>
 
-					<FormGroup
+					<FormGroupComponent
 						label={__('Exclude sale items', 'multivendorx')}
 						htmlFor="exclude_sale_items"
 					>
-						<ChoiceToggleUI
+						<ToggleInput
 							options={[
 								{
 									key: 'yes',
@@ -520,13 +525,13 @@ const AllCoupon: React.FC = () => {
 								})
 							}
 						/>
-					</FormGroup>
+					</FormGroupComponent>
 
-					<FormGroup
+					<FormGroupComponent
 						label={__('Allowed emails', 'multivendorx')}
 						htmlFor="customer_email"
 					>
-						<EmailsInputUI
+						<EmailInput
 							value={
 								formData.customer_email
 									? [formData.customer_email]
@@ -543,8 +548,16 @@ const AllCoupon: React.FC = () => {
 								})
 							}
 						/>
-					</FormGroup>
-				</FormGroupWrapper>
+					</FormGroupComponent>
+
+					{applyFilters(
+						'multivendorx_coupon_usage_restriction_fields',
+						null,
+						formData,
+						setFormData
+					)}
+					
+				</FormGroupWrapperComponent>
 			),
 		},
 	];
@@ -631,45 +644,22 @@ const AllCoupon: React.FC = () => {
 	const headers = {
 		code: {
 			label: __('Code', 'multivendorx'),
-			render: (row) => {
-				return (
-					<InfoItem
-						title={row.code}
-						onClick={() => handleEditCoupon(row.id)}
-						descriptions={[
-							{
-								label: __('By', 'multivendorx'),
-								value: row.store_name,
-							},
-						]}
-					/>
-				);
-			},
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
+			width: '45%'
 		},
-		discount_type: {
-			label: __('Discount Type', 'multivendorx'),
-		},
-		amount: {
+		amount_display: {
 			label: __('Amount', 'multivendorx'),
-			type: 'currency',
+			labelKey: 'amount_label',
+			type: 'labeled',
+			valueType: 'text',
 		},
-		description: {
-			label: __('Description', 'multivendorx'),
-		},
-		usage_limit: {
-			label: __('Usage / Limit', 'multivendorx'),
-		},
-		date_created: {
-			label: __('Date created', 'multivendorx'),
-			type: 'date',
-		},
-		date_expires: {
-			label: __('Expiry Date', 'multivendorx'),
-			type: 'date',
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
+		created_expiry: {
+			label: __('Created / Expiry', 'multivendorx'),
+			type: 'labeled',
+			valueType: 'text',
 		},
 		action: {
 			type: 'action',
@@ -693,6 +683,62 @@ const AllCoupon: React.FC = () => {
 		},
 	};
 
+	const discountTypeLabels: Record<string, string> = {
+		percent: __('Percentage Discount', 'multivendorx'),
+		fixed_cart: __('Fixed Cart Discount', 'multivendorx'),
+		fixed_product: __('Fixed Product Discount', 'multivendorx'),
+	};
+
+	const discountTypeColors: Record<string, string> = {
+		percent: 'purple',
+		fixed_cart: 'blue',
+		fixed_product: 'yellow',
+	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'coupon',
+		info_descriptions: [
+			{
+				label: __('By', 'multivendorx'),
+				icon: 'storefront',
+				value: row.store_name || '—',
+			},
+			...(row.description
+				? [
+						{
+							label: __('Description', 'multivendorx'),
+							icon: 'text',
+							value: truncateText(row.description, 20),
+						},
+					]
+				: []),
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+			{
+				text:
+					discountTypeLabels[row.discount_type] ||
+					formatStatusLabel(row.discount_type || ''),
+				color: discountTypeColors[row.discount_type] || 'teal',
+			},
+		],
+		amount_label:
+			row.discount_type === 'percent'
+				? __('Percentage', 'multivendorx')
+				: __('Amount', 'multivendorx'),
+		amount_display:
+			row.discount_type === 'percent'
+				? `${row.amount}%`
+				: formatCurrency(row.amount),
+		created_expiry: `${formatDate(row.date_created)} / ${
+			row.date_expires ? formatDate(row.date_expires) : '—'
+		}`,
+	}));
+
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
@@ -700,14 +746,14 @@ const AllCoupon: React.FC = () => {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: {
 					page: query.paged || 1,
-					row: query.per_page || 10,
+					per_page: query.per_page || 10,
 					status: query.categoryFilter || '',
 					search: query.searchValue || '',
 					after: query.filter?.created_at?.startDate
 						? toWcIsoDate(
-								query.filter.created_at.startDate,
-								'start'
-							)
+							query.filter.created_at.startDate,
+							'start'
+						)
 						: undefined,
 
 					before: query.filter?.created_at?.endDate
@@ -742,7 +788,7 @@ const AllCoupon: React.FC = () => {
 			key: 'couponType',
 			label: __('Select Coupon Type', 'multivendorx'),
 			type: 'select',
-			size: 12,
+			size: 18,
 			options: [
 				{
 					label: __('Percentage Discount', 'multivendorx'),
@@ -766,7 +812,7 @@ const AllCoupon: React.FC = () => {
 	];
 	return (
 		<>
-			<NavigatorHeader
+			<NavigatorHeaderComponent
 				headerTitle={__('Coupons', 'multivendorx')}
 				headerDescription={__(
 					'Create, view, and manage all your store coupons from one place.',
@@ -785,11 +831,11 @@ const AllCoupon: React.FC = () => {
 			/>
 
 			{AddCoupon && (
-				<PopupUI
+				<PopupComponent
 					open={AddCoupon}
 					onClose={() => setAddCoupon(false)}
 					width={31.25}
-					height="90%"
+					height="70%"
 					header={{
 						icon: 'coupon',
 						title: __('Add Coupon', 'multivendorx'),
@@ -799,7 +845,7 @@ const AllCoupon: React.FC = () => {
 						),
 					}}
 					footer={
-						<ButtonInputUI
+						<ButtonInput
 							buttons={[
 								{
 									icon: 'contact-form',
@@ -817,14 +863,14 @@ const AllCoupon: React.FC = () => {
 					}
 				>
 					<>
-						<FormGroupWrapper>
-							<FormGroup
+						<FormGroupWrapperComponent>
+							<FormGroupComponent
 								label={__('Coupon code', 'multivendorx')}
 								htmlFor="title"
 								className="copy-btn"
 								notice={validationErrors.title}
 							>
-								<BasicInputUI
+								<TextInput
 									type="text"
 									name="title"
 									value={formData.title}
@@ -836,7 +882,7 @@ const AllCoupon: React.FC = () => {
 										})
 									}
 								/>
-								<RandomInputKeyGeneratorUI
+								<RandomkeyInput
 									value={formData.title}
 									length={10}
 									onChange={(value) => {
@@ -846,16 +892,16 @@ const AllCoupon: React.FC = () => {
 										});
 									}}
 								/>
-							</FormGroup>
+							</FormGroupComponent>
 
-							<FormGroup
+							<FormGroupComponent
 								label={__(
 									'Description (optional)',
 									'multivendorx'
 								)}
 								htmlFor="title"
 							>
-								<TextAreaUI
+								<TextAreaInput
 									name="content"
 									rowNumber={6}
 									value={formData.content}
@@ -866,18 +912,18 @@ const AllCoupon: React.FC = () => {
 										})
 									}
 								/>
-							</FormGroup>
-						</FormGroupWrapper>
-						<TabsUI
+							</FormGroupComponent>
+						</FormGroupWrapperComponent>
+						<TabsComponent
 							tabs={tabs.map((tab) => ({
 								label: __(tab.label, 'multivendorx'),
 								content: tab.content,
 							}))}
 						/>
 					</>
-				</PopupUI>
+				</PopupComponent>
 			)}
-			<PopupUI
+			<PopupComponent
 				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
@@ -896,9 +942,9 @@ const AllCoupon: React.FC = () => {
 						setSelectedCoupon(null);
 					}}
 				/>
-			</PopupUI>
+			</PopupComponent>
 			{validationErrors.errorMsg && (
-				<Notice
+				<NoticeComponent
 					type="error"
 					validity={2000}
 					displayPosition="notice"
@@ -907,7 +953,8 @@ const AllCoupon: React.FC = () => {
 			)}
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

@@ -72,6 +72,13 @@ module.exports = [
 
 			'no-debugger': 'warn',
 
+			// Base rules don't understand TS-only constructs (ambient .d.ts
+			// function signatures, TS global types like __WebpackModuleApi) -
+			// the @typescript-eslint rule below replaces no-unused-vars, and
+			// tsc itself is the real check for genuinely undefined names.
+			'no-unused-vars': 'off',
+			'no-undef': 'off',
+
 			'@typescript-eslint/no-unused-vars': [
 				'warn',
 				{
