@@ -47,9 +47,15 @@
   }
 }
 
-.notifima-subscribe-form form {
-  display: flex;
-  flex-direction: column;
+.notifima-subscribe-form {
+  .notifima-lead-time,
+  .notifima-interest {
+    margin: 0 0 0.5rem;
+  }
+
+  .notifima-activate-vuloform {
+    margin: 0;
+  }
 }
 
 @media screen and (width <=37.5rem) {

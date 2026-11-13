@@ -40,14 +40,11 @@ class FrontEnd {
         $post = get_post();
 
         if ( is_product() || has_shortcode( $post->post_content ?? '', 'notifima_subscription_form' ) ) {
+            // Only the small script that shows the form for the chosen variation: the form itself is VuloForm's.
             FrontendScripts::load_scripts();
-            FrontendScripts::admin_load_scripts();
-            FrontendScripts::enqueue_script( 'notifima-components-script' );
-            FrontendScripts::enqueue_style( 'notifima-components-style' );
             FrontendScripts::enqueue_script( 'notifima-subscribe-form' );
             FrontendScripts::localize_scripts( 'notifima-subscribe-form' );
         }
-
         FrontendScripts::enqueue_style( 'notifima-frontend-style' );
     }
 
@@ -82,7 +79,8 @@ class FrontEnd {
             return;
         }
 
-        echo wp_kses_post( $this->get_subscription_form( $product_obj ) );
+        // The form is VuloForm's own markup (inputs, scripts), which wp_kses_post() would strip; every dynamic part is escaped where it is built.
+        echo $this->get_subscription_form( $product_obj ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     /**
@@ -134,59 +132,41 @@ class FrontEnd {
             return str_replace( '%no_of_subscribed%', $interested_person, $shown_interest_text );
         };
 
-        // Variable products.
+        $lead_time = $this->get_product_lead_time();
+
+        // Variable products: one form, shown when a sold-out variation is chosen.
         if ( $product->is_type( 'variable' ) ) {
-            $html = '';
+            $variation_ids = array();
+            $interest      = array();
 
             foreach ( $product->get_children() as $variation_id ) {
-                $variation = wc_get_product( $variation_id );
+                $child = wc_get_product( $variation_id );
 
-                if ( ! $variation || ! Subscriber::is_product_outofstock( $variation ) || 'yes' === $variation->get_meta( Utill::NOTIFIMA_PRODUCT_META['product_discontinued'] ) ) {
+                if ( ! $child || ! Subscriber::is_product_outofstock( $child ) || 'yes' === $child->get_meta( Utill::NOTIFIMA_PRODUCT_META['product_discontinued'] ) ) {
                     continue;
                 }
 
-                $html .= sprintf(
-                    '<div
-                        id="notifima-subscribe-form-%d"
-                        data-product-id="%d"
-                        data-variation-id="%d"
-                        data-product-title="%s"
-                        data-user-email="%s"
-                        data-shown-interest="%s"
-                        style="display:none"
-                    ></div>',
-                    esc_attr( $variation->get_id() ),
-                    esc_attr( $product->get_id() ),
-                    esc_attr( $variation->get_id() ),
-                    esc_attr( $product->get_title() ),
-                    esc_attr( $user_email ),
-                    esc_attr( $get_shown_interest( $variation->get_id() ) )
-                );
+                $variation_ids[] = $child->get_id();
+                $text            = $get_shown_interest( $child->get_id() );
+
+                if ( '' !== $text ) {
+                    $interest[ $child->get_id() ] = $text;
+                }
             }
 
-            return $html;
+            if ( ! $variation_ids ) {
+                return '';
+            }
+
+            return SubscriptionForm::render( $product, $variation_ids, $user_email, $interest, $lead_time );
         }
 
         // Simple & grouped products.
-        return sprintf(
-            '<div
-                class="notifima-subscribe-form"
-                data-product-id="%d"
-                data-variation-id="%d"
-                data-product-title="%s"
-                data-user-email="%s"
-                data-shown-interest="%s"
-            ></div>',
-            esc_attr( $product->get_id() ),
-            esc_attr( $variation ? $variation->get_id() : 0 ),
-            esc_attr( $product->get_title() ),
-            esc_attr( $user_email ),
-            esc_attr(
-                $get_shown_interest(
-                    $variation ? $variation->get_id() : $product->get_id()
-                )
-            )
-        );
+        $target   = $variation ? $variation : $product;
+        $text     = $get_shown_interest( $target->get_id() );
+        $interest = '' !== $text ? array( $target->get_id() => $text ) : array();
+
+        return SubscriptionForm::render( $target, array(), $user_email, $interest, $lead_time );
     }
 
     /**

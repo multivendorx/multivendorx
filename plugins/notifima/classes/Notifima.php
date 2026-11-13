@@ -184,6 +184,7 @@ class Notifima {
         $this->container['setting']         = new Setting();
         $this->container['frontend']        = new FrontEnd();
         $this->container['shortcode']       = new Shortcode();
+        $this->container['subscription_form'] = new SubscriptionForm();
         $this->container['subscriber']      = new Subscriber();
         $this->container['filters']         = new Deprecated\DeprecatedFilterHooks();
         $this->container['actions']         = new Deprecated\DeprecatedActionHooks();
