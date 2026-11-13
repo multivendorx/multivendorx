@@ -212,12 +212,12 @@ class Util {
         
         if ( ! empty( $query_args['start_date'] ) ) {
             $conditions[] = 'date >= %s';
-            $values[]     = $query_args['start_date'];
+            $values[]     = gmdate( 'Y-m-d 00:00:00', strtotime( $query_args['start_date'] ) );
         }
 
         if ( ! empty( $query_args['end_date'] ) ) {
-            $conditions[] = 'date <= %s';
-            $values[]     = $query_args['end_date'];
+            $conditions[] = 'date < %s';
+            $values[]     = gmdate( 'Y-m-d 00:00:00', strtotime( $query_args['end_date'] . ' +1 day' ) );
         }
 
         $where_sql = $conditions ? ' WHERE ' . implode( ' AND ', $conditions ) : '';
