@@ -151,7 +151,7 @@ class Quotes extends \WP_REST_Controller {
                 'phone'   => $customer_phone,
                 'details' => $customer_message,
             );
-            $email         = WC()->mailer()->emails['requestQuoteSendEmail'];
+            $email         = WC()->mailer()->emails['RequestQuoteSendEmail'];
             $email->trigger( $product_info, $customer_data );
 
             // Clear cart if applicable.

@@ -5,7 +5,7 @@ Donate link: https://multivendorx.com/donate?utm_source=wporg&utm_medium=plugind
 Requires at least: 6.4.0
 Tested up to: 7.1.4
 Requires PHP: 8.0
-Stable tag: 6.1.8
+Stable tag: 6.1.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -226,6 +226,10 @@ Answer: Simply enable the 'Product Enquiry Button When Product is Out Of Stock' 
 7. Enquiry Dashboard
 
 == Changelog ==
+
+= 6.1.9 - 2026-11-17 =
+* Added     - Compatibility with WooCommerce 11.3.0.
+* Added     - Introduced an enquiry report email functionality that periodically sends admins a summary of enquiries submitted on their website, helping them track enquiry activity over a selected period. #2440
 
 = 6.1.8 - 2026-11-03 =
 * Added     - Compatibility of WordPress 7.1.4.

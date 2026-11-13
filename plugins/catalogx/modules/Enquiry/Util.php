@@ -178,4 +178,58 @@ class Util {
 
         return true;
     }
+
+    /**
+     * Get enquiries.
+     *
+     * @param array $query_args Filter options.
+     * @return array
+     */
+    public static function get_enquiries( $query_args = array() ) {
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . Utill::TABLES['enquiry'];
+
+        $conditions = array();
+        $values     = array();
+
+        if ( ! empty( $query_args['id'] ) ) {
+            $ids          = array_map( 'intval', (array) $query_args['id'] );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $conditions[] = 'id IN (' . $placeholders . ')';
+            $values       = array_merge( $values, $ids );
+        }
+
+        if ( isset( $query_args['user_id'] ) ) {
+            $conditions[] = 'user_id = %d';
+            $values[]     = (int) $query_args['user_id'];
+        }
+
+        if ( ! empty( $query_args['product_ids'] ) ) {
+            $conditions[] = 'product_info REGEXP %s';
+            $values[]     = 'i:(' . implode( '|', array_map( 'absint', (array) $query_args['product_ids'] ) ) . ');i:';
+        }
+        
+        if ( ! empty( $query_args['start_date'] ) ) {
+            $conditions[] = 'date >= %s';
+            $values[]     = gmdate( 'Y-m-d 00:00:00', strtotime( $query_args['start_date'] ) );
+        }
+
+        if ( ! empty( $query_args['end_date'] ) ) {
+            $conditions[] = 'date < %s';
+            $values[]     = gmdate( 'Y-m-d 00:00:00', strtotime( $query_args['end_date'] . ' +1 day' ) );
+        }
+
+        $where_sql = $conditions ? ' WHERE ' . implode( ' AND ', $conditions ) : '';
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT * FROM %i' . $where_sql . ' ORDER BY date DESC',
+                $table_name,
+                ...$values
+            )
+        ) ?? array();
+    }
+
 }
