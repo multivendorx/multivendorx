@@ -192,6 +192,7 @@ class Notifima {
         $this->container['block']           = new Block();
         $this->container['frontendScripts'] = new FrontendScripts();
         $this->container['communications']    = new Communications();
+        $this->container['cron']            = new Cron();
     }
 
     /**
@@ -205,6 +206,7 @@ class Notifima {
         $emails['Admin_New_Subscriber_Email']    = new Emails\AdminNewSubscriberEmail();
         $emails['Subscriber_Confirmation_Email'] = new Emails\SubscriberConfirmationEmail();
         $emails['Product_Back_In_Stock_Email']   = new Emails\ProductBackInStockEmail();
+        $emails['Subscriber_Report_Email']       = new Emails\SubscriberReportEmail();
 
         return $emails;
     }

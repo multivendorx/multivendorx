@@ -269,7 +269,7 @@ export default {
             desc: __(`Choose where subscriber details are saved and whether they're sent to your marketing tools.`, 'notifima'),
         },
         {
-            key: 'is_mailchimp_enable',
+            key: 'marketing_provider',
             type: 'choice-toggle',
             label: __('Marketing integration', 'notifima'),
             settingDescription: __(
@@ -287,6 +287,11 @@ export default {
                     label: __('Mailchimp', 'notifima'),
                     value: 'mailchimp',
                 },
+                {
+                    key: 'klaviyo',
+                    label: __('Klaviyo', 'notifima'),
+                    value: 'klaviyo',
+                }
             ],
             proSetting: true,
         },
@@ -300,28 +305,44 @@ export default {
                 'notifima'
             ),
             dependent: {
-                key: 'is_mailchimp_enable',
+                key: 'marketing_provider',
                 set: true,
                 value: 'mailchimp'
             },
             proSetting: true,
         },
         {
-            key: 'mailchimp',
-            type: 'sequential-task-executor',
-            variant: true,
-            apilink: 'mailchimps',
-            buttonText: 'Start',
-            buttonIcon: 'centralized-connections',
-            label: __('Mailchimp connection', 'notifima'),
+            key: 'klaviyo_api',
+            type: 'text',
+            size: 25,
+            label: __('Klaviyo Private API Key', 'notifima'),
             settingDescription: __(
-                'Connect your Mailchimp account and select the audience for new subscribers.',
+                'Generate a Private API Key from your Klaviyo account and paste it here to enable audience synchronization. <a href="https://www.klaviyo.com/settings/account/api-keys" target="_blank" rel="noopener noreferrer">Get your API key</a>.',
                 'notifima'
             ),
             dependent: {
-                key: 'is_mailchimp_enable',
+                key: 'marketing_provider',
                 set: true,
-                value: 'mailchimp'
+                value: 'klaviyo'
+            },
+            proSetting: true,
+        },
+        {
+            key: 'marketing_setup',
+            type: 'sequential-task-executor',
+            variant: true,
+            apilink: 'marketing-integrations',
+            buttonText: 'Start',
+            buttonIcon: 'centralized-connections',
+            label: __('Marketing integration setup', 'notifima'),
+            settingDescription: __(
+                'Connect your selected marketing platform and choose the audience for new subscribers.',
+                'notifima'
+            ),
+            dependent: {
+                key: 'marketing_provider',
+                set: true,
+                value: ['mailchimp', 'klaviyo']
             },
             proSetting: true,
         },

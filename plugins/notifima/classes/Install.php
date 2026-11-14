@@ -243,6 +243,30 @@ class Install {
 			update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
             delete_option( 'notifima_cron_start' );
         }
+
+        if ( version_compare( $previous_version, '3.1.10', '<' ) ) {
+            
+            $automation_settings = get_option( Utill::NOTIFIMA_SETTINGS['automation'], array() );
+
+            if ( isset( $automation_settings['is_mailchimp_enable'] ) ) {
+                $automation_settings['marketing_provider'] = $automation_settings['is_mailchimp_enable'];
+                unset( $automation_settings['is_mailchimp_enable'] );
+            }
+
+            if ( isset( $automation_settings['mailchimp'] ) ) {
+                $automation_settings['marketing_setup'] = $automation_settings['mailchimp'];
+                unset( $automation_settings['mailchimp'] );
+            }
+
+            update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
+
+            $notifications_settings = get_option( Utill::NOTIFIMA_SETTINGS['notifications'], array() );
+
+            $notifications_settings['subscriber_report_frequency'] =  'monthly';
+
+            update_option( Utill::NOTIFIMA_SETTINGS['notifications'], $notifications_settings );
+
+        }
     }
 
     /**
@@ -413,6 +437,7 @@ class Install {
             'ban_email_domain_text'  => Notifima()->default_value['ban_email_domain_text'],
             'ban_email_address_text' => Notifima()->default_value['ban_email_address_text'],
             'additional_alert_email' => get_option( 'admin_email' ),
+            'subscriber_report_frequency' => 'monthly',
         );
 
         update_option( Utill::NOTIFIMA_SETTINGS['notifications'], $notifications_settings );
