@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import { useState } from 'react';
 
-import { MultiCheckboxInput } from '@zyra/inputs';
+import { CardComponent, MultiCheckboxInput } from '@zyra/inputs';
 import {
     ColumnComponent,
     ContainerComponent,
@@ -150,19 +150,28 @@ const Managestock = () => {
     );
 
 
+    const { buttonActions: headerButtonActions, ...tablePropsWithoutButtons } = tableProps;
+
+    const headerButtons = (headerButtonActions || []).map((action) => ({
+        label: action.label,
+        icon: action.icon,
+        color: 'white',
+        onClick: action.onClickWithQuery || action.onClick,
+    }));
+
     const renderTableContent = () => {
         if (!appLocalizer.khali_dabba) {
             return (
                 <div className="demo-wrapper" onClick={() => setOpenPopup(true)}>
                     <div className="watermark">{__('This is sample Data', 'notifima')}</div>
-                    <TableCard {...tableProps} />
+                    <TableCard {...tablePropsWithoutButtons} />
                 </div>
             );
         }
 
         return (
             <>
-                <TableCard {...tableProps} />
+                <TableCard {...tablePropsWithoutButtons} />
             </>
         );
     };
@@ -186,10 +195,13 @@ const Managestock = () => {
                     'notifima'
                 )}
                 headerTitle={__('Manage Stock', 'notifima')}
+                buttons={headerButtons}
             />
             <ContainerComponent general>
                 <ColumnComponent>
-                    {renderTableContent()}
+                    <CardComponent>
+                        {renderTableContent()}
+                    </CardComponent>
                 </ColumnComponent>
             </ContainerComponent>
         </>

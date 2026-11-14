@@ -1,6 +1,6 @@
 /* global appLocalizer */
 import { useState } from 'react';
-import { getApiLink } from '@zyra/core';
+import { CardComponent, getApiLink } from '@zyra/core';
 
 import {
     ColumnComponent,
@@ -227,13 +227,16 @@ const SubscribersList = () => {
                     {
                         label: __('Download CSV', 'notifima'),
                         icon: 'download',
+                        color: 'white',
                         onClick: downloadCSVByQuery,
                     },
                 ]}
             />
             <ContainerComponent general>
                 <ColumnComponent>
-                    {renderTableContent()}
+                    <CardComponent>
+                        {renderTableContent()}
+                    </CardComponent>
                 </ColumnComponent>
             </ContainerComponent>
         </>

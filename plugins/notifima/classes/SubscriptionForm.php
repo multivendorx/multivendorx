@@ -74,7 +74,7 @@ class SubscriptionForm {
 			'title'    => __( 'Back in stock subscription', 'notifima' ),
 			'desc'     => __( 'Asks for an email address so Notifima can tell the visitor when a product is back in stock.', 'notifima' ),
 			'icon'     => 'mail',
-			'category' => __( 'Plugin forms', 'notifima' ),
+			'category' => __( 'Notifima', 'notifima' ),
 			'schema'   => \VuloForm\Forms\Schema::sanitize(
 				array(
 					'fields'   => array(

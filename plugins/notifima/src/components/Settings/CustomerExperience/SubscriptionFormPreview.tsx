@@ -6,9 +6,9 @@ import {
 	CardComponent,
 	ModuleGuardComponent,
 	NoticeComponent,
-} from '@zyra/components';
-import { ButtonInput } from '@zyra/inputs';
-import { getApiLink } from '@zyra/core';
+	ButtonInput,
+	getApiLink,
+} from 'zyra';
 
 interface SubscriptionFormData {
 	installed: boolean;
@@ -90,7 +90,6 @@ const SubscriptionFormPreview = () => {
 	} else if (!data) {
 		body = <p>{__('Loading…', 'notifima')}</p>;
 	} else {
-		// No scripts run in the frame, and it ignores the pointer, so the preview can't be submitted.
 		body = (
 			<iframe
 				ref={frame}
@@ -123,7 +122,7 @@ const SubscriptionFormPreview = () => {
 						buttons={{
 							text: __('Edit form', 'notifima'),
 							icon: 'edit',
-							color: 'purple',
+							color: 'purple-bg',
 							onClick: () => {
 								window.location.href = data.edit_url;
 							},
