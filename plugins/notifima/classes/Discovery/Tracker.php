@@ -5,7 +5,7 @@
  * @package Notifima
  */
 
-namespace Notifima\Growth;
+namespace Notifima\Discovery;
 
 use Notifima\FrontendScripts;
 use Notifima\Utill;
@@ -29,61 +29,12 @@ class Tracker {
     private const CONSENT_OPTION_KEY = 'notifima_tracking_consent';
 
     /**
-     * Key of the permanent on/off toggle inside the Automation settings tab.
-     *
-     * @var string
-     */
-    private const CONSENT_SETTING_KEY = 'is_usage_tracking_enable';
-
-    /**
      * Option key holding the stored VuloCloud connection (site id + encrypted secret).
      *
      * @var string
      */
     private const CONNECTION_OPTION_KEY        = 'notifima_vulocloud_connection';
-    private const VERIFICATION_TOKEN_TRANSIENT = 'notifima_vulocloud_verification_token';
-
-    /**
-     * Plugin slug, sent as `pluginId` (becomes ConnectedSite.pluginSlug on VuloCloud).
-     *
-     * @var string
-     */
-    private string $slug;
-
-    /**
-     * Human-readable plugin name.
-     *
-     * @var string
-     */
-    private string $plugin_name;
-
-    /**
-     * Current free plugin version.
-     *
-     * @var string
-     */
-    private string $plugin_version;
-
-    /**
-     * Installed Pro plugin version, if active.
-     *
-     * @var string
-     */
-    private string $pro_plugin_version;
-
-    /**
-     * VuloCloud base URL, no trailing slash.
-     *
-     * @var string
-     */
-    private string $vulocloud_url;
-
-    /**
-     * VuloCloud Organization id this plugin's connections are scoped to.
-     *
-     * @var string
-     */
-    private string $organization_id;
+    private const VERIFICATION_TOKEN_TRANSIENT = 'notifima_vulocloud_verification_token';  
 
     /**
      * True while set_consent() is writing its own mirrored value into the Automation settings -
@@ -97,13 +48,6 @@ class Tracker {
      * Constructor. Registers the opt-in notice, its handlers, the settings toggle hook, cron and deactivation.
      */
     public function __construct() {
-        $this->slug               = NOTIFIMA_PLUGIN_SLUG;
-        $this->plugin_name        = 'Notifima';
-        $this->plugin_version     = NOTIFIMA_PLUGIN_VERSION;
-        $this->pro_plugin_version = defined( 'NOTIFIMA_PRO_PLUGIN_VERSION' ) ? NOTIFIMA_PRO_PLUGIN_VERSION : '';
-        $this->vulocloud_url      = untrailingslashit( trim( (string) apply_filters( 'notifima_vulocloud_url', NOTIFIMA_VULOCLOUD_URL ) ) );
-        $this->organization_id    = trim( (string) apply_filters( 'notifima_vulocloud_organization_id', NOTIFIMA_VULOCLOUD_ORGANIZATION_ID ) );
-
         add_action( 'admin_notices', array( $this, 'render_opt_in_notice' ) );
         add_action( 'admin_post_notifima_accept_tracking', array( $this, 'handle_accept' ) );
         add_action( 'admin_post_notifima_skip_tracking', array( $this, 'handle_skip' ) );
@@ -151,11 +95,7 @@ class Tracker {
     private function set_consent( bool $allowed ): void {
         update_option( self::CONSENT_OPTION_KEY, $allowed ? 'yes' : 'no', false );
         $this->writing_consent_setting = true;
-        Notifima()->setting->update_setting(
-            self::CONSENT_SETTING_KEY,
-            $allowed ? 'yes' : 'no',
-            Utill::NOTIFIMA_SETTINGS['automation']
-        );
+        Notifima()->setting->update_setting( 'is_usage_tracking_enable', $allowed ? 'yes' : 'no', Utill::NOTIFIMA_SETTINGS['automation'] );
         $this->writing_consent_setting = false;
     }
 
@@ -235,15 +175,15 @@ class Tracker {
      * @return mixed $value, unchanged - this is a pass-through filter.
      */
     public function sync_consent_from_settings( $value, $old_value ) {
-        if ( $this->writing_consent_setting || ! is_array( $value ) || ! array_key_exists( self::CONSENT_SETTING_KEY, $value ) ) {
+        if ( $this->writing_consent_setting || ! is_array( $value ) || ! array_key_exists( 'is_usage_tracking_enable', $value ) ) {
             return $value;
         }
-        if ( ! is_array( $old_value ) || ! array_key_exists( self::CONSENT_SETTING_KEY, $old_value ) ) {
+        if ( ! is_array( $old_value ) || ! array_key_exists( 'is_usage_tracking_enable', $old_value ) ) {
             return $value;
         }
 
-        $new_raw = $value[ self::CONSENT_SETTING_KEY ];
-        $old_raw = $old_value[ self::CONSENT_SETTING_KEY ];
+        $new_raw = $value[ 'is_usage_tracking_enable' ];
+        $old_raw = $old_value[ 'is_usage_tracking_enable' ];
 
         if ( $new_raw === $old_raw ) {
             return $value;
@@ -276,7 +216,7 @@ class Tracker {
      * @return bool
      */
     private function is_configured(): bool {
-        return '' !== $this->vulocloud_url && '' !== $this->organization_id;
+        return '' !== NOTIFIMA_VULOCLOUD_URL && '' !== NOTIFIMA_VULOCLOUD_ORGANIZATION_ID;
     }
 
     /**
@@ -394,7 +334,7 @@ class Tracker {
      */
     private function post_to_vulocloud( string $path, array $body, bool $blocking = false, int $timeout = 15 ) {
         return wp_remote_post(
-            $this->vulocloud_url . $path,
+            NOTIFIMA_VULOCLOUD_URL . $path,
             array(
                 'timeout'    => $timeout,
                 'blocking'   => $blocking,
@@ -466,9 +406,9 @@ class Tracker {
         $response = new \WP_REST_Response(
             array(
                 'token'            => $token,
-                'plugin'           => $this->slug,
+                'plugin'           => Notifima()->slug,
                 'pluginActive'     => true,
-                'pluginVersion'    => $this->plugin_version,
+                'pluginVersion'    => Notifima()->version,
                 'wordpressVersion' => get_bloginfo( 'version' ),
             )
         );
@@ -495,8 +435,8 @@ class Tracker {
         $response = $this->post_to_vulocloud(
             '/connected-sites/register',
             array(
-                'organizationId'    => $this->organization_id,
-                'pluginId'          => $this->slug,
+                'organizationId'    => NOTIFIMA_VULOCLOUD_ORGANIZATION_ID,
+                'pluginId'          => Notifima()->slug,
                 'domain'            => home_url(),
                 'verificationToken' => $this->publish_verification_token(),
                 'payload'           => $this->get_tracking_payload(),
@@ -688,8 +628,8 @@ class Tracker {
         $response = $this->post_to_vulocloud(
             '/connected-sites/register',
             array(
-                'organizationId'    => $this->organization_id,
-                'pluginId'          => $this->slug,
+                'organizationId'    => NOTIFIMA_VULOCLOUD_ORGANIZATION_ID,
+                'pluginId'          => Notifima()->slug,
                 'domain'            => home_url(),
                 'verificationToken' => $this->publish_verification_token(),
                 'purpose'           => 'deactivation_report',
@@ -781,8 +721,8 @@ class Tracker {
             'Email'             => sanitize_email( $email ),
             'Server'            => sanitize_text_field( (string) ( $server_header ?? getenv( 'SERVER_SOFTWARE' ) ) ),
             'Text Direction'    => is_rtl() ? 'rtl' : 'ltr',
-            'Plugin'            => $this->plugin_name,
-            'Version'           => $this->plugin_version,
+            'Plugin'            => 'Notifima',
+            'Version'           => Notifima()->version,
             'Status'            => 'active',
             'Theme'             => sanitize_text_field( (string) $theme->get( 'Name' ) ),
             'Theme Version'     => sanitize_text_field( (string) $theme->get( 'Version' ) ),
@@ -792,7 +732,7 @@ class Tracker {
             'Hosting Type'      => $this->detect_hosting_type(),
             'Commerce Platform' => defined( 'WC_VERSION' ) ? 'WooCommerce ' . WC_VERSION : '',
             'Site URL'          => home_url(),
-            'Pro Version'       => $this->pro_plugin_version,
+            'Pro Version'       => defined( 'NOTIFIMA_PRO_PLUGIN_VERSION' ) ? NOTIFIMA_PRO_PLUGIN_VERSION : '',
             'Active Plugins'    => $active_plugins,
             'Inactive Plugins'  => array_values( array_diff( $all_plugins, $active_plugins ) ),
         );
@@ -851,7 +791,7 @@ class Tracker {
      * @return string
      */
     private function get_user_agent(): string {
-        return $this->plugin_name . 'Tracker/' . $this->plugin_version . '; ' . md5( esc_url_raw( home_url( '/' ) ) );
+        return 'Notifima Tracker/' . Notifima()->version . '; ' . md5( esc_url_raw( home_url( '/' ) ) );
     }
 
     /**

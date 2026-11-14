@@ -5,7 +5,7 @@
  * @package Notifima
  */
 
-namespace Notifima\Growth;
+namespace Notifima\Discovery;
 
 use Notifima\FrontendScripts;
 use Notifima\Utill;
