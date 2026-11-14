@@ -1,5 +1,5 @@
 /* global appLocalizer */
-import React, { useEffect, JSX } from 'react';
+import React, { useEffect, useState, JSX } from 'react';
 import { __ } from '@wordpress/i18n';
 import { getTemplateData } from '../../services/templateService';
 
@@ -11,8 +11,9 @@ import {
 	SettingProvider,
 	useSetting,
 } from '@zyra/core';
-import { NavigatorComponent } from '@zyra/components';
+import { NavigatorComponent, type SaveStatus } from '@zyra/components';
 import ShowProPopup from '../Popup/Popup';
+import SubscriptionFormPreview from './CustomerExperience/SubscriptionFormPreview';
 import { useLocation, Link } from 'react-router-dom';
 
 interface SettingsProps {
@@ -22,6 +23,7 @@ interface SettingsProps {
 const Settings: React.FC<SettingsProps> = () => {
     const settingsArray = getAvailableSettings(getTemplateData('settings'), []);
     const location = new URLSearchParams(useLocation().hash.substring(1));
+    const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
 
     // Render the dynamic form
     const GetForm = (currentTab: string | null): JSX.Element | null => {
@@ -52,7 +54,9 @@ const Settings: React.FC<SettingsProps> = () => {
 
         return (
             <>
-                {settingName === currentTab ? (
+                {currentTab === 'subscription-form-designer' ? (
+                    <SubscriptionFormPreview />
+                ) : settingName === currentTab ? (
                     <InputRenderer
                         settings={settingModal}
                         setting={setting}
@@ -61,6 +65,7 @@ const Settings: React.FC<SettingsProps> = () => {
                         modules={modules}
                         Popup={ShowProPopup}
                         groupBySections={settingModal?.groupBySections}
+                        onSaveStatusChange={setSaveStatus}
                     />
                 ) : (
                     <>{__('Loading...', 'notifima')}</>
@@ -82,6 +87,7 @@ const Settings: React.FC<SettingsProps> = () => {
                 Link={Link}
                 settingName={'Settings'}
                 className="admin-settings"
+                saveStatus={saveStatus}
             />
         </SettingProvider>
     );

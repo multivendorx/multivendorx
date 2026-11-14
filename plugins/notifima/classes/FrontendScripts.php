@@ -290,6 +290,7 @@ class FrontendScripts {
                             'khali_dabba'  => Utill::is_khali_dabba(),
                             'lead_time'    => Notifima()->frontend->get_product_lead_time(),
                             'display_type' => Notifima()->setting->get_setting( 'display_subscription_form_as', 'inline' ),
+                            'button_text'  => __( 'Notify Me', 'notifima' ),
                         )
                     ),
                 ),

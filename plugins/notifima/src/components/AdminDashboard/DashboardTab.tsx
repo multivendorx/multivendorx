@@ -6,6 +6,8 @@ import {
 	ListComponent,
 	ContainerComponent,
 	NoticeManager,
+	InformationItemComponent,
+	IconComponent,
 } from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 import axios from 'axios';
@@ -466,32 +468,24 @@ const DashboardTab: React.FC<object> = () => {
 
 				{/* Quick Links */}
 				<CardComponent title={__('Need help getting started?', 'notifima')} titleIcon="help" desc="Find guides, resources, and support to help you set up and manage your WooCommerce store.">
-					<div className="quick-link">
-						{resources.map((res) => (
-							<ListComponent
-								key={res.href}
-								className="mini-card list"
-								border
-								items={[
-									{
-										title: __(res.title, 'notifima'),
-										desc: __(res.desc, 'notifima'),
-										icon: res.iconClass,
-										tags: (
-											<a
-												href={res.href}
-												target="_blank"
-												rel="noopener noreferrer"
-											>
-												{__(res.linkText, 'notifima')}
-												<i className="adminfont-external"></i>
-											</a>
-										),
-									},
-								]}
-							/>
-						))}
-					</div>
+					{resources.map((res) => (
+						<InformationItemComponent
+							key={res.href}
+							title={res.title}
+							avatar={{ icon: res.iconClass }}
+							descriptions={[{ value: res.desc }]}
+							rightContent={
+								<a
+									href={res.href}
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									{res.linkText}
+									<IconComponent name="external" />
+								</a>
+							}
+						/>
+					))}
 				</CardComponent>
 			</ColumnComponent>
 		</ContainerComponent>
