@@ -5,7 +5,10 @@
  * @package Notifima
  */
 
-namespace Notifima;
+namespace Notifima\Growth;
+
+use Notifima\FrontendScripts;
+use Notifima\Utill;
 
 defined( 'ABSPATH' ) || exit;
 

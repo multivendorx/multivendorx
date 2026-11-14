@@ -9,6 +9,8 @@ namespace Notifima;
 
 defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
+use Notifima\Growth\Communications;
+use Notifima\Growth\Tracker;
 use Notifima\RestAPI\Rest;
 
 /**
@@ -191,7 +193,8 @@ class Notifima {
         $this->container['rest']            = new Rest();
         $this->container['block']           = new Block();
         $this->container['frontendScripts'] = new FrontendScripts();
-        $this->container['communications']    = new Communications();
+        $this->container['communications']  = new Communications();
+        $this->container['tracker']         = new Tracker();
     }
 
     /**
