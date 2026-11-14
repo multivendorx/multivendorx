@@ -9,6 +9,8 @@ namespace Notifima;
 
 defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
+use Notifima\Discovery\Communications;
+use Notifima\Discovery\Tracker;
 use Notifima\RestAPI\Rest;
 
 /**
@@ -55,6 +57,7 @@ class Notifima {
         $this->container['plugin_base'] = plugin_basename( $file );
 
         $this->container['version']        = NOTIFIMA_PLUGIN_VERSION;
+        $this->container['slug']           = NOTIFIMA_PLUGIN_SLUG;
         $this->container['rest_namespace'] = 'notifima/v1';
         $this->container['block_paths']    = array();
         $this->container['is_dev']         = defined( 'WP_ENV' ) && WP_ENV === 'development';
@@ -191,7 +194,8 @@ class Notifima {
         $this->container['rest']            = new Rest();
         $this->container['block']           = new Block();
         $this->container['frontendScripts'] = new FrontendScripts();
-        $this->container['communications']    = new Communications();
+        $this->container['communications']  = new Communications();
+        $this->container['tracker']         = new Tracker();
     }
 
     /**

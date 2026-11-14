@@ -33,6 +33,7 @@ declare global {
 
     var appLocalizer: AppLocalizer;
     var subscription: Subscription;
+    var ajaxurl: string;
 
     module '*.png';
     module '*.jpg';
