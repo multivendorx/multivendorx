@@ -202,9 +202,7 @@ class Subscribers extends \WP_REST_Controller {
         try {
             $action = $request->get_param( 'action' );
 
-            if ( 'subscribe' === $action ) {
-                return $this->subscribe_user( $request );
-            } elseif ( 'unsubscribe' === $action ) {
+            if ( 'unsubscribe' === $action ) {
                 return $this->unsubscribe_user( $request );
             }
 
@@ -216,24 +214,6 @@ class Subscribers extends \WP_REST_Controller {
                 array( 'status' => 500 )
             );
         }
-    }
-
-    /**
-     * Subscribe a user through the REST API.
-     *
-     * @param WP_REST_Request $request Request object.
-     * @return WP_REST_Response
-     */
-    public function subscribe_user( $request ) {
-        return rest_ensure_response(
-            Subscriber::subscribe_customer(
-                $request->get_param( 'customer_email' ),
-                absint( $request->get_param( 'product_id' ) ),
-                sanitize_text_field( $request->get_param( 'product_title' ) ),
-                absint( $request->get_param( 'variation_id' ) ),
-                sanitize_text_field( $request->get_param( 'phone' ) )
-            )
-        );
     }
 
     /**

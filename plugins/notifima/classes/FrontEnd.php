@@ -22,7 +22,6 @@ class FrontEnd {
      * Frontend constructor.
      */
     public function __construct() {
-        // enqueue scripts.
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
 
         add_action( 'woocommerce_simple_add_to_cart', array( $this, 'display_product_subscription_form' ), 10 );
@@ -40,7 +39,6 @@ class FrontEnd {
         $post = get_post();
 
         if ( is_product() || has_shortcode( $post->post_content ?? '', 'notifima_subscription_form' ) ) {
-            // Only the small script that shows the form for the chosen variation: the form itself is VuloForm's.
             FrontendScripts::load_scripts();
             FrontendScripts::enqueue_script( 'notifima-subscribe-form' );
             FrontendScripts::localize_scripts( 'notifima-subscribe-form' );
@@ -79,7 +77,6 @@ class FrontEnd {
             return;
         }
 
-        // The form is VuloForm's own markup (inputs, scripts), which wp_kses_post() would strip; every dynamic part is escaped where it is built.
         echo $this->get_subscription_form( $product_obj ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
@@ -134,7 +131,6 @@ class FrontEnd {
 
         $lead_time = $this->get_product_lead_time();
 
-        // Variable products: one form, shown when a sold-out variation is chosen.
         if ( $product->is_type( 'variable' ) ) {
             $variation_ids = array();
             $interest      = array();
@@ -161,7 +157,6 @@ class FrontEnd {
             return SubscriptionForm::render( $product, $variation_ids, $user_email, $interest, $lead_time );
         }
 
-        // Simple & grouped products.
         $target   = $variation ? $variation : $product;
         $text     = $get_shown_interest( $target->get_id() );
         $interest = '' !== $text ? array( $target->get_id() => $text ) : array();

@@ -241,15 +241,14 @@ class Subscriber {
     }
 
     /**
-     * Subscribes a customer to a product's back-in-stock alert, applying every check a sign-up goes
-     * through (valid email and product, already subscribed, ban lists, double opt-in).
+     * Subscribe a customer to a product's back-in-stock alert.
      *
      * @param string $customer_email Customer email.
      * @param int    $product_id     Product id.
      * @param string $product_title  Product title, for the messages.
      * @param int    $variation_id   Variation id, 0 for none.
      * @param string $customer_phone Customer phone, '' for none.
-     * @return array{status: bool, message: string} Plus the unsubscribe details when already subscribed.
+     * @return array
      */
     public static function subscribe_customer( $customer_email, $product_id, $product_title = '', $variation_id = 0, $customer_phone = '' ) {
         $settings_array = Utill::get_form_settings_array();

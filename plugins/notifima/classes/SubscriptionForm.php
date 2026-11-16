@@ -10,9 +10,7 @@ namespace Notifima;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * The "notify me when back in stock" form, built on VuloForm. The form, its fields and its look are
- * VuloForm's; this class only offers the starter template, shows the form on product pages and turns an
- * accepted submission into a Notifima subscriber.
+ * The "notify me when back in stock" subscription form, built on VuloForm.
  *
  * @class       SubscriptionForm
  * @version     3.2.0
@@ -53,7 +51,7 @@ class SubscriptionForm {
 	 * @return bool
 	 */
 	public static function is_available() {
-		return function_exists( 'vuloform_render' ) && function_exists( 'vuloform_get_form' ) && function_exists( 'VuloForm' );
+		return Utill::is_vuloform_installed();
 	}
 
 	/**
@@ -66,7 +64,6 @@ class SubscriptionForm {
 		$settings                      = \VuloForm\Forms\Schema::default_settings();
 		$settings['template']          = self::TEMPLATE;
 		$settings['submit_label']      = __( 'Notify Me', 'notifima' );
-		// Notifima keeps its own subscriber list, so nothing is stored or emailed by VuloForm.
 		$settings['store_submissions'] = false;
 		$settings['notifications']     = array();
 
@@ -156,7 +153,6 @@ class SubscriptionForm {
 			return '';
 		}
 
-		// The form posts without cookies, so what it is about travels with it as a signed token.
 		$hidden = sprintf(
 			'<input type="hidden" name="notifima_context" value="%1$s"><input type="hidden" name="notifima_variation_id" value="0"><input type="hidden" name="notifima_product_title" value="%2$s">',
 			esc_attr( self::context_token( $product->get_id(), get_current_user_id() ) ),
@@ -181,14 +177,13 @@ class SubscriptionForm {
 			esc_attr( wp_json_encode( (object) $interest ) ),
 			esc_attr( $user_email ),
 			esc_attr( Notifima()->setting->get_setting( 'display_subscription_form_as', 'inline' ) ),
-			$text, // Escaped above.
-			$html // Built and escaped by VuloForm.
+			$text,
+			$html
 		);
 	}
 
 	/**
-	 * What a visitor sees in place of the form while VuloForm is off: only the site's admins get the
-	 * hint, since a visitor can do nothing about it.
+	 * What a visitor sees in place of the form while VuloForm is off.
 	 *
 	 * @return string
 	 */
@@ -218,7 +213,7 @@ class SubscriptionForm {
 	/**
 	 * Reads what the product page sent along with the form.
 	 *
-	 * @return array{product_id: int, variation_id: int, user_id: int, title: string}|null Null when it is missing or altered.
+	 * @return array|null Null when it is missing or altered.
 	 */
 	private static function request_context() {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- a public form; the signed context token below is the proof.
@@ -238,7 +233,6 @@ class SubscriptionForm {
 		$title        = sanitize_text_field( wp_unslash( $_POST['notifima_product_title'] ?? '' ) );
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
-		// A variation counts only if it really belongs to the product.
 		$product = wc_get_product( $product_id );
 
 		if ( ! $product ) {
@@ -258,7 +252,7 @@ class SubscriptionForm {
 	}
 
 	/**
-	 * A signed, day-long proof of which product a form was shown for and who was looking.
+	 * A signed token proving which product a form was shown for and who was looking.
 	 *
 	 * @param int $product_id Product id.
 	 * @param int $user_id    Visitor's user id, 0 for a guest.
@@ -271,7 +265,7 @@ class SubscriptionForm {
 	}
 
 	/**
-	 * Refuses a submission that has no valid product behind it, or that the site does not allow guests to make.
+	 * Refuses a submission with no valid product, or that the site does not allow guests to make.
 	 *
 	 * @param string $message Current refusal, '' to accept.
 	 * @param array  $form    VuloForm form.
@@ -324,8 +318,7 @@ class SubscriptionForm {
 	}
 
 	/**
-	 * Answers with Notifima's own messages (Settings > Customer Experience) instead of the form's
-	 * generic confirmation, so a repeat sign-up or a banned address is told what happened.
+	 * Answers with Notifima's own messages instead of the form's generic confirmation.
 	 *
 	 * @param array $result Result of the submission.
 	 * @param array $values Field key => value.
