@@ -306,6 +306,7 @@ class Subscriber {
 
         $subscriber_id = self::insert_subscriber( $customer_email, $product_id );
         self::insert_subscriber_email_trigger( wc_get_product( $product_id ), $customer_email );
+        self::update_product_subscriber_count( $product_id );
 
         do_action( 'notifima_subscriber_added', $customer_email, $subscriber_id, $customer_phone );
 
