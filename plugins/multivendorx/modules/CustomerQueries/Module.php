@@ -50,6 +50,7 @@ class Module {
         $this->container['util']     = new Util();
         $this->container['ajax']     = new Ajax();
         $this->container['rest']     = new Rest();
+        $this->container['abilities'] = new Abilities();
     }
 
     /**

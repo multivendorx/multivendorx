@@ -134,20 +134,46 @@ class Rest extends \WP_REST_Controller {
 
             return $error;
         }
+
+        return $this->prepare_get_items_response( $request->get_params(), $request );
+    }
+
+    /**
+     * Get reviews (REST or ability).
+     *
+     * @param array                 $payload Request params.
+     * @param \WP_REST_Request|null $request Request object, if any.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function prepare_get_items_response( $payload, $request = null ) {
         try {
-            $store_id = $request->get_param( 'store_id' );
-            if ( $request->get_param( 'overview' ) ) {
+            $payload = wp_parse_args(
+                $payload,
+                array(
+                    'store_id'   => 0,
+                    'row'        => 0,
+                    'page'       => 0,
+                    'status'     => '',
+                    'order_by'   => '',
+                    'order'      => '',
+                    'start_date' => '',
+                    'end_date'   => '',
+                )
+            );
+
+            $store_id = $payload['store_id'];
+
+            if ( ! empty( $payload['overview'] ) ) {
                 return rest_ensure_response( $this->calculate_store_rating_summary( intval( $store_id ) ) );
             }
-			$limit          = intval( $request->get_param( 'row' ) ) ? intval( $request->get_param( 'row' ) ) : 0;
-			$page           = intval( $request->get_param( 'page' ) ) ? intval( $request->get_param( 'page' ) ) : 1;
+			$limit          = max( 1, (int) $payload['row'] ?: 10 );
+			$page           = intval( $payload['page'] ) ?: 1;
             $offset         = ( $page - 1 ) * $limit;
-            $status         = sanitize_text_field( $request->get_param( 'status' ) );
-            $order_by       = sanitize_text_field( $request->get_param( 'order_by' ) );
-            $order          = sanitize_text_field( $request->get_param( 'order' ) );
-            $overall_rating = $request->get_param( 'overall_rating' );
-            $sec_fetch_site = $request->get_header( 'sec_fetch_site' );
-            $referer        = $request->get_header( 'referer' );
+            $status         = sanitize_text_field( $payload['status'] );
+            $order_by       = sanitize_text_field( $payload['order_by'] );
+            $order          = sanitize_text_field( $payload['order'] );
+            $sec_fetch_site = $request instanceof \WP_REST_Request ? $request->get_header( 'sec_fetch_site' ) : null;
+            $referer        = $request instanceof \WP_REST_Request ? $request->get_header( 'referer' ) : null;
 
             $can_manage = $store_id
                 ? StoreUtil::current_user_can_manage_store( intval( $store_id ) )
@@ -157,18 +183,15 @@ class Rest extends \WP_REST_Controller {
                 $status = 'approved';
             }
 
-            $range = Utill::normalize_date_range(
-                $request->get_param( 'start_date' ),
-                $request->get_param( 'end_date' )
-            );
+            $range = Utill::normalize_date_range( $payload['start_date'], $payload['end_date'] );
             $args  = array();
 
-            // --- Step 3: Apply Store Filter ---.
+            // Store filter.
             if ( $store_id ) {
                 $args['store_id'] = intval( $store_id );
             }
 
-            // --- Step 5: Add Filters (status, date, pagination) ---.
+            // Status, date, pagination filters.
             if ( $status ) {
                 $args['status'] = $status;
             }
@@ -184,25 +207,22 @@ class Rest extends \WP_REST_Controller {
                 $args['end_date'] = $range['end_date'];
             }
 
-            // --- Step 5.2: Filter by Overall Rating (like "4 stars & up") ---.
-            if ( null !== $overall_rating && '' !== $overall_rating ) {
-                $rating = floatval( $overall_rating );
+            // Overall-rating filter.
+            if ( ! empty( $payload['overall_rating'] ) ) {
+                $rating = floatval( $payload['overall_rating'] );
 
-                // Prevent invalid or below 1 ratings.
                 if ( $rating < 1 ) {
                     $rating = 1;
                 }
 
-                // Pass to query args.
                 $args['overall_rating'] = $rating;
             }
 
-            // --- Step 5.1: Add Sorting ---.
+            // Sorting.
             if ( ! empty( $order_by ) && ! empty( $order ) ) {
                 $args['order_by']  = $order_by;
                 $args['order_dir'] = ! empty( $order ) ? strtoupper( $order ) : 'DESC';
             } else {
-                // Fallback default sort.
                 $args['order_by']  = 'date_created';
                 $args['order_dir'] = 'DESC';
             }
@@ -210,13 +230,10 @@ class Rest extends \WP_REST_Controller {
 			if ( 'same-origin' === $sec_fetch_site && preg_match( '#/dashboard/?$#', $referer ) && get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id ) ) {
                     return get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id );
             }
-            // --- Step 6: Fetch Review Data ---.
-            $reviews = Util::query_reviews( $args );
-
-            // --- Step 7: Format Data for Response ---.
+            $reviews   = Util::query_reviews( $args );
             $formatted = array_map( array( $this, 'prepare_rest_item_for_response' ), $reviews ? $reviews : array() );
 
-            // --- Step 8: Get Status Counters ---.
+            // Status counters.
             $base_args = $args;
             unset( $base_args['limit'], $base_args['offset'], $base_args['status'] );
 
@@ -298,7 +315,7 @@ class Rest extends \WP_REST_Controller {
                 return $response;
             }
 
-            if ( ! StoreUtil::current_user_can_manage_store( $review['store_id'] ?? 0 ) ) {
+            if ( ! StoreUtil::current_user_can_manage_store( $review['store_id'] ) ) {
                 return new \WP_Error(
                     'rest_forbidden',
                     __( 'You are not allowed to view this review.', 'multivendorx' ),
@@ -336,7 +353,7 @@ class Rest extends \WP_REST_Controller {
         }
 
         try {
-            $user_id = MultiVendorX()->current_user_id;
+            $user_id = get_current_user_id();
 
             $store_id       = absint( $request->get_param( 'store_id' ) );
             $review_title   = sanitize_text_field( $request->get_param( 'review_title' ) );
@@ -446,7 +463,7 @@ class Rest extends \WP_REST_Controller {
                 );
             }
 
-            if ( ! StoreUtil::current_user_can_manage_store( $review['store_id'] ?? 0 ) ) {
+            if ( ! StoreUtil::current_user_can_manage_store( $review['store_id'] ) ) {
                 return new \WP_Error(
                     'rest_forbidden',
                     __( 'You are not allowed to manage this review.', 'multivendorx' ),

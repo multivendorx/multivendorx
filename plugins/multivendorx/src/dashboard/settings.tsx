@@ -12,6 +12,7 @@ import { NavigatorComponent } from '@zyra/components';
 import ShowProPopup from '../components/Popup/Popup';
 import ShippingDelivery from './settings/ShippingDelivery';
 import BusinessAddress from './DashboardSettings/BusinessAddress';
+import MCPConnection from './DashboardSettings/MCPConnection';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 
@@ -116,6 +117,9 @@ const settings: React.FC<SettingsProps> = () => {
 		}
 		if (currentTab === 'business-address') {
 			return <BusinessAddress />;
+		}
+		if (currentTab === 'mcp-connection') {
+			return <MCPConnection />;
 		}
 
 		return (

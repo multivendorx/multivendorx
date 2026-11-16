@@ -120,40 +120,58 @@ class Rest extends \WP_REST_Controller {
 
             return $error;
         }
+
+        return $this->prepare_get_items_response( $request->get_params() );
+    }
+
+    /**
+     * Get customer questions (REST or ability).
+     *
+     * @param array $payload Request params.
+     * @return \WP_REST_Response|\WP_Error
+     */
+    public function prepare_get_items_response( $payload ) {
         try {
-            $store_id            = $request->get_param( 'store_id' );
-            $limit               = max( intval( $request->get_param( 'row' ) ), 10 );
-            $page                = max( intval( $request->get_param( 'page' ) ), 1 );
-            $offset              = ( $page - 1 ) * $limit;
-            $status              = sanitize_text_field( $request->get_param( 'status' ) );
-            $search              = sanitize_text_field( $request->get_param( 'search_value' ) );
-            $order_by            = sanitize_text_field( $request->get_param( 'order_by' ) );
-            $order               = sanitize_text_field( $request->get_param( 'order' ) );
-            $question_visibility = sanitize_text_field( $request->get_param( 'question_visibility' ) );
-            $range               = Utill::normalize_date_range(
-                $request->get_param( 'start_date' ),
-                $request->get_param( 'end_date' )
+            $payload = wp_parse_args(
+                $payload,
+                array(
+                    'row'          => 0,
+                    'page'         => 0,
+                    'status'       => '',
+                    'search_value' => '',
+                    'order_by'     => '',
+                    'order'        => '',
+                    'start_date'   => '',
+                    'end_date'     => '',
+                )
             );
-            $args                = array();
+
+            $limit    = max( intval( $payload['row'] ), 10 );
+            $page     = max( intval( $payload['page'] ), 1 );
+            $offset   = ( $page - 1 ) * $limit;
+            $status   = sanitize_text_field( $payload['status'] );
+            $search   = sanitize_text_field( $payload['search_value'] );
+            $order_by = sanitize_text_field( $payload['order_by'] );
+            $order    = sanitize_text_field( $payload['order'] );
+            $range    = Utill::normalize_date_range( $payload['start_date'], $payload['end_date'] );
+            $args     = array();
 
             // Non-admins only ever see their own store's questions.
-            if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
-                $store_id = (int) MultiVendorX()->active_store;
+            $store_id = Utill::resolve_ability_store_id( $payload );
 
-                if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
-                    return new \WP_Error(
-                        'rest_forbidden',
-                        __( 'You are not allowed to view this store\'s customer questions.', 'multivendorx' ),
-                        array( 'status' => 403 )
-                    );
-                }
+            if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
+                return new \WP_Error(
+                    'rest_forbidden',
+                    __( 'You are not allowed to view this store\'s customer questions.', 'multivendorx' ),
+                    array( 'status' => 403 )
+                );
             }
 
             if ( $store_id ) {
                 $args['store_id'] = intval( $store_id );
             }
 
-            // --- Step 3: Handle Search (Product first, fallback to Question) ---
+            // Search products first, fall back to question/answer text.
             if ( ! empty( $search ) ) {
                 /* phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_query */
                 $product_query = new \WC_Product_Query(
@@ -180,7 +198,7 @@ class Rest extends \WP_REST_Controller {
                     $args['search'] = $search;
                 }
             }
-            // --- Step 5: Build Base Query Args ---
+
             $args['limit']  = $limit;
             $args['offset'] = $offset;
 
@@ -192,7 +210,7 @@ class Rest extends \WP_REST_Controller {
                 $args['end_date'] = $range['end_date'];
             }
 
-            // --- Step 6: Add Filter by Status (from frontend tabs) ---
+            // Answer-status filter (from frontend tabs).
             if ( 'has_answer' === $status ) {
                 $args['has_answer'] = true;
             } elseif ( 'no_answer' === $status ) {
@@ -205,15 +223,13 @@ class Rest extends \WP_REST_Controller {
                 $args['order_by'] = 'question_date';
                 $args['order']    = 'DESC';
             }
-            if ( ! empty( $question_visibility ) ) {
-                $args['question_visibility'] = $question_visibility;
+            if ( ! empty( $payload['question_visibility'] ) ) {
+                $args['question_visibility'] = sanitize_text_field( $payload['question_visibility'] );
             }
-            // --- Step 7: Fetch Question Data ---
             $questions = Util::query_questions( $args );
-
             $formatted = array_map( array( $this, 'prepare_rest_item_for_response' ), $questions );
 
-            // --- Step 9: Get Counters ---
+            // Status counters.
             $base_args = $args;
             unset( $base_args['limit'], $base_args['offset'], $base_args['has_answer'], $base_args['no_answer'] );
             $response = rest_ensure_response( $formatted );
@@ -270,7 +286,7 @@ class Rest extends \WP_REST_Controller {
             return new \WP_Error( 'not_found', __( 'Question not found', 'multivendorx' ), array( 'status' => 404 ) );
         }
 
-        if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) && (int) MultiVendorX()->active_store !== (int) $question['store_id'] ) {
+        if ( ! StoreUtil::current_user_can_manage_store( (int) $question['store_id'] ) ) {
             return new \WP_Error(
                 'rest_forbidden',
                 __( 'You are not allowed to view this question.', 'multivendorx' ),
@@ -321,7 +337,7 @@ class Rest extends \WP_REST_Controller {
                 );
             }
 
-            if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) && (int) MultiVendorX()->active_store !== (int) $question['store_id'] ) {
+            if ( ! StoreUtil::current_user_can_manage_store( (int) $question['store_id'] ) ) {
                 return new \WP_Error(
                     'forbidden',
                     __( 'You cannot manage this question.', 'multivendorx' ),
@@ -365,7 +381,7 @@ class Rest extends \WP_REST_Controller {
             }
 
             // Add answer_by (current user ID).
-            $current_user_id = MultiVendorX()->current_user_id;
+            $current_user_id = get_current_user_id();
             if ( $current_user_id ) {
                 $data_to_update['answer_by'] = $current_user_id;
             }

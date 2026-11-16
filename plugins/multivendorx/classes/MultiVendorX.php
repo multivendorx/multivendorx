@@ -10,6 +10,7 @@ namespace MultiVendorX;
 defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 use MultiVendorX\Utill;
+use MultiVendorX\Abilities\Abilities;
 
 /**
  * MultiVendorX Class.
