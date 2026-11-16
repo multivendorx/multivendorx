@@ -11,6 +11,7 @@ import Brand from './assets/images/brand-logo.png';
 import { __ } from '@wordpress/i18n';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import './components/common.scss';
+import VulomailInstall from './components/Vulomail/VulomailInstall';
 
 const Route = () => {
     const currentTab = new URLSearchParams(useLocation().hash);
@@ -28,6 +29,10 @@ const Route = () => {
             {currentTab.get('tab') === 'inventory-manager' && (
                 <Managestock />
             )}
+            {currentTab.get('tab') === 'notifima-email-log' && (
+                <VulomailInstall />
+            )}
+
         </>
     );
 };

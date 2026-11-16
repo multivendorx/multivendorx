@@ -102,6 +102,10 @@ class Admin {
                     'name'   => __( 'Inventory Manager', 'notifima' ),
                     'subtab' => '',
                 ),
+                'notifima-email-log' => array(
+                    'name'   => __( 'Email Log', 'notifima' ),
+                    'subtab' => '',
+                ),
             );
 
             foreach ( $submenu_items as $slug => $submenu_item ) {
