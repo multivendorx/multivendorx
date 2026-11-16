@@ -122,12 +122,8 @@ class Rest {
      * @return \WP_REST_Response
      */
     public function get_subscription_form( $request ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
-        $form_id = SubscriptionFormService::form_id();
-
-        // VuloForm is either on the site but switched off (activate it on the Plugins screen) or not
-        // installed at all (search for it in the plugin directory).
+        $form_id   = SubscriptionFormService::form_id();
         $installed = Utill::is_vuloform_installed();
-
         $available = SubscriptionFormService::is_available();
 
         return rest_ensure_response(
