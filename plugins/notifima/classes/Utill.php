@@ -273,6 +273,23 @@ class Utill {
     }
 
     /**
+     * Function to check wheather VuloForm is installed or not
+     *
+     * @return bool
+     */
+    public static function is_vuloform_installed() {
+        require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+        foreach ( array_keys( get_plugins() ) as $file ) {
+            if ( 0 === strpos( $file, 'vuloform/' ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Retrieve formatted subscriber records.
      *
      * @param array $args Query and subscriber arguments.

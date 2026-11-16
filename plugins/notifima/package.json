@@ -97,7 +97,6 @@
         }
     },
     "dependencies": {
-        "@multivendorx/zyra": "1.0.62",
         "@wordpress/data": "wp-6.6",
         "@wordpress/element": "wp-6.6",
         "@wordpress/hooks": "^4.46.0",
