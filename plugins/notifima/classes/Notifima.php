@@ -196,6 +196,7 @@ class Notifima {
         $this->container['frontendScripts'] = new FrontendScripts();
         $this->container['communications']  = new Communications();
         $this->container['tracker']         = new Tracker();
+        $this->container['engagement']      = new EngagementProvider();
     }
 
     /**
