@@ -1,4 +1,4 @@
-/* global jQuery */
+/* global jQuery, subscription */
 // The subscription form is VuloForm's, drawn by PHP. This only decides when it is shown: for the
 // sold-out variation a visitor picks, and inside a popup when the site is set to use one.
 
@@ -10,55 +10,28 @@ const parse = (value, fallback) => {
 	}
 };
 
+const togglePopup = (container, show) => {
+	const overlay = container.querySelector('.notifima-popup-overlay');
+
+	if (overlay) {
+		overlay.style.display = show ? 'flex' : 'none';
+	}
+};
+
 const setupPopup = (container) => {
-	if (container.dataset.display !== 'popup' || container.dataset.popupReady) {
-		return;
-	}
-
-	container.dataset.popupReady = 'true';
-
-	const panel = document.createElement('div');
-	[...container.children].forEach((child) => panel.appendChild(child));
-	panel.className = 'notifima-popup-overlay';
-	panel.style.display = 'none';
-
-	const dialog = document.createElement('div');
-	dialog.className = 'notifima-popup';
-
-	const close = document.createElement('button');
-	close.type = 'button';
-	close.className = 'notifima-popup-close';
-	close.setAttribute('aria-label', 'Close');
-	close.textContent = '×';
-
-	while (panel.firstChild) {
-		dialog.appendChild(panel.firstChild);
-	}
-
-	dialog.prepend(close);
-	panel.appendChild(dialog);
-
-	const open = document.createElement('button');
-	open.type = 'button';
-	open.className =
-		'notifima-open-popup woocommerce-button button wp-element-button wp-block-button__link';
-	open.textContent =
-		(window.subscription && window.subscription.button_text) || 'Notify Me';
-
-	const toggle = (show) => {
-		panel.style.display = show ? 'flex' : 'none';
-	};
-
-	open.addEventListener('click', () => toggle(true));
-	close.addEventListener('click', () => toggle(false));
-	panel.addEventListener('click', (event) => {
-		if (event.target === panel) {
-			toggle(false);
-		}
+	container.querySelector('.notifima-open-popup')?.addEventListener('click', () => {
+		togglePopup(container, true);
 	});
 
-	container.appendChild(open);
-	container.appendChild(panel);
+	container.querySelector('.notifima-popup-close')?.addEventListener('click', () => {
+		togglePopup(container, false);
+	});
+
+	container.querySelector('.notifima-popup-overlay')?.addEventListener('click', (event) => {
+		if (event.target === event.currentTarget) {
+			togglePopup(container, false);
+		}
+	});
 };
 
 const prepare = (container) => {
@@ -89,6 +62,31 @@ const showInterest = (container, id) => {
 	line.style.display = text ? '' : 'none';
 };
 
+const unsubscribe = (button) => {
+	button.disabled = true;
+
+	fetch(`${subscription.apiUrl}/${subscription.restUrl}/subscribers/${button.dataset.productId}`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-WP-Nonce': subscription.nonce,
+		},
+		body: JSON.stringify({
+			action: 'unsubscribe',
+			customer_email: button.dataset.customerEmail,
+			product_id: button.dataset.productId,
+			variation_id: button.dataset.variationId,
+		}),
+	})
+		.then((response) => response.json())
+		.then((result) => {
+			button.outerHTML = `<div class="vuloform-message vuloform-message--${result.status ? 'success' : 'error'}">${result.message}</div>`;
+		})
+		.catch(() => {
+			button.disabled = false;
+		});
+};
+
 jQuery(() => {
 	document.querySelectorAll('.notifima-subscribe-form').forEach((container) => {
 		prepare(container);
@@ -100,6 +98,14 @@ jQuery(() => {
 			container.style.display = 'none';
 		} else {
 			showInterest(container, container.dataset.productId);
+		}
+	});
+
+	document.body.addEventListener('click', (event) => {
+		const button = event.target.closest('.notifima-unsubscribe');
+
+		if (button) {
+			unsubscribe(button);
 		}
 	});
 

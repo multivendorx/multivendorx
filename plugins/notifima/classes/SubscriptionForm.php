@@ -170,15 +170,32 @@ class SubscriptionForm {
 			$text .= '<p class="notifima-interest"></p>';
 		}
 
+		$display_type = Notifima()->setting->get_setting( 'display_subscription_form_as', 'inline' );
+		$content      = $text . $html;
+
+		if ( 'popup' === $display_type ) {
+			$content = sprintf(
+				'<button type="button" class="notifima-open-popup woocommerce-button button wp-element-button wp-block-button__link">%1$s</button>
+				<div class="notifima-popup-overlay">
+					<div class="notifima-popup">
+						<button type="button" class="notifima-popup-close" aria-label="%2$s">&times;</button>
+						%3$s
+					</div>
+				</div>',
+				esc_html( Notifima()->default_value['subscribe_button_text'] ),
+				esc_attr__( 'Close', 'notifima' ),
+				$content
+			);
+		}
+
 		return sprintf(
-			'<div class="notifima-subscribe-form" data-product-id="%1$d" data-variations="%2$s" data-interest="%3$s" data-user-email="%4$s" data-display="%5$s">%6$s%7$s</div>',
+			'<div class="notifima-subscribe-form" data-product-id="%1$d" data-variations="%2$s" data-interest="%3$s" data-user-email="%4$s" data-display="%5$s">%6$s</div>',
 			(int) $product->get_id(),
 			esc_attr( wp_json_encode( array_values( array_map( 'intval', $variation_ids ) ) ) ),
 			esc_attr( wp_json_encode( (object) $interest ) ),
 			esc_attr( $user_email ),
-			esc_attr( Notifima()->setting->get_setting( 'display_subscription_form_as', 'inline' ) ),
-			$text,
-			$html
+			esc_attr( $display_type ),
+			$content
 		);
 	}
 
@@ -333,9 +350,31 @@ class SubscriptionForm {
 		$outcome           = self::$last_result;
 		self::$last_result = null;
 
-		$result['success'] = ! empty( $outcome['status'] );
+		$already_subscribed = ! empty( $outcome['already_subscribed'] );
+
+		$result['success'] = ! empty( $outcome['status'] ) || $already_subscribed;
 		$result['message'] = wp_kses_post( (string) ( $outcome['message'] ?? '' ) );
 
+		if ( $already_subscribed ) {
+			$result['message'] .= self::unsubscribe_button( $outcome );
+		}
+
 		return $result;
+	}
+
+	/**
+	 * The unsubscribe button shown to a visitor who is already subscribed.
+	 *
+	 * @param array $outcome Result from Subscriber::subscribe_customer().
+	 * @return string
+	 */
+	private static function unsubscribe_button( $outcome ) {
+		return sprintf(
+			'<button type="button" class="notifima-unsubscribe woocommerce-button button wp-element-button wp-block-button__link" data-customer-email="%1$s" data-product-id="%2$d" data-variation-id="%3$d">%4$s</button>',
+			esc_attr( $outcome['customer_email'] ?? '' ),
+			(int) ( $outcome['product_id'] ?? 0 ),
+			(int) ( $outcome['variation_id'] ?? 0 ),
+			esc_html( $outcome['unsubscribe_button']['text'] ?? __( 'Unsubscribe', 'notifima' ) )
+		);
 	}
 }

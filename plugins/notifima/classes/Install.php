@@ -58,9 +58,40 @@ class Install {
             $this->do_migration( $previous_version );
         }
 
+        $this->install_vuloform();
+
         update_option( 'notifima_version', NOTIFIMA_PLUGIN_VERSION );
 
         do_action( 'notifima_updated' );
+    }
+
+    /**
+     * Install and activate VuloForm, the plugin Notifima's subscription form is built on.
+     *
+     * @return void
+     */
+    private function install_vuloform() {
+        if ( ! is_admin() || Utill::is_vuloform_installed() || ! current_user_can( 'install_plugins' ) ) {
+            return;
+        }
+
+        require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
+        require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+
+        $plugin_information = plugins_api( 'plugin_information', array( 'slug' => 'vuloform' ) );
+
+        if ( is_wp_error( $plugin_information ) ) {
+            return;
+        }
+
+        $upgrader = new \Plugin_Upgrader( new \Automatic_Upgrader_Skin() );
+        $upgrader->install( $plugin_information->download_link );
+
+        $plugin_file = $upgrader->plugin_info();
+
+        if ( $plugin_file ) {
+            activate_plugin( $plugin_file );
+        }
     }
 
     /**

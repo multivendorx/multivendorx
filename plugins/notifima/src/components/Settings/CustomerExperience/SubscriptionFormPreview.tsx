@@ -66,7 +66,7 @@ const SubscriptionFormPreview = () => {
 			<CardComponent>
 				<ModuleGuardComponent
 					icon="form"
-					iconColor="purple"
+					iconColor="purple-bg"
 					title={__('Enable VuloForm', 'notifima')}
 					desc={__(
 						'The back in stock subscription form is built with VuloForm. Activate the plugin to show the form on your products and edit it here.',
