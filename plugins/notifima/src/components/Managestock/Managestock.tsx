@@ -150,7 +150,7 @@ const Managestock = () => {
     );
 
 
-    const { buttonActions: headerButtonActions, ...tablePropsWithoutButtons } = tableProps;
+    const { buttonActions: headerButtonActions, ...tableProps } = tableProps;
 
     const headerButtons = (headerButtonActions || []).map((action) => ({
         label: action.label,
@@ -164,14 +164,14 @@ const Managestock = () => {
             return (
                 <div className="demo-wrapper" onClick={() => setOpenPopup(true)}>
                     <div className="watermark">{__('This is sample Data', 'notifima')}</div>
-                    <TableCard {...tablePropsWithoutButtons} />
+                    <TableCard {...tableProps} />
                 </div>
             );
         }
 
         return (
             <>
-                <TableCard {...tablePropsWithoutButtons} />
+                <TableCard {...tableProps} />
             </>
         );
     };

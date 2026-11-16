@@ -108,6 +108,6 @@
         "react-dom": "19.2.6",
         "react-router-dom": "^7.15.1",
         "react-select": "^5.10.2",
-        "@multivendorx/zyra": "link:/home/techmonastic/Desktop/zyra/packages/bundle"
+        "@multivendorx/zyra": "1.0.64"
     }
 }

@@ -10,7 +10,7 @@
  * WC tested up to: 11.2.1
  * Author URI: https://multivendorx.com/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima
  * Text Domain: notifima
- * Requires Plugins: woocommerce, vuloform
+ * Requires Plugins: woocommerce
  * Domain Path: /languages/
  *
  * @package Notifima

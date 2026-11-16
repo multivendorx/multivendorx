@@ -275,11 +275,7 @@ module.exports = function createWebpackConfig(
 		},
 
 		watchOptions: {
-			// Everything in node_modules except a linked local zyra, so a zyra rebuild (which deletes and
-			// rewrites its `build/` files) is noticed and triggers a rebuild here.
-			ignored: /[\\/]node_modules[\\/](?!@multivendorx[\\/]zyra)/,
-			// Watch the real files a symlinked zyra points to, not the link itself, whose mtime never changes.
-			followSymlinks: true,
+			ignored: /node_modules/,
 		},
 
 		module: {
