@@ -54,11 +54,10 @@ class Install {
             $this->create_database_table();
             $this->set_default_settings();
             $this->old_migration();
+            $this->install_vuloform();
         } else {
             $this->do_migration( $previous_version );
         }
-
-        $this->install_vuloform();
 
         update_option( 'notifima_version', NOTIFIMA_PLUGIN_VERSION );
 
@@ -75,8 +74,13 @@ class Install {
             return;
         }
 
-        require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
-        require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+        if ( ! function_exists( 'plugins_api' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
+        }
+
+        if ( ! class_exists( '\Plugin_Upgrader' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+        }
 
         $plugin_information = plugins_api( 'plugin_information', array( 'slug' => 'vuloform' ) );
 
@@ -274,6 +278,53 @@ class Install {
 			update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
             delete_option( 'notifima_cron_start' );
         }
+
+        if ( version_compare( $previous_version, '3.2.0', '<' ) ) {
+            $this->install_vuloform();
+            $this->migrate_subscription_form_to_vuloform();
+        }
+    }
+
+    /**
+     * Carries the old custom subscription form's email placeholder and button label over to the
+     * VuloForm form that replaces it, so an upgrading site does not lose its wording.
+     *
+     * @return void
+     */
+    private function migrate_subscription_form_to_vuloform() {
+        if ( ! SubscriptionForm::is_available() ) {
+            return;
+        }
+
+        $form_id = SubscriptionForm::form_id();
+
+        if ( ! $form_id ) {
+            return;
+        }
+
+        $form = vuloform_get_form( $form_id );
+
+        if ( ! $form ) {
+            return;
+        }
+
+        $fields = get_option( Utill::NOTIFIMA_SETTINGS['subscription-form-designer'], array() )['form_tabs']['personalize_layout_template']['formfieldlist'] ?? array();
+
+        $email_field  = current( array_filter( $fields, static fn( $field ) => 'email' === ( $field['type'] ?? '' ) ) );
+        $submit_field = current( array_filter( $fields, static fn( $field ) => 'button' === ( $field['type'] ?? '' ) ) );
+
+        $schema = $form['schema'];
+
+        if ( $email_field && isset( $schema['fields'][0] ) ) {
+            $schema['fields'][0]['label']       = $email_field['label'] ?? $schema['fields'][0]['label'];
+            $schema['fields'][0]['placeholder'] = $email_field['placeholder'] ?? $schema['fields'][0]['placeholder'];
+        }
+
+        if ( $submit_field ) {
+            $schema['settings']['submit_label'] = $submit_field['label'] ?? $submit_field['text'] ?? $schema['settings']['submit_label'];
+        }
+
+        VuloForm()->forms->update( $form_id, array( 'schema' => $schema ) );
     }
 
     /**
@@ -588,13 +639,13 @@ class Install {
 
                 // Replace all default value by previous settings.
                 foreach ( $appearance_settings as $key => $value ) {
-                    if ( isset( $tab_settings[ $key ] ) && '' !== $tab_settings[ $key ] ) {
+                    if ( ! empty( $tab_settings[ $key ] ) ) {
                         $appearance_settings[ $key ] = $tab_settings[ $key ];
                     }
                 }
 
                 foreach ( $submit_settings as $key => $value ) {
-                    if ( isset( $tab_settings[ $key ] ) && '' !== $tab_settings[ $key ] ) {
+                    if ( ! empty( $tab_settings[ $key ] ) ) {
                         $submit_settings[ $key ] = $tab_settings[ $key ];
                     }
                 }

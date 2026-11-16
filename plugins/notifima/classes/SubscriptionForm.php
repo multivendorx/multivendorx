@@ -205,7 +205,7 @@ class SubscriptionForm {
 	 * @return string
 	 */
 	public static function activation_notice() {
-		if ( ! current_user_can( 'activate_plugins' ) ) {
+		if ( empty( true === Utill::current_user_has_capability( 'activate_plugins' ) ) ) {
 			return '';
 		}
 
