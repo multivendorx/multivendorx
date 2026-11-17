@@ -101,18 +101,7 @@ declare global {
 	interface Color {
 		color: any;
 	}
-	interface RegistrationForm {
-		apiUrl: string;
-		nonce: string;
-		settings: Array;
-		default_placeholder: Array;
-		content_before_form: string;
-		content_after_form: string;
-		error_strings: Array;
-		is_user_logged_in: boolean;
-	}
 
 	var appLocalizer: AppLocalizer;
 	var color: Color;
-	var registrationForm: RegistrationForm;
 }

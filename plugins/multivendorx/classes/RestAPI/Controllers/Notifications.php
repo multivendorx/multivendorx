@@ -70,6 +70,302 @@ class Notifications extends \WP_REST_Controller {
                 ),
             )
         );
+
+        // Shared vulomail email-template contract — additive aliases only.
+        // `notifications`/`notifications/{id}` above stay exactly as they
+        // are (the activity-notification feed and store-dashboard headers
+        // already depend on that exact shape); these routes exist purely
+        // so an external consumer like vulomail can read/write the same
+        // per-event channel content without having to know multivendorx's
+        // own overloaded `events`/`header` query-param convention.
+        register_rest_route(
+            MultiVendorX()->rest_namespace,
+            '/email-templates',
+            array(
+                array(
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => array( $this, 'get_email_templates' ),
+                    'permission_callback' => array( $this, 'multivendorx_get_items_permissions_check' ),
+                ),
+            )
+        );
+
+        register_rest_route(
+            MultiVendorX()->rest_namespace,
+            '/email-templates/(?P<id>[\d]+)',
+            array(
+                array(
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => array( $this, 'get_item' ),
+                    'permission_callback' => array( $this, 'multivendorx_permissions_check' ),
+                    'args'                => array(
+                        'id' => array( 'required' => true ),
+                    ),
+                ),
+                array(
+                    'methods'             => \WP_REST_Server::EDITABLE,
+                    'callback'            => array( $this, 'update_item' ),
+                    'permission_callback' => array( $this, 'multivendorx_permissions_check' ),
+                ),
+            )
+        );
+
+        register_rest_route(
+            MultiVendorX()->rest_namespace,
+            '/email-events',
+            array(
+                array(
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => array( $this, 'get_email_templates' ),
+                    'permission_callback' => array( $this, 'multivendorx_get_items_permissions_check' ),
+                ),
+            )
+        );
+    }
+
+    /**
+     * Shared vulomail contract — `GET /email-templates` and
+     * `GET /email-events` (same event list; `email-events` exists as its
+     * own route so a caller that only wants the catalog, not full
+     * per-event channel content, has a stable name to call either way).
+     *
+     * @param object $request The request object.
+     */
+    public function get_email_templates( $request ) {
+        if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+            return new \WP_Error(
+                'rest_forbidden',
+                __( 'You are not allowed to view notification event settings.', 'multivendorx' ),
+                array( 'status' => 403 )
+            );
+        }
+
+        // The standalone "Email Template Customizer" settings screen
+        // (`email-template-customizer` tab) is a second, separate email
+        // surface from Event Rules — its own `wp_option`, not a row in
+        // `multivendorx_system_events` — so it isn't covered by
+        // `get_formatted_events()`. Prepending it here (id 0, reserved —
+        // real event ids are the table's own auto-increment, starting at
+        // 1) is what makes it show up next to Event Rules' events in
+        // vulomail's merged list.
+        // One row for this plugin: the Email Template Customizer. Each event's email, its recipients and
+        // its channels are saved here and edited on Settings > Notification > Event Rules; that screen
+        // opens VuloMail's editor on one event's data (`email-templates/{id}`), so the events are not
+        // repeated in VuloMail's list.
+        return rest_ensure_response( array( $this->get_template_customizer_row() ) );
+    }
+
+    /**
+     * The starter email templates this plugin ships (`templates/email/*.json`: id, name, previewText
+     * and blocks in the legacy block format), offered in the email editor's Templates tab.
+     *
+     * @return array
+     */
+    private function get_starter_templates() {
+        $templates = array();
+
+        foreach ( (array) glob( MultiVendorX()->plugin_path . 'templates/email/*.json' ) as $file ) {
+            $data = json_decode( (string) file_get_contents( $file ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+
+            if ( is_array( $data ) && ! empty( $data['id'] ) && ! empty( $data['blocks'] ) ) {
+                $data['name']        = __( (string) ( $data['name'] ?? '' ), 'multivendorx' ); // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
+                $data['previewText'] = __( (string) ( $data['previewText'] ?? '' ), 'multivendorx' ); // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
+                $templates[]         = $data;
+            }
+        }
+
+        // Every event's own default email, so any event can be set back to (or started from) another's.
+        foreach ( (array) MultiVendorX()->notifications->default_events() as $key => $event ) {
+            if ( empty( $event['name'] ) || empty( $event['email_body'] ) ) {
+                continue;
+            }
+
+            $templates[] = array(
+                'id'          => 'event-' . sanitize_key( (string) $key ),
+                'name'        => $event['name'],
+                'previewText' => (string) ( $event['email_subject'] ?? '' ),
+                'email_body'  => $event['email_body'],
+            );
+        }
+
+        return $templates;
+    }
+
+    /**
+     * The one list row representing the "Email Template Customizer"
+     * screen's own template (currently just the Sales Report email) —
+     * same `{id, event, description, ...}` shape `get_formatted_events()`
+     * rows use, so it renders in vulomail's list identically.
+     *
+     * @return array
+     */
+    private function get_template_customizer_row() {
+        return array(
+            'id'            => 0,
+            'icon'          => 'search-discovery',
+            'event'         => __( 'Email Template Customizer', 'multivendorx' ),
+            'description'   => __( 'Standalone marketplace email template, not tied to a specific event.', 'multivendorx' ),
+            'tag'           => 'template',
+            'category'      => 'template',
+            'recipients'    => array(),
+            'channels'      => array(
+                'mail'   => true,
+                'sms'    => false,
+                'system' => false,
+            ),
+            'email_subject' => null,
+        );
+    }
+
+    /**
+     * Reads the Email Template Customizer's own stored (or default-seeded)
+     * template — same `{ emailTemplates: [{id, name, blocks}],
+     * activeEmailTemplateId }` shape `EmailBuilderFieldComponent` already
+     * saves via the generic `POST /settings` route
+     * (`classes/RestAPI/Controllers/Settings.php::update_item()`), which
+     * derives this exact option name from `settingName`.
+     *
+     * @return array {id, name, blocks}
+     */
+    private function get_template_customizer_template() {
+        $stored = get_option( Utill::MULTIVENDORX_SETTINGS['email-template-customizer'], array() );
+        $saved  = $stored['email_templates']['emailTemplates'][0] ?? null;
+
+        if ( ! empty( $saved['blocks'] ) ) {
+            return $saved;
+        }
+
+        // Nothing saved yet. The settings screen's own JS-side default
+        // (`field.emailTemplates`'s full `salesReport` preset, with its
+        // stat-tile columns) isn't reachable from PHP, so this is a
+        // lighter real starting point rather than duplicating that whole
+        // block tree here — a blank canvas would otherwise look like
+        // nothing loaded at all when this popup first opens.
+        return array(
+            'id'     => 'store-registration',
+            'name'   => __( 'Sales Report', 'multivendorx' ),
+            'blocks' => array(
+                array(
+                    'id'   => 'default-heading',
+                    'type' => 'heading',
+                    'text' => __( 'Hi {storeName},', 'multivendorx' ),
+                ),
+                array(
+                    'id'   => 'default-text',
+                    'type' => 'richtext',
+                    'text' => __( "Here's how your store performed on {siteName} this week.", 'multivendorx' ),
+                ),
+            ),
+        );
+    }
+
+    /**
+     * Writes the Email Template Customizer's template back to its own
+     * option, same shape `update_item()` (`Settings.php`) already uses.
+     *
+     * @param array $blocks Legacy email blocks, as `legacyEmailAdapter.ts` shapes them.
+     * @return void
+     */
+    private function save_template_customizer_template( $blocks ) {
+        $template = $this->get_template_customizer_template();
+
+        update_option(
+            Utill::MULTIVENDORX_SETTINGS['email-template-customizer'],
+            array(
+                'email_templates' => array(
+                    'emailTemplates'         => array(
+                        array(
+                            'id'     => $template['id'],
+                            'name'   => $template['name'],
+                            'blocks' => $blocks,
+                        ),
+                    ),
+                    'activeEmailTemplateId' => $template['id'],
+                ),
+            )
+        );
+    }
+
+    /**
+     * Builds the formatted event/notification list shared by the legacy
+     * `GET notifications?events=1` branch and the `email-templates` /
+     * `email-events` routes.
+     *
+     * @return array
+     */
+    private function get_formatted_events() {
+        $results = MultiVendorX()->notifications->get_all_events();
+
+        $formated_notifications = array();
+
+        foreach ( $results as $row ) {
+            $custom_emails = ! empty( $row->custom_emails )
+                ? json_decode( $row->custom_emails, true )
+                : array();
+
+            // Build recipients array.
+            $recipients = array();
+            $id         = 1;
+
+            $recipients[] = array(
+                'id'        => $id++,
+                'type'      => 'Store',
+                'label'     => 'Store',
+                'enabled'   => (bool) $row->store_enabled,
+                'canDelete' => false,
+            );
+
+            $recipients[] = array(
+                'id'        => $id++,
+                'type'      => 'Admin',
+                'label'     => 'Admin',
+                'enabled'   => (bool) $row->admin_enabled,
+                'canDelete' => false,
+            );
+
+            if ( $row->customer_enabled ) {
+                $recipients[] = array(
+                    'id'        => $id++,
+                    'type'      => 'Customer',
+                    'label'     => 'Customer',
+                    'enabled'   => (bool) $row->customer_enabled,
+                    'canDelete' => false,
+                );
+            }
+
+            // Add any custom emails.
+            foreach ( $custom_emails as $email ) {
+                $recipients[] = array(
+                    'id'        => $id++,
+                    'type'      => 'extra',
+                    'label'     => $email,
+                    'enabled'   => true,
+                    'canDelete' => true,
+                );
+            }
+
+            $channels = array(
+                'mail'   => (bool) $row->email_enabled,
+                'sms'    => (bool) $row->sms_enabled,
+                'system' => (bool) $row->system_enabled,
+            );
+
+            $formated_notifications[] = array(
+                'id'            => (int) $row->id,
+                'icon'          => str_replace( '_', '-', $row->system_action ),
+                // Name of this event's email in VuloMail's template registry.
+                'template'      => \MultiVendorX\Integrations\VuloMailTemplates::template_name( $row->system_action ),
+                'event'         => $row->event_name,
+                'description'   => $row->description,
+                'tag'           => $row->tag,
+                'category'      => $row->category,
+                'recipients'    => $recipients,
+                'channels'      => $channels,
+                'email_subject' => $row->email_subject,
+            );
+        }
+
+        return $formated_notifications;
     }
 
     /**
@@ -170,75 +466,7 @@ class Notifications extends \WP_REST_Controller {
                     );
                 }
 
-                $results = MultiVendorX()->notifications->get_all_events();
-
-                $formated_notifications = array();
-
-                foreach ( $results as $row ) {
-                    $custom_emails = ! empty( $row->custom_emails )
-                        ? json_decode( $row->custom_emails, true )
-                        : array();
-
-                    // Build recipients array.
-                    $recipients = array();
-                    $id         = 1;
-
-                    $recipients[] = array(
-                        'id'        => $id++,
-                        'type'      => 'Store',
-                        'label'     => 'Store',
-                        'enabled'   => (bool) $row->store_enabled,
-                        'canDelete' => false,
-                    );
-
-                    $recipients[] = array(
-                        'id'        => $id++,
-                        'type'      => 'Admin',
-                        'label'     => 'Admin',
-                        'enabled'   => (bool) $row->admin_enabled,
-                        'canDelete' => false,
-                    );
-
-                    if ( $row->customer_enabled ) {
-                        $recipients[] = array(
-                            'id'        => $id++,
-                            'type'      => 'Customer',
-                            'label'     => 'Customer',
-                            'enabled'   => (bool) $row->customer_enabled,
-                            'canDelete' => false,
-                        );
-                    }
-
-                    // Add any custom emails.
-                    foreach ( $custom_emails as $email ) {
-                        $recipients[] = array(
-                            'id'        => $id++,
-                            'type'      => 'extra',
-                            'label'     => $email,
-                            'enabled'   => true,
-                            'canDelete' => true,
-                        );
-                    }
-
-                    $channels = array(
-                        'mail'   => (bool) $row->email_enabled,
-                        'sms'    => (bool) $row->sms_enabled,
-                        'system' => (bool) $row->system_enabled,
-                    );
-
-                    $formated_notifications[] = array(
-                        'id'          => (int) $row->id,
-                        'icon'        => str_replace( '_', '-', $row->system_action ),
-                        'event'       => $row->event_name,
-                        'description' => $row->description,
-                        'tag'         => $row->tag,
-                        'category'    => $row->category,
-                        'recipients'  => $recipients,
-                        'channels'    => $channels,
-                    );
-                }
-
-                return rest_ensure_response( $formated_notifications );
+                return rest_ensure_response( $this->get_formatted_events() );
             }
             // Store users can only access their own store's notifications.
             if ( ! StoreUtil::current_user_can_manage_store( $store_id ) ) {
@@ -385,6 +613,16 @@ class Notifications extends \WP_REST_Controller {
             $id           = $request->get_param( 'id' );
             $form_data    = $request->get_param( 'formData' );
 
+            if ( ! empty( $form_data ) && isset( $form_data['legacy_blocks'] ) && 0 === (int) ( $form_data['id'] ?? -1 ) ) {
+                $this->save_template_customizer_template( $form_data['legacy_blocks'] );
+
+                return rest_ensure_response(
+                    array(
+                        'success' => true,
+                    )
+                );
+            }
+
             if ( ! empty( $form_data ) ) {
                 $data = array(
                     'email_subject'  => $form_data['email_subject'],
@@ -512,9 +750,33 @@ class Notifications extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $id = $request->get_param( 'id' );
+            $id = (int) $request->get_param( 'id' );
+
+            if ( 0 === $id ) {
+                $template = $this->get_template_customizer_template();
+                return rest_ensure_response(
+                    array(
+                        array_merge(
+                            $this->get_template_customizer_row(),
+                            array(
+                                'legacy_blocks' => $template['blocks'],
+                                'templates'     => $this->get_starter_templates(),
+                            )
+                        ),
+                    )
+                );
+            }
 
             $results = MultiVendorX()->notifications->get_all_events( $id );
+
+            // Starter email templates for the editor's Templates tab.
+            if ( is_array( $results ) && isset( $results[0] ) && is_array( $results[0] ) ) {
+                $templates = $this->get_starter_templates();
+
+                foreach ( $results as $index => $row ) {
+                    $results[ $index ]['templates'] = $templates;
+                }
+            }
 
             return rest_ensure_response( $results );
         } catch ( \Exception $e ) {

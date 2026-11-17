@@ -392,7 +392,7 @@ const Dashboard = () => {
 						)}
 					</a>
 				</div>
-				<i className='close-btn adminfont-close red' onClick={() => { setIsMenuResponsive((prev) => !prev);}}/>
+				<i className='close-btn adminfont-close zyra-red' onClick={() => { setIsMenuResponsive((prev) => !prev);}}/>
 				{storeData?.status === 'active' && (
 					<div className="dashboard-tabs">
 						<ul>

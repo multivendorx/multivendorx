@@ -134,7 +134,7 @@ const Notifications: React.FC<NotificationsProps> = ({ type }) => {
 				<div className="title">
 					{__('Notifications', 'multivendorx')}
 					{notifications && notifications.length > 0 && (
-						<span className="admin-badge green">
+						<span className="admin-badge zyra-green">
 							{notifications.length} {__('New', 'multivendorx')}
 						</span>
 					)}

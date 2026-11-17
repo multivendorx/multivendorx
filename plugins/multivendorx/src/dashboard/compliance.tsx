@@ -307,7 +307,7 @@ const Compliance = (React.FC = () => {
 								// desc={__('Each product listing must have at least one clear image and an accurate description matching the actual item being sold.', 'multivendorx')}
 								action={
 									<>
-										<span className="admin-badge red">
+										<span className="admin-badge zyra-red">
 											Incomplete
 										</span>
 									</>
@@ -346,7 +346,7 @@ const Compliance = (React.FC = () => {
 											),
 											tags: (
 												<>
-													<span className="admin-badge green">
+													<span className="admin-badge zyra-green">
 														{__(
 															'Verified',
 															'multivendorx'
@@ -378,7 +378,7 @@ const Compliance = (React.FC = () => {
 											),
 											tags: (
 												<>
-													<span className="admin-badge red">
+													<span className="admin-badge zyra-red">
 														{__(
 															'Missing',
 															'multivendorx'
@@ -413,7 +413,7 @@ const Compliance = (React.FC = () => {
 								desc="Upload safety certificates to demonstrate product compliance and safety standards."
 								action={
 									<>
-										<span className="admin-badge yellow">
+										<span className="admin-badge zyra-yellow">
 											{__('Not Uploaded', 'multivendorx')}
 										</span>
 									</>
@@ -435,7 +435,7 @@ const Compliance = (React.FC = () => {
 											),
 											tags: (
 												<>
-													<span className="admin-badge blue">
+													<span className="admin-badge zyra-blue">
 														{__(
 															'Optional',
 															'multivendorx'
@@ -548,7 +548,7 @@ const Compliance = (React.FC = () => {
 								desc="Add bank details for payout processing and verification."
 								action={
 									<>
-										<span className="admin-badge yellow">
+										<span className="admin-badge zyra-yellow">
 											{__(
 												'Pending Verification',
 												'multivendorx'
@@ -573,7 +573,7 @@ const Compliance = (React.FC = () => {
 											),
 											tags: (
 												<>
-													<span className="admin-badge green">
+													<span className="admin-badge zyra-green">
 														{__(
 															'Under Review',
 															'multivendorx'
@@ -621,7 +621,7 @@ const Compliance = (React.FC = () => {
 											),
 											tags: (
 												<>
-													<span className="admin-badge green">
+													<span className="admin-badge zyra-green">
 														{__(
 															'Under Review',
 															'multivendorx'
@@ -657,7 +657,7 @@ const Compliance = (React.FC = () => {
 								desc="Upload tax documents to verify your business tax details."
 								action={
 									<>
-										<span className="admin-badge blue">
+										<span className="admin-badge zyra-blue">
 											{__('Under Review', 'multivendorx')}
 										</span>
 									</>
@@ -679,7 +679,7 @@ const Compliance = (React.FC = () => {
 											),
 											tags: (
 												<>
-													<span className="admin-badge blue">
+													<span className="admin-badge zyra-blue">
 														{__(
 															'Optional',
 															'multivendorx'
@@ -711,7 +711,7 @@ const Compliance = (React.FC = () => {
 											),
 											tags: (
 												<>
-													<span className="admin-badge blue">
+													<span className="admin-badge zyra-blue">
 														{__(
 															'Under Review',
 															'multivendorx'
@@ -743,7 +743,7 @@ const Compliance = (React.FC = () => {
 											),
 											tags: (
 												<>
-													<span className="admin-badge blue">
+													<span className="admin-badge zyra-blue">
 														{__(
 															'Optional',
 															'multivendorx'
@@ -821,7 +821,7 @@ const Compliance = (React.FC = () => {
 											),
 											tags: (
 												<>
-													<span className="admin-badge green">
+													<span className="admin-badge zyra-green">
 														{__(
 															'Under Review',
 															'multivendorx'
@@ -853,7 +853,7 @@ const Compliance = (React.FC = () => {
 											),
 											tags: (
 												<>
-													{/* <span className="admin-badge green">
+													{/* <span className="admin-badge zyra-green">
                                                         {__('Under Review', 'multivendorx')}
                                                     </span> */}
 													<ButtonInput
@@ -882,7 +882,7 @@ const Compliance = (React.FC = () => {
 											),
 											tags: (
 												<>
-													{/* <span className="admin-badge green">
+													{/* <span className="admin-badge zyra-green">
                                                         {__('Under Review', 'multivendorx')}
                                                     </span> */}
 													<ButtonInput

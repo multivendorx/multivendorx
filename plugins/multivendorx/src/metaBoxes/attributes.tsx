@@ -299,7 +299,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                                 }}
                                             />
                                             <span
-                                                className="admin-badge red adminfont-delete"
+                                                className="admin-badge zyra-red adminfont-delete"
                                                 onClick={() => deleteOption(vIndex, oIndex)}
                                             />
                                         </div>
@@ -349,7 +349,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
                                     </div>
                                     <div className="variantion-wrapper">
                                         {variation.options.map((opt, idx) => (
-                                            <div className="admin-badge blue" key={idx}>
+                                            <div className="admin-badge zyra-blue" key={idx}>
                                                 {opt}
                                             </div>
                                         ))}

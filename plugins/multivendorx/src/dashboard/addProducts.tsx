@@ -327,7 +327,7 @@ const AddProduct = () => {
 							desc="Sell a single product with its own price and inventory."
 							toggle={true}
 							action={
-								<div className="admin-badge blue">
+								<div className="admin-badge zyra-blue">
 									{completedCount}/{totalCount}
 								</div>
 							}

@@ -248,7 +248,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 								label={__('Order Status', 'multivendorx')}
 								className="space-between"
 							>
-								<span className="admin-badge blue">
+								<span className="admin-badge zyra-blue">
 									{formatStatusLabel(orderData?.status)}
 								</span>
 							</FormGroupComponent>

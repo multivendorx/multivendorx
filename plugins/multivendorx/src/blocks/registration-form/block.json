@@ -4,11 +4,11 @@
 	"title": "Registration Form",
 	"category": "multivendorx-shortcodes",
 	"icon": "admin-users",
-	"description": "A block that renders the vendor registration form using React.",
+	"description": "A block that renders the vendor registration form with VuloForm.",
 	"supports": {
 		"html": false
 	},
 	"editorScript": "file:./index.js",
-	"viewScript": "file:./view.js",
+	"render": "file:./render.php",
 	"textdomain": "multivendorx"
 }

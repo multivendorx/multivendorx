@@ -394,6 +394,20 @@ class StoreUtil {
             }
         }
 
+        // The registration form now lives in VuloForm: take its labels too.
+        $form_id = Registration::is_available() ? (int) get_option( Registration::FORM_OPTION, 0 ) : 0;
+        $form    = $form_id ? vuloform_get_form( $form_id ) : null;
+
+        foreach ( $form['schema']['fields'] ?? array() as $field ) {
+            if ( ! empty( $field['key'] ) && ! empty( $field['label'] ) ) {
+                $name_label_map[ $field['key'] ] = $field['label'];
+            }
+
+            foreach ( $field['options'] ?? array() as $option ) {
+                $option_label_map[ $option['value'] ] = $option['label'];
+            }
+        }
+
         $primary_owner_id   = self::get_primary_owner( $store_id );
         $primary_owner_info = get_userdata( $primary_owner_id );
 
