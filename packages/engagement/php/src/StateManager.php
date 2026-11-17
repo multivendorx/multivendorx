@@ -10,8 +10,7 @@ namespace MultivendorX\Engagement;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Tracks notice/campaign impressions, dismissals, snoozes and completion, and enforces the
- * frequency/cooldown rules against that state. All reads/writes go through Storage.
+ * Tracks notice/campaign impressions, dismissals, snoozes and completion.
  *
  * @package MultivendorX\Engagement
  */
@@ -89,8 +88,7 @@ class StateManager {
     }
 
     /**
-     * Record an actual rendered impression for a notice (only ever called after the frontend
-     * confirms the notice was rendered - never on fetch/queue).
+     * Record a rendered impression for a notice.
      *
      * @param string $notice_id Notice id.
      * @param string $source    Owning plugin slug.
@@ -166,7 +164,7 @@ class StateManager {
     }
 
     /**
-     * Write a notice's state row back to storage - shared by every notice setter above.
+     * Write a notice's state row back to storage.
      *
      * @param string $notice_id Notice id.
      * @param array  $state     Full state row to store.
@@ -178,7 +176,7 @@ class StateManager {
     }
 
     /**
-     * Write a campaign's state row back to storage - shared by every campaign setter above.
+     * Write a campaign's state row back to storage.
      *
      * @param string $campaign_id Campaign id.
      * @param array  $state       Full state row to store.
@@ -190,12 +188,11 @@ class StateManager {
     }
 
     /**
-     * Whether a notice is currently allowed to be shown, given its own frequency rule and
-     * the framework-wide default frequency rule.
+     * Whether a notice is currently allowed to be shown.
      *
      * @param string $notice_id      Notice id.
-     * @param array  $frequency      Notice-specific frequency override (max_impressions, cooldown_days).
-     * @param bool   $is_operational Operational/critical notices bypass promotional frequency limits.
+     * @param array  $frequency      Frequency override (max_impressions, cooldown_days).
+     * @param bool   $is_operational Operational notices bypass frequency limits.
      * @return bool
      */
     public function is_notice_eligible( $notice_id, array $frequency = array(), $is_operational = false ) {
@@ -213,9 +210,9 @@ class StateManager {
             return true;
         }
 
-        $settings        = $this->storage->get_settings();
-        $max_impressions = isset( $frequency['max_impressions'] ) ? (int) $frequency['max_impressions'] : (int) $settings['frequency']['max_impressions'];
-        $cooldown_days   = isset( $frequency['cooldown_days'] ) ? (int) $frequency['cooldown_days'] : (int) $settings['frequency']['cooldown_days'];
+        $defaults        = $this->storage->get_settings()['frequency'];
+        $max_impressions = isset( $frequency['max_impressions'] ) ? (int) $frequency['max_impressions'] : (int) $defaults['max_impressions'];
+        $cooldown_days   = isset( $frequency['cooldown_days'] ) ? (int) $frequency['cooldown_days'] : (int) $defaults['cooldown_days'];
 
         if ( $state['impressions'] >= $max_impressions ) {
             return false;

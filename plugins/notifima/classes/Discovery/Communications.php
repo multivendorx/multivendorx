@@ -19,8 +19,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class Communications {
 
-	const NOTICE_ID = 'notifima_vulomail_promotion';
-
 	/**
 	 * Requests the VuloMail promotion notice from the shared framework, if available.
 	 */
@@ -46,7 +44,7 @@ class Communications {
 
 		Engagement::instance()->notices()->request(
 			array(
-				'id'        => self::NOTICE_ID,
+				'id'        => 'notifima_vulomail_promotion',
 				'type'      => 'product_discovery',
 				'source'    => 'notifima',
 				'priority'  => 80,

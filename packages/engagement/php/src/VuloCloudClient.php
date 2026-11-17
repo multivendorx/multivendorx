@@ -11,20 +11,9 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Generic VuloCloud telemetry transport: register a site, send a snapshot, disconnect, and
- * encrypt/decrypt the stored site secret. One instance per consuming plugin, configured with
- * that plugin's own base URL/organization id/option prefix - this class only owns *how* a
- * snapshot is sent, never *what* goes in it or *whether* consent allows sending it.
- *
- * Bundled into the Engagement Framework package rather than split out on its own, but it's
- * still a self-contained concern within it - nothing else in this package depends on it, and
- * it depends on nothing else here:
- * - Consent/opt-in state: the caller decides whether to call report()/register_site() at all -
- *   e.g. by checking `TelemetryManager::has_valid_consent()` first. This class doesn't call
- *   into TelemetryManager itself.
- * - Payload content: each plugin builds its own snapshot array (site name, versions, active
- *   plugins, etc.) - this client only transports whatever array it's given.
- * - Scheduling (daily cron, retry timing): the caller's own class owns those hooks and decides
- *   when to call register_site()/report().
+ * encrypt/decrypt the stored site secret. One instance per consuming plugin. Self-contained -
+ * the caller owns consent checks, payload content, and scheduling; this class only owns
+ * *how* a snapshot is sent.
  *
  * @package MultivendorX\Engagement
  */
@@ -59,8 +48,7 @@ class VuloCloudClient {
     private $plugin_version;
 
     /**
-     * Prefix for this plugin's own options/transients, e.g. 'notifima' ->
-     * 'notifima_vulocloud_connection'. Keeps each plugin's stored connection separate.
+     * Prefix for this plugin's own options/transients, e.g. 'notifima'.
      *
      * @var string
      */
@@ -84,7 +72,7 @@ class VuloCloudClient {
     }
 
     /**
-     * Whether this client has a non-empty base URL/organization id to actually reach VuloCloud.
+     * Whether this client has a base URL/organization id to reach VuloCloud.
      *
      * @return bool
      */
@@ -125,8 +113,7 @@ class VuloCloudClient {
     }
 
     /**
-     * Timestamp of the last registration attempt (0 if none yet) - used by the caller to pace
-     * retries.
+     * Timestamp of the last registration attempt (0 if none yet).
      *
      * @return int
      */
@@ -135,9 +122,7 @@ class VuloCloudClient {
     }
 
     /**
-     * POST /connected-sites/register and store the returned credential on success. A fresh
-     * one-time verification token is published first (see publish_verification_token()) and
-     * sent along, so VuloCloud can fetch it back and confirm this domain really made the request.
+     * POST /connected-sites/register and store the returned credential on success.
      *
      * @param array $payload Snapshot to send with the registration.
      * @return true|\WP_Error
@@ -147,7 +132,8 @@ class VuloCloudClient {
 
         $response = $this->post( '/connected-sites/register', $this->registration_body( $payload ), true );
 
-        $body = $this->parse_response( $response, array( 'siteId', 'siteSecret' ), 'vulocloud_register_' . $this->plugin_id );
+        $log_context = 'vulocloud_register_' . $this->plugin_id;
+        $body        = $this->parse_response( $response, array( 'siteId', 'siteSecret' ), $log_context );
         if ( null === $body ) {
             return new \WP_Error(
                 'vulocloud_register_failed',
@@ -177,14 +163,13 @@ class VuloCloudClient {
     }
 
     /**
-     * POST one snapshot to VuloCloud for an already-registered site. A 401/403/404 drops the
-     * stored connection so the site re-registers on the next call to register_site().
+     * POST one snapshot to VuloCloud. A 401/403/404 drops the stored connection.
      *
      * @param string $site_id           ConnectedSite id.
      * @param string $secret            Plaintext site secret.
      * @param array  $payload           Snapshot to send.
      * @param bool   $blocking          Wait for the response instead of fire-and-forget.
-     * @param bool   $allow_during_ajax Send even during wp_doing_ajax() - deactivation popups only.
+     * @param bool   $allow_during_ajax Send even during wp_doing_ajax().
      * @return bool True if VuloCloud acknowledged the ping (always false when non-blocking).
      */
     public function report( $site_id, $secret, array $payload, $blocking = false, $allow_during_ajax = false ) {
@@ -222,8 +207,7 @@ class VuloCloudClient {
     }
 
     /**
-     * Best-effort, non-blocking opt-out request, then forget the credential locally either
-     * way - never blocked by, or dependent on, network reachability.
+     * Best-effort opt-out request, then forget the credential locally either way.
      *
      * @param string $site_id ConnectedSite id.
      * @param string $secret  Plaintext site secret.
@@ -242,18 +226,18 @@ class VuloCloudClient {
     }
 
     /**
-     * One-time report flow for a site with no ongoing credential (e.g. a deactivation report
-     * sent before the admin ever accepted tracking): register for, then immediately spend, a
-     * short-lived single-use report authorization. Never stores anything locally.
+     * One-time report for a site with no ongoing credential. Never stores anything locally.
      *
      * @param array  $payload Snapshot to send.
      * @param string $purpose Sent to VuloCloud as the registration's `purpose` field.
      * @return bool
      */
     public function send_one_time_report( array $payload, $purpose = 'one_time_report' ) {
-        $response = $this->post( '/connected-sites/register', $this->registration_body( $payload, $purpose ), true );
+        $registration_body = $this->registration_body( $payload, $purpose );
+        $response           = $this->post( '/connected-sites/register', $registration_body, true );
 
-        $body = $this->parse_response( $response, array( 'siteId', 'reportToken' ), 'vulocloud_one_time_register_' . $this->plugin_id );
+        $log_context = 'vulocloud_one_time_register_' . $this->plugin_id;
+        $body        = $this->parse_response( $response, array( 'siteId', 'reportToken' ), $log_context );
         if ( null === $body ) {
             return false;
         }
@@ -272,9 +256,7 @@ class VuloCloudClient {
     }
 
     /**
-     * Register a REST route exposing the in-flight verification token, so VuloCloud can
-     * confirm this domain registered itself. Public by design - single-use, lives ten
-     * minutes, 404 when none is in flight.
+     * Register a REST route exposing the in-flight verification token. Public by design.
      *
      * @param string $rest_namespace This plugin's own REST namespace.
      */
@@ -298,7 +280,8 @@ class VuloCloudClient {
     public function get_verification_token() {
         $token = get_transient( $this->verification_transient_key() );
         if ( ! is_string( $token ) || '' === $token ) {
-            return new \WP_Error( 'vulocloud_no_pending_verification', __( 'No registration is in progress.', 'notifima' ), array( 'status' => 404 ) );
+            $message = __( 'No registration is in progress.', 'notifima' );
+            return new \WP_Error( 'vulocloud_no_pending_verification', $message, array( 'status' => 404 ) );
         }
 
         $response = new \WP_REST_Response(
@@ -315,10 +298,7 @@ class VuloCloudClient {
     }
 
     /**
-     * Best-effort recognition of hosts that identify themselves via a well-known
-     * constant/function - generic across every plugin's tracking payload, not VuloCloud-
-     * specific, but kept here since it has no other natural home and every plugin building a
-     * payload needs it.
+     * Best-effort recognition of hosts via a well-known constant/function.
      *
      * @return string
      */
@@ -348,9 +328,7 @@ class VuloCloudClient {
     }
 
     /**
-     * Build the `/connected-sites/register` request body - shared by register_site() (no
-     * `purpose`) and send_one_time_report() (`purpose` set), which otherwise each repeated the
-     * same five fields.
+     * Build the `/connected-sites/register` request body.
      *
      * @param array      $payload Snapshot to send.
      * @param string|null $purpose Optional `purpose` field for a one-time registration.
@@ -374,7 +352,7 @@ class VuloCloudClient {
     }
 
     /**
-     * POST JSON to a VuloCloud endpoint - the one shared request shape behind every call.
+     * POST JSON to a VuloCloud endpoint.
      *
      * @param string $path     Endpoint path, e.g. '/connected-sites/register'.
      * @param array  $body     Request body, JSON-encoded as-is.
@@ -396,8 +374,7 @@ class VuloCloudClient {
     }
 
     /**
-     * Parse a wp_remote_post() response: unwrap WP_Error, check the status range, decode the
-     * JSON body, and confirm required keys are present - logs on any failure.
+     * Parse a wp_remote_post() response, decoding the JSON body and checking required keys.
      *
      * @param array|\WP_Error $response      Result of a post() call.
      * @param string[]        $required_keys Body keys that must be non-empty for success.
@@ -422,7 +399,13 @@ class VuloCloudClient {
         }
 
         if ( $status < 200 || $status >= 300 || ! $has_required_keys ) {
-            $this->log( $log_context, array( 'status' => $status, 'body' => wp_remote_retrieve_body( $response ) ) );
+            $this->log(
+                $log_context,
+                array(
+                    'status' => $status,
+                    'body'   => wp_remote_retrieve_body( $response ),
+                )
+            );
             return null;
         }
 
@@ -430,8 +413,7 @@ class VuloCloudClient {
     }
 
     /**
-     * Log a failure. Uses WP's own debug log rather than a plugin-specific logger, since this
-     * package has no dependency on any one plugin's `Utill::log()`.
+     * Log a failure to WP's own debug log.
      *
      * @param string $context Log context label.
      * @param array  $data    Extra data to log.
@@ -496,7 +478,8 @@ class VuloCloudClient {
      * @param array $fields Partial connection fields.
      */
     private function save_connection( array $fields ) {
-        update_option( $this->connection_option_key(), array_merge( $this->get_connection(), $fields ), false );
+        $connection = array_merge( $this->get_connection(), $fields );
+        update_option( $this->connection_option_key(), $connection, false );
     }
 
     /**

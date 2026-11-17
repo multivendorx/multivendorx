@@ -10,11 +10,8 @@ namespace MultivendorX\Engagement;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * REST endpoints for the Engagement Framework. Registered under each consuming plugin's own
- * REST namespace (passed in by Engagement::init()) rather than minting a namespace of its
- * own - there is no single owning plugin for a shared package.
- *
- * Never exposes unrestricted notice creation: this controller only ever reads the existing
+ * REST endpoints for the Engagement Framework, registered under each consuming plugin's
+ * own REST namespace. Never exposes unrestricted notice creation - only reads the existing
  * queue/preferences or applies an interaction/consent decision a capability check allows.
  *
  * @package MultivendorX\Engagement
@@ -109,8 +106,7 @@ class RESTController {
     }
 
     /**
-     * Capability + nonce check shared by every engagement route. Engagement notices are an
-     * admin-facing concern (shown in wp-admin), so `manage_options` is the correct bar.
+     * Capability + nonce check shared by every engagement route.
      *
      * @param \WP_REST_Request $request Request instance.
      * @return bool
@@ -125,8 +121,7 @@ class RESTController {
     }
 
     /**
-     * GET /engagement/notices - eligible notices only, already priority-sorted and
-     * frequency-filtered by NoticeManager.
+     * GET /engagement/notices - eligible, priority-sorted notices.
      *
      * @return \WP_REST_Response
      */
@@ -155,8 +150,7 @@ class RESTController {
     }
 
     /**
-     * GET /engagement/preferences - current telemetry consent record only (the rest of
-     * `multivendorx_engagement_settings` is internal, not a public preferences surface).
+     * GET /engagement/preferences - current telemetry consent record only.
      *
      * @return \WP_REST_Response
      */

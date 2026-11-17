@@ -10,26 +10,18 @@ namespace MultivendorX\Engagement;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Manages the single, shared telemetry-consent lifecycle (undecided/accepted/declined/
- * dismissed/revoked) and the optional-event queue. Declining or never deciding never
- * disables local event processing - Engagement::dispatch() always runs listeners
- * regardless of consent; only queue_event()/should_transmit() are consent-gated.
+ * Manages the shared telemetry-consent lifecycle and the optional-event queue. Declining or
+ * never deciding never disables local event processing - only queue_event()/transmission are
+ * consent-gated.
  *
- * Also renders the consent prompt itself (render_consent_prompt()) and applies a decision
- * from its action links (apply_consent_decision()) - called by NoticeManager, which owns the
- * actual admin_notices/admin_post hook registration and the priority competition between this
- * prompt and NoticeManager's own notices (see NoticeManager::render()). Kept here rather than
- * in a separate renderer class because the two concerns (consent state and a tiny read-only
- * presentation of it) are small enough that the split added nothing beyond a third file to
- * maintain in lockstep.
+ * Also renders the consent prompt (render_consent_prompt()) and applies decisions from its
+ * action links (apply_consent_decision()), called by NoticeManager, which owns the actual
+ * admin_notices/admin_post hooks and the priority competition with its own notices.
  *
- * Transmission: transmit_queued_events() sends the queue via `wp_remote_post()` to whatever
- * endpoint the `multivendorx_engagement_telemetry_endpoint` filter returns. No endpoint is
- * hardcoded here - the shared framework has no transport of its own, only a generic one any
- * consuming plugin can point at its own collection endpoint via that filter. If no endpoint is
- * configured, `multivendorx_engagement_telemetry_batch_ready` fires instead so a plugin with
- * its own transport (e.g. Notifima's existing VuloCloud client) can send the batch itself
- * without this class needing to know about that protocol.
+ * Transmission: transmit_queued_events() posts the queue to whatever endpoint the
+ * `multivendorx_engagement_telemetry_endpoint` filter returns. If no endpoint is configured,
+ * `multivendorx_engagement_telemetry_batch_ready` fires instead so a plugin with its own
+ * transport (e.g. Notifima's VuloCloud client) can send the batch itself.
  *
  * @package MultivendorX\Engagement
  */
@@ -64,9 +56,7 @@ class TelemetryManager {
     }
 
     /**
-     * Whether any plugin should currently show the consent prompt: no decision exists yet,
-     * or a 'dismissed' decision's 365-day reminder has elapsed. Checked on admin page load
-     * by whichever integrated plugin is active - not WP-Cron, per spec section 6.
+     * Whether the consent prompt is currently due (undecided, or a dismiss reminder elapsed).
      *
      * @return bool
      */
@@ -102,7 +92,6 @@ class TelemetryManager {
 
     /**
      * Record decline. Disables optional telemetry transmission; never prompts again.
-     * Local event processing (Path A) is unaffected - see class docblock.
      */
     public function decline() {
         $this->set_consent_status(
@@ -115,8 +104,7 @@ class TelemetryManager {
     }
 
     /**
-     * Record dismissal. Status stays 'undecided' in effect for prompting purposes, but we
-     * record 'dismissed' explicitly (per spec's 5-state model) with a 365-day reminder.
+     * Record dismissal, with a 365-day reminder before prompting again.
      */
     public function dismiss() {
         $this->set_consent_status(
@@ -129,8 +117,7 @@ class TelemetryManager {
     }
 
     /**
-     * Revoke a previously accepted consent. Stops all future collection/transmission and
-     * discards any already-queued optional events.
+     * Revoke a previously accepted consent and discard any queued events.
      */
     public function revoke() {
         $this->set_consent_status(
@@ -146,12 +133,9 @@ class TelemetryManager {
     }
 
     /**
-     * Merge consent changes into settings and persist, then notify listeners of the change.
-     *
-     * Idempotent by design: if the status isn't actually changing, this is a no-op - no write,
-     * no `multivendorx_engagement_telemetry_consent_changed` dispatch. This is what lets a
-     * consuming plugin (e.g. Notifima's Tracker) mirror an accept/decline into its own settings
-     * UI on that same action without looping back into another dispatch.
+     * Merge consent changes into settings and persist, then notify listeners. Idempotent -
+     * a no-op if the status isn't actually changing, so a consuming plugin can safely mirror
+     * the change on the same action without looping.
      *
      * @param string $status  New status value.
      * @param array  $changes Fields to merge into telemetry_consent.
@@ -181,8 +165,7 @@ class TelemetryManager {
     }
 
     /**
-     * Queue a minimized, validated event as an optional-telemetry candidate. No-op if consent
-     * isn't currently 'accepted' - declining/revoking means nothing is ever queued or sent.
+     * Queue a minimized event as an optional-telemetry candidate. No-op without consent.
      *
      * @param string $event   Event name.
      * @param array  $payload Event payload (already expected to exclude PII by the caller).
@@ -211,8 +194,7 @@ class TelemetryManager {
     }
 
     /**
-     * Strip anything resembling credentials or personal data from a telemetry payload before
-     * it is queued. Never collect passwords, API keys, secrets or email addresses here.
+     * Strip anything resembling credentials or personal data from a payload.
      *
      * @param array $payload Raw payload.
      * @return array
@@ -233,8 +215,7 @@ class TelemetryManager {
     }
 
     /**
-     * Remove queue entries older than a retention window - the queue is never a permanent
-     * history, only pending-transmission candidates.
+     * Remove queue entries older than a retention window.
      *
      * @param int $max_age_seconds Entries older than this are dropped. Default 7 days.
      */
@@ -253,10 +234,7 @@ class TelemetryManager {
     }
 
     /**
-     * Attempt to send the current queue and clear it once sent. No-op if consent isn't
-     * currently 'accepted' (revoking/declining already clears/blocks the queue, but this is
-     * checked again here in case the batch was built up before a later revocation) or if the
-     * queue is empty. Expired entries are pruned first so a stale batch is never sent.
+     * Send the current queue and clear it once sent. Expired entries are pruned first.
      *
      * @return bool|null True if sent and cleared, false on transport failure, null if there
      *                    was nothing to send or consent doesn't currently allow it.
@@ -276,7 +254,7 @@ class TelemetryManager {
         $endpoint = apply_filters( 'multivendorx_engagement_telemetry_endpoint', '' );
 
         if ( ! $endpoint ) {
-            // No generic endpoint configured - hand the batch to a plugin-owned transport instead.
+            // No endpoint configured - hand the batch to a plugin-owned transport instead.
             do_action( 'multivendorx_engagement_telemetry_batch_ready', $data['event_queue'] );
             return null;
         }
@@ -311,23 +289,24 @@ class TelemetryManager {
     }
 
     /**
-     * Render the consent prompt - Accept/Decline/Not now, each a plain link to
-     * admin-post.php (NoticeManager::ACTION, the same handler NoticeManager's own notice
-     * dismiss links use). No JavaScript.
+     * Render the consent prompt - Accept/Decline/Not now, plain links. No JavaScript.
      */
     public function render_consent_prompt() {
+        $accept_url  = NoticeManager::build_action_url( 'consent', '', 'accept' );
+        $decline_url = NoticeManager::build_action_url( 'consent', '', 'decline' );
+        $dismiss_url = NoticeManager::build_action_url( 'consent', '', 'dismiss' );
         ?>
         <div class="notice notice-info multivendorx-engagement-consent">
             <p><strong><?php esc_html_e( 'Help us improve', 'notifima' ); ?></strong></p>
             <p><?php esc_html_e( 'Share anonymous usage data to help us improve. No personal or customer data is collected.', 'notifima' ); ?></p>
             <p>
-                <a class="button button-primary" style="margin-right: 6px;" href="<?php echo esc_url( NoticeManager::build_action_url( 'consent', '', 'accept' ) ); ?>">
+                <a class="button button-primary" style="margin-right: 6px;" href="<?php echo esc_url( $accept_url ); ?>">
                     <?php esc_html_e( 'Accept', 'notifima' ); ?>
                 </a>
-                <a class="button button-secondary" style="margin-right: 6px;" href="<?php echo esc_url( NoticeManager::build_action_url( 'consent', '', 'decline' ) ); ?>">
+                <a class="button button-secondary" style="margin-right: 6px;" href="<?php echo esc_url( $decline_url ); ?>">
                     <?php esc_html_e( 'Decline', 'notifima' ); ?>
                 </a>
-                <a class="button button-link" href="<?php echo esc_url( NoticeManager::build_action_url( 'consent', '', 'dismiss' ) ); ?>">
+                <a class="button button-link" href="<?php echo esc_url( $dismiss_url ); ?>">
                     <?php esc_html_e( 'Not now', 'notifima' ); ?>
                 </a>
             </p>
@@ -336,9 +315,7 @@ class TelemetryManager {
     }
 
     /**
-     * Apply an accept/decline/dismiss/revoke consent decision - shared by
-     * NoticeManager::handle_action() (for `kind=consent`) and RESTController::post_consent(),
-     * so the set of valid decisions only needs to be kept in one place.
+     * Apply an accept/decline/dismiss/revoke consent decision.
      *
      * @param string $decision One of accept|decline|dismiss|revoke.
      * @return bool True if $decision was a known decision and was applied.

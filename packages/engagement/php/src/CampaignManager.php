@@ -10,9 +10,8 @@ namespace MultivendorX\Engagement;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Registers predefined campaigns and evaluates their eligibility against events, usage
- * duration and their own frequency/completion state. Eligible campaigns are handed to
- * NoticeManager - campaigns never render or queue a notice themselves.
+ * Registers predefined campaigns and evaluates their eligibility. Eligible campaigns
+ * are handed to NoticeManager - campaigns never render or queue a notice themselves.
  *
  * @package MultivendorX\Engagement
  */
@@ -26,8 +25,7 @@ class CampaignManager {
     private $campaigns = array();
 
     /**
-     * Event bus - Engagement itself (its listen()/dispatch() methods), not a separate
-     * EventManager class.
+     * Event bus - Engagement itself (its listen()/dispatch() methods).
      *
      * @var Engagement
      */
@@ -61,8 +59,7 @@ class CampaignManager {
     }
 
     /**
-     * Register a campaign definition - see CLAUDE spec section 9 for shape. Ignored
-     * (not overwritten) if a campaign with the same id is already registered.
+     * Register a campaign definition. Ignored if the id is already registered.
      *
      * @param array $campaign Campaign definition.
      * @return bool|\WP_Error
@@ -93,8 +90,7 @@ class CampaignManager {
     }
 
     /**
-     * Evaluate one campaign's eligibility against its trigger condition and current state,
-     * and hand a notice to NoticeManager if eligible.
+     * Evaluate one campaign's eligibility and hand a notice to NoticeManager if eligible.
      *
      * @param string $campaign_id Campaign id.
      */
@@ -109,13 +105,14 @@ class CampaignManager {
             return;
         }
 
-        $minimum_days = isset( $campaign['trigger']['minimum_usage_days'] ) ? (int) $campaign['trigger']['minimum_usage_days'] : 0;
+        $trigger      = $campaign['trigger'];
+        $minimum_days = isset( $trigger['minimum_usage_days'] ) ? (int) $trigger['minimum_usage_days'] : 0;
         if ( $minimum_days > 0 && ! $this->meets_minimum_usage_days( $campaign, $minimum_days ) ) {
             return;
         }
 
         $frequency = (array) ( $campaign['frequency'] ?? array() );
-        $notice_id = $campaign_id; // Campaign id doubles as the notice id for its own notice state row.
+        $notice_id = $campaign_id; // Campaign id doubles as the notice id.
 
         if ( ! $this->state->is_notice_eligible( $notice_id, $frequency, false ) ) {
             return;
@@ -137,8 +134,7 @@ class CampaignManager {
     }
 
     /**
-     * Whether the plugin has been active at least $minimum_days, based on the plugin's own
-     * `{source}_engagement_activated_at` option (set once by EngagementProvider::register()).
+     * Whether the plugin has been active at least $minimum_days.
      *
      * @param array $campaign     Campaign definition.
      * @param int   $minimum_days Minimum days since activation.

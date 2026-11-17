@@ -24,16 +24,6 @@ defined( 'ABSPATH' ) || exit;
 class Tracker {
 
     /**
-     * Legacy consent option, kept only as a read-only fallback for sites where the shared
-     * Engagement Framework package isn't available, and as the one-time migration source
-     * EngagementProvider::migrate_existing_consent() reads from. Never written to by this
-     * class anymore.
-     *
-     * @var string
-     */
-    private const CONSENT_OPTION_KEY = 'notifima_tracking_consent';
-
-    /**
      * Shared VuloCloud transport client, configured for this plugin.
      *
      * @var VuloCloudClient
@@ -91,7 +81,7 @@ class Tracker {
             return Engagement::instance()->telemetry()->has_valid_consent();
         }
 
-        return 'yes' === get_option( self::CONSENT_OPTION_KEY );
+        return 'yes' === get_option( 'notifima_tracking_consent' );
     }
 
     /**

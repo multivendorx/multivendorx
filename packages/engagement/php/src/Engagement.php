@@ -11,8 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Main entry point for the shared MultivendorX Engagement Framework. One singleton per
- * request, shared by every consuming plugin (MultiVendorX, CatalogX, Notifima, ...) -
- * `init()` is safe to call from each plugin's bootstrap; only the first call constructs it.
+ * request, shared by every consuming plugin.
  *
  * Usage from a consuming plugin:
  *
@@ -68,19 +67,14 @@ class Engagement {
     private $telemetry;
 
     /**
-     * Event listeners, keyed by event name. The event bus used to be its own EventManager
-     * class; folded in here since it was a thin, 2-method wrapper with no state of its own
-     * beyond this array, and Engagement already is the one place every manager is wired
-     * together - a separate class bought no isolation CampaignManager/TelemetryManager
-     * couldn't already get from calling Engagement::instance()->listen()/dispatch() directly.
+     * Event listeners, keyed by event name.
      *
      * @var array<string, callable[]>
      */
     private $listeners = array();
 
     /**
-     * REST namespaces already registered, so register_provider() can be called more than once
-     * for the same plugin without registering duplicate routes.
+     * REST namespaces already registered.
      *
      * @var string[]
      */
@@ -114,8 +108,7 @@ class Engagement {
     }
 
     /**
-     * Dispatch an event: run local listeners (Path A, always), then forward to
-     * TelemetryManager as an optional-transmission candidate (Path B, consent-gated).
+     * Run local listeners, then queue the event for optional telemetry.
      *
      * @param string $event   Event name.
      * @param array  $payload Event payload.
@@ -129,9 +122,7 @@ class Engagement {
     }
 
     /**
-     * Schedule the daily telemetry transmission cron event once. WP-Cron only drives
-     * *transmission* of an already-queued, already-consented batch - it is never relied on
-     * for showing the consent prompt itself (that's checked on admin page load, per spec).
+     * Schedule the daily telemetry transmission cron event once.
      */
     public function ensure_telemetry_cron_scheduled() {
         if ( ! wp_next_scheduled( 'multivendorx_engagement_telemetry_transmit' ) ) {
@@ -152,12 +143,10 @@ class Engagement {
     }
 
     /**
-     * Register a plugin as an Engagement Framework provider: marks its activation timestamp
-     * (used by CampaignManager's minimum_usage_days trigger) and registers one REST
-     * controller for its namespace. Safe to call multiple times for the same plugin/namespace.
+     * Register a plugin as an Engagement Framework provider.
      *
-     * @param string $source           Plugin slug, e.g. 'notifima'.
-     * @param string $rest_namespace   The plugin's own REST namespace, e.g. 'notifima/v1'.
+     * @param string $source         Plugin slug, e.g. 'notifima'.
+     * @param string $rest_namespace Plugin's own REST namespace, e.g. 'notifima/v1'.
      */
     public function register_provider( $source, $rest_namespace ) {
         $activated_option = $source . '_engagement_activated_at';
@@ -192,9 +181,7 @@ class Engagement {
     }
 
     /**
-     * The event bus is Engagement itself now (see listen()/dispatch() above) - this accessor
-     * stays only so existing call sites (`Engagement::instance()->events()->dispatch(...)`)
-     * don't need to change.
+     * The event bus is Engagement itself (see listen()/dispatch() above).
      *
      * @return self
      */

@@ -12,11 +12,8 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Centralizes all WordPress Options API access for the Engagement Framework.
  *
- * Exactly two shared options are used: `multivendorx_engagement_settings` (static
- * configuration) and `multivendorx_engagement_data` (dynamic state) - see CLAUDE spec section 5.
- * Both are site-scoped (not network/multisite-wide): each site decides its own notice/campaign
- * state and telemetry consent independently, matching how `get_option()`/`update_option()`
- * already behave for every other option in this codebase.
+ * Two shared, site-scoped options are used: `multivendorx_engagement_settings`
+ * (static configuration) and `multivendorx_engagement_data` (dynamic state).
  *
  * @package MultivendorX\Engagement
  */
@@ -133,9 +130,7 @@ class Storage {
     }
 
     /**
-     * Shallow-merge defaults under stored values, one level deep per top-level key, so a
-     * missing nested key (e.g. a new `telemetry_consent` field added in a later version)
-     * gets its default without discarding other stored values.
+     * Recursively fill in missing keys from defaults without discarding stored values.
      *
      * @param array $defaults Default array.
      * @param array $stored   Stored array.
