@@ -14,9 +14,30 @@ defined( 'ABSPATH' ) || exit;
  * campaigns from CampaignManager) go through. Validates, deduplicates, applies priority and
  * frequency, and exposes the resulting queue to the REST layer.
  *
+ * Also owns rendering: `admin_notices`/`admin_post` as plain WordPress admin notices, no
+ * JavaScript. render() decides between the single highest-priority eligible notice and
+ * TelemetryManager's consent prompt by comparing priorities on the same scale (see
+ * CONSENT_PRIORITY) - this is the one place that needs to know about both NoticeManager's own
+ * queue and TelemetryManager's consent state, so it lives here rather than a third renderer
+ * class whose only job was holding a reference to each of these two anyway.
+ *
  * @package MultivendorX\Engagement
  */
 class NoticeManager {
+
+    /**
+     * Admin-post.php action name for every dismiss/consent-decision link this class renders.
+     *
+     * @var string
+     */
+    const ACTION = 'multivendorx_engagement_action';
+
+    /**
+     * Telemetry consent's priority on the same scale notices use (DEFAULT_PRIORITIES below).
+     *
+     * @var int
+     */
+    const CONSENT_PRIORITY = 90;
 
     const TYPES = array(
         'onboarding',
@@ -66,14 +87,27 @@ class NoticeManager {
     private $queue = array();
 
     /**
+     * Shared telemetry manager - only used to decide/render the consent prompt competing for
+     * the same screen real estate (see render()); not used anywhere else in this class.
+     *
+     * @var TelemetryManager
+     */
+    private $telemetry;
+
+    /**
      * Constructor.
      *
-     * @param Storage      $storage Shared storage instance.
-     * @param StateManager $state   Shared state manager.
+     * @param Storage          $storage   Shared storage instance.
+     * @param StateManager     $state     Shared state manager.
+     * @param TelemetryManager $telemetry Shared telemetry manager.
      */
-    public function __construct( Storage $storage, StateManager $state ) {
-        $this->storage = $storage;
-        $this->state   = $state;
+    public function __construct( Storage $storage, StateManager $state, TelemetryManager $telemetry ) {
+        $this->storage   = $storage;
+        $this->state     = $state;
+        $this->telemetry = $telemetry;
+
+        add_action( 'admin_notices', array( $this, 'render' ) );
+        add_action( 'admin_post_' . self::ACTION, array( $this, 'handle_action' ) );
     }
 
     /**
@@ -217,9 +251,7 @@ class NoticeManager {
             return; // Duplicate within this request.
         }
 
-        $is_operational = in_array( $notice['type'], array( 'system', 'operational' ), true );
-
-        if ( ! $this->state->is_notice_eligible( $notice['id'], $notice['frequency'], $is_operational ) ) {
+        if ( ! $this->state->is_notice_eligible( $notice['id'], $notice['frequency'], $this->is_operational_type( $notice['type'] ) ) ) {
             return;
         }
 
@@ -243,10 +275,10 @@ class NoticeManager {
         );
 
         $operational = array_values(
-            array_filter( $queue, static fn( $n ) => in_array( $n['type'], array( 'system', 'operational' ), true ) )
+            array_filter( $queue, fn( $n ) => $this->is_operational_type( $n['type'] ) )
         );
         $promotional = array_values(
-            array_filter( $queue, static fn( $n ) => ! in_array( $n['type'], array( 'system', 'operational' ), true ) )
+            array_filter( $queue, fn( $n ) => ! $this->is_operational_type( $n['type'] ) )
         );
 
         if ( ! empty( $promotional ) ) {
@@ -289,5 +321,136 @@ class NoticeManager {
             default:
                 return new \WP_Error( 'engagement_invalid_interaction', 'Unknown interaction type.' );
         }
+    }
+
+    /**
+     * Render whichever of (telemetry consent prompt, top eligible notice) currently has the
+     * higher priority - not an automatic consent-always-wins rule. get_eligible_notices()
+     * already sorted/capped its side down to one promotional notice plus any operational ones.
+     */
+    public function render() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+
+        $consent_due = $this->telemetry->should_prompt_for_consent();
+
+        $eligible    = $this->get_eligible_notices();
+        $top_notice  = $eligible[0] ?? null;
+        $notice_wins = $top_notice && ( ! $consent_due || $top_notice['priority'] > self::CONSENT_PRIORITY );
+
+        if ( $notice_wins ) {
+            $this->render_notice( $top_notice );
+            return;
+        }
+
+        if ( $consent_due ) {
+            $this->telemetry->render_consent_prompt();
+        }
+    }
+
+    /**
+     * Render one notice and record its impression - rendering here *is* the confirmation the
+     * notice actually reached the page, so the impression is recorded synchronously rather
+     * than waiting on a separate "confirm render" round trip the way a JS renderer would need.
+     *
+     * @param array $notice Eligible notice from get_eligible_notices().
+     */
+    private function render_notice( array $notice ) {
+        $this->handle_interaction( $notice['id'], 'impression', array( 'source' => $notice['source'] ) );
+
+        $css_class = $this->severity_class( $notice['type'] );
+        ?>
+        <div class="notice <?php echo esc_attr( $css_class ); ?> multivendorx-engagement-notice">
+            <p><strong><?php echo esc_html( $notice['content']['title'] ); ?></strong></p>
+            <p><?php echo esc_html( $notice['content']['description'] ); ?></p>
+            <p>
+                <?php foreach ( $notice['actions'] as $action ) : ?>
+                    <?php if ( 'url' === $action['type'] ) : ?>
+                        <a class="button button-secondary" style="margin-right: 6px;" href="<?php echo esc_url( $action['url'] ); ?>" target="_blank" rel="noopener noreferrer">
+                            <?php echo esc_html( $action['label'] ); ?>
+                        </a>
+                    <?php elseif ( 'dismiss' === $action['type'] ) : ?>
+                        <a class="button button-link" href="<?php echo esc_url( self::build_action_url( 'notice', $notice['id'], 'dismiss' ) ); ?>">
+                            <?php echo esc_html( $action['label'] ); ?>
+                        </a>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Map a notice type to a WordPress admin-notice severity class.
+     *
+     * @param string $type Notice type.
+     * @return string
+     */
+    private function severity_class( $type ) {
+        return $this->is_operational_type( $type ) ? 'notice-warning' : 'notice-info';
+    }
+
+    /**
+     * Whether a notice type is exempt from promotional frequency limits/the one-at-a-time cap
+     * (see get_eligible_notices()/add_to_queue()) - also used for its admin-notice color.
+     *
+     * @param string $type Notice type.
+     * @return bool
+     */
+    private function is_operational_type( $type ) {
+        return in_array( $type, array( 'system', 'operational' ), true );
+    }
+
+    /**
+     * Build a nonced admin-post.php URL for a dismiss/consent decision. Static (and public) so
+     * TelemetryManager::render_consent_prompt() can build its own links to the same handler
+     * without needing a NoticeManager instance.
+     *
+     * @param string $kind      'notice' or 'consent'.
+     * @param string $notice_id Notice id - empty for a consent decision.
+     * @param string $decision  'dismiss' (notice) or 'accept'|'decline'|'dismiss' (consent).
+     * @return string
+     */
+    public static function build_action_url( $kind, $notice_id, $decision ) {
+        return wp_nonce_url(
+            add_query_arg(
+                array(
+                    'action'    => self::ACTION,
+                    'kind'      => $kind,
+                    'notice_id' => $notice_id,
+                    'decision'  => $decision,
+                ),
+                admin_url( 'admin-post.php' )
+            ),
+            self::ACTION
+        );
+    }
+
+    /**
+     * Admin-post.php handler for every link rendered above. Applies the decision, then
+     * redirects back to wherever the link was clicked from.
+     */
+    public function handle_action() {
+        check_admin_referer( self::ACTION );
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'You do not have permission to do this.', 'notifima' ) );
+        }
+
+        $kind     = isset( $_GET['kind'] ) ? sanitize_key( $_GET['kind'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- verified above via check_admin_referer().
+        $decision = isset( $_GET['decision'] ) ? sanitize_key( $_GET['decision'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- verified above via check_admin_referer().
+
+        if ( 'consent' === $kind ) {
+            $this->telemetry->apply_consent_decision( $decision );
+        } elseif ( 'notice' === $kind && 'dismiss' === $decision ) {
+            $notice_id = isset( $_GET['notice_id'] ) ? sanitize_key( $_GET['notice_id'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- verified above via check_admin_referer().
+            if ( $notice_id ) {
+                $this->handle_interaction( $notice_id, 'dismiss' );
+            }
+        }
+
+        wp_safe_redirect( wp_get_referer() ?: admin_url() ); // phpcs:ignore Universal.Operators.DisallowShortTernary.Found -- wp_get_referer() has no falsy-but-valid return to misfire on here.
+        exit;
     }
 }

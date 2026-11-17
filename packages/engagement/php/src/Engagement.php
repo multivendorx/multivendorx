@@ -61,18 +61,22 @@ class Engagement {
     private $campaigns;
 
     /**
-     * Shared event bus.
-     *
-     * @var EventManager
-     */
-    private $events;
-
-    /**
      * Shared telemetry manager.
      *
      * @var TelemetryManager
      */
     private $telemetry;
+
+    /**
+     * Event listeners, keyed by event name. The event bus used to be its own EventManager
+     * class; folded in here since it was a thin, 2-method wrapper with no state of its own
+     * beyond this array, and Engagement already is the one place every manager is wired
+     * together - a separate class bought no isolation CampaignManager/TelemetryManager
+     * couldn't already get from calling Engagement::instance()->listen()/dispatch() directly.
+     *
+     * @var array<string, callable[]>
+     */
+    private $listeners = array();
 
     /**
      * REST namespaces already registered, so register_provider() can be called more than once
@@ -89,16 +93,39 @@ class Engagement {
         $this->storage   = new Storage();
         $this->state     = new StateManager( $this->storage );
         $this->telemetry = new TelemetryManager( $this->storage );
-        $this->events    = new EventManager( $this->telemetry );
-        $this->notices   = new NoticeManager( $this->storage, $this->state );
-        $this->campaigns = new CampaignManager( $this->events, $this->state, $this->notices );
-
-        if ( is_admin() ) {
-            new AdminNoticeRenderer( $this->notices, $this->telemetry );
-        }
+        $this->notices   = new NoticeManager( $this->storage, $this->state, $this->telemetry );
+        $this->campaigns = new CampaignManager( $this, $this->state, $this->notices );
 
         add_action( 'init', array( $this, 'ensure_telemetry_cron_scheduled' ) );
         add_action( 'multivendorx_engagement_telemetry_transmit', array( $this->telemetry, 'transmit_queued_events' ) );
+    }
+
+    /**
+     * Register a listener for an event name. Any plugin/campaign manager may listen.
+     *
+     * @param string   $event    Event name.
+     * @param callable $callback Receives (array $payload).
+     */
+    public function listen( $event, callable $callback ) {
+        if ( ! isset( $this->listeners[ $event ] ) ) {
+            $this->listeners[ $event ] = array();
+        }
+        $this->listeners[ $event ][] = $callback;
+    }
+
+    /**
+     * Dispatch an event: run local listeners (Path A, always), then forward to
+     * TelemetryManager as an optional-transmission candidate (Path B, consent-gated).
+     *
+     * @param string $event   Event name.
+     * @param array  $payload Event payload.
+     */
+    public function dispatch( $event, array $payload = array() ) {
+        foreach ( $this->listeners[ $event ] ?? array() as $callback ) {
+            call_user_func( $callback, $payload );
+        }
+
+        $this->telemetry->queue_event( $event, $payload );
     }
 
     /**
@@ -165,12 +192,14 @@ class Engagement {
     }
 
     /**
-     * Get the shared event bus.
+     * The event bus is Engagement itself now (see listen()/dispatch() above) - this accessor
+     * stays only so existing call sites (`Engagement::instance()->events()->dispatch(...)`)
+     * don't need to change.
      *
-     * @return EventManager
+     * @return self
      */
     public function events() {
-        return $this->events;
+        return $this;
     }
 
     /**

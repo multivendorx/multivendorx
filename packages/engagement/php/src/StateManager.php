@@ -96,8 +96,7 @@ class StateManager {
      * @param string $source    Owning plugin slug.
      */
     public function record_notice_impression( $notice_id, $source = '' ) {
-        $data  = $this->storage->get_data();
-        $state = isset( $data['notices'][ $notice_id ] ) ? $data['notices'][ $notice_id ] : $this->default_notice_state();
+        $state = $this->get_notice_state( $notice_id );
 
         $now = time();
         if ( empty( $state['first_shown'] ) ) {
@@ -107,8 +106,7 @@ class StateManager {
         $state['impressions'] = (int) $state['impressions'] + 1;
         $state['source']      = $source ? $source : $state['source'];
 
-        $data['notices'][ $notice_id ] = $state;
-        $this->storage->save_data( $data );
+        $this->save_notice_state( $notice_id, $state );
     }
 
     /**
@@ -117,14 +115,11 @@ class StateManager {
      * @param string $notice_id Notice id.
      */
     public function dismiss_notice( $notice_id ) {
-        $data  = $this->storage->get_data();
-        $state = isset( $data['notices'][ $notice_id ] ) ? $data['notices'][ $notice_id ] : $this->default_notice_state();
-
+        $state                 = $this->get_notice_state( $notice_id );
         $state['status']       = 'dismissed';
         $state['dismissed_at'] = time();
 
-        $data['notices'][ $notice_id ] = $state;
-        $this->storage->save_data( $data );
+        $this->save_notice_state( $notice_id, $state );
     }
 
     /**
@@ -134,14 +129,11 @@ class StateManager {
      * @param int    $snooze_until  Unix timestamp to resume showing the notice.
      */
     public function snooze_notice( $notice_id, $snooze_until ) {
-        $data  = $this->storage->get_data();
-        $state = isset( $data['notices'][ $notice_id ] ) ? $data['notices'][ $notice_id ] : $this->default_notice_state();
-
+        $state                  = $this->get_notice_state( $notice_id );
         $state['status']        = 'snoozed';
         $state['snoozed_until'] = (int) $snooze_until;
 
-        $data['notices'][ $notice_id ] = $state;
-        $this->storage->save_data( $data );
+        $this->save_notice_state( $notice_id, $state );
     }
 
     /**
@@ -151,15 +143,13 @@ class StateManager {
      * @param string $source      Owning plugin slug.
      */
     public function record_campaign_impression( $campaign_id, $source = '' ) {
-        $data  = $this->storage->get_data();
-        $state = isset( $data['campaigns'][ $campaign_id ] ) ? $data['campaigns'][ $campaign_id ] : $this->default_campaign_state();
+        $state = $this->get_campaign_state( $campaign_id );
 
         $state['impressions'] = (int) $state['impressions'] + 1;
         $state['last_shown']  = time();
         $state['source']      = $source ? $source : $state['source'];
 
-        $data['campaigns'][ $campaign_id ] = $state;
-        $this->storage->save_data( $data );
+        $this->save_campaign_state( $campaign_id, $state );
     }
 
     /**
@@ -168,12 +158,33 @@ class StateManager {
      * @param string $campaign_id Campaign id.
      */
     public function complete_campaign( $campaign_id ) {
-        $data  = $this->storage->get_data();
-        $state = isset( $data['campaigns'][ $campaign_id ] ) ? $data['campaigns'][ $campaign_id ] : $this->default_campaign_state();
-
+        $state                 = $this->get_campaign_state( $campaign_id );
         $state['completed']    = true;
         $state['completed_at'] = time();
 
+        $this->save_campaign_state( $campaign_id, $state );
+    }
+
+    /**
+     * Write a notice's state row back to storage - shared by every notice setter above.
+     *
+     * @param string $notice_id Notice id.
+     * @param array  $state     Full state row to store.
+     */
+    private function save_notice_state( $notice_id, array $state ) {
+        $data                           = $this->storage->get_data();
+        $data['notices'][ $notice_id ] = $state;
+        $this->storage->save_data( $data );
+    }
+
+    /**
+     * Write a campaign's state row back to storage - shared by every campaign setter above.
+     *
+     * @param string $campaign_id Campaign id.
+     * @param array  $state       Full state row to store.
+     */
+    private function save_campaign_state( $campaign_id, array $state ) {
+        $data                               = $this->storage->get_data();
         $data['campaigns'][ $campaign_id ] = $state;
         $this->storage->save_data( $data );
     }

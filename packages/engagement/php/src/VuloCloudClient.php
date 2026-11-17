@@ -145,17 +145,7 @@ class VuloCloudClient {
     public function register_site( array $payload ) {
         $this->save_connection( array( 'last_register_attempt' => time() ) );
 
-        $response = $this->post(
-            '/connected-sites/register',
-            array(
-                'organizationId'    => $this->organization_id,
-                'pluginId'          => $this->plugin_id,
-                'domain'            => home_url(),
-                'verificationToken' => $this->publish_verification_token(),
-                'payload'           => $payload,
-            ),
-            true
-        );
+        $response = $this->post( '/connected-sites/register', $this->registration_body( $payload ), true );
 
         $body = $this->parse_response( $response, array( 'siteId', 'siteSecret' ), 'vulocloud_register_' . $this->plugin_id );
         if ( null === $body ) {
@@ -261,18 +251,7 @@ class VuloCloudClient {
      * @return bool
      */
     public function send_one_time_report( array $payload, $purpose = 'one_time_report' ) {
-        $response = $this->post(
-            '/connected-sites/register',
-            array(
-                'organizationId'    => $this->organization_id,
-                'pluginId'          => $this->plugin_id,
-                'domain'            => home_url(),
-                'verificationToken' => $this->publish_verification_token(),
-                'purpose'           => $purpose,
-                'payload'           => $payload,
-            ),
-            true
-        );
+        $response = $this->post( '/connected-sites/register', $this->registration_body( $payload, $purpose ), true );
 
         $body = $this->parse_response( $response, array( 'siteId', 'reportToken' ), 'vulocloud_one_time_register_' . $this->plugin_id );
         if ( null === $body ) {
@@ -369,6 +348,32 @@ class VuloCloudClient {
     }
 
     /**
+     * Build the `/connected-sites/register` request body - shared by register_site() (no
+     * `purpose`) and send_one_time_report() (`purpose` set), which otherwise each repeated the
+     * same five fields.
+     *
+     * @param array      $payload Snapshot to send.
+     * @param string|null $purpose Optional `purpose` field for a one-time registration.
+     * @return array
+     */
+    private function registration_body( array $payload, $purpose = null ) {
+        $body = array(
+            'organizationId'    => $this->organization_id,
+            'pluginId'          => $this->plugin_id,
+            'domain'            => home_url(),
+            'verificationToken' => $this->publish_verification_token(),
+        );
+
+        if ( null !== $purpose ) {
+            $body['purpose'] = $purpose;
+        }
+
+        $body['payload'] = $payload;
+
+        return $body;
+    }
+
+    /**
      * POST JSON to a VuloCloud endpoint - the one shared request shape behind every call.
      *
      * @param string $path     Endpoint path, e.g. '/connected-sites/register'.
@@ -408,28 +413,17 @@ class VuloCloudClient {
         $status = (int) wp_remote_retrieve_response_code( $response );
         $body   = json_decode( (string) wp_remote_retrieve_body( $response ), true );
 
-        if ( $status < 200 || $status >= 300 || ! is_array( $body ) ) {
-            $this->log(
-                $log_context,
-                array(
-					'status' => $status,
-					'body'   => wp_remote_retrieve_body( $response ),
-                )
-            );
-            return null;
-        }
-
+        $has_required_keys = is_array( $body );
         foreach ( $required_keys as $key ) {
             if ( empty( $body[ $key ] ) ) {
-                $this->log(
-                    $log_context,
-                    array(
-						'status' => $status,
-						'body'   => wp_remote_retrieve_body( $response ),
-                    )
-                );
-                return null;
+                $has_required_keys = false;
+                break;
             }
+        }
+
+        if ( $status < 200 || $status >= 300 || ! $has_required_keys ) {
+            $this->log( $log_context, array( 'status' => $status, 'body' => wp_remote_retrieve_body( $response ) ) );
+            return null;
         }
 
         return $body;

@@ -26,9 +26,10 @@ class CampaignManager {
     private $campaigns = array();
 
     /**
-     * Shared event bus.
+     * Event bus - Engagement itself (its listen()/dispatch() methods), not a separate
+     * EventManager class.
      *
-     * @var EventManager
+     * @var Engagement
      */
     private $events;
 
@@ -49,11 +50,11 @@ class CampaignManager {
     /**
      * Constructor.
      *
-     * @param EventManager  $events  Shared event bus.
+     * @param Engagement    $events  Event bus (Engagement::listen()/dispatch()).
      * @param StateManager  $state   Shared state manager.
      * @param NoticeManager $notices Shared notice manager.
      */
-    public function __construct( EventManager $events, StateManager $state, NoticeManager $notices ) {
+    public function __construct( Engagement $events, StateManager $state, NoticeManager $notices ) {
         $this->events  = $events;
         $this->state   = $state;
         $this->notices = $notices;

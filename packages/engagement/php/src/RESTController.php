@@ -178,21 +178,8 @@ class RESTController {
     public function post_consent( \WP_REST_Request $request ) {
         $decision = sanitize_key( (string) $request->get_param( 'decision' ) );
 
-        switch ( $decision ) {
-            case 'accept':
-                $this->telemetry->accept();
-                break;
-            case 'decline':
-                $this->telemetry->decline();
-                break;
-            case 'dismiss':
-                $this->telemetry->dismiss();
-                break;
-            case 'revoke':
-                $this->telemetry->revoke();
-                break;
-            default:
-                return new \WP_Error( 'engagement_invalid_consent_decision', 'Unknown consent decision.', array( 'status' => 400 ) );
+        if ( ! $this->telemetry->apply_consent_decision( $decision ) ) {
+            return new \WP_Error( 'engagement_invalid_consent_decision', 'Unknown consent decision.', array( 'status' => 400 ) );
         }
 
         return rest_ensure_response( array( 'telemetry_consent' => $this->telemetry->get_consent() ) );

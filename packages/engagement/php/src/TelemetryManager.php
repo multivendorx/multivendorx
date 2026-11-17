@@ -12,8 +12,16 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Manages the single, shared telemetry-consent lifecycle (undecided/accepted/declined/
  * dismissed/revoked) and the optional-event queue. Declining or never deciding never
- * disables local event processing - EventManager::dispatch() always runs listeners
+ * disables local event processing - Engagement::dispatch() always runs listeners
  * regardless of consent; only queue_event()/should_transmit() are consent-gated.
+ *
+ * Also renders the consent prompt itself (render_consent_prompt()) and applies a decision
+ * from its action links (apply_consent_decision()) - called by NoticeManager, which owns the
+ * actual admin_notices/admin_post hook registration and the priority competition between this
+ * prompt and NoticeManager's own notices (see NoticeManager::render()). Kept here rather than
+ * in a separate renderer class because the two concerns (consent state and a tiny read-only
+ * presentation of it) are small enough that the split added nothing beyond a third file to
+ * maintain in lockstep.
  *
  * Transmission: transmit_queued_events() sends the queue via `wp_remote_post()` to whatever
  * endpoint the `multivendorx_engagement_telemetry_endpoint` filter returns. No endpoint is
@@ -298,6 +306,60 @@ class TelemetryManager {
 
         $data['event_queue'] = array();
         $this->storage->save_data( $data );
+
+        return true;
+    }
+
+    /**
+     * Render the consent prompt - Accept/Decline/Not now, each a plain link to
+     * admin-post.php (NoticeManager::ACTION, the same handler NoticeManager's own notice
+     * dismiss links use). No JavaScript.
+     */
+    public function render_consent_prompt() {
+        ?>
+        <div class="notice notice-info multivendorx-engagement-consent">
+            <p><strong><?php esc_html_e( 'Help us improve', 'notifima' ); ?></strong></p>
+            <p><?php esc_html_e( 'Share anonymous usage data to help us improve. No personal or customer data is collected.', 'notifima' ); ?></p>
+            <p>
+                <a class="button button-primary" style="margin-right: 6px;" href="<?php echo esc_url( NoticeManager::build_action_url( 'consent', '', 'accept' ) ); ?>">
+                    <?php esc_html_e( 'Accept', 'notifima' ); ?>
+                </a>
+                <a class="button button-secondary" style="margin-right: 6px;" href="<?php echo esc_url( NoticeManager::build_action_url( 'consent', '', 'decline' ) ); ?>">
+                    <?php esc_html_e( 'Decline', 'notifima' ); ?>
+                </a>
+                <a class="button button-link" href="<?php echo esc_url( NoticeManager::build_action_url( 'consent', '', 'dismiss' ) ); ?>">
+                    <?php esc_html_e( 'Not now', 'notifima' ); ?>
+                </a>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Apply an accept/decline/dismiss/revoke consent decision - shared by
+     * NoticeManager::handle_action() (for `kind=consent`) and RESTController::post_consent(),
+     * so the set of valid decisions only needs to be kept in one place.
+     *
+     * @param string $decision One of accept|decline|dismiss|revoke.
+     * @return bool True if $decision was a known decision and was applied.
+     */
+    public function apply_consent_decision( $decision ) {
+        switch ( $decision ) {
+            case 'accept':
+                $this->accept();
+                break;
+            case 'decline':
+                $this->decline();
+                break;
+            case 'dismiss':
+                $this->dismiss();
+                break;
+            case 'revoke':
+                $this->revoke();
+                break;
+            default:
+                return false;
+        }
 
         return true;
     }
