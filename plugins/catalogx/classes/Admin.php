@@ -97,11 +97,6 @@ class Admin {
                 'subtab'   => 'pages-shortcodes',
                 'priority' => 60,
             ),
-            'modules'          => array(
-                'name'     => __( 'Modules', 'catalogx' ),
-                'subtab'   => '',
-                'priority' => 70,
-            ),
         );
 
         uasort(

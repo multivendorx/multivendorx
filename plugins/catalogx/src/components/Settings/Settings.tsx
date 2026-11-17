@@ -14,6 +14,7 @@ import {
 import { NavigatorComponent, type SaveStatus } from '@zyra/components';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
+import PluginModules from '../Modules/Modules';
 
 interface SettingsProps {
     id: string;
@@ -33,6 +34,10 @@ const Settings: React.FC<SettingsProps> = () => {
 
         if (!currentTab) {
             return null;
+        }
+
+        if (currentTab === 'modules') {
+            return <PluginModules />;
         }
 
         const settingModal = getSettingById(settingsArray, currentTab);
