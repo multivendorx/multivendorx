@@ -674,8 +674,8 @@ const SetupWizard: React.FC = () => {
 			value={value}
 			onChange={(data) => updateSetting(inputField.key, data)}
 			canAccess
-			brandName="MultiVendorX"
-			brandMark={<img src={img} alt="" />}
+			brandName=""
+			brandMark={<img src={img} alt={__('MultiVendorX', 'multivendorx')} />}
 			railTitle={__('Setup', 'multivendorx')}
 			intro={
 				<>
