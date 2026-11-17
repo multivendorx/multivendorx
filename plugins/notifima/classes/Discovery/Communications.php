@@ -36,7 +36,6 @@ class Communications {
 	 * Request the VuloMail promotion notice. NoticeManager handles whether it's actually
 	 * eligible to show right now (not dismissed, within frequency/cooldown) - this just
 	 * supplies content and the one real precondition (VuloMail not already active).
-	 *
 	 */
 	public function request_vulomail_notice() {
 		if ( ! is_admin() || $this->is_vulomail_active() ) {
@@ -84,18 +83,18 @@ class Communications {
 	}
 
 	/**
-	 * Check whether VuloMail is active on this site or network.
+	 * Check whether VuloMail is active on this site or network - is_plugin_active() already
+	 * checks both site and network activation, so there's no need to manually merge
+	 * `active_plugins`/`active_sitewide_plugins` the way Tracker::get_tracking_payload() does
+	 * for its full plugin list (a different need - every plugin, not one specific slug).
 	 *
 	 * @return bool
 	 */
 	private function is_vulomail_active() {
-		$active_plugins = (array) get_option( 'active_plugins', array() );
-
-		if ( is_multisite() ) {
-			$network_plugins = array_keys( (array) get_site_option( 'active_sitewide_plugins', array() ) );
-			$active_plugins  = array_merge( $active_plugins, $network_plugins );
+		if ( ! function_exists( 'is_plugin_active' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 
-		return in_array( 'vulomail/vulomail.php', $active_plugins, true );
+		return is_plugin_active( 'vulomail/vulomail.php' );
 	}
 }
