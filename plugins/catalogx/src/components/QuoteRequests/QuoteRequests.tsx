@@ -98,7 +98,6 @@ const QuoteRequests = () => {
     const defaultTableProps = {
         headers,
         format: appLocalizer.date_format,
-        hideHeader: true,
         buttonActions,
         categoryCounts: defaultCategoryCounts,
         filters,

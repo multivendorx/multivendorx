@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import Settings from './components/Settings/Settings';
-import Modules from './components/Modules/Modules';
 import EnquiryMessages from './components/EnquiryMessages/enquiryMessages';
 import WholesaleUser from './components/WholesaleUser/wholesaleUser.tsx';
 import Rules from './components/Rules/Rules';
@@ -26,7 +25,6 @@ const Route = () => {
 			{currentTab.get('tab') === 'settings' && (
 				<Settings id={'settings'} />
 			)}
-			{currentTab.get('tab') === 'modules' && <Modules />}
 			{currentTab.get('tab') === 'quote-requests' && (
 				<QuoteRequests />
 			)}
