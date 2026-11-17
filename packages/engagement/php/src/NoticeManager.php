@@ -428,9 +428,9 @@ class NoticeManager {
         }
 
         // phpcs:disable WordPress.Security.NonceVerification.Recommended -- verified above via check_admin_referer().
-        $kind      = isset( $_GET['kind'] ) ? sanitize_key( $_GET['kind'] ) : '';
-        $decision  = isset( $_GET['decision'] ) ? sanitize_key( $_GET['decision'] ) : '';
-        $notice_id = isset( $_GET['notice_id'] ) ? sanitize_key( $_GET['notice_id'] ) : '';
+        $kind      = sanitize_key( (string) filter_input( INPUT_GET, 'kind', FILTER_UNSAFE_RAW ) );
+        $decision  = sanitize_key( (string) filter_input( INPUT_GET, 'decision', FILTER_UNSAFE_RAW ) );
+        $notice_id = sanitize_key( (string) filter_input( INPUT_GET, 'notice_id', FILTER_UNSAFE_RAW ) );
         // phpcs:enable
 
         if ( 'consent' === $kind ) {
