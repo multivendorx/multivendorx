@@ -38,6 +38,16 @@ const QuoteRequests = () => {
                     avatar={{
                         iconClass: 'quote',
                     }}
+                    badges={[
+                        {
+                            text: String(row.status || '')
+                                .toLowerCase()
+                                .split(/[-_]/)
+                                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                                .join(' '),
+                            className: `badge-${String(row.status || '').toLowerCase()}`,
+                        },
+                    ]}
                     descriptions={
                         [
                             {
@@ -57,11 +67,6 @@ const QuoteRequests = () => {
         total: {
             label: __('Total', 'catalogx'),
             type: 'currency'
-        },
-        status: {
-            label: __('Status', 'catalogx'),
-            type: 'status',
-            statusClass: (row: QuoteRow) => `${row.status}`
         },
         action: {
             label: __('Action', 'catalogx-pro'),
@@ -98,7 +103,7 @@ const QuoteRequests = () => {
     const defaultTableProps = {
         headers,
         format: appLocalizer.date_format,
-        hideHeader: true,
+        hideHeader: false,
         buttonActions,
         categoryCounts: defaultCategoryCounts,
         filters,
