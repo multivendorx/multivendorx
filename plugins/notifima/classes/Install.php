@@ -284,13 +284,7 @@ class Install {
             $this->migrate_subscription_form_to_vuloform();
         }
     }
-
-    /**
-     * Carries the old custom subscription form's email placeholder and button label over to the
-     * VuloForm form that replaces it, so an upgrading site does not lose its wording.
-     *
-     * @return void
-     */
+    
     private function migrate_subscription_form_to_vuloform() {
         if ( ! SubscriptionForm::is_available() ) {
             return;

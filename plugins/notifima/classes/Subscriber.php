@@ -240,16 +240,6 @@ class Subscriber {
         return false;
     }
 
-    /**
-     * Subscribe a customer to a product's back-in-stock alert.
-     *
-     * @param string $customer_email Customer email.
-     * @param int    $product_id     Product id.
-     * @param string $product_title  Product title, for the messages.
-     * @param int    $variation_id   Variation id, 0 for none.
-     * @param string $customer_phone Customer phone, '' for none.
-     * @return array
-     */
     public static function subscribe_customer( $customer_email, $product_id, $product_title = '', $variation_id = 0, $customer_phone = '' ) {
         $settings_array = Utill::get_form_settings_array();
 
