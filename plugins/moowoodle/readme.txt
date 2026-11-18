@@ -5,7 +5,7 @@ Donate link: https://dualcube.com/?utm_source=wporg&utm_medium=plugindescription
 Requires at least: 6.0.0
 Tested up to: 7.1.4
 Requires PHP: 8.0
-Stable tag: 3.4.14
+Stable tag: 3.4.15
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -230,6 +230,10 @@ This project might have bugs and may be lacking certain features. If you'd like 
 11. View the log file to detect any errors related to MooWoodle configuration.
 
 == Changelog ==
+
+= 3.4.15 - 2026-11-18 =
+* Added     - Compatibility of WooCommerce 11.3.0.
+* Updated   - Language file.
 
 = 3.4.14 - 2026-11-10 =
 * Added     - Compatibility with WordPress 7.1.4.
