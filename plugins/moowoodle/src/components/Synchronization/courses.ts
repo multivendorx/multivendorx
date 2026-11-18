@@ -9,8 +9,20 @@ export default {
 		'moowoodle'
 	),
 	headerIcon: 'bulk-course-sync',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'synchronize-course-section',
+			type: 'section',
+			icon: 'bulk-course-sync',
+			title: __('Course synchronization', 'moowoodle'),
+			desc: __(
+				'Choose what is brought over from Moodle courses, then run the synchronization.',
+				'moowoodle'
+			),
+		},
 		{
 			key: 'sync_course_options',
 			type: 'checkbox',

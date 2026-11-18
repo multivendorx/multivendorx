@@ -34,6 +34,11 @@ class TestConnection extends \WP_REST_Controller {
 			'/' . $this->rest_base,
 			array(
 				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_items' ),
+					'permission_callback' => array( $this, 'moowoodle_permissions_check' ),
+				),
+				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'create_item' ),
 					'permission_callback' => array( $this, 'moowoodle_permissions_check' ),
@@ -53,7 +58,32 @@ class TestConnection extends \WP_REST_Controller {
 	}
 
 	/**
-	 * Synchronization.
+	 * Status of the connection test, for zyra's task-runner field (Settings → Connection & Access → Start Test).
+	 *
+	 * The field asks its endpoint for `{ running, status }` when it mounts, the same shape Synchronization::get_items()
+	 * returns for a sync. The connection test runs one step at a time from the browser (each step a POST to
+	 * create_item()) and keeps no state on the server, so there is never a run in progress to report.
+	 *
+	 * @param \WP_REST_Request $request The request object.
+	 * @return \WP_REST_Response|\WP_Error
+	 */
+	public function get_items( $request ) {
+		$nonce_check = Util::validate_nonce( $request );
+
+		if ( is_wp_error( $nonce_check ) ) {
+			return $nonce_check;
+		}
+
+		return rest_ensure_response(
+			array(
+				'running' => false,
+				'status'  => array(),
+			)
+		);
+	}
+
+	/**
+	 * Run one step of the connection test.
 	 *
 	 * @param \WP_REST_Request $request Full data about the request.
 	 */

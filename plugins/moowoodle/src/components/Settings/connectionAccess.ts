@@ -15,11 +15,11 @@ export default {
 	submitUrl: 'settings',
 	modal: [
 		{
-			key: 'section',
+			key: 'connection-access-section-connection',
 			type: 'section',
 			icon: 'centralized-connections',
 			title: __('Connection', 'moowoodle'),
-			settingDescription: __(
+			desc: __(
 				'Point this site at your Moodle instance and confirm the two can reach each other.',
 				'moowoodle'
 			),
@@ -130,11 +130,11 @@ export default {
 			],
 		},
 		{
-			key: 'section',
+			key: 'connection-access-section-sso',
 			type: 'section',
 			icon: 'sign-out',
 			title: __('Single sign-on', 'moowoodle'),
-			settingDescription: __(
+			desc: __(
 				'Let logged-in WordPress users open their Moodle courses without signing in again.',
 				'moowoodle'
 			),

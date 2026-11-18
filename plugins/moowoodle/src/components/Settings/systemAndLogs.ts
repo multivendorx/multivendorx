@@ -9,8 +9,20 @@ export default {
 		'moowoodle'
 	),
 	headerIcon: 'tools',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'system-logs-section-timing',
+			type: 'section',
+			icon: 'tools',
+			title: __('Connection & schedule', 'moowoodle'),
+			desc: __(
+				'How long to wait for Moodle, and how often the automatic synchronization runs.',
+				'moowoodle'
+			),
+		},
 		{
 			key: 'moodle_timeout',
 			type: 'text',
@@ -36,6 +48,16 @@ export default {
 			label: __('Automatic synchronization frequency', 'moowoodle'),
 		},
 		{
+			key: 'system-logs-section-logs',
+			type: 'section',
+			icon: 'info',
+			title: __('Logs', 'moowoodle'),
+			desc: __(
+				'Error details for troubleshooting. Leave advanced logging off in normal operation.',
+				'moowoodle'
+			),
+		},
+		{
 			key: 'moowoodle_adv_log',
 			type: 'checkbox',
 			label: __('Advance log', 'moowoodle'),
@@ -52,7 +74,9 @@ export default {
 			look: 'toggle',
 		},
 		{
-			key: 'moowoodle_adv_log',
+			// Its own key, not the Advance log toggle's above: zyra keys each field by `key`, and the viewer stores no
+			// value of its own (it only reads `apiLink`/`fileName`).
+			key: 'moowoodle_log_viewer',
 			type: 'log',
 			classes: 'log-section full-width row',
 			apiLink: 'logs',
