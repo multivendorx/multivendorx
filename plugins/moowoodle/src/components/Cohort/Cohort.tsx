@@ -10,6 +10,7 @@ import {
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import LockedPreview from '../Popup/LockedPreview';
+import useNoRecordsYet from '../Popup/useNoRecordsYet';
 import { applyFilters } from '@wordpress/hooks';
 import { dummyCohorts } from './CohortUtil';
 
@@ -108,9 +109,22 @@ const Cohort: React.FC = () => {
 		},
 	};
 
-	const tableProps = applyFilters(
-		'moowoodle_cohort_table_props',
-		defaultTableProps
+	const { props: tableProps, hasNoRecords } = useNoRecordsYet(
+		applyFilters(
+			'moowoodle_cohort_table_props',
+			defaultTableProps
+		) as typeof defaultTableProps
+	);
+
+	/** The sample rows behind a card: for the Pro card (Pro off) and the "none yet" card (Pro on, nothing yet). */
+	const sampleTable = (
+		// The plugin's own sample rows, not the filtered props: MooWoodle Pro may be installed without a license, and
+		// its filter would swap the samples for real (empty) data.
+		<TableCard
+			{...defaultTableProps}
+			rows={SAMPLE_ROWS}
+			totalRows={SAMPLE_ROWS.length}
+		/>
 	);
 
 	return (
@@ -126,7 +140,46 @@ const Cohort: React.FC = () => {
 			<ContainerComponent general>
 				<ColumnComponent>
 					{appLocalizer.khali_dabba ? (
-						<TableCard {...tableProps} />
+						hasNoRecords ? (
+							<LockedPreview
+								feature={{
+									title: __('Cohorts', 'moowoodle'),
+									description: __(
+										'Cohorts come from your Moodle™ site. Sync them to list every cohort here, link it to a product and enroll the whole cohort in one purchase.',
+										'moowoodle'
+									),
+									icon: 'cohort',
+								}}
+								heading={__(
+									'No cohorts synced yet',
+									'moowoodle'
+								)}
+								actions={
+									<>
+										<a
+											className="mw-locked-button"
+											href="#&tab=synchronization&subtab=synchronize-cohort"
+										>
+											{__('Sync cohorts', 'moowoodle')}
+										</a>
+										<a
+											className="mw-locked-link"
+											href="#&tab=settings&subtab=connection-access"
+										>
+											{__('Connect Moodle™', 'moowoodle')}
+										</a>
+									</>
+								}
+								note={__(
+									'A preview with sample cohorts. Yours show here after the first sync.',
+									'moowoodle'
+								)}
+							>
+								{sampleTable}
+							</LockedPreview>
+						) : (
+							<TableCard {...tableProps} />
+						)
 					) : (
 						<LockedPreview
 							feature={{
@@ -138,13 +191,7 @@ const Cohort: React.FC = () => {
 								icon: 'cohort',
 							}}
 						>
-							{/* The plugin's own sample rows, not the filtered props: MooWoodle Pro may be installed without a
-							license, and its filter would swap the samples for real (empty) data. */}
-							<TableCard
-								{...defaultTableProps}
-								rows={SAMPLE_ROWS}
-								totalRows={SAMPLE_ROWS.length}
-							/>
+							{sampleTable}
 						</LockedPreview>
 					)}
 				</ColumnComponent>

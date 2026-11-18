@@ -1,0 +1,46 @@
+// Settings → License (LicensePanel.tsx). The card and rows come from styles/design-system.scss; only the status pill
+// and the inputs are drawn here.
+.admin-main-wrapper.admin-main-wrapper .moowoodle-settings .mw-license {
+	.input-wrapper {
+		max-width: 26rem;
+	}
+
+	.basic-input {
+		width: 100%;
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		letter-spacing: 0.02em;
+
+		&[readonly] {
+			background: #f6f7fa;
+			color: #4b5563;
+		}
+	}
+}
+
+.mw-license-status {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	padding: 0.25rem 0.625rem;
+	border-radius: 999px;
+	font-size: 0.8125rem;
+	font-weight: 600;
+
+	&::before {
+		content: '';
+		width: 0.5rem;
+		height: 0.5rem;
+		border-radius: 50%;
+		background: currentcolor;
+	}
+
+	&.is-active {
+		background: #ecfdf3;
+		color: #15803d;
+	}
+
+	&.is-inactive {
+		background: #fef3f2;
+		color: #b42318;
+	}
+}

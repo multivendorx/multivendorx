@@ -1158,6 +1158,11 @@
 	margin: 0 1.25rem;
 	padding: 1rem 0 0.5rem;
 
+	// zyra puts each notice in its own <div>, so the space between two notices goes on the wrapper's column.
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+
 	&:not(:has(.notice, .error, .updated)) {
 		display: none;
 	}
@@ -1176,7 +1181,7 @@
 		padding: 0.75rem 1rem;
 		border: 1px solid var(--mw-border);
 		border-left-width: 3px;
-		border-radius: 0.5rem;
+		border-radius: 0;
 		background: var(--mw-surface);
 		box-shadow: 0 1px 2px rgb(16 24 40 / 4%);
 		color: var(--mw-text);

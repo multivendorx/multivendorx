@@ -13,7 +13,6 @@
 	user-select: none;
 	opacity: 0.75;
 	filter: saturate(0.85);
-	-webkit-mask-image: linear-gradient(to bottom, #000 40%, rgb(0 0 0 / 25%) 75%, transparent 100%);
 	mask-image: linear-gradient(to bottom, #000 40%, rgb(0 0 0 / 25%) 75%, transparent 100%);
 }
 
@@ -61,6 +60,19 @@
 	}
 }
 
+// An empty free page shows its own icon where a Pro page shows the Pro tag.
+.mw-locked-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.75rem;
+	height: 2.75rem;
+	border-radius: 0.75rem;
+	background: #f4eefb;
+	color: var(--mw-primary, #5007aa);
+	font-size: 1.375rem;
+}
+
 .mw-locked-actions {
 	display: flex;
 	align-items: center;
@@ -68,7 +80,8 @@
 	gap: 1rem;
 }
 
-.mw-locked-button {
+.mw-locked-button,
+a.mw-locked-button {
 	display: inline-flex;
 	align-items: center;
 	min-height: 2.5rem;

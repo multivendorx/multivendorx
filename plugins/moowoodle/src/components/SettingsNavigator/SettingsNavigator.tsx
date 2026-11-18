@@ -25,6 +25,121 @@ type NavigatorContent = ComponentProps<
 	typeof NavigatorComponent
 >['settingContent'];
 
+/** A sub-tab of a settings tab: one screen of a tab drawn as a settings folder, showing only some of its sections. */
+interface SubTab {
+	id: string;
+	label: string;
+	icon?: string;
+	/** Keys of the `section` fields it shows; each section brings the fields that follow it. */
+	sections: string[];
+}
+
+type TabConfig = {
+	id: string;
+	headerTitle: string;
+	headerIcon?: string;
+	modal?: { key: string; type?: string }[];
+	subTabs?: SubTab[];
+	/** Set on a sub-tab's screen: the tab whose settings it reads and saves. */
+	storageId?: string;
+	[prop: string]: unknown;
+};
+
+type SettingsNode = {
+	name?: string;
+	type: string;
+	content: TabConfig | SettingsNode[];
+	headerIcon?: string;
+};
+
+/** The fields of the sections a sub-tab lists (a section field and every field after it, up to the next section). */
+const fieldsOfSubTab = (
+	modal: { key: string; type?: string }[],
+	subTab: SubTab
+) => {
+	let inSection = false;
+
+	return modal.filter((field) => {
+		if ('section' === field.type) {
+			inSection = subTab.sections.includes(field.key);
+		}
+
+		return inSection;
+	});
+};
+
+/**
+ * Draws every tab that has `subTabs` as a zyra settings folder: the menu shows the tab, a strip above the cards lists
+ * its sub-tabs, and the breadcrumb and title follow the open one (Settings / Connection & Access / Connection). Each
+ * sub-tab is a screen of its own (`subtab=<sub-tab id>`) but keeps the tab's `storageId`, so the tab's values are still
+ * one option, saved whole.
+ */
+const expandSubTabs = (nodes: SettingsNode[]): SettingsNode[] =>
+	nodes.map((node) => {
+		if ('folder' === node.type) {
+			return {
+				...node,
+				content: expandSubTabs(node.content as SettingsNode[]),
+			};
+		}
+
+		const tab = node.content as TabConfig;
+
+		if ('file' !== node.type || !tab.subTabs?.length) {
+			return node;
+		}
+
+		return {
+			name: tab.headerTitle,
+			type: 'folder',
+			headerIcon: tab.headerIcon,
+			content: tab.subTabs.map((subTab) => ({
+				name: subTab.id,
+				type: 'file',
+				content: {
+					...tab,
+					id: subTab.id,
+					headerTitle: subTab.label,
+					headerIcon: subTab.icon ?? tab.headerIcon,
+					modal: fieldsOfSubTab(tab.modal ?? [], subTab),
+					subTabs: undefined,
+					storageId: tab.id,
+				},
+			})),
+		};
+	});
+
+/**
+ * The screen a `subtab=` value opens. A tab that became a folder opens its first sub-tab, or the one named by the
+ * `view=` param links made before the folder used, so old links keep working.
+ */
+const resolveOpenTab = (
+	tabs: SettingsNode[],
+	openTab: string | null,
+	view: string | null
+): string | null => {
+	for (const node of tabs) {
+		if ('folder' === node.type) {
+			const children = node.content as SettingsNode[];
+			const subTabs = children.map((child) => child.content as TabConfig);
+
+			if (openTab && subTabs[0]?.storageId === openTab) {
+				return (
+					subTabs.find((subTab) => subTab.id === view) ?? subTabs[0]
+				).id;
+			}
+
+			const nested = resolveOpenTab(children, openTab, view);
+
+			if (nested !== openTab) {
+				return nested;
+			}
+		}
+	}
+
+	return openTab;
+};
+
 interface SettingsFormProps {
 	currentTab: string;
 	settingsArray: SettingsList;
@@ -46,30 +161,50 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
 	const settingModal = getSettingById(
 		settingsArray,
 		currentTab
-	) as unknown as (RendererSettings & { groupBySections?: boolean }) | null;
+	) as unknown as
+		| (RendererSettings & {
+				groupBySections?: boolean;
+				PanelComponent?: React.ComponentType;
+				storageId?: string;
+		  })
+		| null;
+
+	// A sub-tab's screen reads and saves its parent tab's values (`storageId`); other screens are their own tab.
+	const storageId = settingModal?.storageId ?? currentTab;
 
 	useEffect(() => {
-		if (settingName !== currentTab) {
+		if (settingName !== storageId) {
 			setSetting(
-				currentTab,
-				appLocalizer.admin_settings[currentTab] || {}
+				storageId,
+				appLocalizer.admin_settings[storageId] || {}
 			);
 		}
-	}, [currentTab, settingName, setSetting]);
+	}, [storageId, settingName, setSetting]);
 
 	useEffect(() => {
-		if (settingName === currentTab) {
+		if (settingName === storageId) {
 			appLocalizer.admin_settings[settingName] = setting;
 		}
-	}, [setting, settingName, currentTab]);
+	}, [setting, settingName, storageId]);
 
-	if (settingName !== currentTab) {
+	// A tab with no fields of its own and a `PanelComponent` (Help & Support, License) draws that panel instead of
+	// the declarative field form.
+	const PanelComponent = settingModal?.PanelComponent;
+
+	if (PanelComponent && !settingModal?.modal?.length) {
+		return <PanelComponent />;
+	}
+
+	if (settingName !== storageId) {
 		return <>{__('Loading…', 'moowoodle')}</>;
 	}
 
+	// Keyed by screen: moving between sub-tabs of one tab gives each its own fresh form.
 	return (
 		<InputRenderer
-			settings={settingModal as RendererSettings}
+			key={currentTab}
+			// zyra saves a form under `settings.id`: a sub-tab saves as its parent tab, so both share one option.
+			settings={{ ...settingModal, id: storageId } as RendererSettings}
 			proSetting={appLocalizer.pro_settings_list}
 			setting={setting}
 			updateSetting={updateSetting}
@@ -98,8 +233,28 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 	title,
 }) => {
 	const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
-	const settingsArray = getAvailableSettings(getTemplateData(type), []);
+	const settingsArray = expandSubTabs(
+		getAvailableSettings(
+			getTemplateData(type),
+			[]
+		) as unknown as SettingsNode[]
+	) as unknown as SettingsList;
 	const location = new URLSearchParams(useLocation().hash.substring(1));
+	const openTab = resolveOpenTab(
+		settingsArray as unknown as SettingsNode[],
+		location.get('subtab'),
+		location.get('view')
+	);
+	// A panel tab (Help & Support, License) saves nothing by itself, so the header shows no "Changes save
+	// automatically" status there.
+	const isPanelTab = !!(
+		openTab &&
+		(
+			getSettingById(settingsArray, openTab) as unknown as {
+				PanelComponent?: unknown;
+			} | null
+		)?.PanelComponent
+	);
 
 	const getForm = (currentTab: string | null): JSX.Element | null =>
 		currentTab ? (
@@ -114,7 +269,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 		<SettingProvider>
 			<NavigatorComponent
 				settingContent={settingsArray as unknown as NavigatorContent}
-				currentSetting={location.get('subtab') as string}
+				currentSetting={openTab as string}
 				getForm={getForm}
 				prepareUrl={(subTab: string) =>
 					`?page=moowoodle#&tab=${type}&subtab=${subTab}`
@@ -125,7 +280,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 				// one styles/design-system.scss draws the section menu and cards with.
 				className="admin-settings moowoodle-settings"
 				menuIcon
-				saveStatus={saveStatus}
+				saveStatus={isPanelTab ? undefined : saveStatus}
 			/>
 		</SettingProvider>
 	);
