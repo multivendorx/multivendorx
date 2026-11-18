@@ -165,10 +165,10 @@ export default {
 			key: 'expiry_processing_disable',
 			type: 'checkbox',
 			settingDescription: __(
-				'Disable automatic expiry processing. When enabled, users will not be automatically unenrolled from courses when their access expires.',
+				'When enabled, users will not be automatically unenrolled from courses after their enrolment or access period expires. When disabled, expired users will be automatically unenrolled by the scheduled task.',
 				'moowoodle'
 			),
-			label: __('Disable expiry processing', 'moowoodle'),
+			label: __('Disable Automatic Course Unenrolment', 'moowoodle'),
 			options: [
 				{
 					key: 'expiry_processing_disable',
