@@ -803,5 +803,36 @@ export default {
                 value: 'yes',
             },
         },
+        {
+            key: 'section',
+            type: 'section',
+            icon: 'automation',
+            title: __('Usage tracking', 'notifima'),
+            desc: __(
+                'Optionally share anonymous diagnostic data with the Notifima team to help improve the plugin. Nothing is sent unless this is enabled, and Notifima works exactly the same either way.',
+                'notifima'
+            ),
+        },
+        {
+            key: 'is_usage_tracking_enable',
+            type: 'choice-toggle',
+            label: __('Enable usage tracking & updates', 'notifima'),
+            settingDescription: __(
+                'Shares your site URL, WordPress, PHP and WooCommerce versions, active theme and plugin list, and the administrator email address. Turning this off stops all tracking immediately.',
+                'notifima'
+            ),
+            options: [
+                {
+                    key: 'yes',
+                    label: __('Enabled', 'notifima'),
+                    value: 'yes',
+                },
+                {
+                    key: 'no',
+                    label: __('Disabled', 'notifima'),
+                    value: 'no',
+                },
+            ],
+        },
     ],
 };

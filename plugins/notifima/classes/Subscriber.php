@@ -30,7 +30,7 @@ class Subscriber {
         add_action( 'notifima_start_subscriber_migration', array( Install::class, 'subscriber_migration' ) );
 
         if ( Install::is_migration_running() ) {
-            $this->register_post_statuses();
+            add_action( 'init', array( $this, 'register_post_statuses' ) );
         }
         $this->start_cron_job();
     }
