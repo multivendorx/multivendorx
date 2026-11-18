@@ -233,6 +233,7 @@ This project might have bugs and may be lacking certain features. If you'd like 
 
 = 3.4.15 - 2026-11-18 =
 * Added     - Compatibility of WooCommerce 11.3.0.
+* Added     - UI/UX improvements.
 * Updated   - Language file.
 
 = 3.4.14 - 2026-11-10 =
