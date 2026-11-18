@@ -1,6 +1,6 @@
 /* global appLocalizer */
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import { NoticeComponent } from '@zyra/components';
 
@@ -10,16 +10,31 @@ import Cohort from './components/Cohort/Cohort';
 import Enrollment from './components/Enrollment/Enrollment';
 import Courses from './components/Courses/Courses';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
-import HelpSupport from './components/HelpSupport/HelpSupport';
 import SearchHeader from './components/Header/SearchHeader';
 import './styles/admin.scss';
+
+/** Tabs that moved into Settings, and the Settings sub-tab each one is now. Old links still land on them. */
+const MOVED_TO_SETTINGS: Record<string, string> = {
+	'help-support': 'help-support',
+};
 
 /**
  * Picks the screen for the open tab. Tabs are admin sidebar submenu entries (classes/Admin.php), each pointing to
  * `moowoodle#&tab={tab}`, so switching tabs only changes the hash.
  */
 const Route = () => {
-	const tab = new URLSearchParams(useLocation().hash).get('tab');
+	const location = useLocation();
+	const navigate = useNavigate();
+	const tab = new URLSearchParams(location.hash).get('tab');
+
+	useEffect(() => {
+		if (tab && MOVED_TO_SETTINGS[tab]) {
+			navigate(
+				`${location.pathname}${location.search}#&tab=settings&subtab=${MOVED_TO_SETTINGS[tab]}`,
+				{ replace: true }
+			);
+		}
+	}, [tab]);
 
 	// The submenu entries are hash tabs, which WordPress can't match on the server, so mark the open one here.
 	useEffect(() => {
@@ -51,8 +66,6 @@ const Route = () => {
 			return <Cohort />;
 		case 'dashboard':
 			return <AdminDashboard />;
-		case 'help-support':
-			return <HelpSupport />;
 		default:
 			return null;
 	}

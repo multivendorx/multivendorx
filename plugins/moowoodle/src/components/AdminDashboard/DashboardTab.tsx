@@ -9,9 +9,9 @@ import {
 } from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 import axios from 'axios';
-import MoowoodleIcon from '../../assets/images/moowoodle-icon.png';
 import catalogx from '../../assets/images/catalogx.png';
 import notifima from '../../assets/images/notifima.png';
+import Insights from './Insights';
 
 interface WPPlugin {
 	plugin?: string;
@@ -134,17 +134,17 @@ const DashboardTab: React.FC<object> = () => {
 		{
 			title: __('Documentation', 'moowoodle'),
 			desc: __(
-				'Step-by-step guides to set up and manage your marketplace.',
+				'Step-by-step guides to connect Moodle™, sync courses and sell them.',
 				'moowoodle'
 			),
 			iconClass: 'knowledgebase',
 			linkText: __('Explore Docs', 'moowoodle'),
-			href: 'https://dualcube.com/knowledgebase/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
+			href: 'https://moowoodle.com/docs/knowledgebase/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
 		},
 		{
 			title: __('Expert consultation', 'moowoodle'),
 			desc: __(
-				'Get tailored advice from our marketplace specialists.',
+				'Get tailored advice and custom features for your eLearning site.',
 				'moowoodle'
 			),
 			iconClass: 'preview',
@@ -221,309 +221,311 @@ const DashboardTab: React.FC<object> = () => {
 	];
 
 	return (
-		<ContainerComponent>
-			<ColumnComponent grid={8}>
-				<CardComponent>
-					<div className="pro-banner-wrapper">
-						<div className="content">
-							<div className="heading">
-								{__('Welcome to MooWoodle', 'moowoodle')}
-							</div>
-							<div className="description">
-								{__(
-									'Connect WordPress, WooCommerce, and Moodle to sell courses, automate enrollments, and deliver a seamless eLearning experience from a single platform.',
+		<>
+			<Insights />
+			<ContainerComponent>
+				{!isPro && (
+					<ColumnComponent grid={8}>
+						{!appLocalizer.khali_dabba && (
+							<CardComponent
+								title={__(
+									'Build a smarter eLearning platform',
 									'moowoodle'
 								)}
-							</div>
-
-							<div className="button-wrapper">
-								{renderUpgradeButton(
-									__('Upgrade Now', 'moowoodle')
+								titleIcon="form"
+								badge={[
+									{
+										text: 'Starting at $299/year',
+										color: 'blue',
+									},
+								]}
+								desc={__(
+									'Unlock advanced synchronization, automation, and enrollment features to create a professional learning experience for individuals, teams, and institutions.',
+									'moowoodle'
 								)}
-							</div>
-						</div>
+							>
+								<ListComponent
+									className="feature-list"
+									items={featuresList.map(
+										({ icon, title, desc }) => ({
+											icon: icon,
+											title: title,
+											desc: desc,
+										})
+									)}
+								/>
+								<div className="pro-banner">
+									<div className="text">
+										{__(
+											'Trusted by growing eLearning businesses',
+											'moowoodle'
+										)}
+									</div>
+									<div className="des">
+										{__(
+											'Create, manage, and scale your online learning platform with confidence. From individual instructors to training organizations, MooWoodle helps simplify course selling and learner management.',
+											'moowoodle'
+										)}
+									</div>
 
-						<div className="image">
-							<img src={MoowoodleIcon} alt="" />
-						</div>
-					</div>
-				</CardComponent>
-				{!appLocalizer.khali_dabba && (
-					<CardComponent
-						title={__(
-							'Build a smarter eLearning platform',
-							'moowoodle'
+									{renderUpgradeButton(
+										__('Upgrade Now', 'moowoodle')
+									)}
+
+									<div className="des">
+										{__(
+											'15-day money-back guarantee',
+											'moowoodle'
+										)}
+									</div>
+								</div>
+							</CardComponent>
 						)}
-						titleIcon="form"
-						badge={[
-							{
-								text: 'Starting at $299/year',
-								color: 'blue',
-							},
-						]}
+					</ColumnComponent>
+				)}
+
+				{/* Right Side; the whole width once Pro has nothing to upsell. */}
+				<ColumnComponent {...(isPro ? { row: true } : { grid: 4 })}>
+					<CardComponent
+						title={__('Extend your website', 'moowoodle')}
+						titleIcon="section"
 						desc={__(
-							'Unlock advanced synchronization, automation, and enrollment features to create a professional learning experience for individuals, teams, and institutions.',
+							'More tools from the MooWoodle team for your WooCommerce store.',
 							'moowoodle'
 						)}
 					>
-						<ListComponent
-							className="feature-list"
-							items={featuresList.map(
-								({ icon, title, desc }) => ({
-									icon: icon,
-									title: title,
-									desc: desc,
-								})
+						<ColumnComponent>
+							{pluginStatus['woocommerce-catalog-enquiry'] ? (
+								<ListComponent
+									className="mini-card"
+									background
+									items={[
+										{
+											title: 'CatalogX Pro',
+											desc: __(
+												'Advanced product catalog with enhanced enquiry features and premium templates',
+												'moowoodle'
+											),
+											img: catalogx,
+											tags: (
+												<>
+													<span className="admin-badge red">
+														<i className="adminfont-pro-tag"></i>{' '}
+														{__('Pro', 'moowoodle')}
+													</span>
+													<a
+														href="https://catalogx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle"
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														{__(
+															'Get Pro',
+															'moowoodle'
+														)}
+													</a>
+												</>
+											),
+										},
+									]}
+								/>
+							) : (
+								<ListComponent
+									className="mini-card"
+									background
+									items={[
+										{
+											title: 'CatalogX',
+											desc: __(
+												'Turn your store into a product catalog with enquiry-based sales',
+												'moowoodle'
+											),
+											img: catalogx,
+											tags: (
+												<>
+													<span className="admin-badge green">
+														{__(
+															'Free',
+															'moowoodle'
+														)}
+													</span>
+													<a
+														href="#"
+														onClick={(e) => {
+															e.preventDefault();
+															if (!installing) {
+																installOrActivatePlugin(
+																	'woocommerce-catalog-enquiry'
+																);
+															}
+														}}
+														style={{
+															pointerEvents:
+																installing
+																	? 'none'
+																	: 'auto',
+															opacity:
+																installing ===
+																'woocommerce-catalog-enquiry'
+																	? 0.6
+																	: 1,
+														}}
+													>
+														{installing ===
+														'woocommerce-catalog-enquiry'
+															? __(
+																	'Installing...',
+																	'moowoodle'
+																)
+															: __(
+																	'Install',
+																	'moowoodle'
+																)}
+													</a>
+												</>
+											),
+										},
+									]}
+								/>
 							)}
-						/>
-						<div className="pro-banner">
-							<div className="text">
-								{__(
-									'Trusted by growing eLearning businesses',
-									'moowoodle'
-								)}
-							</div>
-							<div className="des">
-								{__(
-									'Create, manage, and scale your online learning platform with confidence. From individual instructors to training organizations, MooWoodle helps simplify course selling and learner management.',
-									'moowoodle'
-								)}
-							</div>
 
-							{renderUpgradeButton(
-								__('Upgrade Now', 'moowoodle')
+							{pluginStatus['woocommerce-product-stock-alert'] ? (
+								<ListComponent
+									className="mini-card"
+									background
+									items={[
+										{
+											title: 'Notifima Pro',
+											desc: __(
+												'Advanced stock alerts, wishlist features, and premium notification system',
+												'moowoodle'
+											),
+											img: notifima,
+											tags: (
+												<>
+													<span className="admin-badge red">
+														<i className="adminfont-pro-tag"></i>{' '}
+														{__('Pro', 'moowoodle')}
+													</span>
+													<a
+														href="https://notifima.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle"
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														{__(
+															'Get Pro',
+															'moowoodle'
+														)}
+													</a>
+												</>
+											),
+										},
+									]}
+								/>
+							) : (
+								<ListComponent
+									className="mini-card"
+									background
+									items={[
+										{
+											title: 'Notifima',
+											desc: __(
+												'Advanced stock alerts and wishlist features for WooCommerce',
+												'moowoodle'
+											),
+											img: notifima,
+											tags: (
+												<>
+													<span className="admin-badge green">
+														{__(
+															'Free',
+															'moowoodle'
+														)}
+													</span>
+													<a
+														href="#"
+														onClick={(e) => {
+															e.preventDefault();
+															if (!installing) {
+																installOrActivatePlugin(
+																	'woocommerce-product-stock-alert'
+																);
+															}
+														}}
+														style={{
+															pointerEvents:
+																installing
+																	? 'none'
+																	: 'auto',
+															opacity:
+																installing ===
+																'woocommerce-product-stock-alert'
+																	? 0.6
+																	: 1,
+														}}
+													>
+														{installing ===
+														'woocommerce-product-stock-alert'
+															? __(
+																	'Installing...',
+																	'moowoodle'
+																)
+															: __(
+																	'Install',
+																	'moowoodle'
+																)}
+													</a>
+												</>
+											),
+										},
+									]}
+								/>
 							)}
+						</ColumnComponent>
+					</CardComponent>
 
-							<div className="des">
-								{__('15-day money-back guarantee', 'moowoodle')}
-							</div>
+					{/* Quick Links */}
+					<CardComponent
+						title={__('Need help getting started?', 'moowoodle')}
+						titleIcon="help"
+						desc={__(
+							'Guides and support for setting up MooWoodle.',
+							'moowoodle'
+						)}
+					>
+						<div className="quick-link">
+							{resources.map((res) => (
+								<ListComponent
+									key={res.title}
+									className="mini-card list"
+									border
+									items={[
+										{
+											title: __(res.title, 'moowoodle'),
+											desc: __(res.desc, 'moowoodle'),
+											icon: res.iconClass,
+											tags: (
+												<>
+													<a
+														href={res.href}
+														target="blank"
+													>
+														{__(
+															res.linkText,
+															'moowoodle'
+														)}
+														<i className="adminfont-external"></i>
+													</a>
+												</>
+											),
+										},
+									]}
+								/>
+							))}
 						</div>
 					</CardComponent>
-				)}
-			</ColumnComponent>
-
-			{/* Right Side */}
-			<ColumnComponent grid={4}>
-				<CardComponent
-					title={__('Extend your website', 'moowoodle')}
-					titleIcon="section"
-					desc="Discover more tools to grow your marketplace."
-				>
-					<ColumnComponent>
-						{pluginStatus['woocommerce-catalog-enquiry'] ? (
-							<ListComponent
-								className="mini-card"
-								background
-								items={[
-									{
-										title: 'CatalogX Pro',
-										desc: __(
-											'Advanced product catalog with enhanced enquiry features and premium templates',
-											'moowoodle'
-										),
-										img: catalogx,
-										tags: (
-											<>
-												<span className="admin-badge red">
-													<i className="adminfont-pro-tag"></i>{' '}
-													{__('Pro', 'moowoodle')}
-												</span>
-												<a
-													href="https://catalogx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle"
-													target="_blank"
-													rel="noopener noreferrer"
-												>
-													{__('Get Pro', 'moowoodle')}
-												</a>
-											</>
-										),
-									},
-								]}
-							/>
-						) : (
-							<ListComponent
-								className="mini-card"
-								background
-								items={[
-									{
-										title: 'CatalogX',
-										desc: __(
-											'Turn your store into a product catalog with enquiry-based sales',
-											'moowoodle'
-										),
-										img: catalogx,
-										tags: (
-											<>
-												<span className="admin-badge green">
-													{__('Free', 'moowoodle')}
-												</span>
-												<a
-													href="#"
-													onClick={(e) => {
-														e.preventDefault();
-														if (!installing) {
-															installOrActivatePlugin(
-																'woocommerce-catalog-enquiry'
-															);
-														}
-													}}
-													style={{
-														pointerEvents:
-															installing
-																? 'none'
-																: 'auto',
-														opacity:
-															installing ===
-															'woocommerce-catalog-enquiry'
-																? 0.6
-																: 1,
-													}}
-												>
-													{installing ===
-													'woocommerce-catalog-enquiry'
-														? __(
-																'Installing...',
-																'moowoodle'
-															)
-														: __(
-																'Install',
-																'moowoodle'
-															)}
-												</a>
-											</>
-										),
-									},
-								]}
-							/>
-						)}
-
-						{pluginStatus['woocommerce-product-stock-alert'] ? (
-							<ListComponent
-								className="mini-card"
-								background
-								items={[
-									{
-										title: 'Notifima Pro',
-										desc: __(
-											'Advanced stock alerts, wishlist features, and premium notification system',
-											'moowoodle'
-										),
-										img: notifima,
-										tags: (
-											<>
-												<span className="admin-badge red">
-													<i className="adminfont-pro-tag"></i>{' '}
-													{__('Pro', 'moowoodle')}
-												</span>
-												<a
-													href="https://notifima.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle"
-													target="_blank"
-													rel="noopener noreferrer"
-												>
-													{__('Get Pro', 'moowoodle')}
-												</a>
-											</>
-										),
-									},
-								]}
-							/>
-						) : (
-							<ListComponent
-								className="mini-card"
-								background
-								items={[
-									{
-										title: 'Notifima',
-										desc: __(
-											'Advanced stock alerts and wishlist features for WooCommerce',
-											'moowoodle'
-										),
-										img: notifima,
-										tags: (
-											<>
-												<span className="admin-badge green">
-													{__('Free', 'moowoodle')}
-												</span>
-												<a
-													href="#"
-													onClick={(e) => {
-														e.preventDefault();
-														if (!installing) {
-															installOrActivatePlugin(
-																'woocommerce-product-stock-alert'
-															);
-														}
-													}}
-													style={{
-														pointerEvents:
-															installing
-																? 'none'
-																: 'auto',
-														opacity:
-															installing ===
-															'woocommerce-product-stock-alert'
-																? 0.6
-																: 1,
-													}}
-												>
-													{installing ===
-													'woocommerce-product-stock-alert'
-														? __(
-																'Installing...',
-																'moowoodle'
-															)
-														: __(
-																'Install',
-																'moowoodle'
-															)}
-												</a>
-											</>
-										),
-									},
-								]}
-							/>
-						)}
-					</ColumnComponent>
-				</CardComponent>
-
-				{/* Quick Links */}
-				<CardComponent
-					title={__('Need help getting started?', 'moowoodle')}
-					titleIcon="help"
-					desc="Find the guides and support you need to build your marketplace."
-				>
-					<div className="quick-link">
-						{resources.map((res) => (
-							<ListComponent
-								className="mini-card list"
-								border
-								items={[
-									{
-										title: __(res.title, 'moowoodle'),
-										desc: __(res.desc, 'moowoodle'),
-										icon: res.iconClass,
-										tags: (
-											<>
-												<a
-													href={res.href}
-													target="blank"
-												>
-													{__(
-														res.linkText,
-														'moowoodle'
-													)}
-													<i className="adminfont-external"></i>
-												</a>
-											</>
-										),
-									},
-								]}
-							/>
-						))}
-					</div>
-				</CardComponent>
-			</ColumnComponent>
-		</ContainerComponent>
+				</ColumnComponent>
+			</ContainerComponent>
+		</>
 	);
 };
 

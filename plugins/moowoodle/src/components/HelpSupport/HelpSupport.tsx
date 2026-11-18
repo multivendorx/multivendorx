@@ -19,7 +19,8 @@ interface HelpLink {
 	cta?: string;
 }
 
-const UTM = 'utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle';
+const UTM =
+	'utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle';
 
 /** The three self-serve resources, shown as cards across the top. */
 const RESOURCES: HelpLink[] = [
@@ -145,20 +146,30 @@ const HelpRow = ({ item }: { item: HelpLink }) => (
 	</li>
 );
 
+interface HelpSupportProps {
+	/**
+	 * Drawn inside Settings → Help & Support, whose navigator already prints the page title: skip this screen's own
+	 * header.
+	 */
+	embedded?: boolean;
+}
+
 /**
  * Help & Support: the three self-serve resources as cards, then the two troubleshooting screens and the ways to reach
  * the team. Every card and row is one link, so the whole area is clickable, not just the title.
  */
-const HelpSupport: React.FC = () => (
+const HelpSupport: React.FC<HelpSupportProps> = ({ embedded = false }) => (
 	<>
-		<NavigatorHeaderComponent
-			headerIcon="customer-support"
-			headerTitle={__('Help & Support', 'moowoodle')}
-			headerDescription={__(
-				'Guides, videos and the people behind MooWoodle, all in one place.',
-				'moowoodle'
-			)}
-		/>
+		{!embedded && (
+			<NavigatorHeaderComponent
+				headerIcon="customer-support"
+				headerTitle={__('Help & Support', 'moowoodle')}
+				headerDescription={__(
+					'Guides, videos and the people behind MooWoodle, all in one place.',
+					'moowoodle'
+				)}
+			/>
+		)}
 
 		<ContainerComponent general>
 			<ColumnComponent>
@@ -175,7 +186,9 @@ const HelpSupport: React.FC = () => (
 										className="mw-help-icon is-large"
 										aria-hidden="true"
 									>
-										<i className={`adminfont-${item.icon}`} />
+										<i
+											className={`adminfont-${item.icon}`}
+										/>
 									</span>
 									<strong>{item.title}</strong>
 									<span className="mw-help-card-desc">

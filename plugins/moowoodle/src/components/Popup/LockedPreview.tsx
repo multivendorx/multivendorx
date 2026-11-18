@@ -10,6 +10,14 @@ interface LockedPreviewProps {
 	children: ReactNode;
 	/** The page this is (title, description, icon); the card names it and the Pro popup lists it first. */
 	feature: ProFeature;
+	/**
+	 * A free page with nothing in it yet (e.g. Courses before the first sync) passes its own heading and actions
+	 * instead of the Pro ones. Leave both out for a Pro-only page.
+	 */
+	heading?: string;
+	actions?: ReactNode;
+	/** The card's footer line; defaults to the Pro one ("…once it is on"). */
+	note?: string;
 }
 
 /**
@@ -17,9 +25,19 @@ interface LockedPreviewProps {
  * out, with a card floating over it that says the page comes with Pro, the Upgrade button (opens the Pro popup) and a
  * pricing link. Ported from VuloCart's ModuleRequired + LockedPreview (Marketing → Pricing Rules), so both products
  * show a locked page alike.
+ *
+ * With `heading` and `actions` it is the same preview for a free page that is still empty: that page's own heading and
+ * next steps, without the Pro tag.
  */
-export function LockedPreview({ children, feature }: LockedPreviewProps) {
+export function LockedPreview({
+	children,
+	feature,
+	heading,
+	actions,
+	note,
+}: LockedPreviewProps) {
 	const [open, setOpen] = useState(false);
+	const isPro = !actions;
 
 	return (
 		<div className="mw-locked">
@@ -35,41 +53,58 @@ export function LockedPreview({ children, feature }: LockedPreviewProps) {
 
 			<div className="mw-locked-overlay">
 				<div className="mw-locked-card">
-					<span className="admin-tag pro-tag">
-						<i className="adminfont-pro-tag" aria-hidden="true" />
-						{__('Pro', 'moowoodle')}
-					</span>
+					{isPro ? (
+						<span className="admin-tag pro-tag">
+							<i
+								className="adminfont-pro-tag"
+								aria-hidden="true"
+							/>
+							{__('Pro', 'moowoodle')}
+						</span>
+					) : (
+						<span className="mw-locked-icon" aria-hidden="true">
+							<i
+								className={`adminfont-${feature.icon ?? 'info'}`}
+							/>
+						</span>
+					)}
 					<h2>
-						{sprintf(
-							/* translators: %s: page title, e.g. "Cohorts". */
-							__('%s comes with MooWoodle Pro', 'moowoodle'),
-							feature.title
-						)}
+						{heading ??
+							sprintf(
+								/* translators: %s: page title, e.g. "Cohorts". */
+								__('%s comes with MooWoodle Pro', 'moowoodle'),
+								feature.title
+							)}
 					</h2>
 					<p>{feature.description}</p>
 					<div className="mw-locked-actions">
-						<button
-							type="button"
-							className="mw-locked-button"
-							onClick={() => setOpen(true)}
-						>
-							{__('Upgrade to Pro', 'moowoodle')}
-						</button>
-						<a
-							className="mw-locked-link"
-							href={appLocalizer.shop_url}
-							target="_blank"
-							rel="noreferrer"
-						>
-							{__('See pricing', 'moowoodle')}
-						</a>
+						{actions ?? (
+							<>
+								<button
+									type="button"
+									className="mw-locked-button"
+									onClick={() => setOpen(true)}
+								>
+									{__('Upgrade to Pro', 'moowoodle')}
+								</button>
+								<a
+									className="mw-locked-link"
+									href={appLocalizer.shop_url}
+									target="_blank"
+									rel="noreferrer"
+								>
+									{__('See pricing', 'moowoodle')}
+								</a>
+							</>
+						)}
 					</div>
 					<p className="mw-locked-note">
 						<i className="adminfont-eye" aria-hidden="true" />
-						{__(
-							'A preview with sample data. Your own records show here once it is on.',
-							'moowoodle'
-						)}
+						{note ??
+							__(
+								'A preview with sample data. Your own records show here once it is on.',
+								'moowoodle'
+							)}
 					</p>
 				</div>
 			</div>

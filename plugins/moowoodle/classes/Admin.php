@@ -91,13 +91,10 @@ class Admin {
 				'name'   => __( 'Synchronization', 'moowoodle' ),
 				'subtab' => 'synchronize-course',
 			),
+			// Settings also holds License (MooWoodle Pro's license form) and Help & Support, which were submenus.
 			'settings'        => array(
 				'name'   => __( 'Settings', 'moowoodle' ),
 				'subtab' => 'connection-access',
-			),
-			'help-support'    => array(
-				'name'   => __( 'Help & Support', 'moowoodle' ),
-				'subtab' => '',
 			),
 		);
 

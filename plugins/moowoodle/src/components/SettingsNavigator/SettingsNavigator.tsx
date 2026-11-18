@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import React, { useEffect, useState, JSX, type ComponentProps } from 'react';
 import { __ } from '@wordpress/i18n';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { InputRenderer } from '@zyra/inputs';
 import {
 	getAvailableSettings,
@@ -25,6 +25,31 @@ type NavigatorContent = ComponentProps<
 	typeof NavigatorComponent
 >['settingContent'];
 
+/** A sub-tab of a settings tab: a strip entry that shows only some of the tab's sections. */
+interface SubTab {
+	id: string;
+	label: string;
+	icon?: string;
+	/** Keys of the `section` fields it shows; each section brings the fields that follow it. */
+	sections: string[];
+}
+
+/** The fields of the sections a sub-tab lists (a section field and every field after it, up to the next section). */
+const fieldsOfSubTab = (
+	modal: { key: string; type?: string }[],
+	subTab: SubTab
+) => {
+	let inSection = false;
+
+	return modal.filter((field) => {
+		if ('section' === field.type) {
+			inSection = subTab.sections.includes(field.key);
+		}
+
+		return inSection;
+	});
+};
+
 interface SettingsFormProps {
 	currentTab: string;
 	settingsArray: SettingsList;
@@ -46,7 +71,34 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
 	const settingModal = getSettingById(
 		settingsArray,
 		currentTab
-	) as unknown as (RendererSettings & { groupBySections?: boolean }) | null;
+	) as unknown as
+		| (RendererSettings & {
+				groupBySections?: boolean;
+				PanelComponent?: React.ComponentType;
+				subTabs?: SubTab[];
+		  })
+		| null;
+
+	// Sub-tabs (System & Logs → Connection & Schedule, Logs): the open one is `&view=` in the URL, so it can be linked.
+	const location = useLocation();
+	const navigate = useNavigate();
+	const subTabs = settingModal?.subTabs ?? [];
+	const hashParams = new URLSearchParams(location.hash.substring(1));
+	const activeSubTab =
+		subTabs.find((subTab) => subTab.id === hashParams.get('view')) ??
+		subTabs[0];
+
+	// The hash keeps its `#&` form (`#&tab=…&subtab=…&view=…`): app.tsx reads it with URLSearchParams, where the `&`
+	// is what stops `#` from becoming part of the first key.
+	const openSubTab = (subTabId: string) => {
+		hashParams.set('view', subTabId);
+		navigate(
+			`${location.pathname}${location.search}#&${hashParams.toString()}`,
+			{
+				replace: true,
+			}
+		);
+	};
 
 	useEffect(() => {
 		if (settingName !== currentTab) {
@@ -63,13 +115,37 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
 		}
 	}, [setting, settingName, currentTab]);
 
+	// A tab with no fields of its own and a `PanelComponent` (Help & Support, License) draws that panel instead of
+	// the declarative field form.
+	const PanelComponent = settingModal?.PanelComponent;
+
+	if (PanelComponent && !settingModal?.modal?.length) {
+		return <PanelComponent />;
+	}
+
 	if (settingName !== currentTab) {
 		return <>{__('Loading…', 'moowoodle')}</>;
 	}
 
-	return (
+	// A sub-tab draws only its own sections. The tab's values are still one object (`setting`), saved whole, so
+	// changing a field on one sub-tab never drops the other's.
+	const renderedSettings = activeSubTab
+		? ({
+				...settingModal,
+				modal: fieldsOfSubTab(
+					(settingModal?.modal ?? []) as {
+						key: string;
+						type?: string;
+					}[],
+					activeSubTab
+				),
+			} as unknown as RendererSettings)
+		: (settingModal as RendererSettings);
+
+	const form = (
 		<InputRenderer
-			settings={settingModal as RendererSettings}
+			key={activeSubTab?.id ?? currentTab}
+			settings={renderedSettings}
 			proSetting={appLocalizer.pro_settings_list}
 			setting={setting}
 			updateSetting={updateSetting}
@@ -79,6 +155,42 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
 			groupBySections={settingModal?.groupBySections}
 			onSaveStatusChange={onSaveStatusChange}
 		/>
+	);
+
+	if (!activeSubTab) {
+		return form;
+	}
+
+	return (
+		<>
+			<div
+				className="mw-sub-tabs"
+				role="tablist"
+				aria-label={__('Sections', 'moowoodle')}
+			>
+				{subTabs.map((subTab) => (
+					<button
+						key={subTab.id}
+						type="button"
+						role="tab"
+						aria-selected={subTab.id === activeSubTab.id}
+						className={
+							subTab.id === activeSubTab.id ? 'is-active' : ''
+						}
+						onClick={() => openSubTab(subTab.id)}
+					>
+						{subTab.icon && (
+							<i
+								className={`adminfont-${subTab.icon}`}
+								aria-hidden="true"
+							/>
+						)}
+						{subTab.label}
+					</button>
+				))}
+			</div>
+			<div role="tabpanel">{form}</div>
+		</>
 	);
 };
 
@@ -100,6 +212,17 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 	const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
 	const settingsArray = getAvailableSettings(getTemplateData(type), []);
 	const location = new URLSearchParams(useLocation().hash.substring(1));
+	const openTab = location.get('subtab');
+	// A panel tab (Help & Support, License) saves nothing by itself, so the header shows no "Changes save
+	// automatically" status there.
+	const isPanelTab = !!(
+		openTab &&
+		(
+			getSettingById(settingsArray, openTab) as unknown as {
+				PanelComponent?: unknown;
+			} | null
+		)?.PanelComponent
+	);
 
 	const getForm = (currentTab: string | null): JSX.Element | null =>
 		currentTab ? (
@@ -125,7 +248,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 				// one styles/design-system.scss draws the section menu and cards with.
 				className="admin-settings moowoodle-settings"
 				menuIcon
-				saveStatus={saveStatus}
+				saveStatus={isPanelTab ? undefined : saveStatus}
 			/>
 		</SettingProvider>
 	);
