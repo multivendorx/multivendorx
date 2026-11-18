@@ -13,6 +13,21 @@ export default {
 	groupBySections: true,
 	hideSettingHeader: true,
 	submitUrl: 'settings',
+	// Drawn as a settings folder (see SettingsNavigator): each sub-tab is its own screen, all saved as this one tab.
+	subTabs: [
+		{
+			id: 'moodle-connection',
+			label: __('Connection', 'moowoodle'),
+			icon: 'centralized-connections',
+			sections: ['connection-access-section-connection'],
+		},
+		{
+			id: 'single-sign-on',
+			label: __('Single sign-on', 'moowoodle'),
+			icon: 'sign-out',
+			sections: ['connection-access-section-sso'],
+		},
+	],
 	modal: [
 		{
 			key: 'connection-access-section-connection',

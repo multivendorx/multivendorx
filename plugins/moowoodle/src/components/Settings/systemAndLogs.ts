@@ -1,8 +1,9 @@
 import { __ } from '@wordpress/i18n';
 
 /**
- * Settings → System & Logs, in two sub-tabs: Connection & Schedule, and Logs. Each sub-tab shows the sections it lists
- * (SettingsNavigator draws the strip); both are one settings tab, saved together in `moowoodle_system_logs_settings`.
+ * Settings → System & Logs, in two sub-tabs: Connection & Schedule, and Logs. SettingsNavigator draws it as a settings
+ * folder, each sub-tab showing the sections it lists; both are one settings tab, saved together in
+ * `moowoodle_system_logs_settings`.
  */
 export default {
 	id: 'system-logs',

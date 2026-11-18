@@ -31,7 +31,7 @@ const RESOURCES: HelpLink[] = [
 			'Step-by-step guides for connecting Moodle™, syncing courses and enrolling students.',
 			'moowoodle'
 		),
-		link: 'https://moowoodle.com/docs/knowledgebase/?utm_source=settings&utm_medium=plugin&utm_campaign=track',
+		link: 'https://dualcube.com/docs/knowledgebase/?utm_source=settings&utm_medium=plugin&utm_campaign=track',
 		cta: __('Read the docs', 'moowoodle'),
 	},
 	{

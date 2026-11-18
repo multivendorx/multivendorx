@@ -47,20 +47,20 @@ $mw-info-bg: #eff6ff;
 }
 
 // ---- Connection alert ----
-// Shown until Moodle™ is connected and tested: the one blocker for everything else on the page.
+// Shown until Moodle™ is connected and tested. A plain card with a thin accent: it is the next step, not an error.
 .admin-main-wrapper .mw-insights-alert {
 	display: flex;
 	align-items: center;
 	gap: 1rem;
-	padding: 1.25rem 1.5rem;
-	border: 1px solid #f5d0d0;
-	border-left: 4px solid $mw-critical;
-	border-radius: 0.75rem;
-	background: linear-gradient(90deg, $mw-critical-bg 0%, var(--mw-surface, #fff) 60%);
+	padding: 1rem 1.25rem;
+	border: 1px solid var(--mw-border, #e3e6ef);
+	border-left: 3px solid $mw-warning;
+	border-radius: 0;
+	background: var(--mw-surface, #fff);
 
 	h2 {
 		color: var(--mw-ink, #1f1b3e);
-		font-size: 1rem;
+		font-size: 0.9375rem;
 	}
 
 	@media (width <= 782px) {
@@ -70,35 +70,16 @@ $mw-info-bg: #eff6ff;
 }
 
 .admin-main-wrapper .mw-insights-alert-icon {
-	position: relative;
 	display: inline-flex;
 	flex: none;
 	align-items: center;
 	justify-content: center;
-	width: 3rem;
-	height: 3rem;
-	border-radius: 0.75rem;
-	background: #fde2e2;
-	color: $mw-critical;
-	font-size: 1.5rem;
-
-	// A "!" badge on the connection icon, so the state reads without the colour too.
-	&::after {
-		content: "!";
-		position: absolute;
-		top: -0.25rem;
-		right: -0.25rem;
-		width: 1.125rem;
-		height: 1.125rem;
-		border: 2px solid var(--mw-surface, #fff);
-		border-radius: 50%;
-		background: $mw-critical;
-		color: #fff;
-		font-size: 0.6875rem;
-		font-weight: 700;
-		line-height: 1.125rem;
-		text-align: center;
-	}
+	width: 2.25rem;
+	height: 2.25rem;
+	border-radius: 0.5rem;
+	background: $mw-warning-bg;
+	color: $mw-warning;
+	font-size: 1.125rem;
 }
 
 .admin-main-wrapper .mw-insights-alert-body {
@@ -364,13 +345,13 @@ $mw-info-bg: #eff6ff;
 	flex-direction: column;
 	gap: 0.375rem;
 	min-width: 0;
-	min-height: 7rem;
-	padding: 1.125rem 1.25rem;
+	padding: 1rem 1.25rem;
 	border: 1px solid var(--mw-border, #e3e6ef);
 	border-radius: 0.75rem;
 	background: var(--mw-surface, #fff);
 
 	> strong {
+		margin-top: 0.125rem;
 		color: var(--mw-ink, #1f1b3e);
 		font-size: 1.75rem;
 		font-weight: 700;
@@ -572,56 +553,84 @@ $mw-info-bg: #eff6ff;
 }
 
 .admin-main-wrapper .mw-insights-list {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
-	gap: 0.75rem;
+	margin: 0 -1.5rem -1.25rem;
 
+	// One task per row: severity, what and why, then the action, level on every row.
 	li {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 0.25rem;
-		padding: 0.75rem 0.875rem;
+		display: grid;
+		grid-template-columns: 6.5rem minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 1rem;
+		padding: 0.875rem 1.5rem;
+		border-top: 1px solid var(--mw-border-soft, #eef0f6);
 
-		// The action sits at the bottom, level across a row of items.
-		.mw-insights-link {
-			margin-top: auto;
-			padding-top: 0.25rem;
+		@media (width <= 782px) {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 0.5rem;
 		}
+	}
+}
 
-		border: 1px solid var(--mw-border-soft, #eef0f6);
-		border-left-width: 3px;
-		border-radius: 0.5rem;
+.admin-main-wrapper .mw-insights-list-text {
+	display: flex;
+	flex-direction: column;
+	gap: 0.125rem;
+	min-width: 0;
 
-		&.is-critical {
-			border-left-color: $mw-critical;
-		}
+	strong {
+		color: var(--mw-ink, #1f1b3e);
+		font-size: 0.875rem;
+		font-weight: 600;
+	}
 
-		&.is-warning {
-			border-left-color: $mw-warning;
-		}
+	span {
+		color: var(--mw-muted, #6b7280);
+		font-size: 0.8125rem;
+		line-height: 1.5;
+	}
+}
 
-		&.is-info {
-			border-left-color: $mw-info;
-		}
+// The row's action: an outlined button, so a list of five doesn't become five loud ones.
+.admin-main-wrapper .mw-insights-action,
+.admin-main-wrapper .mw-dash-action {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-self: start;
+	gap: 0.375rem;
+	min-height: 2rem;
+	margin: 0;
+	padding: 0 0.875rem;
+	border: 1px solid var(--mw-border, #e3e6ef);
+	border-radius: 0.5rem;
+	background: var(--mw-surface, #fff);
+	color: var(--mw-ink, #1f1b3e);
+	font: inherit;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	white-space: nowrap;
+	text-decoration: none;
+	cursor: pointer;
 
-		> strong {
-			color: var(--mw-ink, #1f1b3e);
-			font-size: 0.875rem;
-			font-weight: 600;
-		}
+	&:hover:not(:disabled),
+	&:focus-visible {
+		border-color: var(--mw-primary, #5007aa);
+		color: var(--mw-primary, #5007aa);
+	}
 
-		> span:not(.mw-insights-severity) {
-			color: var(--mw-muted, #6b7280);
-			font-size: 0.8125rem;
-			line-height: 1.5;
-		}
+	&:disabled {
+		cursor: default;
+		opacity: 0.6;
+	}
 
+	i {
+		font-size: 0.875rem;
 	}
 }
 
 .admin-main-wrapper .mw-insights-severity {
 	display: inline-flex;
+	justify-self: start;
 	align-items: center;
 	gap: 0.25rem;
 	padding: 0.0625rem 0.5rem;
@@ -859,5 +868,197 @@ $mw-info-bg: #eff6ff;
 
 	i {
 		color: $mw-critical;
+	}
+}
+
+// ---- Pro panel (free sites) ----
+.admin-main-wrapper .mw-dash-pro {
+	padding: 0;
+	overflow: hidden;
+}
+
+.admin-main-wrapper .mw-dash-pro-head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1.25rem;
+	padding: 1.5rem;
+	background: linear-gradient(120deg, #f6f0fd 0%, var(--mw-surface, #fff) 70%);
+
+	h2 {
+		margin-top: 0.625rem;
+		font-size: 1.125rem;
+	}
+
+	p {
+		max-width: 40rem;
+		margin-top: 0.25rem;
+		color: #5b5f6e;
+		font-size: 0.875rem;
+		line-height: 1.55;
+	}
+}
+
+.admin-main-wrapper .mw-dash-pro-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	padding: 0.1875rem 0.625rem;
+	border-radius: 999px;
+	background: linear-gradient(135deg, #5007aa, #8b3fd9);
+	color: #fff;
+	font-size: 0.6875rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.admin-main-wrapper .mw-dash-pro-cta {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.375rem;
+
+	> span {
+		color: var(--mw-muted, #6b7280);
+		font-size: 0.75rem;
+	}
+}
+
+.admin-main-wrapper .mw-dash-pro-features {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 1.25rem 1.5rem;
+	padding: 1.25rem 1.5rem 1.5rem;
+	border-top: 1px solid var(--mw-border-soft, #eef0f6);
+
+	@media (width <= 1100px) {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	@media (width <= 600px) {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	li {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75rem;
+		min-width: 0;
+
+		> span:last-child {
+			display: flex;
+			flex-direction: column;
+			gap: 0.125rem;
+			min-width: 0;
+		}
+	}
+
+	strong {
+		color: var(--mw-ink, #1f1b3e);
+		font-size: 0.875rem;
+		font-weight: 600;
+	}
+
+	span span {
+		color: var(--mw-muted, #6b7280);
+		font-size: 0.8125rem;
+		line-height: 1.5;
+	}
+}
+
+// ---- Help and companion-plugin panels ----
+.admin-main-wrapper .mw-dash-icon {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 2.25rem;
+	height: 2.25rem;
+	border-radius: 0.625rem;
+	background: #f4eefb;
+	color: var(--mw-primary, #5007aa);
+	font-size: 1.125rem;
+}
+
+.admin-main-wrapper .mw-dash-list {
+	margin: -0.25rem -0.75rem -0.5rem;
+
+	> li + li {
+		border-top: 1px solid var(--mw-border-soft, #eef0f6);
+	}
+}
+
+.admin-main-wrapper .mw-dash-row {
+	display: flex;
+	align-items: center;
+	gap: 0.875rem;
+	padding: 0.75rem;
+	border-radius: 0.5rem;
+	color: inherit;
+	text-decoration: none;
+}
+
+.admin-main-wrapper a.mw-dash-row:hover {
+	background: var(--mw-surface-hover, #faf9fe);
+
+	.mw-dash-row-arrow {
+		color: var(--mw-primary, #5007aa);
+	}
+}
+
+.admin-main-wrapper .mw-dash-row-text {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 0.125rem;
+	min-width: 0;
+
+	strong {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--mw-ink, #1f1b3e);
+		font-size: 0.875rem;
+		font-weight: 600;
+	}
+
+	> span {
+		color: var(--mw-muted, #6b7280);
+		font-size: 0.8125rem;
+		line-height: 1.5;
+	}
+}
+
+.admin-main-wrapper .mw-dash-row-arrow {
+	flex: none;
+	color: #9ca3af;
+	font-size: 1rem;
+}
+
+.admin-main-wrapper .mw-dash-logo {
+	flex: none;
+	width: 2.25rem;
+	height: 2.25rem;
+	border-radius: 0.625rem;
+	object-fit: contain;
+}
+
+.admin-main-wrapper .mw-dash-tag {
+	padding: 0 0.4375rem;
+	border-radius: 999px;
+	font-size: 0.6875rem;
+	font-weight: 600;
+	line-height: 1.125rem;
+
+	&.is-free {
+		background: #f3f4f6;
+		color: #4b5563;
+	}
+
+	&.is-active {
+		background: $mw-good-bg;
+		color: $mw-good;
 	}
 }

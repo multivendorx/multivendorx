@@ -567,7 +567,7 @@ const Insights: React.FC = () => {
 	return (
 		<div className="mw-insights">
 			{!isConnected && (
-				<section className="mw-insights-alert" role="alert">
+				<section className="mw-insights-alert" role="status">
 					<span className="mw-insights-alert-icon" aria-hidden="true">
 						<i className="adminfont-centralized-connections" />
 					</span>
@@ -579,7 +579,7 @@ const Insights: React.FC = () => {
 										'moowoodle'
 									)
 								: __(
-										'Moodle™ isn’t connected yet',
+										'Connect your Moodle™ site',
 										'moowoodle'
 									)}
 						</h2>
@@ -744,10 +744,12 @@ const Insights: React.FC = () => {
 										/>
 										{SEVERITY_LABEL[insight.severity]}
 									</span>
-									<strong>{insight.title}</strong>
-									<span>{insight.detail}</span>
+									<span className="mw-insights-list-text">
+										<strong>{insight.title}</strong>
+										<span>{insight.detail}</span>
+									</span>
 									<a
-										className="mw-insights-link"
+										className="mw-insights-action"
 										href={insight.link}
 									>
 										{insight.cta}
