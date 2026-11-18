@@ -1,17 +1,36 @@
 import { __ } from '@wordpress/i18n';
 
+/**
+ * Settings → System & Logs, in two sub-tabs: Connection & Schedule, and Logs. SettingsNavigator draws it as a settings
+ * folder, each sub-tab showing the sections it lists; both are one settings tab, saved together in
+ * `moowoodle_system_logs_settings`.
+ */
 export default {
 	id: 'system-logs',
 	priority: 3,
 	headerTitle: __('System & Logs', 'moowoodle'),
 	headerDescription: __(
-		'Manage advanced settings for synchronization, error logging, and connection handling.',
+		'Connection timing, the synchronization schedule, and the error log.',
 		'moowoodle'
 	),
 	headerIcon: 'tools',
 	groupBySections: true,
 	hideSettingHeader: true,
 	submitUrl: 'settings',
+	subTabs: [
+		{
+			id: 'connection-schedule',
+			label: __('Connection & Schedule', 'moowoodle'),
+			icon: 'tools',
+			sections: ['system-logs-section-timing'],
+		},
+		{
+			id: 'logs',
+			label: __('Logs', 'moowoodle'),
+			icon: 'info',
+			sections: ['system-logs-section-logs'],
+		},
+	],
 	modal: [
 		{
 			key: 'system-logs-section-timing',

@@ -11,6 +11,7 @@ import {
 import { TableCard } from '@zyra/table';
 import { __ } from '@wordpress/i18n';
 import LockedPreview from '../Popup/LockedPreview';
+import useNoRecordsYet from '../Popup/useNoRecordsYet';
 import { applyFilters } from '@wordpress/hooks';
 import { dummyEnrollments } from './EnrollmentUtil';
 
@@ -144,9 +145,23 @@ const Enrollment: React.FC = () => {
 		},
 	};
 
-	const tableProps = applyFilters(
-		'moowoodle_enrollment_table_props',
-		defaultTableProps
+	const { props: tableProps, hasNoRecords } = useNoRecordsYet(
+		applyFilters(
+			'moowoodle_enrollment_table_props',
+			defaultTableProps
+			// MooWoodle Pro's props add the confirm dialog it renders beside the table.
+		) as typeof defaultTableProps & { popup?: React.ReactNode }
+	);
+
+	/** The sample rows behind a card: for the Pro card (Pro off) and the "none yet" card (Pro on, nothing yet). */
+	const sampleTable = (
+		// The plugin's own sample rows, not the filtered props: MooWoodle Pro may be installed without a license, and
+		// its filter would swap the samples for real (empty) data.
+		<TableCard
+			{...defaultTableProps}
+			rows={SAMPLE_ROWS}
+			totalRows={SAMPLE_ROWS.length}
+		/>
 	);
 	return (
 		<>
@@ -161,10 +176,49 @@ const Enrollment: React.FC = () => {
 			<ContainerComponent general>
 				<ColumnComponent>
 					{appLocalizer.khali_dabba ? (
-						<>
-							<TableCard {...tableProps} />
-							{tableProps.popup}
-						</>
+						hasNoRecords ? (
+							<LockedPreview
+								feature={{
+									title: __('Enrollments', 'moowoodle'),
+									description: __(
+										'A student is enrolled in Moodle™ when they buy a course product. Link your courses to products, and every enrollment shows here.',
+										'moowoodle'
+									),
+									icon: 'classroom-enrollment',
+								}}
+								heading={__('No enrollments yet', 'moowoodle')}
+								actions={
+									<>
+										<a
+											className="mw-locked-button"
+											href="#&tab=courses"
+										>
+											{__('Go to courses', 'moowoodle')}
+										</a>
+										<a
+											className="mw-locked-link"
+											href="#&tab=settings&subtab=course-enrollment"
+										>
+											{__(
+												'Enrollment settings',
+												'moowoodle'
+											)}
+										</a>
+									</>
+								}
+								note={__(
+									'A preview with sample enrollments. Yours show here after the first purchase.',
+									'moowoodle'
+								)}
+							>
+								{sampleTable}
+							</LockedPreview>
+						) : (
+							<>
+								<TableCard {...tableProps} />
+								{tableProps.popup}
+							</>
+						)
 					) : (
 						<LockedPreview
 							feature={{
@@ -176,13 +230,7 @@ const Enrollment: React.FC = () => {
 								icon: 'classroom-enrollment',
 							}}
 						>
-							{/* The plugin's own sample rows, not the filtered props: MooWoodle Pro may be installed without a
-							license, and its filter would swap the samples for real (empty) data. */}
-							<TableCard
-								{...defaultTableProps}
-								rows={SAMPLE_ROWS}
-								totalRows={SAMPLE_ROWS.length}
-							/>
+							{sampleTable}
 						</LockedPreview>
 					)}
 				</ColumnComponent>

@@ -93,13 +93,6 @@ const PAGES: {
 		tab: 'enrolments',
 		icon: 'classroom-enrollment',
 	},
-	{
-		id: 'help-support',
-		name: __('Help & Support', 'moowoodle'),
-		desc: __('Documentation, videos and support.', 'moowoodle'),
-		tab: 'help-support',
-		icon: 'user-network-icon',
-	},
 ];
 
 /** Every tab of one navigator screen (Settings or Synchronization), with the sections and fields on it. */

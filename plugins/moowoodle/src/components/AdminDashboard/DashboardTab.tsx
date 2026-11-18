@@ -1,91 +1,175 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
-import {
-	CardComponent,
-	ColumnComponent,
-	ListComponent,
-	ContainerComponent,
-	NoticeManager,
-} from '@zyra/components';
+import { NoticeManager, PopupComponent } from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 import axios from 'axios';
-import MoowoodleIcon from '../../assets/images/moowoodle-icon.png';
 import catalogx from '../../assets/images/catalogx.png';
 import notifima from '../../assets/images/notifima.png';
+import ShowProPopup from '../Popup/Popup';
+import Insights from './Insights';
 
 interface WPPlugin {
 	plugin?: string;
 	status?: string;
 }
 
+const UTM =
+	'utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle';
+
+/** The Pro features the dashboard's Pro panel lists (free sites only). */
+const PRO_FEATURES = [
+	{
+		icon: 'single-sign-on',
+		title: __('Single Sign-On', 'moowoodle'),
+		desc: __(
+			'Students open Moodle™ courses straight from WordPress, without a second login.',
+			'moowoodle'
+		),
+	},
+	{
+		icon: 'cohort',
+		title: __('Cohort enrollment', 'moowoodle'),
+		desc: __(
+			'Sell a Moodle™ cohort as one product and enroll the whole group at once.',
+			'moowoodle'
+		),
+	},
+	{
+		icon: 'classroom-enrollment',
+		title: __('Classroom seats', 'moowoodle'),
+		desc: __(
+			'Teams and schools buy several seats and assign them to their learners.',
+			'moowoodle'
+		),
+	},
+	{
+		icon: 'gift-a-course',
+		title: __('Gift a course', 'moowoodle'),
+		desc: __(
+			'Customers buy a course for someone else, right at checkout.',
+			'moowoodle'
+		),
+	},
+	{
+		icon: 'subscription-courses',
+		title: __('Subscription courses', 'moowoodle'),
+		desc: __(
+			'Sell access on a recurring plan instead of a one-off price.',
+			'moowoodle'
+		),
+	},
+	{
+		icon: 'bulk-course-sync',
+		title: __('Automatic sync', 'moowoodle'),
+		desc: __(
+			'Courses, cohorts and users stay in step with Moodle™ on a schedule.',
+			'moowoodle'
+		),
+	},
+];
+
+/** Self-serve help: the docs, the videos and this plugin's own Help & Support screen. */
+const RESOURCES = [
+	{
+		icon: 'knowledgebase',
+		title: __('Documentation', 'moowoodle'),
+		desc: __(
+			'Guides for connecting Moodle™, syncing courses and selling them.',
+			'moowoodle'
+		),
+		link: `https://moowoodle.com/docs/knowledgebase/?${UTM}`,
+	},
+	{
+		icon: 'youtube',
+		title: __('Video tutorials', 'moowoodle'),
+		desc: __(
+			'Watch the setup, from the Moodle™ token to the first enrollment.',
+			'moowoodle'
+		),
+		link: 'https://www.youtube.com/@moowoodle/videos',
+	},
+	{
+		icon: 'customer-support',
+		title: __('Help & Support', 'moowoodle'),
+		desc: __(
+			'Troubleshooting, the community forum and our team.',
+			'moowoodle'
+		),
+		link: '#&tab=help-support',
+	},
+];
+
+/** The team's other WooCommerce plugins: the wordpress.org slug decides installed/active, the Pro link replaces Install once active. */
+const COMPANION_PLUGINS = [
+	{
+		slug: 'woocommerce-catalog-enquiry',
+		name: 'CatalogX',
+		desc: __(
+			'Turn your store into a catalog with enquiry-based sales.',
+			'moowoodle'
+		),
+		logo: catalogx,
+		proUrl: `https://catalogx.com/pricing/?${UTM}`,
+	},
+	{
+		slug: 'woocommerce-product-stock-alert',
+		name: 'Notifima',
+		desc: __(
+			'Back-in-stock alerts and wishlists for WooCommerce.',
+			'moowoodle'
+		),
+		logo: notifima,
+		proUrl: `https://notifima.com/pricing/?${UTM}`,
+	},
+];
+
+const isExternal = (link: string) => !link.startsWith('#');
+
+/**
+ * The Dashboard tab: the data-driven insights (Insights.tsx), then — for free sites — what Pro adds, and the help and
+ * companion-plugin panels. Every panel uses the same card style as the insights above it.
+ */
 const DashboardTab: React.FC<object> = () => {
 	const [installing, setInstalling] = useState<string>('');
-	const [pluginStatus, setPluginStatus] = useState<{
-		[key: string]: boolean;
-	}>({});
+	const [pluginStatus, setPluginStatus] = useState<Record<string, boolean>>(
+		{}
+	);
 	const [plugins, setPlugins] = useState<WPPlugin[]>([]);
+	const [proPopupOpen, setProPopupOpen] = useState(false);
 
 	const isPro = !!appLocalizer.khali_dabba;
 
-	const renderUpgradeButton = (label = __('Upgrade Now', 'moowoodle')) => {
-		if (isPro) {
-			return null;
-		}
-		return (
-			<a
-				href={appLocalizer.shop_url}
-				target="_blank"
-				className="admin-btn btn-purple"
-			>
-				<i className="adminfont-pro-tag"></i>
-				{__(label, 'moowoodle')}
-				<i className="adminfont-arrow-right icon-pro-btn"></i>
-			</a>
-		);
-	};
-
 	useEffect(() => {
-		fetchPlugins();
-	}, []);
-
-	const fetchPlugins = () => {
 		axios
 			.get(`${appLocalizer.apiUrl}/wp/v2/plugins`, {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			})
 			.then((response) => {
-				const pluginList = response.data;
-
-				setPlugins(pluginList);
-
+				const pluginList: WPPlugin[] = response.data;
 				const statusMap: Record<string, boolean> = {};
 
-				[
-					'woocommerce-catalog-enquiry',
-					'woocommerce-product-stock-alert',
-				].forEach((slug) => {
+				COMPANION_PLUGINS.forEach(({ slug }) => {
 					statusMap[slug] = pluginList.some(
-						(plugin: WPPlugin) =>
-							plugin.plugin.includes(slug) &&
-							plugin.status === 'active'
+						(plugin) =>
+							!!plugin.plugin?.includes(slug) &&
+							'active' === plugin.status
 					);
 				});
 
+				setPlugins(pluginList);
 				setPluginStatus(statusMap);
 			})
 			.catch((error) => {
 				console.error('Failed to fetch plugins:', error);
 			});
-	};
+	}, []);
 
 	const installOrActivatePlugin = (slug: string) => {
 		if (!slug || installing) {
 			return;
 		}
 
-		const isInstalled = plugins.some((p) => p.plugin?.includes(slug));
-
-		if (isInstalled) {
+		if (plugins.some((plugin) => plugin.plugin?.includes(slug))) {
 			NoticeManager.add({
 				title: __('Redirecting...', 'moowoodle'),
 				message: __(
@@ -111,9 +195,7 @@ const DashboardTab: React.FC<object> = () => {
 				{ slug, status: 'active' },
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
-			.then((res) => {
-				setPlugins((prev) => [...prev, res.data]);
-				setPluginStatus((prev) => ({ ...prev, [slug]: true }));
+			.then(() => {
 				window.location.reload();
 			})
 			.catch(() => {
@@ -130,400 +212,204 @@ const DashboardTab: React.FC<object> = () => {
 			})
 			.finally(() => setInstalling(''));
 	};
-	const resources = [
-		{
-			title: __('Documentation', 'moowoodle'),
-			desc: __(
-				'Step-by-step guides to set up and manage your marketplace.',
-				'moowoodle'
-			),
-			iconClass: 'knowledgebase',
-			linkText: __('Explore Docs', 'moowoodle'),
-			href: 'https://dualcube.com/knowledgebase/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
-		},
-		{
-			title: __('Expert consultation', 'moowoodle'),
-			desc: __(
-				'Get tailored advice from our marketplace specialists.',
-				'moowoodle'
-			),
-			iconClass: 'preview',
-			linkText: __('Book Consultation', 'moowoodle'),
-			href: 'https://dualcube.com/custom-development/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
-		},
-	];
-
-	const featuresList = [
-		{
-			title: __('Seamless Moodle integration', 'moowoodle'),
-			desc: __(
-				'Connect your WooCommerce store with Moodle and automatically manage courses, enrollments, and learner access from one place.',
-				'moowoodle'
-			),
-			icon: 'moodle',
-		},
-		{
-			title: __('Sell courses with WooCommerce', 'moowoodle'),
-			desc: __(
-				'Turn Moodle courses into purchasable WooCommerce products and monetize your learning platform with flexible checkout and payment options.',
-				'moowoodle'
-			),
-			icon: 'woocommerce',
-		},
-		{
-			title: __('Single Sign-On access', 'moowoodle'),
-			desc: __(
-				'Allow learners to access their Moodle courses directly from WordPress without logging in multiple times.',
-				'moowoodle'
-			),
-			icon: 'single-sign-on',
-		},
-		{
-			title: __('Classroom & bulk enrollment', 'moowoodle'),
-			desc: __(
-				'Enable teachers, companies, and training centers to purchase multiple seats and assign courses to learners with ease.',
-				'moowoodle'
-			),
-			icon: 'classroom-enrollment',
-		},
-		{
-			title: __('Course gifting made simple', 'moowoodle'),
-			desc: __(
-				'Let customers purchase and gift courses to friends, students, employees, or team members directly during checkout.',
-				'moowoodle'
-			),
-			icon: 'subscription-courses',
-		},
-		{
-			title: __('Real-time user synchronization', 'moowoodle'),
-			desc: __(
-				'Keep user profiles synchronized between WordPress and Moodle automatically for a smooth and connected learning experience.',
-				'moowoodle'
-			),
-			icon: 'bulk-course-sync',
-		},
-		{
-			title: __('Automatic course synchronization', 'moowoodle'),
-			desc: __(
-				'Fetch Moodle courses instantly and keep WooCommerce products updated with the latest course information.',
-				'moowoodle'
-			),
-			icon: 'smart-course-sync',
-		},
-		{
-			title: __('Cohort synchronization & group learning', 'moowoodle'),
-			desc: __(
-				'Sync Moodle cohorts with WooCommerce products to streamline group enrollments and organization-based learning.',
-				'moowoodle'
-			),
-			icon: 'cohort',
-		},
-	];
 
 	return (
-		<ContainerComponent>
-			<ColumnComponent grid={8}>
-				<CardComponent>
-					<div className="pro-banner-wrapper">
-						<div className="content">
-							<div className="heading">
-								{__('Welcome to MooWoodle', 'moowoodle')}
-							</div>
-							<div className="description">
+		<>
+			<Insights />
+
+			{!isPro && (
+				<section className="mw-insights-panel mw-dash-pro">
+					<div className="mw-dash-pro-head">
+						<div>
+							<span className="mw-dash-pro-pill">
+								<i
+									className="adminfont-pro-tag"
+									aria-hidden="true"
+								/>
+								{__('MooWoodle Pro', 'moowoodle')}
+							</span>
+							<h2>
 								{__(
-									'Connect WordPress, WooCommerce, and Moodle to sell courses, automate enrollments, and deliver a seamless eLearning experience from a single platform.',
+									'Do more with your Moodle™ courses',
 									'moowoodle'
 								)}
-							</div>
-
-							<div className="button-wrapper">
-								{renderUpgradeButton(
-									__('Upgrade Now', 'moowoodle')
+							</h2>
+							<p>
+								{__(
+									'Group and classroom sales, single sign-on, gifting and subscriptions, in the admin you already use.',
+									'moowoodle'
 								)}
-							</div>
+							</p>
 						</div>
-
-						<div className="image">
-							<img src={MoowoodleIcon} alt="" />
-						</div>
-					</div>
-				</CardComponent>
-				{!appLocalizer.khali_dabba && (
-					<CardComponent
-						title={__(
-							'Build a smarter eLearning platform',
-							'moowoodle'
-						)}
-						titleIcon="form"
-						badge={[
-							{
-								text: 'Starting at $299/year',
-								color: 'blue',
-							},
-						]}
-						desc={__(
-							'Unlock advanced synchronization, automation, and enrollment features to create a professional learning experience for individuals, teams, and institutions.',
-							'moowoodle'
-						)}
-					>
-						<ListComponent
-							className="feature-list"
-							items={featuresList.map(
-								({ icon, title, desc }) => ({
-									icon: icon,
-									title: title,
-									desc: desc,
-								})
-							)}
-						/>
-						<div className="pro-banner">
-							<div className="text">
-								{__(
-									'Trusted by growing eLearning businesses',
-									'moowoodle'
-								)}
-							</div>
-							<div className="des">
-								{__(
-									'Create, manage, and scale your online learning platform with confidence. From individual instructors to training organizations, MooWoodle helps simplify course selling and learner management.',
-									'moowoodle'
-								)}
-							</div>
-
-							{renderUpgradeButton(
-								__('Upgrade Now', 'moowoodle')
-							)}
-
-							<div className="des">
+						<div className="mw-dash-pro-cta">
+							<button
+								type="button"
+								className="mw-insights-button"
+								onClick={() => setProPopupOpen(true)}
+							>
+								{__('Upgrade to Pro', 'moowoodle')}
+							</button>
+							<span>
 								{__('15-day money-back guarantee', 'moowoodle')}
-							</div>
+							</span>
 						</div>
-					</CardComponent>
-				)}
-			</ColumnComponent>
-
-			{/* Right Side */}
-			<ColumnComponent grid={4}>
-				<CardComponent
-					title={__('Extend your website', 'moowoodle')}
-					titleIcon="section"
-					desc="Discover more tools to grow your marketplace."
-				>
-					<ColumnComponent>
-						{pluginStatus['woocommerce-catalog-enquiry'] ? (
-							<ListComponent
-								className="mini-card"
-								background
-								items={[
-									{
-										title: 'CatalogX Pro',
-										desc: __(
-											'Advanced product catalog with enhanced enquiry features and premium templates',
-											'moowoodle'
-										),
-										img: catalogx,
-										tags: (
-											<>
-												<span className="admin-badge red">
-													<i className="adminfont-pro-tag"></i>{' '}
-													{__('Pro', 'moowoodle')}
-												</span>
-												<a
-													href="https://catalogx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle"
-													target="_blank"
-													rel="noopener noreferrer"
-												>
-													{__('Get Pro', 'moowoodle')}
-												</a>
-											</>
-										),
-									},
-								]}
-							/>
-						) : (
-							<ListComponent
-								className="mini-card"
-								background
-								items={[
-									{
-										title: 'CatalogX',
-										desc: __(
-											'Turn your store into a product catalog with enquiry-based sales',
-											'moowoodle'
-										),
-										img: catalogx,
-										tags: (
-											<>
-												<span className="admin-badge green">
-													{__('Free', 'moowoodle')}
-												</span>
-												<a
-													href="#"
-													onClick={(e) => {
-														e.preventDefault();
-														if (!installing) {
-															installOrActivatePlugin(
-																'woocommerce-catalog-enquiry'
-															);
-														}
-													}}
-													style={{
-														pointerEvents:
-															installing
-																? 'none'
-																: 'auto',
-														opacity:
-															installing ===
-															'woocommerce-catalog-enquiry'
-																? 0.6
-																: 1,
-													}}
-												>
-													{installing ===
-													'woocommerce-catalog-enquiry'
-														? __(
-																'Installing...',
-																'moowoodle'
-															)
-														: __(
-																'Install',
-																'moowoodle'
-															)}
-												</a>
-											</>
-										),
-									},
-								]}
-							/>
-						)}
-
-						{pluginStatus['woocommerce-product-stock-alert'] ? (
-							<ListComponent
-								className="mini-card"
-								background
-								items={[
-									{
-										title: 'Notifima Pro',
-										desc: __(
-											'Advanced stock alerts, wishlist features, and premium notification system',
-											'moowoodle'
-										),
-										img: notifima,
-										tags: (
-											<>
-												<span className="admin-badge red">
-													<i className="adminfont-pro-tag"></i>{' '}
-													{__('Pro', 'moowoodle')}
-												</span>
-												<a
-													href="https://notifima.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle"
-													target="_blank"
-													rel="noopener noreferrer"
-												>
-													{__('Get Pro', 'moowoodle')}
-												</a>
-											</>
-										),
-									},
-								]}
-							/>
-						) : (
-							<ListComponent
-								className="mini-card"
-								background
-								items={[
-									{
-										title: 'Notifima',
-										desc: __(
-											'Advanced stock alerts and wishlist features for WooCommerce',
-											'moowoodle'
-										),
-										img: notifima,
-										tags: (
-											<>
-												<span className="admin-badge green">
-													{__('Free', 'moowoodle')}
-												</span>
-												<a
-													href="#"
-													onClick={(e) => {
-														e.preventDefault();
-														if (!installing) {
-															installOrActivatePlugin(
-																'woocommerce-product-stock-alert'
-															);
-														}
-													}}
-													style={{
-														pointerEvents:
-															installing
-																? 'none'
-																: 'auto',
-														opacity:
-															installing ===
-															'woocommerce-product-stock-alert'
-																? 0.6
-																: 1,
-													}}
-												>
-													{installing ===
-													'woocommerce-product-stock-alert'
-														? __(
-																'Installing...',
-																'moowoodle'
-															)
-														: __(
-																'Install',
-																'moowoodle'
-															)}
-												</a>
-											</>
-										),
-									},
-								]}
-							/>
-						)}
-					</ColumnComponent>
-				</CardComponent>
-
-				{/* Quick Links */}
-				<CardComponent
-					title={__('Need help getting started?', 'moowoodle')}
-					titleIcon="help"
-					desc="Find the guides and support you need to build your marketplace."
-				>
-					<div className="quick-link">
-						{resources.map((res) => (
-							<ListComponent
-								className="mini-card list"
-								border
-								items={[
-									{
-										title: __(res.title, 'moowoodle'),
-										desc: __(res.desc, 'moowoodle'),
-										icon: res.iconClass,
-										tags: (
-											<>
-												<a
-													href={res.href}
-													target="blank"
-												>
-													{__(
-														res.linkText,
-														'moowoodle'
-													)}
-													<i className="adminfont-external"></i>
-												</a>
-											</>
-										),
-									},
-								]}
-							/>
-						))}
 					</div>
-				</CardComponent>
-			</ColumnComponent>
-		</ContainerComponent>
+					<ul className="mw-dash-pro-features">
+						{PRO_FEATURES.map((feature) => (
+							<li key={feature.title}>
+								<span
+									className="mw-dash-icon"
+									aria-hidden="true"
+								>
+									<i
+										className={`adminfont-${feature.icon}`}
+									/>
+								</span>
+								<span>
+									<strong>{feature.title}</strong>
+									<span>{feature.desc}</span>
+								</span>
+							</li>
+						))}
+					</ul>
+					{proPopupOpen && (
+						<PopupComponent
+							position="lightbox"
+							open
+							onClose={() => setProPopupOpen(false)}
+							width={46}
+							height="auto"
+						>
+							<ShowProPopup />
+						</PopupComponent>
+					)}
+				</section>
+			)}
+
+			<div className="mw-insights-row">
+				<section className="mw-insights-panel">
+					<div className="mw-insights-panel-head">
+						<h2>{__('Help and resources', 'moowoodle')}</h2>
+					</div>
+					<ul className="mw-dash-list">
+						{RESOURCES.map((resource) => (
+							<li key={resource.title}>
+								<a
+									className="mw-dash-row"
+									href={resource.link}
+									{...(isExternal(resource.link)
+										? {
+												target: '_blank',
+												rel: 'noopener noreferrer',
+											}
+										: {})}
+								>
+									<span
+										className="mw-dash-icon"
+										aria-hidden="true"
+									>
+										<i
+											className={`adminfont-${resource.icon}`}
+										/>
+									</span>
+									<span className="mw-dash-row-text">
+										<strong>{resource.title}</strong>
+										<span>{resource.desc}</span>
+									</span>
+									<i
+										className={`mw-dash-row-arrow adminfont-${isExternal(resource.link) ? 'external' : 'arrow-right'}`}
+										aria-hidden="true"
+									/>
+									{isExternal(resource.link) && (
+										<span className="screen-reader-text">
+											{__(
+												'(opens in a new tab)',
+												'moowoodle'
+											)}
+										</span>
+									)}
+								</a>
+							</li>
+						))}
+					</ul>
+				</section>
+
+				<section className="mw-insights-panel">
+					<div className="mw-insights-panel-head">
+						<h2>
+							{__('More from the MooWoodle team', 'moowoodle')}
+						</h2>
+					</div>
+					<ul className="mw-dash-list">
+						{COMPANION_PLUGINS.map((companion) => {
+							const isActive = !!pluginStatus[companion.slug];
+							const isBusy = installing === companion.slug;
+
+							return (
+								<li
+									key={companion.slug}
+									className="mw-dash-row"
+								>
+									<img
+										className="mw-dash-logo"
+										src={companion.logo}
+										alt=""
+									/>
+									<span className="mw-dash-row-text">
+										<strong>
+											{companion.name}
+											<span
+												className={`mw-dash-tag ${isActive ? 'is-active' : 'is-free'}`}
+											>
+												{isActive
+													? __('Active', 'moowoodle')
+													: __('Free', 'moowoodle')}
+											</span>
+										</strong>
+										<span>{companion.desc}</span>
+									</span>
+									{isActive ? (
+										<a
+											className="mw-dash-action"
+											href={companion.proUrl}
+											target="_blank"
+											rel="noopener noreferrer"
+										>
+											{sprintf(
+												/* translators: %s: plugin name. */
+												__('Get %s Pro', 'moowoodle'),
+												companion.name
+											)}
+											<span className="screen-reader-text">
+												{__(
+													'(opens in a new tab)',
+													'moowoodle'
+												)}
+											</span>
+										</a>
+									) : (
+										<button
+											type="button"
+											className="mw-dash-action"
+											disabled={!!installing}
+											onClick={() =>
+												installOrActivatePlugin(
+													companion.slug
+												)
+											}
+										>
+											{isBusy
+												? __('Installing…', 'moowoodle')
+												: __('Install', 'moowoodle')}
+										</button>
+									)}
+								</li>
+							);
+						})}
+					</ul>
+				</section>
+			</div>
+		</>
 	);
 };
 
