@@ -73,6 +73,16 @@ const PAGES: {
 		icon: 'module',
 	},
 	{
+		id: 'help-support',
+		name: __('Help & Support', 'moowoodle'),
+		desc: __(
+			'Documentation, videos, the forum, troubleshooting and contacting our team.',
+			'moowoodle'
+		),
+		tab: 'dashboard&view=help-support',
+		icon: 'customer-support',
+	},
+	{
 		id: 'courses',
 		name: __('Courses', 'moowoodle'),
 		desc: __('Moodle courses linked to your products.', 'moowoodle'),

@@ -1,11 +1,3 @@
-declare module 'body-scroll-lock' {
-	// eslint-disable-next-line no-unused-vars -- ambient type signature; the param name is part of the declared shape, not a real binding.
-	export function disableBodyScroll(targetElement: Element): void;
-	// eslint-disable-next-line no-unused-vars -- ambient type signature; the param name is part of the declared shape, not a real binding.
-	export function enableBodyScroll(targetElement: Element): void;
-}
-
-// src/global.d.ts
 export {};
 
 declare global {
@@ -28,6 +20,8 @@ declare global {
 		chat_url: any;
 		pro_data: any;
 		products_link: any;
+		/** The logged-in admin's first name (or display name), for the dashboard greeting. */
+		user_first_name?: string;
 	}
 
 	interface CourseMyAcc {

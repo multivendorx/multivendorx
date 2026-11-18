@@ -1,4 +1,25 @@
+import { createElement, Fragment } from 'react';
 import { __ } from '@wordpress/i18n';
+import './log-mode-field.scss';
+
+/**
+ * The Logs card's toggle text: both words are rendered, and log-mode-field.scss shows "Basic" while the toggle is off
+ * and "Advanced" while it is on.
+ */
+const logModeLabel = createElement(
+	Fragment,
+	null,
+	createElement(
+		'span',
+		{ className: 'mw-log-mode-off' },
+		__('Basic', 'moowoodle')
+	),
+	createElement(
+		'span',
+		{ className: 'mw-log-mode-on' },
+		__('Advanced', 'moowoodle')
+	)
+);
 
 /**
  * Settings → System & Logs, in two sub-tabs: Connection & Schedule, and Logs. SettingsNavigator draws it as a settings
@@ -72,25 +93,24 @@ export default {
 			icon: 'info',
 			title: __('Logs', 'moowoodle'),
 			desc: __(
-				'Error details for troubleshooting. Leave advanced logging off in normal operation.',
+				'Basic records MooWoodle’s usual messages and errors. Advanced also records every request sent to Moodle™ and its response, so the log grows quickly: turn it on only while troubleshooting.',
 				'moowoodle'
 			),
 		},
 		{
+			// The Advance log toggle, at the right of the Logs card header (log-mode-field.scss), reading "Basic" off
+			// and "Advanced" on. Same key and stored value as before: ['moowoodle_adv_log'] on, [] off.
 			key: 'moowoodle_adv_log',
 			type: 'checkbox',
-			label: __('Advance log', 'moowoodle'),
-			settingDescription: __(
-				`<span class="highlighted-part">Activating this option will log more detailed error information. Enable it only when essential, as it may result in a larger log file.</span>`,
-				'moowoodle'
-			),
+			look: 'toggle',
+			classes: 'mw-log-mode-row',
 			options: [
 				{
 					key: 'moowoodle_adv_log',
 					value: 'moowoodle_adv_log',
+					label: logModeLabel,
 				},
 			],
-			look: 'toggle',
 		},
 		{
 			// Its own key, not the Advance log toggle's above: zyra keys each field by `key`, and the viewer stores no

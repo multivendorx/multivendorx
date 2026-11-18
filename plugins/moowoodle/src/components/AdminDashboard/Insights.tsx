@@ -3,12 +3,23 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
+import {
+	CardComponent,
+	ColumnComponent,
+	ContainerComponent,
+	TrendStatComponent,
+} from '@zyra/components';
 import './insights.scss';
+import { DOCS_URL } from '../../services/links';
 
 /** GET moowoodle/v1/dashboard (classes/RestAPI/Controllers/Dashboard.php). */
 interface DashboardData {
 	period_days: number;
+	/** The periods the range switch offers, e.g. [7, 30, 90]. */
+	period_choices?: number[];
 	idle_days: number;
+	/** The store's currency code, for revenue. */
+	currency?: string;
 	connection: {
 		configured: boolean;
 		site_name: string;
@@ -29,12 +40,19 @@ interface DashboardData {
 		by_status: Record<string, number>;
 		new: PeriodCount;
 		unenrolled: PeriodCount;
+		/** Active enrollments whose access ends within `days` (set by MooWoodle Pro). */
+		expiring?: { count: number; days: number };
 	};
-	daily: Array<{ date: string; count: number }>;
+	/** Course revenue: line totals of the order items behind the period's enrollments. */
+	revenue?: PeriodCount;
+	/** Processing orders with a course product: paid, but enrollment waits for Completed. */
+	waiting_orders?: { count: number; limited: boolean; url: string };
+	daily: Array<{ date: string; count: number; revenue?: number }>;
 	top_courses: Array<{
 		course_id: number;
 		name: string;
 		enrollments: number;
+		revenue?: number;
 		product_url: string;
 	}>;
 	recent: Array<{
@@ -88,6 +106,27 @@ const SEVERITY_ORDER: Record<Severity, number> = {
 
 const numberFormat = new Intl.NumberFormat();
 
+/** How many "needs your attention" items show before "Show all". */
+const INSIGHTS_SHOWN = 3;
+
+/** "$1,240" in the store's currency (whole amounts in tiles, cents where they matter). */
+const formatMoney = (
+	amount: number,
+	currency = 'USD',
+	cents = false
+): string => {
+	try {
+		return new Intl.NumberFormat(undefined, {
+			style: 'currency',
+			currency,
+			minimumFractionDigits: cents ? 2 : 0,
+			maximumFractionDigits: cents ? 2 : 0,
+		}).format(amount);
+	} catch {
+		return numberFormat.format(Math.round(amount));
+	}
+};
+
 /** "+25%" / "−10%" against the previous period; null when there is nothing to compare with. */
 const percentChange = ({ current, previous }: PeriodCount): number | null =>
 	previous > 0 ? Math.round(((current - previous) / previous) * 100) : null;
@@ -127,6 +166,31 @@ const formatAgo = (isoDateTime: string): string => {
 const buildInsights = (data: DashboardData): Insight[] => {
 	const { connection, courses, enrollments, period_days: periodDays } = data;
 	const insights: Insight[] = [];
+	const waiting = data.waiting_orders;
+	const expiring = enrollments.expiring;
+
+	if (waiting && waiting.count > 0) {
+		insights.push({
+			id: 'waiting-orders',
+			severity: 'critical',
+			title: sprintf(
+				/* translators: %s: number of orders. */
+				_n(
+					'%s paid order isn’t enrolled yet',
+					'%s paid orders aren’t enrolled yet',
+					waiting.count,
+					'moowoodle'
+				),
+				`${numberFormat.format(waiting.count)}${waiting.limited ? '+' : ''}`
+			),
+			detail: __(
+				'They are Processing. MooWoodle enrolls buyers in Moodle™ when an order is marked Completed, so until then they have paid but can’t open the course.',
+				'moowoodle'
+			),
+			cta: __('Review orders', 'moowoodle'),
+			link: waiting.url,
+		});
+	}
 
 	if (courses.ended_on_sale > 0) {
 		insights.push({
@@ -255,6 +319,30 @@ const buildInsights = (data: DashboardData): Insight[] => {
 		});
 	}
 
+	if (expiring && expiring.count > 0) {
+		insights.push({
+			id: 'access-expiring',
+			severity: 'info',
+			title: sprintf(
+				/* translators: 1: number of students, 2: number of days. */
+				_n(
+					'%1$s student’s access ends in the next %2$s days',
+					'%1$s students’ access ends in the next %2$s days',
+					expiring.count,
+					'moowoodle'
+				),
+				numberFormat.format(expiring.count),
+				expiring.days
+			),
+			detail: __(
+				'A good moment to offer a renewal or the next course.',
+				'moowoodle'
+			),
+			cta: __('See enrollments', 'moowoodle'),
+			link: TAB.enrollments,
+		});
+	}
+
 	if (connection.sync_running) {
 		insights.push({
 			id: 'sync-running',
@@ -271,23 +359,50 @@ const buildInsights = (data: DashboardData): Insight[] => {
 	);
 };
 
-/** The four steps from a fresh install to the first enrollment. */
+/**
+ * The four steps from a fresh install to the first enrollment. The first one connects Moodle™, or tests a connection
+ * that is saved but hasn't passed; if a working connection is lost later, it is the step to do again.
+ */
 const buildSetupSteps = (data: DashboardData) => [
-	{
-		id: 'connect',
-		done: data.connection.configured && '' !== data.connection.site_name,
-		title: __('Connect Moodle™', 'moowoodle'),
-		detail: __(
-			'Save your Moodle™ site URL and access token, then run the connection test.',
-			'moowoodle'
-		),
-		cta: __('Connect', 'moowoodle'),
-		link: TAB.connection,
-	},
+	data.connection.configured
+		? {
+				id: 'connect',
+				done: '' !== data.connection.site_name,
+				title: __('Test your Moodle™ connection', 'moowoodle'),
+				doneTitle: __('Moodle™ connected', 'moowoodle'),
+				detail: __(
+					'Your site URL and token are saved. Run the test to confirm the two sites can reach each other.',
+					'moowoodle'
+				),
+				cta: __('Test connection', 'moowoodle'),
+				link: TAB.connection,
+			}
+		: {
+				id: 'connect',
+				done: false,
+				title: __('Connect your Moodle™ site', 'moowoodle'),
+				doneTitle: __('Moodle™ connected', 'moowoodle'),
+				detail: __(
+					'Add your Moodle™ site URL and a web service token. Courses sync and buyers are enrolled once it’s connected.',
+					'moowoodle'
+				),
+				cta: __('Connect Moodle™ Site', 'moowoodle'),
+				link: TAB.connection,
+			},
 	{
 		id: 'sync',
 		done: data.courses.total > 0,
 		title: __('Sync your courses', 'moowoodle'),
+		doneTitle: sprintf(
+			/* translators: %s: number of synced courses. */
+			_n(
+				'%s course synced',
+				'%s courses synced',
+				data.courses.total,
+				'moowoodle'
+			),
+			numberFormat.format(data.courses.total)
+		),
 		detail: __('Bring your Moodle™ courses into WordPress.', 'moowoodle'),
 		cta: __('Sync courses', 'moowoodle'),
 		link: TAB.syncCourses,
@@ -296,6 +411,16 @@ const buildSetupSteps = (data: DashboardData) => [
 		id: 'sell',
 		done: data.courses.with_product > 0,
 		title: __('Put a course on sale', 'moowoodle'),
+		doneTitle: sprintf(
+			/* translators: %s: number of courses on sale. */
+			_n(
+				'%s course on sale',
+				'%s courses on sale',
+				data.courses.with_product,
+				'moowoodle'
+			),
+			numberFormat.format(data.courses.with_product)
+		),
 		detail: __(
 			'Create a WooCommerce product for a course so students can buy it.',
 			'moowoodle'
@@ -307,6 +432,7 @@ const buildSetupSteps = (data: DashboardData) => [
 		id: 'enroll',
 		done: data.enrollments.total > 0,
 		title: __('Get your first enrollment', 'moowoodle'),
+		doneTitle: __('First enrollment received', 'moowoodle'),
 		detail: __(
 			'When someone buys a course, MooWoodle enrolls them in Moodle™ and it shows here.',
 			'moowoodle'
@@ -316,47 +442,30 @@ const buildSetupSteps = (data: DashboardData) => [
 	},
 ];
 
-/** A change badge: arrow, percentage and "vs previous 30 days". `higherIsBetter` picks which way is good. */
-const Change = ({
-	period,
-	higherIsBetter,
-	periodDays,
-}: {
-	period: PeriodCount;
-	higherIsBetter: boolean;
-	periodDays: number;
-}) => {
+/**
+ * A tile's change badge, "+25%" against the previous period: green when it moved the good way, red when not, grey when
+ * there is nothing to compare with. `higherIsBetter` picks which way is good.
+ */
+const changeBadge = (
+	period: PeriodCount,
+	higherIsBetter: boolean
+): { text: string; color: string } | undefined => {
 	const change = percentChange(period);
 
 	if (null === change) {
-		return (
-			<span className="mw-insights-change is-neutral">
-				{period.current > 0
-					? __('New this period', 'moowoodle')
-					: sprintf(
-							/* translators: %s: number of days. */
-							__('None in the previous %s days', 'moowoodle'),
-							periodDays
-						)}
-			</span>
-		);
+		return period.current > 0
+			? { text: __('New', 'moowoodle'), color: 'gray' }
+			: undefined;
 	}
 
-	const isGood = 0 === change ? null : change > 0 === higherIsBetter;
-	const tone = null === isGood ? 'is-neutral' : isGood ? 'is-good' : 'is-bad';
-	const arrow = change > 0 ? '↑' : change < 0 ? '↓' : '→';
+	if (0 === change) {
+		return { text: '0%', color: 'gray' };
+	}
 
-	return (
-		<span className={`mw-insights-change ${tone}`}>
-			<span aria-hidden="true">{arrow}</span>
-			{sprintf(
-				/* translators: 1: percentage change, 2: number of days. */
-				__('%1$s%% vs previous %2$s days', 'moowoodle'),
-				Math.abs(change),
-				periodDays
-			)}
-		</span>
-	);
+	return {
+		text: `${change > 0 ? '+' : '−'}${Math.abs(change)}%`,
+		color: change > 0 === higherIsBetter ? 'green' : 'red',
+	};
 };
 
 /** "Round" axis maximum: 1, 2, 5, 10, 20, 50… at or above the highest bar. */
@@ -369,28 +478,38 @@ const niceMax = (value: number): number => {
 	return step * magnitude;
 };
 
-/** Daily new enrollments: one series, thin bars, hover tooltip, and the same figures as a table for screen readers. */
-const EnrollmentTrend = ({
+/**
+ * One daily series (new enrollments or course revenue): thin bars, a hover tooltip, and the same figures as a table
+ * for screen readers.
+ */
+const DailyTrend = ({
 	daily,
-	total,
+	valueOf,
+	formatValue,
+	formatAxis,
+	caption,
+	emptyText,
 }: {
 	daily: DashboardData['daily'];
-	total: number;
+	valueOf: (day: DashboardData['daily'][number]) => number;
+	/** The tooltip's and table's figure ("3 enrollments", "$120.00"). */
+	formatValue: (value: number) => string;
+	/** The gridline labels ("10", "$500"). */
+	formatAxis: (value: number) => string;
+	/** The screen-reader table's caption and its figure column. */
+	caption: { title: string; column: string };
+	emptyText: string;
 }) => {
 	const [hovered, setHovered] = useState<number | null>(null);
-	const max = niceMax(Math.max(0, ...daily.map((day) => day.count)));
+	const total = daily.reduce((sum, day) => sum + valueOf(day), 0);
+	const max = niceMax(Math.max(0, ...daily.map(valueOf)));
 	const hoveredDay = null === hovered ? null : daily[hovered];
 
 	if (0 === total) {
 		return (
 			<div className="mw-insights-chart-empty">
 				<i className="adminfont-bar-chart" aria-hidden="true" />
-				<p>
-					{__(
-						'No new enrollments in this period yet. Each purchase of a course product shows up here.',
-						'moowoodle'
-					)}
-				</p>
+				<p>{emptyText}</p>
 			</div>
 		);
 	}
@@ -399,8 +518,8 @@ const EnrollmentTrend = ({
 		<div className="mw-insights-chart">
 			<div className="mw-insights-chart-plot" aria-hidden="true">
 				<div className="mw-insights-chart-grid">
-					<span data-value={numberFormat.format(max)} />
-					<span data-value={numberFormat.format(max / 2)} />
+					<span data-value={formatAxis(max)} />
+					<span data-value={formatAxis(max / 2)} />
 					<span data-value="0" />
 				</div>
 				<div
@@ -416,7 +535,7 @@ const EnrollmentTrend = ({
 							<span
 								className="mw-insights-chart-bar"
 								style={{
-									height: `${(day.count / max) * 100}%`,
+									height: `${(valueOf(day) / max) * 100}%`,
 								}}
 							/>
 						</div>
@@ -429,18 +548,7 @@ const EnrollmentTrend = ({
 							left: `${((hovered + 0.5) / daily.length) * 100}%`,
 						}}
 					>
-						<strong>
-							{sprintf(
-								/* translators: %s: number of enrollments. */
-								_n(
-									'%s enrollment',
-									'%s enrollments',
-									hoveredDay.count,
-									'moowoodle'
-								),
-								numberFormat.format(hoveredDay.count)
-							)}
-						</strong>
+						<strong>{formatValue(valueOf(hoveredDay))}</strong>
 						<span>
 							{formatDay(hoveredDay.date, {
 								weekday: 'short',
@@ -467,11 +575,11 @@ const EnrollmentTrend = ({
 				<span>{__('Today', 'moowoodle')}</span>
 			</div>
 			<table className="screen-reader-text">
-				<caption>{__('New enrollments per day', 'moowoodle')}</caption>
+				<caption>{caption.title}</caption>
 				<thead>
 					<tr>
 						<th scope="col">{__('Date', 'moowoodle')}</th>
-						<th scope="col">{__('Enrollments', 'moowoodle')}</th>
+						<th scope="col">{caption.column}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -483,7 +591,7 @@ const EnrollmentTrend = ({
 									day: 'numeric',
 								})}
 							</td>
-							<td>{day.count}</td>
+							<td>{formatValue(valueOf(day))}</td>
 						</tr>
 					))}
 				</tbody>
@@ -498,32 +606,95 @@ const STATUS_LABEL: Record<string, string> = {
 	expired: __('Expired', 'moowoodle'),
 };
 
+interface InsightsProps {
+	/** The "Do more with MooWoodle Pro" card; null with Pro active. */
+	pro: React.ReactNode;
+	/** Learn MooWoodle: docs, videos, forum. */
+	learn: React.ReactNode;
+	/** Help & Support: troubleshooting and the ways to reach the team. */
+	help: React.ReactNode;
+	/** More from the MooWoodle team. */
+	team: React.ReactNode;
+}
+
 /**
- * The data-driven top of the dashboard: setup checklist until the first enrollment, then what needs attention, the
- * period's key figures, the enrollment trend, top courses and the latest enrollments. One request, to
+ * The cards under the setup row or the figures: Learn MooWoodle beside Help & Support, then Pro. (The team's plugins
+ * sit at the top right instead: beside the setup card, or at the head of the figures' side column.)
+ */
+const SupportRows = ({ pro, learn, help }: Omit<InsightsProps, 'team'>) => (
+	<>
+		<ContainerComponent className="mw-insights-grid is-equal">
+			<ColumnComponent grid={4}>{learn}</ColumnComponent>
+			<ColumnComponent grid={8}>{help}</ColumnComponent>
+		</ContainerComponent>
+		{pro}
+	</>
+);
+
+/**
+ * The whole Overview tab. Until the first enrollment it is a setup page: the setup card beside the team's plugins,
+ * then Learn MooWoodle beside Help & Support, then Pro. After it, the period's figures lead: tiles, what needs
+ * attention, the enrollment trend and top courses, with a side column of the team's plugins, the setup card (if a step
+ * comes undone), the connection and the latest enrollments; Learn, Help & Support and Pro follow. One request, to
  * moowoodle/v1/dashboard.
  */
-const Insights: React.FC = () => {
+const Insights: React.FC<InsightsProps> = ({ pro, learn, help, team }) => {
 	const [data, setData] = useState<DashboardData | null>(null);
 	const [failed, setFailed] = useState(false);
+	// The reporting period, from the range switch. Changing it keeps the figures on screen (dimmed) until the new
+	// ones arrive, so the layout doesn't jump.
+	const [days, setDays] = useState(30);
+	const [isRefreshing, setIsRefreshing] = useState(false);
+	const [chartMetric, setChartMetric] = useState<'enrollments' | 'revenue'>(
+		'enrollments'
+	);
+	const [showAllInsights, setShowAllInsights] = useState(false);
+
+	// Help & Support used to be its own tab; its links (`&view=help-support`) now scroll to the card once it is drawn.
+	useEffect(() => {
+		if (
+			data &&
+			'help-support' ===
+				new URLSearchParams(window.location.hash.substring(1)).get(
+					'view'
+				)
+		) {
+			document
+				.getElementById('moowoodle-help-support')
+				?.scrollIntoView({ block: 'start' });
+		}
+	}, [data]);
 
 	useEffect(() => {
+		let cancelled = false;
+
+		setIsRefreshing(true);
 		axios
 			.get(getApiLink(appLocalizer, 'dashboard'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: { days },
 			})
-			.then((response) => setData(response.data))
-			.catch(() => setFailed(true));
-	}, []);
+			.then((response) => !cancelled && setData(response.data))
+			.catch(() => !cancelled && setFailed(true))
+			.finally(() => !cancelled && setIsRefreshing(false));
+
+		return () => {
+			cancelled = true;
+		};
+	}, [days]);
 
 	if (failed) {
 		return (
-			<div className="mw-insights-panel mw-insights-failed" role="alert">
-				<i className="adminfont-error" aria-hidden="true" />
-				{__(
-					'The dashboard figures could not be loaded. Reload the page, or check Settings → System & Logs.',
-					'moowoodle'
-				)}
+			<div className="mw-insights">
+				<div className="mw-insights-failed" role="alert">
+					<i className="adminfont-error" aria-hidden="true" />
+					{__(
+						'The dashboard figures could not be loaded. Reload the page, or check Settings → System & Logs.',
+						'moowoodle'
+					)}
+				</div>
+				{team}
+				<SupportRows pro={pro} learn={learn} help={help} />
 			</div>
 		);
 	}
@@ -531,19 +702,18 @@ const Insights: React.FC = () => {
 	if (!data) {
 		return (
 			<div
-				className="mw-insights is-loading"
+				className="mw-insights"
 				aria-busy="true"
 				aria-label={__('Loading dashboard', 'moowoodle')}
 			>
-				<div className="mw-insights-kpis">
-					{[0, 1, 2, 3].map((placeholder) => (
-						<div
-							key={placeholder}
-							className="mw-insights-kpi mw-insights-skeleton"
-						/>
-					))}
-				</div>
-				<div className="mw-insights-panel mw-insights-skeleton is-tall" />
+				<ContainerComponent className="mw-insights-grid">
+					<ColumnComponent grid={6} className="mw-col-60">
+						<CardComponent isLoading />
+					</ColumnComponent>
+					<ColumnComponent grid={6} className="mw-col-40">
+						{team}
+					</ColumnComponent>
+				</ContainerComponent>
 			</div>
 		);
 	}
@@ -555,429 +725,671 @@ const Insights: React.FC = () => {
 	const setupComplete = doneSteps === steps.length;
 	const nextStep = steps.find((step) => !step.done);
 	const insights = buildInsights(data);
-	// A brand-new site has no figures to show: the checklist is the whole dashboard until something is synced or sold.
-	const hasData = courses.total > 0 || enrollments.total > 0;
+	// The figures start with the first enrollment. Before it, every tile and chart would be zero, and the setup card
+	// already says what to do next, so it is the whole dashboard.
+	const hasData = enrollments.total > 0;
 	// Same test as the checklist's first step: URL and token saved, and the connection test has passed.
 	const isConnected = connection.configured && '' !== connection.site_name;
 	const topMax = Math.max(
 		1,
 		...data.top_courses.map((course) => course.enrollments)
 	);
+	const daysBefore = (count: number) =>
+		sprintf(
+			/* translators: 1: a number, 2: number of days. */
+			__('%1$s the %2$s days before', 'moowoodle'),
+			numberFormat.format(count),
+			periodDays
+		);
+	const sparkline = data.daily.some((day) => day.count > 0)
+		? data.daily.map((day) => ({ value: day.count }))
+		: undefined;
+	const currency = data.currency ?? 'USD';
+	const revenue = data.revenue ?? { current: 0, previous: 0 };
+	const money = (amount: number) => formatMoney(amount, currency);
+	const revenueSparkline = data.daily.some((day) => (day.revenue ?? 0) > 0)
+		? data.daily.map((day) => ({ value: day.revenue ?? 0 }))
+		: undefined;
+	// Revenue per new enrollment: a price and mix signal ("are buyers choosing cheaper courses?").
+	const perEnrollment =
+		enrollments.new.current > 0 && revenue.current > 0
+			? revenue.current / enrollments.new.current
+			: null;
+	const periodChoices = data.period_choices ?? [7, 30, 90];
+	// The most urgent few, so the list reads as priorities; the rest behind "Show all".
+	const visibleInsights = showAllInsights
+		? insights
+		: insights.slice(0, INSIGHTS_SHOWN);
+	const unenrolledMore =
+		enrollments.unenrolled.current - enrollments.unenrolled.previous;
+
+	const setupCard = setupComplete ? null : (
+		<CardComponent
+			title={__('Get MooWoodle ready', 'moowoodle')}
+			desc={sprintf(
+				/* translators: 1: steps done, 2: total steps. */
+				__(
+					'%1$s of %2$s steps done. Each one unlocks the next.',
+					'moowoodle'
+				),
+				doneSteps,
+				steps.length
+			)}
+			className="mw-insights-setup"
+			action={
+				<div
+					className="mw-insights-progress"
+					role="progressbar"
+					aria-valuemin={0}
+					aria-valuemax={steps.length}
+					aria-valuenow={doneSteps}
+					aria-label={__('Setup progress', 'moowoodle')}
+				>
+					<span
+						style={{
+							width: `${(doneSteps / steps.length) * 100}%`,
+						}}
+					/>
+				</div>
+			}
+		>
+			<ol className="mw-insights-steps">
+				{steps.map((step, index) => {
+					const state = step.done
+						? 'is-done'
+						: step === nextStep
+							? 'is-current'
+							: 'is-todo';
+
+					return (
+						<li
+							key={step.id}
+							className={state}
+							aria-current={
+								step === nextStep ? 'step' : undefined
+							}
+						>
+							<span
+								className="mw-insights-step-marker"
+								aria-hidden="true"
+							>
+								{step.done ? (
+									<i className="adminfont-check" />
+								) : (
+									index + 1
+								)}
+							</span>
+							<div className="mw-insights-step-body">
+								<strong>
+									{step.done ? step.doneTitle : step.title}
+									{step.done && (
+										<span className="screen-reader-text">
+											{` ${__('(done)', 'moowoodle')}`}
+										</span>
+									)}
+								</strong>
+								{/* Only the step to do now explains itself; the rest stay one quiet line. */}
+								{step === nextStep && (
+									<>
+										<p>{step.detail}</p>
+										<div className="mw-insights-step-actions">
+											<a
+												className="admin-btn btn-purple-bg"
+												href={step.link}
+											>
+												{step.cta}
+											</a>
+											{'connect' === step.id &&
+												!connection.configured && (
+													<a
+														className="mw-insights-more"
+														href={DOCS_URL}
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														{__(
+															'How to get a token',
+															'moowoodle'
+														)}
+														<i
+															className="adminfont-external"
+															aria-hidden="true"
+														/>
+														<span className="screen-reader-text">
+															{__(
+																'(opens in a new tab)',
+																'moowoodle'
+															)}
+														</span>
+													</a>
+												)}
+										</div>
+									</>
+								)}
+							</div>
+						</li>
+					);
+				})}
+			</ol>
+		</CardComponent>
+	);
+
+	if (!hasData) {
+		return (
+			<div className="mw-insights">
+				<ContainerComponent className="mw-insights-grid is-equal">
+					<ColumnComponent grid={6} className="mw-col-60">
+						{setupCard}
+					</ColumnComponent>
+					<ColumnComponent grid={6} className="mw-col-40">
+						{team}
+					</ColumnComponent>
+				</ContainerComponent>
+				<SupportRows pro={pro} learn={learn} help={help} />
+			</div>
+		);
+	}
 
 	return (
 		<div className="mw-insights">
-			{!isConnected && (
-				<section className="mw-insights-alert" role="status">
-					<span className="mw-insights-alert-icon" aria-hidden="true">
-						<i className="adminfont-centralized-connections" />
-					</span>
-					<div className="mw-insights-alert-body">
-						<h2>
-							{connection.configured
-								? __(
-										'Run the Moodle™ connection test',
-										'moowoodle'
-									)
-								: __(
-										'Connect your Moodle™ site',
-										'moowoodle'
-									)}
-						</h2>
-						<p>
-							{connection.configured
-								? __(
-										'Your site URL and token are saved, but the connection hasn’t passed a test. Run it to confirm courses will sync and buyers get enrolled.',
-										'moowoodle'
-									)
-								: __(
-										'Add your Moodle™ site URL and a web service token. Until then, courses can’t sync and students who buy a course aren’t enrolled in Moodle™.',
-										'moowoodle'
-									)}
-						</p>
-					</div>
-					<div className="mw-insights-alert-actions">
-						<a className="mw-insights-button" href={TAB.connection}>
-							{connection.configured
-								? __('Test connection', 'moowoodle')
-								: __('Connect Moodle™', 'moowoodle')}
-						</a>
-						<a
-							className="mw-insights-link"
-							href="https://moowoodle.com/docs/knowledgebase/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							{__('Setup guide', 'moowoodle')}
-							<i
-								className="adminfont-external"
+			<div className="mw-insights-toolbar">
+				<p>
+					{isConnected && (
+						<span className="mw-insights-connected">
+							<span
+								className="mw-insights-dot is-good"
 								aria-hidden="true"
 							/>
-							<span className="screen-reader-text">
-								{__('(opens in a new tab)', 'moowoodle')}
-							</span>
-						</a>
-					</div>
-				</section>
-			)}
-
-			{(isConnected || hasData) && (
-				<div className="mw-insights-status">
-					{isConnected ? (
-						<span className="mw-insights-pill is-good">
-							<i className="adminfont-check" aria-hidden="true" />
-							{sprintf(
-								/* translators: %s: Moodle site name. */
-								__('Connected to %s', 'moowoodle'),
-								connection.site_name
-							)}
+							{connection.site_name}
 						</span>
-					) : (
-						<span />
 					)}
-					{hasData && (
-						<span className="mw-insights-period">
+					<span>
+						{sprintf(
+							/* translators: %1$s: number of days (used twice). */
+							__(
+								'Last %1$s days, compared with the %1$s days before',
+								'moowoodle'
+							),
+							periodDays
+						)}
+					</span>
+				</p>
+				<div
+					className="mw-insights-range"
+					role="group"
+					aria-label={__('Reporting period', 'moowoodle')}
+				>
+					{periodChoices.map((choice) => (
+						<button
+							key={choice}
+							type="button"
+							aria-pressed={choice === periodDays}
+							className={choice === periodDays ? 'is-active' : ''}
+							disabled={isRefreshing}
+							onClick={() => setDays(choice)}
+						>
 							{sprintf(
+								/* translators: %s: number of days; "30d" means 30 days. */
+								__('%sd', 'moowoodle'),
+								choice
+							)}
+						</button>
+					))}
+				</div>
+			</div>
+
+			<div className={isRefreshing ? 'mw-insights-refreshing' : ''}>
+				<TrendStatComponent
+					cols={4}
+					items={[
+						{
+							icon: 'revenue',
+							label: __('Course revenue', 'moowoodle'),
+							value: money(revenue.current),
+							caption:
+								null === perEnrollment
+									? sprintf(
+											/* translators: 1: an amount, 2: number of days. */
+											__(
+												'%1$s the %2$s days before',
+												'moowoodle'
+											),
+											money(revenue.previous),
+											periodDays
+										)
+									: sprintf(
+											/* translators: %s: an amount. */
+											__(
+												'%s per new enrollment',
+												'moowoodle'
+											),
+											formatMoney(
+												perEnrollment,
+												currency,
+												true
+											)
+										),
+							badge: changeBadge(revenue, true),
+							chartData: revenueSparkline,
+							chartDataKey: 'value',
+						},
+						{
+							icon: 'classroom-enrollment',
+							label: __('New enrollments', 'moowoodle'),
+							value: numberFormat.format(enrollments.new.current),
+							caption: daysBefore(enrollments.new.previous),
+							badge: changeBadge(enrollments.new, true),
+							chartData: sparkline,
+							chartDataKey: 'value',
+						},
+						{
+							icon: 'person',
+							label: __('Active students', 'moowoodle'),
+							value: numberFormat.format(
+								enrollments.by_status.enrolled ?? 0
+							),
+							caption: sprintf(
+								/* translators: %s: number of unenrollments. */
+								_n(
+									'%s unenrolled in this period',
+									'%s unenrolled in this period',
+									enrollments.unenrolled.current,
+									'moowoodle'
+								),
+								numberFormat.format(
+									enrollments.unenrolled.current
+								)
+							),
+							// Only worth a colour when more students are leaving than before.
+							badge:
+								unenrolledMore > 0
+									? {
+											text: sprintf(
+												/* translators: %s: number of extra unenrollments. */
+												__('+%s leaving', 'moowoodle'),
+												numberFormat.format(
+													unenrolledMore
+												)
+											),
+											color: 'red',
+										}
+									: undefined,
+						},
+						{
+							icon: 'catalog',
+							label: __('Courses on sale', 'moowoodle'),
+							value: numberFormat.format(courses.with_product),
+							caption: sprintf(
+								/* translators: %s: number of synced courses. */
+								__('of %s synced courses', 'moowoodle'),
+								numberFormat.format(courses.total)
+							),
+							badge:
+								courses.without_product > 0
+									? {
+											text: sprintf(
+												/* translators: %s: number of courses. */
+												__('%s unlisted', 'moowoodle'),
+												numberFormat.format(
+													courses.without_product
+												)
+											),
+											color: 'gray',
+										}
+									: undefined,
+						},
+					]}
+				/>
+			</div>
+
+			<ContainerComponent className="mw-insights-grid">
+				<ColumnComponent grid={8}>
+					<div className="mw-insights-stack">
+						{(insights.length > 0 || setupComplete) && (
+							<CardComponent
+								title={__('Needs your attention', 'moowoodle')}
+								desc={
+									insights.length > 0
+										? sprintf(
+												/* translators: %s: number of items. */
+												_n(
+													'%s thing to look at',
+													'%s things to look at',
+													insights.length,
+													'moowoodle'
+												),
+												numberFormat.format(
+													insights.length
+												)
+											)
+										: __(
+												'Nothing waiting on you',
+												'moowoodle'
+											)
+								}
+							>
+								{insights.length > 0 ? (
+									<>
+										<ul className="mw-insights-list">
+											{visibleInsights.map((insight) => (
+												<li
+													key={insight.id}
+													className={`is-${insight.severity}`}
+												>
+													<span
+														className="mw-insights-severity"
+														title={
+															SEVERITY_LABEL[
+																insight.severity
+															]
+														}
+													>
+														<i
+															className={`adminfont-${SEVERITY_ICON[insight.severity]}`}
+															aria-hidden="true"
+														/>
+														<span className="screen-reader-text">
+															{
+																SEVERITY_LABEL[
+																	insight
+																		.severity
+																]
+															}
+														</span>
+													</span>
+													<span className="mw-insights-list-text">
+														<strong>
+															{insight.title}
+														</strong>
+														<span>
+															{insight.detail}
+														</span>
+													</span>
+													<a
+														className="mw-insights-action"
+														href={insight.link}
+													>
+														{insight.cta}
+														<i
+															className="adminfont-arrow-right"
+															aria-hidden="true"
+														/>
+													</a>
+												</li>
+											))}
+										</ul>
+										{insights.length > INSIGHTS_SHOWN && (
+											<button
+												type="button"
+												className="mw-insights-more mw-insights-toggle"
+												aria-expanded={showAllInsights}
+												onClick={() =>
+													setShowAllInsights(
+														!showAllInsights
+													)
+												}
+											>
+												{showAllInsights
+													? __(
+															'Show fewer',
+															'moowoodle'
+														)
+													: sprintf(
+															/* translators: %s: number of items. */
+															__(
+																'Show all %s',
+																'moowoodle'
+															),
+															insights.length
+														)}
+											</button>
+										)}
+									</>
+								) : (
+									<p className="mw-insights-clear">
+										<i
+											className="adminfont-check"
+											aria-hidden="true"
+										/>
+										{__(
+											'Your courses are connected, on sale and enrolling students.',
+											'moowoodle'
+										)}
+									</p>
+								)}
+							</CardComponent>
+						)}
+
+						<CardComponent
+							title={
+								'revenue' === chartMetric
+									? __('Course revenue per day', 'moowoodle')
+									: __('New enrollments per day', 'moowoodle')
+							}
+							desc={
+								'revenue' === chartMetric
+									? sprintf(
+											/* translators: 1: an amount, 2: number of days. */
+											__(
+												'%1$s in the last %2$s days',
+												'moowoodle'
+											),
+											money(revenue.current),
+											periodDays
+										)
+									: sprintf(
+											/* translators: 1: number of enrollments, 2: number of days. */
+											_n(
+												'%1$s in the last %2$s days',
+												'%1$s in the last %2$s days',
+												enrollments.new.current,
+												'moowoodle'
+											),
+											numberFormat.format(
+												enrollments.new.current
+											),
+											periodDays
+										)
+							}
+							action={
+								<div
+									className="mw-insights-range"
+									role="group"
+									aria-label={__('Chart', 'moowoodle')}
+								>
+									{(
+										[
+											[
+												'enrollments',
+												__('Enrollments', 'moowoodle'),
+											],
+											[
+												'revenue',
+												__('Revenue', 'moowoodle'),
+											],
+										] as const
+									).map(([metric, label]) => (
+										<button
+											key={metric}
+											type="button"
+											aria-pressed={
+												metric === chartMetric
+											}
+											className={
+												metric === chartMetric
+													? 'is-active'
+													: ''
+											}
+											onClick={() =>
+												setChartMetric(metric)
+											}
+										>
+											{label}
+										</button>
+									))}
+								</div>
+							}
+						>
+							<div
+								className={
+									isRefreshing ? 'mw-insights-refreshing' : ''
+								}
+							>
+								{'revenue' === chartMetric ? (
+									<DailyTrend
+										daily={data.daily}
+										valueOf={(day) => day.revenue ?? 0}
+										formatValue={(value) =>
+											formatMoney(value, currency, true)
+										}
+										formatAxis={money}
+										caption={{
+											title: __(
+												'Course revenue per day',
+												'moowoodle'
+											),
+											column: __('Revenue', 'moowoodle'),
+										}}
+										emptyText={__(
+											'No course revenue in this period yet. Sales of course products show up here.',
+											'moowoodle'
+										)}
+									/>
+								) : (
+									<DailyTrend
+										daily={data.daily}
+										valueOf={(day) => day.count}
+										formatValue={(value) =>
+											sprintf(
+												/* translators: %s: number of enrollments. */
+												_n(
+													'%s enrollment',
+													'%s enrollments',
+													value,
+													'moowoodle'
+												),
+												numberFormat.format(value)
+											)
+										}
+										formatAxis={(value) =>
+											numberFormat.format(value)
+										}
+										caption={{
+											title: __(
+												'New enrollments per day',
+												'moowoodle'
+											),
+											column: __(
+												'Enrollments',
+												'moowoodle'
+											),
+										}}
+										emptyText={__(
+											'No new enrollments in this period yet. Each purchase of a course product shows up here.',
+											'moowoodle'
+										)}
+									/>
+								)}
+							</div>
+						</CardComponent>
+
+						<CardComponent
+							title={__('Top courses', 'moowoodle')}
+							desc={sprintf(
 								/* translators: %s: number of days. */
-								__('Last %s days', 'moowoodle'),
+								__(
+									'By new enrollments, last %s days',
+									'moowoodle'
+								),
 								periodDays
 							)}
-						</span>
-					)}
-				</div>
-			)}
-
-			{!setupComplete && (
-				<section className="mw-insights-panel mw-insights-setup">
-					<div className="mw-insights-setup-head">
-						<div>
-							<h2>
-								{__('Finish setting up MooWoodle', 'moowoodle')}
-							</h2>
-							<p>
-								{sprintf(
-									/* translators: 1: steps done, 2: total steps. */
-									__('%1$s of %2$s steps done', 'moowoodle'),
-									doneSteps,
-									steps.length
-								)}
-							</p>
-						</div>
-						<div
-							className="mw-insights-progress"
-							role="progressbar"
-							aria-valuemin={0}
-							aria-valuemax={steps.length}
-							aria-valuenow={doneSteps}
-							aria-label={__('Setup progress', 'moowoodle')}
-						>
-							<span
-								style={{
-									width: `${(doneSteps / steps.length) * 100}%`,
-								}}
-							/>
-						</div>
-					</div>
-					<ol className="mw-insights-steps">
-						{steps.map((step, index) => (
-							<li
-								key={step.id}
-								className={`${step.done ? 'is-done' : ''}${step === nextStep ? ' is-next' : ''}`}
-							>
-								<span
-									className="mw-insights-step-marker"
-									aria-hidden="true"
-								>
-									{step.done ? (
-										<i className="adminfont-check" />
-									) : (
-										index + 1
-									)}
-								</span>
-								<span className="mw-insights-step-text">
-									<strong>
-										{step.title}
-										{step.done && (
-											<span className="screen-reader-text">
-												{` ${__('(done)', 'moowoodle')}`}
-											</span>
-										)}
-									</strong>
-									<span>{step.detail}</span>
-								</span>
-								{/* The connection alert above carries the Connect button; don't repeat it here. */}
-								{step === nextStep &&
-									('connect' !== step.id || isConnected) && (
-										<a
-											className="mw-insights-button"
-											href={step.link}
-										>
-											{step.cta}
-										</a>
-									)}
-							</li>
-						))}
-					</ol>
-				</section>
-			)}
-
-			{(setupComplete || insights.length > 0) && (
-				<section className="mw-insights-panel mw-insights-attention">
-					<div className="mw-insights-panel-head">
-						<h2>{__('Needs your attention', 'moowoodle')}</h2>
-						{insights.length > 0 && (
-							<span className="mw-insights-count">
-								{insights.length}
-							</span>
-						)}
-					</div>
-					{insights.length > 0 ? (
-						<ul className="mw-insights-list">
-							{insights.map((insight) => (
-								<li
-									key={insight.id}
-									className={`is-${insight.severity}`}
-								>
-									<span className="mw-insights-severity">
-										<i
-											className={`adminfont-${SEVERITY_ICON[insight.severity]}`}
-											aria-hidden="true"
-										/>
-										{SEVERITY_LABEL[insight.severity]}
-									</span>
-									<span className="mw-insights-list-text">
-										<strong>{insight.title}</strong>
-										<span>{insight.detail}</span>
-									</span>
-									<a
-										className="mw-insights-action"
-										href={insight.link}
-									>
-										{insight.cta}
-										<i
-											className="adminfont-arrow-right"
-											aria-hidden="true"
-										/>
-									</a>
-								</li>
-							))}
-						</ul>
-					) : (
-						<div className="mw-insights-clear">
-							<i className="adminfont-check" aria-hidden="true" />
-							<strong>{__('All clear', 'moowoodle')}</strong>
-							<span>
-								{__(
-									'Your courses are connected, on sale and enrolling students.',
-									'moowoodle'
-								)}
-							</span>
-						</div>
-					)}
-				</section>
-			)}
-
-			{hasData && (
-				<>
-					<div className="mw-insights-kpis">
-						<div className="mw-insights-kpi">
-							<span className="mw-insights-kpi-label">
-								<i
-									className="adminfont-classroom-enrollment"
-									aria-hidden="true"
-								/>
-								{__('New enrollments', 'moowoodle')}
-							</span>
-							<strong>
-								{numberFormat.format(enrollments.new.current)}
-							</strong>
-							<Change
-								period={enrollments.new}
-								higherIsBetter
-								periodDays={periodDays}
-							/>
-						</div>
-						<div className="mw-insights-kpi">
-							<span className="mw-insights-kpi-label">
-								<i
-									className="adminfont-person"
-									aria-hidden="true"
-								/>
-								{__('Active students', 'moowoodle')}
-							</span>
-							<strong>
-								{numberFormat.format(
-									enrollments.by_status.enrolled ?? 0
-								)}
-							</strong>
-							<span className="mw-insights-change is-neutral">
-								{sprintf(
-									/* translators: %s: number of enrollments. */
-									__('%s enrollments in total', 'moowoodle'),
-									numberFormat.format(enrollments.total)
-								)}
-							</span>
-						</div>
-						<div className="mw-insights-kpi">
-							<span className="mw-insights-kpi-label">
-								<i
-									className="adminfont-subscription-courses"
-									aria-hidden="true"
-								/>
-								{__('Courses on sale', 'moowoodle')}
-							</span>
-							<strong>
-								{numberFormat.format(courses.with_product)}
-								<small>
-									{sprintf(
-										/* translators: %s: number of synced courses. */
-										__('of %s', 'moowoodle'),
-										numberFormat.format(courses.total)
-									)}
-								</small>
-							</strong>
-							{courses.without_product > 0 ? (
+							action={
 								<a
-									className="mw-insights-change is-link"
+									className="mw-insights-more"
 									href={TAB.courses}
 								>
-									{sprintf(
-										/* translators: %s: number of courses. */
-										_n(
-											'%s without a product',
-											'%s without a product',
-											courses.without_product,
-											'moowoodle'
-										),
-										numberFormat.format(
-											courses.without_product
-										)
-									)}
+									{__('All courses', 'moowoodle')}
 									<i
 										className="adminfont-arrow-right"
 										aria-hidden="true"
 									/>
 								</a>
-							) : (
-								<span className="mw-insights-change is-neutral">
-									{courses.total > 0
-										? __(
-												'Every synced course is for sale',
-												'moowoodle'
-											)
-										: __(
-												'No courses synced yet',
-												'moowoodle'
-											)}
-								</span>
-							)}
-						</div>
-						<div className="mw-insights-kpi">
-							<span className="mw-insights-kpi-label">
-								<i
-									className="adminfont-sign-out"
-									aria-hidden="true"
-								/>
-								{__('Unenrollments', 'moowoodle')}
-							</span>
-							<strong>
-								{numberFormat.format(
-									enrollments.unenrolled.current
-								)}
-							</strong>
-							<Change
-								period={enrollments.unenrolled}
-								higherIsBetter={false}
-								periodDays={periodDays}
-							/>
-						</div>
-					</div>
-
-					<section className="mw-insights-panel">
-						<div className="mw-insights-panel-head">
-							<h2>
-								{__('New enrollments per day', 'moowoodle')}
-							</h2>
-							<span>
-								{sprintf(
-									/* translators: 1: number of enrollments, 2: number of days. */
-									_n(
-										'%1$s in the last %2$s days',
-										'%1$s in the last %2$s days',
-										enrollments.new.current,
-										'moowoodle'
-									),
-									numberFormat.format(
-										enrollments.new.current
-									),
-									periodDays
-								)}
-							</span>
-						</div>
-						<EnrollmentTrend
-							daily={data.daily}
-							total={data.daily.reduce(
-								(sum, day) => sum + day.count,
-								0
-							)}
-						/>
-					</section>
-
-					<div className="mw-insights-row">
-						<section className="mw-insights-panel">
-							<div className="mw-insights-panel-head">
-								<h2>{__('Top courses', 'moowoodle')}</h2>
-								<span>
-									{sprintf(
-										/* translators: %s: number of days. */
-										__(
-											'By new enrollments, last %s days',
-											'moowoodle'
-										),
-										periodDays
-									)}
-								</span>
-							</div>
+							}
+						>
 							{data.top_courses.length > 0 ? (
-								<ol className="mw-insights-ranking">
-									{data.top_courses.map((course) => (
-										<li key={course.course_id}>
-											<span className="mw-insights-ranking-name">
-												{course.name ||
-													__(
-														'Deleted course',
-														'moowoodle'
-													)}
-												{course.product_url && (
-													<a
-														href={
-															course.product_url
-														}
-													>
-														{__(
-															'Edit product',
+								<table className="mw-insights-table">
+									<thead>
+										<tr>
+											<th scope="col">
+												{__('Course', 'moowoodle')}
+											</th>
+											<th scope="col">
+												{__(
+													'New enrollments',
+													'moowoodle'
+												)}
+											</th>
+											<th
+												scope="col"
+												className="is-number"
+											>
+												{__('Revenue', 'moowoodle')}
+											</th>
+											<th scope="col">
+												<span className="screen-reader-text">
+													{__('Product', 'moowoodle')}
+												</span>
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{data.top_courses.map((course) => (
+											<tr key={course.course_id}>
+												<td className="mw-insights-table-title">
+													{course.name ||
+														__(
+															'Deleted course',
 															'moowoodle'
 														)}
-													</a>
-												)}
-											</span>
-											<span
-												className="mw-insights-ranking-bar"
-												aria-hidden="true"
-											>
-												<span
-													style={{
-														width: `${(course.enrollments / topMax) * 100}%`,
-													}}
-												/>
-											</span>
-											<span className="mw-insights-ranking-value">
-												{numberFormat.format(
-													course.enrollments
-												)}
-											</span>
-										</li>
-									))}
-								</ol>
+												</td>
+												<td>
+													<span className="mw-insights-meter">
+														<span
+															className="mw-insights-meter-bar"
+															aria-hidden="true"
+														>
+															<span
+																style={{
+																	width: `${(course.enrollments / topMax) * 100}%`,
+																}}
+															/>
+														</span>
+														{numberFormat.format(
+															course.enrollments
+														)}
+													</span>
+												</td>
+												<td className="is-number">
+													{money(course.revenue ?? 0)}
+												</td>
+												<td className="mw-insights-table-action">
+													{course.product_url && (
+														<a
+															href={
+																course.product_url
+															}
+														>
+															{__(
+																'Edit product',
+																'moowoodle'
+															)}
+														</a>
+													)}
+												</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
 							) : (
 								<p className="mw-insights-empty">
 									{__(
@@ -986,18 +1398,83 @@ const Insights: React.FC = () => {
 									)}
 								</p>
 							)}
-						</section>
+						</CardComponent>
+					</div>
+				</ColumnComponent>
 
-						<section className="mw-insights-panel">
-							<div className="mw-insights-panel-head">
-								<h2>{__('Latest enrollments', 'moowoodle')}</h2>
-								{data.recent.length > 0 &&
-									appLocalizer.khali_dabba && (
-										<a href={TAB.enrollments}>
-											{__('View all', 'moowoodle')}
-										</a>
-									)}
-							</div>
+				<ColumnComponent grid={4}>
+					<div className="mw-insights-stack">
+						{team}
+						{setupCard}
+						<CardComponent
+							title={__('Moodle™ connection', 'moowoodle')}
+							desc={
+								isConnected
+									? connection.site_name
+									: __('Not connected', 'moowoodle')
+							}
+						>
+							<dl className="mw-insights-pulse">
+								<div>
+									<dt>{__('Status', 'moowoodle')}</dt>
+									<dd>
+										<span
+											className={`mw-insights-dot ${isConnected ? 'is-good' : 'is-off'}`}
+											aria-hidden="true"
+										/>
+										{isConnected
+											? __('Connected', 'moowoodle')
+											: __('Not connected', 'moowoodle')}
+									</dd>
+								</div>
+								<div>
+									<dt>{__('Courses synced', 'moowoodle')}</dt>
+									<dd>
+										{numberFormat.format(courses.total)}
+									</dd>
+								</div>
+								<div>
+									<dt>{__('Categories', 'moowoodle')}</dt>
+									<dd>
+										{numberFormat.format(
+											courses.categories
+										)}
+									</dd>
+								</div>
+								<div>
+									<dt>{__('Course sync', 'moowoodle')}</dt>
+									<dd>
+										{connection.sync_running ? (
+											<a href={TAB.syncCourses}>
+												{__('Running', 'moowoodle')}
+											</a>
+										) : (
+											__('Idle', 'moowoodle')
+										)}
+									</dd>
+								</div>
+							</dl>
+						</CardComponent>
+
+						<CardComponent
+							title={__('Latest enrollments', 'moowoodle')}
+							desc={__('Most recent first', 'moowoodle')}
+							action={
+								data.recent.length > 0 &&
+								appLocalizer.khali_dabba ? (
+									<a
+										className="mw-insights-more"
+										href={TAB.enrollments}
+									>
+										{__('View all', 'moowoodle')}
+										<i
+											className="adminfont-arrow-right"
+											aria-hidden="true"
+										/>
+									</a>
+								) : undefined
+							}
+						>
 							{data.recent.length > 0 ? (
 								<ul className="mw-insights-recent">
 									{data.recent.map((enrollment, index) => (
@@ -1056,10 +1533,12 @@ const Insights: React.FC = () => {
 											)}
 								</p>
 							)}
-						</section>
+						</CardComponent>
 					</div>
-				</>
-			)}
+				</ColumnComponent>
+			</ContainerComponent>
+
+			<SupportRows pro={pro} learn={learn} help={help} />
 		</div>
 	);
 };

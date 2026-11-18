@@ -12,8 +12,9 @@ use MooWoodle\Util;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * REST API controller for the admin dashboard: connection state, course and enrollment figures for the last 30 days,
- * and the counts the dashboard turns into "needs your attention" items.
+ * REST API controller for the admin dashboard: connection state, course, enrollment and course-revenue figures for the
+ * chosen period (7, 30 or 90 days, against the period before it), and the counts the dashboard turns into "needs your
+ * attention" items.
  */
 class Dashboard extends \WP_REST_Controller {
 
@@ -25,9 +26,24 @@ class Dashboard extends \WP_REST_Controller {
 	protected $rest_base = 'dashboard';
 
 	/**
-	 * Length of the reporting period, in days. The period before it, of the same length, is the comparison.
+	 * Default length of the reporting period, in days. The period before it, of the same length, is the comparison.
 	 */
 	const PERIOD_DAYS = 30;
+
+	/**
+	 * The periods the dashboard's range switch offers.
+	 */
+	const PERIOD_CHOICES = array( 7, 30, 90 );
+
+	/**
+	 * Enrollments whose access ends within this many days count as "ending soon" (renewal reminders).
+	 */
+	const EXPIRY_NOTICE_DAYS = 30;
+
+	/**
+	 * At most this many Processing orders are checked for course products.
+	 */
+	const WAITING_ORDERS_LIMIT = 100;
 
 	/**
 	 * A course on sale with no enrollment for this many days counts as not selling.
@@ -46,6 +62,14 @@ class Dashboard extends \WP_REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
 					'permission_callback' => array( $this, 'moowoodle_permissions_check' ),
+					'args'                => array(
+						'days' => array(
+							'description' => __( 'Length of the reporting period, in days.', 'moowoodle' ),
+							'type'        => 'integer',
+							'enum'        => self::PERIOD_CHOICES,
+							'default'     => self::PERIOD_DAYS,
+						),
+					),
 				),
 			)
 		);
@@ -77,19 +101,24 @@ class Dashboard extends \WP_REST_Controller {
 		}
 
 		try {
+			$period_days  = in_array( (int) $request->get_param( 'days' ), self::PERIOD_CHOICES, true ) ? (int) $request->get_param( 'days' ) : self::PERIOD_DAYS;
 			$now          = time();
-			$period_start = gmdate( 'Y-m-d H:i:s', $now - self::PERIOD_DAYS * DAY_IN_SECONDS );
-			$prior_start  = gmdate( 'Y-m-d H:i:s', $now - 2 * self::PERIOD_DAYS * DAY_IN_SECONDS );
+			$period_start = gmdate( 'Y-m-d H:i:s', $now - $period_days * DAY_IN_SECONDS );
+			$prior_start  = gmdate( 'Y-m-d H:i:s', $now - 2 * $period_days * DAY_IN_SECONDS );
 
 			$dashboard_data = array(
-				'period_days' => self::PERIOD_DAYS,
-				'idle_days'   => self::IDLE_DAYS,
-				'connection'  => $this->get_connection_state(),
-				'courses'     => $this->get_course_counts( $now ),
-				'enrollments' => $this->get_enrollment_counts( $period_start, $prior_start ),
-				'daily'       => $this->get_daily_enrollments( $now ),
-				'top_courses' => $this->get_top_courses( $period_start ),
-				'recent'      => $this->get_recent_enrollments(),
+				'period_days'    => $period_days,
+				'period_choices' => self::PERIOD_CHOICES,
+				'idle_days'      => self::IDLE_DAYS,
+				'currency'       => get_woocommerce_currency(),
+				'connection'     => $this->get_connection_state(),
+				'courses'        => $this->get_course_counts( $now, $period_days ),
+				'enrollments'    => $this->get_enrollment_counts( $period_start, $prior_start, $now ),
+				'revenue'        => $this->get_revenue( $period_start, $prior_start ),
+				'daily'          => $this->get_daily_enrollments( $now, $period_days ),
+				'top_courses'    => $this->get_top_courses( $period_start ),
+				'recent'         => $this->get_recent_enrollments(),
+				'waiting_orders' => $this->get_orders_waiting_for_enrollment(),
 			);
 
 			/**
@@ -132,10 +161,11 @@ class Dashboard extends \WP_REST_Controller {
 	 * Synced courses: how many, how many are sold through a product, and the ones that need a look (on sale but not
 	 * selling, ending soon, ended but still on sale).
 	 *
-	 * @param int $now Current Unix time.
+	 * @param int $now         Current Unix time.
+	 * @param int $period_days Length of the reporting period, in days: "ending soon" looks this far ahead.
 	 * @return array
 	 */
-	private function get_course_counts( $now ) {
+	private function get_course_counts( $now, $period_days ) {
 		global $wpdb;
 
 		$course_table     = $wpdb->prefix . Util::TABLES['course'];
@@ -162,7 +192,7 @@ class Dashboard extends \WP_REST_Controller {
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM `{$course_table}` WHERE enddate > %d AND enddate <= %d",
 				$now,
-				$now + self::PERIOD_DAYS * DAY_IN_SECONDS
+				$now + $period_days * DAY_IN_SECONDS
 			)
 		);
 
@@ -203,11 +233,15 @@ class Dashboard extends \WP_REST_Controller {
 	/**
 	 * Enrollment totals by status, and new enrollments and unenrollments in this period and the one before it.
 	 *
+	 * Also counts active enrollments whose access ends within EXPIRY_NOTICE_DAYS (only enrollments with an expiry date,
+	 * which MooWoodle Pro sets).
+	 *
 	 * @param string $period_start Start of this period (UTC, MySQL format).
 	 * @param string $prior_start  Start of the period before it (UTC, MySQL format).
+	 * @param int    $now          Current Unix time.
 	 * @return array
 	 */
-	private function get_enrollment_counts( $period_start, $prior_start ) {
+	private function get_enrollment_counts( $period_start, $prior_start, $now ) {
 		global $wpdb;
 
 		$enrollment_table = $wpdb->prefix . Util::TABLES['enrollment'];
@@ -235,6 +269,14 @@ class Dashboard extends \WP_REST_Controller {
 			),
 			ARRAY_A
 		);
+
+		$expiring = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM `{$enrollment_table}` WHERE status = 'enrolled' AND expiry_date > %s AND expiry_date <= %s",
+				gmdate( 'Y-m-d H:i:s', $now ),
+				gmdate( 'Y-m-d H:i:s', $now + self::EXPIRY_NOTICE_DAYS * DAY_IN_SECONDS )
+			)
+		);
 		// phpcs:enable
 
 		$status_totals = array(
@@ -258,22 +300,142 @@ class Dashboard extends \WP_REST_Controller {
 				'current'  => (int) ( $periods['unenrolled_current'] ?? 0 ),
 				'previous' => (int) ( $periods['unenrolled_previous'] ?? 0 ),
 			),
+			'expiring'   => array(
+				'count' => $expiring,
+				'days'  => self::EXPIRY_NOTICE_DAYS,
+			),
 		);
 	}
 
 	/**
-	 * New enrollments per day for the period, oldest first, with a zero for every day that had none.
+	 * Course revenue: the line totals (after discounts, before tax) of the order items behind the period's
+	 * enrollments, and the period before it. Each order item counts once, however many enrollments it made; enrollments
+	 * without an order (added by hand) count nothing. Refunds are not subtracted.
 	 *
-	 * @param int $now Current Unix time.
-	 * @return array[] Each `{ date: 'Y-m-d', count: int }`.
+	 * @param string $period_start Start of this period (UTC, MySQL format).
+	 * @param string $prior_start  Start of the period before it (UTC, MySQL format).
+	 * @return array
 	 */
-	private function get_daily_enrollments( $now ) {
+	private function get_revenue( $period_start, $prior_start ) {
+		global $wpdb;
+
+		$enrollment_table = $wpdb->prefix . Util::TABLES['enrollment'];
+		$item_meta_table  = $wpdb->prefix . 'woocommerce_order_itemmeta';
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- table names are fixed; values are prepared.
+		$totals = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT
+					SUM( CASE WHEN sold.first_enrolled >= %s THEN sold.line_total ELSE 0 END ) AS current_total,
+					SUM( CASE WHEN sold.first_enrolled < %s THEN sold.line_total ELSE 0 END ) AS previous_total
+				FROM (
+					SELECT enrollment.order_item_id, MIN( enrollment.enrollment_date ) AS first_enrolled, MAX( CAST( item_meta.meta_value AS DECIMAL( 19, 4 ) ) ) AS line_total
+					FROM `{$enrollment_table}` AS enrollment
+					INNER JOIN `{$item_meta_table}` AS item_meta
+						ON item_meta.order_item_id = enrollment.order_item_id AND item_meta.meta_key = '_line_total'
+					WHERE enrollment.order_item_id > 0 AND enrollment.enrollment_date >= %s
+					GROUP BY enrollment.order_item_id
+				) AS sold",
+				$period_start,
+				$period_start,
+				$prior_start
+			),
+			ARRAY_A
+		);
+		// phpcs:enable
+
+		return array(
+			'current'  => round( (float) ( $totals['current_total'] ?? 0 ), 2 ),
+			'previous' => round( (float) ( $totals['previous_total'] ?? 0 ), 2 ),
+		);
+	}
+
+	/**
+	 * Paid orders whose buyers aren't in Moodle yet: Processing orders that contain a course product. MooWoodle enrolls
+	 * when an order is marked Completed, so until then the buyer has paid but has no access.
+	 *
+	 * @return array `{ count: int, limited: bool, url: string }` – `limited` when the check stopped at its limit.
+	 */
+	private function get_orders_waiting_for_enrollment() {
+		$order_ids = wc_get_orders(
+			array(
+				'status'  => 'processing',
+				'limit'   => self::WAITING_ORDERS_LIMIT,
+				'orderby' => 'date',
+				'order'   => 'DESC',
+				'return'  => 'ids',
+			)
+		);
+
+		$waiting = 0;
+
+		foreach ( (array) $order_ids as $order_id ) {
+			$order = wc_get_order( $order_id );
+
+			if ( $order && $this->order_has_course( $order ) ) {
+				++$waiting;
+			}
+		}
+
+		$uses_order_tables = class_exists( '\Automattic\WooCommerce\Utilities\OrderUtil' )
+			&& \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
+
+		return array(
+			'count'   => $waiting,
+			'limited' => count( (array) $order_ids ) >= self::WAITING_ORDERS_LIMIT,
+			'url'     => $uses_order_tables
+				? admin_url( 'admin.php?page=wc-orders&status=wc-processing' )
+				: admin_url( 'edit.php?post_type=shop_order&post_status=wc-processing' ),
+		);
+	}
+
+	/**
+	 * Whether an order contains a product linked to a Moodle course (a variation counts through its parent).
+	 *
+	 * @param \WC_Order $order The order.
+	 * @return bool
+	 */
+	private function order_has_course( $order ) {
+		foreach ( $order->get_items() as $item ) {
+			$product = $item->get_product();
+
+			if ( ! $product ) {
+				continue;
+			}
+
+			if ( $product->get_meta( Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true ) ) {
+				return true;
+			}
+
+			if ( $product->is_type( 'variation' ) ) {
+				$parent = wc_get_product( $product->get_parent_id() );
+
+				if ( $parent && $parent->get_meta( Util::MOOWOODLE_PRODUCT_META['moodle_course_id'], true ) ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * New enrollments and course revenue per day for the period, oldest first, with zeros for every day that had none.
+	 * Revenue is counted on the day of an order item's first enrollment, as in get_revenue().
+	 *
+	 * @param int $now         Current Unix time.
+	 * @param int $period_days Length of the reporting period, in days.
+	 * @return array[] Each `{ date: 'Y-m-d', count: int, revenue: float }`.
+	 */
+	private function get_daily_enrollments( $now, $period_days ) {
 		global $wpdb;
 
 		$enrollment_table = $wpdb->prefix . Util::TABLES['enrollment'];
 		$offset_seconds   = (int) round( (float) get_option( 'gmt_offset', 0 ) * HOUR_IN_SECONDS );
 		$site_today       = strtotime( gmdate( 'Y-m-d', $now + $offset_seconds ) );
-		$first_day        = $site_today - ( self::PERIOD_DAYS - 1 ) * DAY_IN_SECONDS;
+		$first_day        = $site_today - ( $period_days - 1 ) * DAY_IN_SECONDS;
+		$item_meta_table  = $wpdb->prefix . 'woocommerce_order_itemmeta';
+		$first_day_utc    = gmdate( 'Y-m-d H:i:s', $first_day - $offset_seconds );
 
 		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- table name comes from Util::TABLES; values are prepared.
 		$rows = $wpdb->get_results(
@@ -283,25 +445,49 @@ class Dashboard extends \WP_REST_Controller {
 				WHERE enrollment_date >= %s
 				GROUP BY day",
 				$offset_seconds,
-				gmdate( 'Y-m-d H:i:s', $first_day - $offset_seconds )
+				$first_day_utc
+			),
+			ARRAY_A
+		);
+
+		$revenue_rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT DATE( DATE_ADD( sold.first_enrolled, INTERVAL %d SECOND ) ) AS day, SUM( sold.line_total ) AS total
+				FROM (
+					SELECT enrollment.order_item_id, MIN( enrollment.enrollment_date ) AS first_enrolled, MAX( CAST( item_meta.meta_value AS DECIMAL( 19, 4 ) ) ) AS line_total
+					FROM `{$enrollment_table}` AS enrollment
+					INNER JOIN `{$item_meta_table}` AS item_meta
+						ON item_meta.order_item_id = enrollment.order_item_id AND item_meta.meta_key = '_line_total'
+					WHERE enrollment.order_item_id > 0 AND enrollment.enrollment_date >= %s
+					GROUP BY enrollment.order_item_id
+				) AS sold
+				GROUP BY day",
+				$offset_seconds,
+				$first_day_utc
 			),
 			ARRAY_A
 		);
 		// phpcs:enable
 
-		$count_by_day = array();
+		$count_by_day   = array();
+		$revenue_by_day = array();
 
 		foreach ( (array) $rows as $day_row ) {
 			$count_by_day[ $day_row['day'] ] = (int) $day_row['total'];
 		}
 
+		foreach ( (array) $revenue_rows as $day_row ) {
+			$revenue_by_day[ $day_row['day'] ] = round( (float) $day_row['total'], 2 );
+		}
+
 		$daily = array();
 
-		for ( $day = 0; $day < self::PERIOD_DAYS; $day++ ) {
+		for ( $day = 0; $day < $period_days; $day++ ) {
 			$date    = gmdate( 'Y-m-d', $first_day + $day * DAY_IN_SECONDS );
 			$daily[] = array(
-				'date'  => $date,
-				'count' => $count_by_day[ $date ] ?? 0,
+				'date'    => $date,
+				'count'   => $count_by_day[ $date ] ?? 0,
+				'revenue' => $revenue_by_day[ $date ] ?? 0,
 			);
 		}
 
@@ -309,7 +495,7 @@ class Dashboard extends \WP_REST_Controller {
 	}
 
 	/**
-	 * The five courses with the most new enrollments this period.
+	 * The five courses with the most new enrollments this period, with each one's course revenue (as get_revenue()).
 	 *
 	 * @param string $period_start Start of this period (UTC, MySQL format).
 	 * @return array[]
@@ -319,17 +505,30 @@ class Dashboard extends \WP_REST_Controller {
 
 		$course_table     = $wpdb->prefix . Util::TABLES['course'];
 		$enrollment_table = $wpdb->prefix . Util::TABLES['enrollment'];
+		$item_meta_table  = $wpdb->prefix . 'woocommerce_order_itemmeta';
 
 		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- table names come from Util::TABLES; values are prepared.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT enrollment.course_id, course.fullname, course.product_id, COUNT(*) AS total
+				"SELECT enrollment.course_id, course.fullname, course.product_id, COUNT(*) AS total,
+					COALESCE( (
+						SELECT SUM( sold.line_total ) FROM (
+							SELECT inner_enrollment.course_id, inner_enrollment.order_item_id, MAX( CAST( item_meta.meta_value AS DECIMAL( 19, 4 ) ) ) AS line_total
+							FROM `{$enrollment_table}` AS inner_enrollment
+							INNER JOIN `{$item_meta_table}` AS item_meta
+								ON item_meta.order_item_id = inner_enrollment.order_item_id AND item_meta.meta_key = '_line_total'
+							WHERE inner_enrollment.order_item_id > 0 AND inner_enrollment.enrollment_date >= %s
+							GROUP BY inner_enrollment.course_id, inner_enrollment.order_item_id
+						) AS sold
+						WHERE sold.course_id = enrollment.course_id
+					), 0 ) AS revenue
 				FROM `{$enrollment_table}` AS enrollment
 				LEFT JOIN `{$course_table}` AS course ON course.id = enrollment.course_id
 				WHERE enrollment.enrollment_date >= %s
 				GROUP BY enrollment.course_id, course.fullname, course.product_id
 				ORDER BY total DESC
 				LIMIT 5",
+				$period_start,
 				$period_start
 			),
 			ARRAY_A
@@ -344,6 +543,7 @@ class Dashboard extends \WP_REST_Controller {
 					'course_id'   => (int) $course_row['course_id'],
 					'name'        => $course_row['fullname'] ? wp_strip_all_tags( $course_row['fullname'] ) : '',
 					'enrollments' => (int) $course_row['total'],
+					'revenue'     => round( (float) $course_row['revenue'], 2 ),
 					'product_url' => $product_id ? (string) get_edit_post_link( $product_id, 'raw' ) : '',
 				);
 			},
