@@ -7,6 +7,8 @@
 
 namespace MooWoodle\Core;
 
+defined( 'ABSPATH' ) || exit;
+
 use MooWoodle\Util;
 
 /**
@@ -28,21 +30,23 @@ class Category {
 	 * @return array List of course categories as associative arrays.
 	 */
 	public static function get_course_categories( $category_ids = array() ) {
-        global $wpdb;
+		global $wpdb;
 
 		$category_ids = is_numeric( $category_ids )
 			? array( (int) $category_ids )
 			: array_filter( array_map( 'intval', (array) $category_ids ) );
 
 		$table_name = $wpdb->prefix . Util::TABLES['category'];
-		$query      = "SELECT * FROM {$table_name}";
-        if ( ! empty( $category_ids ) ) {
-            $in     = implode( ',', $category_ids );
-            $query .= " WHERE id IN ($in)";
-        }
-		$categories = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-		return $categories;
-    }
+
+		if ( empty( $category_ids ) ) {
+			return $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i', $table_name ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		}
+
+		$placeholders = implode( ',', array_fill( 0, count( $category_ids ), '%d' ) );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		return $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i WHERE id IN (' . $placeholders . ')', $table_name, ...$category_ids ), ARRAY_A );
+	}
 
 	/**
 	 * Insert or update a category based on moodle category id.
@@ -84,6 +88,7 @@ class Category {
 	 *   - 'id' (int): Unique category ID (e.g., Moodle category ID).
 	 *   - 'name' (string): Category name.
 	 *   - 'parent' (int): Optional parent category ID.
+	 * @return void
 	 */
 	public static function update_course_categories( $categories ) {
 		if ( empty( $categories ) ) {
@@ -120,7 +125,7 @@ class Category {
 
 		// Get terms using the Moodle category ID.
 		$product_category_term = get_terms(
-            array(
+			array(
 				'taxonomy'   => $taxonomy,
 				'hide_empty' => false,
 				'meta_query' => array(
@@ -130,8 +135,8 @@ class Category {
 						'compare' => '=',
 					),
 				),
-            )
-        );
+			)
+		);
 
 		if ( is_wp_error( $product_category_term ) ) {
 			return null;
@@ -172,7 +177,7 @@ class Category {
 
 			if ( ! empty( $term ) && ! is_wp_error( $term ) ) {
 				add_term_meta( $term['term_id'], Util::MOOWOODLE_TERM_META['category_id'], $category['id'], true );
-            }
+			}
 		}
 
 		// In success on update or insert sync meta data.
@@ -190,7 +195,7 @@ class Category {
 		return null;
 	}
 
-    /**
+	/**
 	 * Update Moodle course categories in WordPress site.
 	 *
 	 * @param array  $categories List of categories to update.
@@ -230,7 +235,7 @@ class Category {
 		}
 
 		$terms = get_terms(
-            array(
+			array(
 				'taxonomy'   => $taxonomy,
 				'hide_empty' => false,
 				'meta_query' => array(
@@ -239,12 +244,12 @@ class Category {
 						'compare' => 'EXISTS',
 					),
 				),
-            )
-        );
+			)
+		);
 
 		if ( empty( $terms ) || is_wp_error( $terms ) ) {
 			return;
-        }
+		}
 
 		// Link with parent or delete term.
 		foreach ( $terms as $term ) {

@@ -10,7 +10,13 @@ import {
 	EmailInput,
 } from '@zyra/inputs';
 import { TableCard, QueryProps } from '@zyra/table';
-import { BlockBuilder, renderBlocksToHTML, htmlToBlocks } from '@zyra/builders';
+import {
+	EmailBuilder,
+	legacyEmailBlocksToEmailBlocks,
+	emailBlocksToLegacyEmailBlocks,
+	renderBlocksToHTML,
+	htmlToBlocks,
+} from '@zyra/builders';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { salesReport } from '../../../assets/template/emailTemplate/salesReport';
@@ -119,6 +125,8 @@ const EventRules: React.FC = () => {
 	}>({ start: 0, end: 0, field: null });
 	const [isLoading, setIsLoading] = useState(true);
 	const [useTemplate, setUseTemplate] = useState(false);
+	const [tablePage, setTablePage] = useState(1);
+	const [tablePerPage, setTablePerPage] = useState(10);
 
 	// Fetch notifications on mount
 	useEffect(() => {
@@ -170,6 +178,17 @@ const EventRules: React.FC = () => {
 		return notifications.filter((n) => n.tag === activeTag);
 	}, [notifications, activeTag]);
 
+	// The events endpoint returns every rule at once, so the table pages them
+	// client-side.
+	const pagedNotifications = useMemo(
+		() =>
+			filteredNotifications.slice(
+				(tablePage - 1) * tablePerPage,
+				tablePage * tablePerPage
+			),
+		[filteredNotifications, tablePage, tablePerPage]
+	);
+
 	const editNotification = notifications.find(
 		(item) => item.id === notificationId
 	);
@@ -179,6 +198,8 @@ const EventRules: React.FC = () => {
 
 	// Fetch notifications function for TableCard
 	const fetchNotifications = (query: QueryProps) => {
+		setTablePage(Number(query.paged) || 1);
+		setTablePerPage(Number(query.per_page) || 10);
 		setIsLoading(true);
 
 		apiRequest('GET', 'notifications', undefined, {
@@ -382,6 +403,47 @@ const EventRules: React.FC = () => {
 		},
 	};
 
+
+	// System-notification editor data: saved HTML (or the Sales Report
+	// template when picked) as editor blocks, plus this event's own
+	// `[placeholder]` tokens for the "Insert a tag" picker.
+	const systemTemplates = useMemo(
+		() => [
+			{
+				id: salesReport.id,
+				name: salesReport.name,
+				blocks: legacyEmailBlocksToEmailBlocks(salesReport.blocks),
+			},
+		],
+		[]
+	);
+	const systemMessageBlocks = useMemo(() => {
+		if (useTemplate || !formData.email_body) {
+			return systemTemplates[0].blocks;
+		}
+		try {
+			return legacyEmailBlocksToEmailBlocks(
+				htmlToBlocks(formData.email_body)
+			);
+		} catch (e) {
+			console.error('Builder load error:', e);
+			return systemTemplates[0].blocks;
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [formData.id, useTemplate, systemTemplates]);
+	const systemMergeTags = useMemo(
+		() =>
+			(formData.available_placeholders || '')
+				.split(',')
+				.map((item) => item.replace(/[[\]]/g, '').trim())
+				.filter(Boolean)
+				.map((name) => ({
+					token: `[${name}]`,
+					label: name.replace(/_/g, ' '),
+				})),
+		[formData.available_placeholders]
+	);
+
 	return (
 		<div
 			className="notification-container module-container tab-bg"
@@ -450,7 +512,9 @@ const EventRules: React.FC = () => {
 				<ColumnComponent>
 					<TableCard
 						headers={headers}
-						rows={filteredNotifications}
+						rows={pagedNotifications}
+						totalRows={filteredNotifications.length}
+						ids={pagedNotifications.map((notif) => notif.id)}
 						showMenu={false}
 						isLoading={isLoading}
 						onQueryUpdate={fetchNotifications}
@@ -482,95 +546,27 @@ const EventRules: React.FC = () => {
 				>
 					<>
 						{openChannel === 'system' && (
-							<BlockBuilder
-								key={formData.id}
-								name="system_message_builder"
-								value={(() => {
-									try {
-										if (
-											formData.email_body &&
-											!useTemplate
-										) {
-											return {
-												emailTemplates: [
-													{
-														id: 'store-registration',
-														blocks: htmlToBlocks(
-															formData.email_body
-														),
-													},
-												],
-												activeEmailTemplateId:
-													'store-registration',
-											};
-										}
-										return {
-											emailTemplates: [salesReport],
-											activeEmailTemplateId:
-												'store-registration',
-										};
-									} catch (e) {
-										console.error('Builder load error:', e);
-
-										return {
-											emailTemplates: [salesReport],
-											activeEmailTemplateId:
-												'store-registration',
-										};
-									}
-								})()}
-								onChange={(data) => {
-									const activeTemplate =
-										data.emailTemplates?.find(
-											(t) =>
-												t.id ===
-												data.activeEmailTemplateId
-										);
-
-									const blocks = activeTemplate?.blocks || [];
-
-									// generate HTML
-									const html = renderBlocksToHTML(blocks);
-
-									const updatedForm = {
-										...formData,
-
-										// SAVE HTML
-										email_body: html,
-									};
-
-									if (!updatedForm.id) {
+							<EmailBuilder
+								key={`${formData.id}-${useTemplate ? 'template' : 'saved'}`}
+								value={systemMessageBlocks}
+								templates={systemTemplates}
+								activeTemplateId={useTemplate ? salesReport.id : undefined}
+								onTemplateSelect={() => setUseTemplate(true)}
+								mergeTags={systemMergeTags}
+								onChange={(blocks) => {
+									if (!formData.id) {
 										return;
 									}
-
+									// Saved as HTML, same as before, so existing
+									// notifications keep loading.
+									const updatedForm = {
+										...formData,
+										email_body: renderBlocksToHTML(
+											emailBlocksToLegacyEmailBlocks(blocks)
+										),
+									};
 									setFormData(updatedForm);
-									handleEmailSave(
-										updatedForm.id,
-										updatedForm
-									);
-								}}
-								field={{
-									key: 'email_body_builder',
-									context: 'email',
-									visibleGroups: ['email'],
-									emailTemplates: [salesReport],
-									availablePlaceholder:
-										formData.available_placeholders
-											? formData.available_placeholders
-													.split(',')
-													.map((item) =>
-														item
-															.replace(
-																/[\[\]]/g,
-																''
-															)
-															.trim()
-													)
-													.filter(Boolean)
-											: [],
-								}}
-								onTemplateSelect={(id) => {
-									setUseTemplate(true); // 🔥 force template mode
+									handleEmailSave(updatedForm.id, updatedForm);
 								}}
 							/>
 						)}

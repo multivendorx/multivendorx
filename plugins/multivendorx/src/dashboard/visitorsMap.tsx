@@ -1,6 +1,7 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { _n, sprintf } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import { formatLocalDate } from '@/services/commonFunction';
@@ -64,7 +65,14 @@ const VisitorsMap: React.FC<VisitorsMapProps> = ({ dateRange }) => {
 		}
 
 		const hits = data.map_stats[code]?.hits_count ?? 0;
-		setTooltip(`${geo.properties.name} - ${hits} visitors`);
+		setTooltip(
+			sprintf(
+				/* translators: 1: Country name, 2: Number of visitors. */
+				_n('%1$s - %2$d visitor', '%1$s - %2$d visitors', hits, 'multivendorx'),
+				geo.properties.name,
+				hits
+			)
+		);
 	};
 
 	const tableRows = data

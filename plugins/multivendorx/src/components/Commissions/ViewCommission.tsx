@@ -5,7 +5,6 @@ import { getApiLink } from '@zyra/core';
 import {
 	FormGroupComponent,
 	FormGroupWrapperComponent,
-	InformationItemComponent,
 	NoticeComponent,
 	PopupComponent,
 	SectionComponent,
@@ -161,58 +160,73 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 	}, [commissionId]);
 
 	const popupColumns = {
-		id: {
+		name: {
 			label: __('Product', 'multivendorx'),
-			width: 14,
-			render: (row) => {
-				return (
-					<InformationItemComponent
-						title={row.name}
-						titleLink={getUrl(row.product_id, 'product') || ''}
-						avatar={{
-							image: row.image?.src || '',
-							iconClass: 'single-product',
-						}}
-						descriptions={[
-							{
-								label: __('SKU:', 'multivendorx'),
-								value: row.sku || '—',
-							},
-						]}
-					/>
-				);
-			},
-		},
-		price: {
-			label: __('Cost', 'multivendorx'),
-			type: 'currency',
-		},
-		quantity: {
-			label: __('Qty', 'multivendorx'),
-		},
-		total: {
-			label: __('Total', 'multivendorx'),
-			type: 'currency',
-		},
-		total_tax: {
-			label: __('Tax', 'multivendorx'),
-			type: 'currency',
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
 		},
 	};
+
+	const orderItemRows = orderItems.map((row: any) => ({
+		...row,
+		info_icon: 'single-product',
+		info_link: getUrl(row.product_id, 'product') || '',
+		info_descriptions: [
+			{
+				label: __('SKU', 'multivendorx'),
+				icon: 'single-product',
+				value: row.sku || '—',
+			},
+			{
+				label: __('Cost', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.price),
+			},
+			{
+				label: __('Qty', 'multivendorx'),
+				icon: 'cart',
+				value: row.quantity ?? '—',
+			},
+			{
+				label: __('Total', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.total),
+			},
+			{
+				label: __('Tax', 'multivendorx'),
+				icon: 'tax-compliance',
+				value: formatCurrency(row.total_tax),
+			},
+		],
+	}));
 
 	const shippingColumns = {
 		method_title: {
 			label: __('Method', 'multivendorx'),
-		},
-		total: {
-			label: __('Amount', 'multivendorx'),
-			type: 'currency',
-		},
-		total_tax: {
-			label: __('Tax', 'multivendorx'),
-			type: 'currency',
+			type: 'info',
+			iconKey: 'info_icon',
+			descriptionKey: 'info_descriptions',
 		},
 	};
+
+	const shippingRows = shippingItems.map((row: any) => ({
+		...row,
+		info_icon: 'shipping',
+		info_descriptions: [
+			{
+				label: __('Amount', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.total),
+			},
+			{
+				label: __('Tax', 'multivendorx'),
+				icon: 'tax-compliance',
+				value: formatCurrency(row.total_tax),
+			},
+		],
+	}));
 
 	return (
 		<PopupComponent
@@ -356,7 +370,8 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 			)}
 			<TableCard
 				headers={popupColumns}
-				rows={orderItems}
+				variant="transparent"
+				rows={orderItemRows}
 				showMenu={false}
 				currency={{
 					currencySymbol: appLocalizer.currency_symbol,
@@ -371,7 +386,8 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 				shippingItems.length > 0 && (
 					<TableCard
 						headers={shippingColumns}
-						rows={shippingItems}
+						variant="transparent"
+						rows={shippingRows}
 						title={__('Shipping', 'multivendorx')}
 						currency={{
 							currencySymbol:

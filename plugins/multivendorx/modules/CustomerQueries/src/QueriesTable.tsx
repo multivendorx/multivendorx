@@ -1,13 +1,13 @@
 /* global appLocalizer */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import {
 	FormGroupWrapperComponent,
 	FormGroupComponent,
 	PopupComponent,
-	InformationItemComponent,
+	BadgeComponent,
 } from '@zyra/components';
 import {
 	TextInput,
@@ -18,7 +18,12 @@ import {
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 
 import Popup from '../../../src/components/Popup/Popup';
-import { formatLocalDate, getUrl } from '../../../src/services/commonFunction';
+import {
+	formatDate,
+	formatLocalDate,
+	formatStatusLabel,
+	getUrl,
+} from '../../../src/services/commonFunction';
 
 type StoreQueriesRow = {
 	id: number;
@@ -152,45 +157,37 @@ const Queries: React.FC = () => {
 	const headers = {
 		product_name: {
 			label: __('Product', 'multivendorx'),
-			render: (row: any) => (
-				<InformationItemComponent
-					title={row.product_name}
-					titleLink={getUrl(row.product_id, 'product')}
-					avatar={{
-						image: row.product_image,
-						iconClass: row.product_image ? '' : 'single-product',
-					}}
-					descriptions={[
-						{
-							label: __('By', 'multivendorx'),
-							value: row.store_name,
-						},
-					]}
-				/>
-			),
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		question_text: {
 			label: __('Question', 'multivendorx'),
 			render: (row: any) => (
 				<div className="question-wrapper">
-					<div className="question">{__('Q:', 'multivendorx')} {row.question_text}</div>
+					<div className="question">
+						{__('Q:', 'multivendorx')} {row.question_text}{' '}
+						<BadgeComponent
+							color="blue"
+							text={sprintf(
+								/* translators: %d: number of votes. */
+								_n('%d vote', '%d votes', Number(row.total_votes) || 0, 'multivendorx'),
+								Number(row.total_votes) || 0
+							)}
+						/>
+					</div>
 					{row.answer_text && (
-						<div className="answer">{__('A:', 'multivendorx')}  {row.answer_text}</div>
+						<div className="answer">
+							{__('A:', 'multivendorx')} {row.answer_text}
+						</div>
 					)}
-					<div className="desc">{__('By', 'multivendorx')} {row.author_name}</div>
+					<div className="desc">
+						{__('Asked by', 'multivendorx')} {row.author_name || '—'}
+					</div>
 				</div>
 			),
-		},
-		question_date: {
-			label: __('Date', 'multivendorx'),
-			type: 'date',
-		},
-		total_votes: {
-			label: __('Votes', 'multivendorx'),
-		},
-		question_visibility: {
-			label: __('Visibility', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
 		},
 		action: {
 			type: 'action',
@@ -212,6 +209,26 @@ const Queries: React.FC = () => {
 			],
 		},
 	};
+
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'single-product',
+		info_link: getUrl(row.product_id, 'product'),
+		info_descriptions: [
+			{
+				label: __('By', 'multivendorx'),
+				icon: 'storefront',
+				value: row.store_name || '—',
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.question_visibility),
+				color: `badge-${String(row.question_visibility || '').toLowerCase()}`,
+			},
+			{ text: formatDate(row.question_date), color: 'blue' },
+		],
+	}));
 
 	const filters = [
 		{
@@ -335,7 +352,8 @@ const Queries: React.FC = () => {
 			</PopupComponent>
 			<TableCard
 				headers={headers}
-				rows={rows}
+				variant="transparent"
+				rows={infoRows}
 				totalRows={totalRows}
 				isLoading={isLoading}
 				onQueryUpdate={doRefreshTableData}

@@ -53,6 +53,7 @@ class BankTransfer {
                     'key'            => 'bank_details',
                     'type'           => 'checkbox',
                     'selectDeselect' => true,
+                    'addNewBtnText'  => __( 'Add custom field', 'multivendorx' ),
 
                     'label'          => __( 'Bank details required from the store', 'multivendorx' ),
                     'options'        => array(
@@ -60,36 +61,43 @@ class BankTransfer {
                             'key'   => 'bank_name',
                             'label' => __( 'Bank name', 'multivendorx' ),
                             'value' => 'bank_name',
+                            'edit'  => false,
                         ),
                         array(
                             'key'   => 'account_holder_name',
                             'label' => __( 'Account holder Name', 'multivendorx' ),
                             'value' => 'account_holder_name',
+                            'edit'  => false,
                         ),
                         array(
                             'key'   => 'account_number',
                             'label' => __( 'Account number', 'multivendorx' ),
                             'value' => 'account_number',
+                            'edit'  => false,
                         ),
                         array(
                             'key'   => 'routing_number',
                             'label' => __( 'ABA routing number', 'multivendorx' ),
                             'value' => 'routing_number',
+                            'edit'  => false,
                         ),
                         array(
                             'key'   => 'destination_currency',
                             'label' => __( 'Destination currency', 'multivendorx' ),
                             'value' => 'destination_currency',
+                            'edit'  => false,
                         ),
                         array(
                             'key'   => 'bank_address',
                             'label' => __( 'Bank address', 'multivendorx' ),
                             'value' => 'bank_address',
+                            'edit'  => false,
                         ),
                         array(
                             'key'   => 'iban',
                             'label' => __( 'IBAN', 'multivendorx' ),
                             'value' => 'iban',
+                            'edit'  => false,
                         ),
                     ),
                 ),
@@ -181,6 +189,21 @@ class BankTransfer {
                     'key'   => 'destination_currency',
                     'type'  => 'text',
                     'label' => 'Destination currency',
+                );
+            }
+
+            // Custom bank details the admin added with "Add custom field".
+            $known_keys = wp_list_pluck( $fields, 'key' );
+            foreach ( (array) ( $settings['bank_details_options'] ?? array() ) as $custom_option ) {
+                $custom_key = sanitize_key( $custom_option['value'] ?? '' );
+                if ( '' === $custom_key || in_array( $custom_key, $known_keys, true ) || ! in_array( $custom_key, $bank_details, true ) ) {
+                    continue;
+                }
+                $known_keys[] = $custom_key;
+                $fields[]     = array(
+                    'key'   => $custom_key,
+                    'type'  => 'text',
+                    'label' => sanitize_text_field( $custom_option['label'] ?? $custom_key ),
                 );
             }
 

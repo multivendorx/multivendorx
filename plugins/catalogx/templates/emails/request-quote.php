@@ -8,7 +8,8 @@
  * @package   woocommerce-catalog-enquiry/templates
  * @version   6.0.0
  */
-defined( 'ABSPATH' ) || exit; // Exit if accessed directly
+
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
 do_action( 'catalogx_email_header', $email_heading );
 $customer_data = $args['customer_data'] ?? array();
@@ -18,8 +19,13 @@ $customer_data = $args['customer_data'] ?? array();
 
 <div class="email-container" style="border: 1px solid #557DA1;">
     <div style="background: #557DA1; padding: 30px 30px; border: 1px solid #557DA1;">
-            <h2 style="font-family: Arial; line-height: 43px; text-align: center; color: #fff; font-size: 46px; font-weight: 700; margin: 0;padding: 0 0 0px 0;"><?php printf( __( 'Dear %s', 'catalogx' ), $args['admin'] ?? __( 'Store Admin', 'catalogx' ) ); ?> </h2>
-            <p style=" color:#fff; margin-bottom:0; text-align: center; font-size:16px; "><?php _e( 'You have received a new quote request from a customer for the following product:', 'catalogx' ); ?></p>
+            <h2 style="font-family: Arial; line-height: 43px; text-align: center; color: #fff; font-size: 46px; font-weight: 700; margin: 0;padding: 0 0 0px 0;">
+            <?php
+			// translators: %s: admin's display name.
+			printf( esc_html__( 'Dear %s', 'catalogx' ), esc_html( $args['admin'] ?? __( 'Store Admin', 'catalogx' ) ) );
+			?>
+            </h2>
+            <p style=" color:#fff; margin-bottom:0; text-align: center; font-size:16px; "><?php esc_html_e( 'You have received a new quote request from a customer for the following product:', 'catalogx' ); ?></p>
     </div>
     
     <div style="padding: 20px;">
@@ -89,17 +95,17 @@ $customer_data = $args['customer_data'] ?? array();
         <br>
     </div>
     <div class="details">
-        <p><strong><?php _e( 'Customer Name:', 'catalogx' ); ?></strong> <?php echo esc_html( $customer_data['name'] ?? __( 'John Doe', 'catalogx' ) ); ?></p>
-        <p><strong><?php _e( 'Email:', 'catalogx' ); ?></strong> 
+        <p><strong><?php esc_html_e( 'Customer Name:', 'catalogx' ); ?></strong> <?php echo esc_html( $customer_data['name'] ?? __( 'John Doe', 'catalogx' ) ); ?></p>
+        <p><strong><?php esc_html_e( 'Email:', 'catalogx' ); ?></strong> 
         <a href="mailto:<?php echo esc_attr( $customer_data['email'] ?? 'john@example.com' ); ?>">
             <?php echo esc_html( $customer_data['email'] ?? 'john@example.com' ); ?>
         </a></p>
         <p>
-            <strong><?php _e( 'Phone:', 'catalogx' ); ?></strong>
+            <strong><?php esc_html_e( 'Phone:', 'catalogx' ); ?></strong>
             <?php echo esc_html( $customer_data['phone'] ?? __( '8797639205', 'catalogx' ) ); ?>
         </p>
         <?php if ( ! empty( $customer_data['details'] ) ) { ?>
-            <p><strong><?php _e( 'Additional Details:', 'catalogx' ); ?></strong><br>
+            <p><strong><?php esc_html_e( 'Additional Details:', 'catalogx' ); ?></strong><br>
                 <?php echo nl2br( esc_html( $customer_data['details'] ) ); ?>
             </p>
         <?php } ?>

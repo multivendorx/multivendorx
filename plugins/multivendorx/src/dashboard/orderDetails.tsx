@@ -25,7 +25,11 @@ import {
 } from '@zyra/components';
 import { TableCard, TableRow } from '@zyra/table';
 import axios from 'axios';
-import { formatCurrency, formatDate } from '../services/commonFunction';
+import {
+	formatCurrency,
+	formatDate,
+	formatStatusLabel,
+} from '../services/commonFunction';
 import { useParams, useNavigate } from 'react-router-dom';
 import { dashNavigate } from '../services/commonFunction';
 import { applyFilters } from '@wordpress/hooks';
@@ -620,11 +624,7 @@ const OrderDetails: React.FC = () => {
 										className={`admin-badge badge-${orderData?.status}`}
 										onClick={() => setStatusSelect(true)}
 									>
-										{(orderData?.status || '')
-											.replace(/-/g, ' ')
-											.replace(/\b\w/g, (c) =>
-												c.toUpperCase()
-											)}
+										{formatStatusLabel(orderData?.status)}
 										<i className="adminfont-keyboard-arrow-down"></i>
 									</div>
 								)}
@@ -923,6 +923,8 @@ const OrderDetails: React.FC = () => {
 											'Refund Request - Action Required',
 											'multivendorx'
 										)}
+										titleIcon="refund"
+										desc="Review pending refund requests and take the necessary action."
 										action={
 											<>
 												<ButtonInput
@@ -1180,6 +1182,8 @@ const OrderDetails: React.FC = () => {
 												'Customer details',
 												'multivendorx'
 											)}
+											titleIcon="customer-support"
+											desc="View customer information and contact details for this order."
 										>
 											<InformationItemComponent
 												title={
@@ -1278,6 +1282,8 @@ const OrderDetails: React.FC = () => {
 												'Billing address',
 												'multivendorx'
 											)}
+											titleIcon="location"
+											desc="Review the customer's billing information."
 										>
 											<FormGroupWrapperComponent>
 												<FormGroupComponent
@@ -1436,6 +1442,8 @@ const OrderDetails: React.FC = () => {
 											'Shipping address',
 											'multivendorx'
 										)}
+										titleIcon="shipping"
+										desc="View the delivery address for this order."
 									>
 										<div>
 											{orderData?.shipping.address_1}
@@ -1458,6 +1466,8 @@ const OrderDetails: React.FC = () => {
 
 							<CardComponent
 								title={__('Shipping Tracking', 'multivendorx')}
+								titleIcon="shipping"
+								desc="Add shipment details and tracking information to keep customers informed."
 							>
 								<FormGroupWrapperComponent>
 									<FormGroupComponent
@@ -1572,6 +1582,8 @@ const OrderDetails: React.FC = () => {
 											'Order notes',
 											'multivendorx'
 										)}
+										titleIcon="order"
+										desc="View order updates, system messages, and important activity."
 									>
 										{orderData?.order_notes &&
 											orderData.order_notes.length > 0 ? (

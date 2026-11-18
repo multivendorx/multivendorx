@@ -291,6 +291,7 @@ const ProductCategorysection = ({ product, setProduct, setErrorMsg }) => {
 				'Category',
 				'multivendorx'
 			)}
+			titleIcon="category"
 			desc={__(
 				'Where should this product appear in your store?',
 				'multivendorx'

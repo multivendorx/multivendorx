@@ -11,6 +11,7 @@ const RelatedList = ({ product, setProduct, handleChange }) => {
 					'Related products - Suggest other products from your shop',
 					'multivendorx'
 				)}
+				titleIcon="multi-product"
 				desc={__(
 					'Help customers discover more of what you sell - great for increasing your average order size.',
 					'multivendorx'

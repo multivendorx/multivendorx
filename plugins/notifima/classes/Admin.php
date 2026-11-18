@@ -50,6 +50,24 @@ class Admin {
 
         add_action( 'woocommerce_variation_options_dimensions', array( $this, 'variation_discontinued_checkbox' ), 10, 3 );
         add_action( 'woocommerce_save_product_variation', array( $this, 'save_variation_discontinued_status' ), 10, 2 );
+        // Style the "Upgrade to Pro" submenu label (rendered in every admin page's sidebar).
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_upgrade_menu_style' ) );
+    }
+
+    /**
+     * Enqueue the "Upgrade to Pro" submenu label's highlight style.
+     *
+     * @return void
+     */
+    public function enqueue_upgrade_menu_style() {
+        if ( Utill::is_khali_dabba() ) {
+            return;
+        }
+
+        wp_add_inline_style(
+            'wp-admin',
+            'a:has(.upgrade-to-pro){background: linear-gradient(-28deg, #c4a9e8, #7848b9, #852aff) !important; color: white !important; padding: 5px 0;}'
+        );
     }
 
     /**
@@ -105,14 +123,7 @@ class Admin {
                 add_submenu_page(
                     'notifima',
                     __( 'Upgrade to Pro', 'notifima' ),
-                    '<style>
-                        a:has(.upgrade-to-pro){
-                            background: linear-gradient(-28deg, #c4a9e8, #7848b9, #852aff) !important;
-                            color: white !important;
-                            padding: 5px 0;
-                        }
-                    </style>
-                    <div style="margin-left: -12px;" class="upgrade-to-pro"><i class="dashicons dashicons-awards"></i>' . esc_html__( 'Upgrade to Pro', 'notifima' ) . '</div> ',
+                    '<div style="margin-left: -12px;" class="upgrade-to-pro"><i class="dashicons dashicons-awards"></i>' . esc_html__( 'Upgrade to Pro', 'notifima' ) . '</div> ',
                     'manage_options',
                     'notifima-upgrade',
                     array( self::class, 'handle_external_redirects' )
@@ -176,7 +187,7 @@ class Admin {
      * @return void
      */
     public function subscribers_bulk_action_admin_notice() {
-        $bulk_remove_count = filter_input( INPUT_POST, 'bulk_remove_subscribers', FILTER_SANITIZE_NUMBER_INT );
+        $bulk_remove_count = filter_input( INPUT_GET, 'bulk_remove_subscribers', FILTER_SANITIZE_NUMBER_INT );
 
         if ( ! empty( $bulk_remove_count ) ) {
             // Translators: This message is to display removed subscribers count for the product.

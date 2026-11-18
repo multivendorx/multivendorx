@@ -12,6 +12,7 @@ export default {
                 'https://catalogx.com/docs/catalog/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
             settingsLink: `${appLocalizer.admin_url}#&tab=settings&subtab=customer-engagement`,
             proModule: true,
+            icon: 'catalog',
         },
         {
             id: 'enquiry',
@@ -21,6 +22,7 @@ export default {
                 'https://catalogx.com/docs/enquiry-communication/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
             settingsLink: `${appLocalizer.admin_url}#&tab=settings&subtab=customer-engagement`,
             proModule: false,
+            icon: 'enquiry',
         },
         {
             id: 'quote',
@@ -30,6 +32,7 @@ export default {
                 'https://catalogx.com/docs/quotation/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
             settingsLink: `${appLocalizer.admin_url}#&tab=settings&subtab=customer-engagement`,
             proModule: false,
+            icon: 'quote',
         },
         {
             id: 'wholesale',
@@ -39,6 +42,7 @@ export default {
                 'https://catalogx.com/docs/wholesale-pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
             settingsLink: `${appLocalizer.admin_url}#&tab=settings&subtab=wholesale`,
             proModule: true,
+            icon: 'wholesale',
         },
         {
             id: 'rules',
@@ -48,6 +52,7 @@ export default {
                 'https://catalogx.com/docs/dynamic-pricing-rules/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
             settingsLink: `${appLocalizer.admin_url}#&tab=rules`,
             proModule: true,
+            icon: 'rules',
         },
     ],
 };

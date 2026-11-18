@@ -183,13 +183,13 @@ class Tracker {
         $body                         = $this->get_tracking_payload();
         $body['status']               = 'Deactivated';
         $body['deactivated_date']     = time();
-        $body['deactivation_reason']  = get_option( 'deactivation_reason_' . $slug, '' );
-        $body['deactivation_details'] = get_option( 'deactivation_details_' . $slug, '' );
+        $body['deactivation_reason']  = get_option( 'multivendorx_deactivation_reason_' . $slug, '' );
+        $body['deactivation_details'] = get_option( 'multivendorx_deactivation_details_' . $slug, '' );
 
         $this->send_data( $body );
 
-        delete_option( 'deactivation_reason_' . $slug );
-        delete_option( 'deactivation_details_' . $slug );
+        delete_option( 'multivendorx_deactivation_reason_' . $slug );
+        delete_option( 'multivendorx_deactivation_details_' . $slug );
     }
 
     /**
@@ -323,8 +323,8 @@ class Tracker {
         $reason  = sanitize_text_field( wp_unslash( filter_input( INPUT_POST, 'values' ) ?? '' ) );
         $details = sanitize_text_field( wp_unslash( filter_input( INPUT_POST, 'details' ) ?? '' ) );
 
-        update_option( 'deactivation_reason_' . $slug, $reason, false );
-        update_option( 'deactivation_details_' . $slug, $details, false );
+        update_option( 'multivendorx_deactivation_reason_' . $slug, $reason, false );
+        update_option( 'multivendorx_deactivation_details_' . $slug, $details, false );
 
         $mailer = WC()->mailer()->emails['WC_Email_Plugin_Deactivated_Mail'] ?? null;
         if ( $mailer ) {

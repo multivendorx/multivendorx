@@ -1,6 +1,6 @@
 declare module 'body-scroll-lock' {
-    export function disableBodyScroll(targetElement: Element): void;
-    export function enableBodyScroll(targetElement: Element): void;
+    export function disableBodyScroll(_targetElement: Element): void;
+    export function enableBodyScroll(_targetElement: Element): void;
 }
 
 export {};

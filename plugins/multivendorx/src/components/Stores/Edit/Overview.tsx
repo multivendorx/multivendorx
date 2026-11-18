@@ -196,6 +196,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 					/>
 					<CardComponent
 						title={__('Recent payouts', 'multivendorx')}
+						titleIcon="payment"
+						desc="Track the store’s latest payout activity and payment status."
 						iconName="external icon"
 						onIconClick={() => {
 							navigate(
@@ -230,6 +232,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 					</CardComponent>
 					{/* <CardComponent
 						title={__('Store availability', 'multivendorx')}
+						titleIcon="storefront"
+						desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 						iconName="external icon"
 						onIconClick={() => {
 							navigate(
@@ -289,6 +293,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 					</CardComponent> */}
 					<CardComponent
 						title={__('Latest products', 'multivendorx')}
+						titleIcon="product"
+						desc="View recently added products and their current prices."
 						iconName="external icon"
 						onIconClick={() => {
 							window.open(
@@ -317,7 +323,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 										titleLink={editUrl}
 										avatar={{
 											image: productImage,
-											iconClass: `item-icon adminfont-single-product admin-color${idx + 2}`,
+											iconClass: "item-icon adminfont-single-product admin-color-2",
 										}}
 										descriptions={[
 											{
@@ -347,6 +353,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 					{modules.includes('store-review') && (
 						<CardComponent
 							title={__('Latest reviews', 'multivendorx')}
+							titleIcon="review"
+							desc="See recent customer feedback and store ratings."
 							iconName="external icon"
 							onIconClick={() => {
 								navigate(
@@ -361,6 +369,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 					{modules.includes('marketplace-refund') && (
 						<CardComponent
 							title={__('Latest refunds', 'multivendorx')}
+							titleIcon="refund"
+							desc="Monitor recent refund activity and track returned payments."
 							iconName="external icon"
 							onIconClick={() => {
 								navigate(
@@ -375,7 +385,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 					)}
 				</ColumnComponent>
 				<ColumnComponent grid={4}>
-					<CardComponent title={__('Store overview', 'multivendorx')}>
+					<CardComponent title={__('Store overview', 'multivendorx')} titleIcon="storefront" desc="Review store performance, activity, and key account details.">
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
 								row

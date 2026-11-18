@@ -3,9 +3,9 @@ Contributors: wcmp, purnendu
 Tags: marketplace, WooCommerce marketplace, multi vendor, multivendor, multivendor marketplace
 Donate link: http://multivendorx.com/donate/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=multivendorxwporg
 Requires at least: 6.4.0
-Tested up to: 7.1.2
+Tested up to: 7.1.4
 Requires PHP: 8.0
-Stable tag: 5.0.19
+Stable tag: 5.0.22
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -245,6 +245,39 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 15. Store-admin-list.
 
 == Changelog ==
+
+= 5.0.22 - 2026-11-10 =
+* Added     - Compatibility with WordPress 7.1.4
+* Added     - Compatibility with WooCommerce 11.2.2
+* Fixed     - Security vulnerabilities reported by WordPress community member buiih.
+* Added     - MCP (Model Context Protocol) support for enhanced integration and interoperability.
+* Added     - Support for alphanumeric entries in the ZIP code field in the Store Dashboard. (#2417)
+* Fixed     - An issue where store details were not being added to the metadata of translated products.
+* Updated   - Language file.
+
+= 5.0.21 - 2026-10-28 =
+* Added     - Support for adding new fields in the Bank Transfer payment option for admins. #2387
+* Fixed     - The setup tour issue during new store onboarding. #2319
+* Fixed     - The issue where the Report Abuse button did not appear on product pages when “Everyone” was selected in the settings. #2408
+* Fixed     - The issue with uploading images for downloadable products. #2406
+* Fixed     - Security vulnerabilities reported by WordPress community members. #2413
+* Fixed     - The product image reordering functionality in the Store Owner Dashboard. #2359
+* Fixed     - The issue where registration form fields entered by store owners were not displayed in the admin dashboard correctly. #2377
+* Fixed     - The multi-select functionality in the registration form. #2332
+* Updated   - Language file.
+
+= 5.0.20 - 2026-10-13 =
+* Added     - Compatibility with WordPress 7.1.3
+* Added     - Compatibility with WooCommerce 11.2.1
+* Added     - Support for GTIN, UPC, EAN, and ISBN fields on the product edit page. #2386
+* Fixed     - Unintended email notifications sent to sellers when an admin edits their profile. #2385
+* Fixed     - An issue preventing shipping methods from being deleted in zone-wise shipping settings. #2376
+* Fixed     - An issue where incorrect zone data was loaded in the Store Dashboard when editing zone-wise shipping methods. #2335
+* Fixed     - A security issue that could allow unauthorized Store Owners to access global Settings and Modules REST API endpoints. #2375
+* Fixed     - An issue where certain Elementor widgets failed to render when a custom store_url was configured. #2298
+* Fixed     - The customer-side report abuse submission process issue.
+* Fixed     - An issue where store names were missing for pending products in the Approval Queue.
+* Updated   - Language file.
 
 = 5.0.19 - 2026-09-30 =
 * Fixed     - Security issues identified in MultiVendorX 5.0.18 to improve overall plugin security.

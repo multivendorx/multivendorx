@@ -35,6 +35,27 @@ interface DistanceRule {
 	max_distance: string;
 	cost: string;
 }
+const SettingsGroup = ({
+	icon,
+	title,
+	desc,
+	children,
+}: {
+	icon: string;
+	title: string;
+	desc?: string;
+	children: React.ReactNode;
+}) => (
+	<div className="settings-section-group">
+		<div className="settings-left-section">
+			<SectionComponent icon={icon} title={title} desc={desc} />
+		</div>
+		<div className="settings-right-section">
+			<FormGroupWrapperComponent>{children}</FormGroupWrapperComponent>
+		</div>
+	</div>
+);
+
 const ShippingDelivery = () => {
 	const [formData, setFormData] = useState<FormData>({});
 
@@ -120,7 +141,15 @@ const ShippingDelivery = () => {
 			appLocalizer.shipping_methods.length > 0 ? (
 				<ContainerComponent>
 					<ColumnComponent>
-						<FormGroupWrapperComponent>
+						<>
+							<SettingsGroup
+								icon="shipping"
+								title={__('Shipping', 'multivendorx')}
+								desc={__(
+									'Manage your store’s shipping method, pricing rules, and location-based rates.',
+									'multivendorx'
+								)}
+							>
 							<FormGroupComponent
 								row
 								label={__('Method Type', 'multivendorx')}
@@ -141,6 +170,7 @@ const ShippingDelivery = () => {
 									}
 								/>
 							</FormGroupComponent>
+							</SettingsGroup>
 
 							{/* Zone by Shipping */}
 							{formData.shipping_options === 'shipping_by_zone' &&
@@ -153,7 +183,8 @@ const ShippingDelivery = () => {
 								'shipping_by_country' &&
 								selectedMethodExists && (
 									<>
-										<SectionComponent
+										<SettingsGroup
+											icon="dollar"
 											title={__(
 												'Default Shipping Rules',
 												'multivendorx'
@@ -162,8 +193,7 @@ const ShippingDelivery = () => {
 												'Set base rates that apply to all orders',
 												'multivendorx'
 											)}
-										/>
-
+										>
 										<FormGroupComponent
 											row
 											label={__(
@@ -311,8 +341,10 @@ const ShippingDelivery = () => {
 												}
 											/>
 										</FormGroupComponent>
+										</SettingsGroup>
 
-										<SectionComponent
+										<SettingsGroup
+											icon="global-community"
 											title={__(
 												'Country-Specific Rates',
 												'multivendorx'
@@ -321,9 +353,9 @@ const ShippingDelivery = () => {
 												'Country-specific rates will be added to the Default Shipping Price. If state/region rates are defined, the final shipping cost will be State Rate + Default Shipping Price.',
 												'multivendorx'
 											)}
-										/>
-
-										<ShippingRatesByCountry />
+										>
+											<ShippingRatesByCountry />
+										</SettingsGroup>
 									</>
 								)}
 
@@ -544,7 +576,7 @@ const ShippingDelivery = () => {
 										</FormGroupComponent>
 									</>
 								)}
-						</FormGroupWrapperComponent>
+						</>
 					</ColumnComponent>
 				</ContainerComponent>
 			) : (

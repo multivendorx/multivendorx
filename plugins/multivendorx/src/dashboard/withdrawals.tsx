@@ -202,7 +202,7 @@ const Withdrawals: React.FC = () => {
 
 			<ContainerComponent className="store-withdrawals">
 				<ColumnComponent grid={6}>
-					<CardComponent title={__('Last Withdrawal', 'multivendorx')}>
+					<CardComponent title={__('Last Withdrawal', 'multivendorx')} titleIcon="withdraw" desc="View your most recent withdrawal details and payment status.">
 						{lastWithdraws && lastWithdraws.length > 0 ? (
 							lastWithdraws.map((item: WithdrawalItem) => (
 								<div
@@ -297,49 +297,51 @@ const Withdrawals: React.FC = () => {
 
 							</div>
 							{showStoreDeatils && (
-								<ColumnComponent row>
+								<>
 									{Number(data?.locking_balance) > 0 ? (
-										<ListComponent
-											className="mini-card"
-											background
-											items={[
-												{
-													title: __(
-														'Upcoming Balance',
-														'multivendorx'
-													),
-													desc: (
-														<>
-															{__(
-																'This amount is being processed and will be released ',
-																'multivendorx'
-															)}
-															{data?.payment_schedules ? (
-																<>
-																	{
-																		data.payment_schedules
-																	}{' '}
-																	{__(
-																		' by the admin.',
-																		'multivendorx'
-																	)}
-																</>
-															) : (
-																<>
-																	{__(
-																		'automatically every hour.',
-																		'multivendorx'
-																	)}
-																</>
-															)}
-														</>
-													),
-													value: formatCurrency(
-														data.locking_balance
-													),
-												},
-											]}
-										/>
+										<ColumnComponent row>
+											<ListComponent
+												className="mini-card"
+												background
+												items={[
+													{
+														title: __(
+															'Upcoming Balance',
+															'multivendorx'
+														),
+														desc: (
+															<>
+																{__(
+																	'This amount is being processed and will be released ',
+																	'multivendorx'
+																)}
+																{data?.payment_schedules ? (
+																	<>
+																		{
+																			data.payment_schedules
+																		}{' '}
+																		{__(
+																			' by the admin.',
+																			'multivendorx'
+																		)}
+																	</>
+																) : (
+																	<>
+																		{__(
+																			'automatically every hour.',
+																			'multivendorx'
+																		)}
+																	</>
+																)}
+															</>
+														),
+														value: formatCurrency(
+															data.locking_balance
+														),
+													},
+												]}
+											/>
+										</ColumnComponent>
 									) : (
 										<NoticeComponent
 											type="info"
@@ -410,7 +412,7 @@ const Withdrawals: React.FC = () => {
 											]}
 										/>
 									)}
-								</ColumnComponent>
+								</>
 							)}
 							<ButtonInput
 								buttons={{

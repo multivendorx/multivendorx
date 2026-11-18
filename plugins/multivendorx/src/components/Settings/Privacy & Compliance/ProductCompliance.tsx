@@ -296,9 +296,9 @@ const ProductCompliance: React.FC = () => {
                                 value: 'anyone',
                             },
                         ]}
-                        value={formData.status}
+                        value={formData.who_can_report}
                         onChange={(val: string) =>
-                            handleChange('status', val)
+                            handleChange('who_can_report', val)
                         }
                     />
                 </FormGroupComponent>

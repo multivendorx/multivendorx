@@ -30,6 +30,20 @@ class Utill {
         'product_discontinued' => 'product_discontinued',
     );
 
+    public const NOTIFIMA_OTHER_SETTINGS = array(
+        'vulomail_notice_dismissal_time'            => 'notifima_vulomail_notice_dismissed_at',
+    );
+    
+    /**
+     * Custom $wpdb table names (unprefixed), keyed by logical name.
+     * Always reference via `$wpdb->prefix . Utill::TABLES['subscribers']`, never a hardcoded string.
+     *
+     * @var array
+     */
+    public const TABLES = array(
+        'subscribers' => 'notifima_subscribers',
+    );
+
     /**
      * Function to console and debug errors.
      *
@@ -192,49 +206,59 @@ class Utill {
     public static function get_subscribers( $args ) {
         global $wpdb;
 
-        $table = $wpdb->prefix . 'notifima_subscribers';
-        $where = array();
+        $table = $wpdb->prefix . self::TABLES['subscribers'];
+
+        $conditions = array();
+        $values     = array();
 
         if ( isset( $args['product_ids'] ) ) {
-            $where[] = 'product_id IN (' . implode( ',', array_map( 'absint', $args['product_ids'] ) ) . ')';
+            $ids          = array_map( 'absint', (array) $args['product_ids'] );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $conditions[] = 'product_id IN (' . $placeholders . ')';
+            $values       = array_merge( $values, $ids );
         }
 
         if ( ! empty( $args['email'] ) ) {
-            $where[] = $wpdb->prepare(
-                'email LIKE %s',
-                '%' . $wpdb->esc_like( $args['email'] ) . '%'
-            );
+            $conditions[] = 'email LIKE %s';
+            $values[]     = '%' . $wpdb->esc_like( $args['email'] ) . '%';
         }
 
         if ( ! empty( $args['status'] ) && 'all' !== $args['status'] ) {
-            $where[] = $wpdb->prepare( 'status = %s', $args['status'] );
+            $conditions[] = 'status = %s';
+            $values[]     = (string) $args['status'];
         }
 
         if ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) {
-            $where[] = $wpdb->prepare(
-                'create_time BETWEEN FROM_UNIXTIME(%d) AND FROM_UNIXTIME(%d)',
-                $args['start_date'],
-                $args['end_date']
+            $conditions[] = 'create_time BETWEEN FROM_UNIXTIME(%d) AND FROM_UNIXTIME(%d)';
+            $values[]     = (int) $args['start_date'];
+            $values[]     = (int) $args['end_date'];
+        }
+
+        $where_sql = $conditions ? ' WHERE ' . implode( ' AND ', $conditions ) : '';
+
+        if ( ! empty( $args['count'] ) ) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            return (int) $wpdb->get_var(
+                $wpdb->prepare(
+                    'SELECT COUNT(*) FROM %i' . $where_sql,
+                    $table,
+                    ...$values
+                )
             );
         }
 
-        $where_sql = ! empty( $where ) ? 'WHERE ' . implode( ' AND ', $where ) : '';
+        $has_limit = isset( $args['limit'], $args['offset'] );
+        $limit     = $has_limit ? (int) $args['limit'] : PHP_INT_MAX;
+        $offset    = $has_limit ? (int) $args['offset'] : 0;
 
-        if ( ! empty( $args['count'] ) ) {
-            $query = "SELECT COUNT(*) FROM {$table} {$where_sql}";
-
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-            return (int) $wpdb->get_var( $query );
-        }
-
-        $limit_clause = isset( $args['limit'], $args['offset'] )
-            ? $wpdb->prepare( 'LIMIT %d OFFSET %d', $args['limit'], $args['offset'] )
-            : '';
-
-        $query = "SELECT * FROM {$table} {$where_sql} {$limit_clause}";
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        return $wpdb->get_results( $query );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT * FROM %i' . $where_sql . ' LIMIT %d OFFSET %d',
+                $table,
+                ...array_merge( $values, array( $limit, $offset ) )
+            )
+        );
     }
 
     /**
@@ -301,6 +325,28 @@ class Utill {
 
         $subscriber_records = self::get_subscribers( $subscriber_args );
 
+        // Batch-load products and prime the post meta cache (thumbnails) for every
+        // distinct product on this page, instead of a separate product lookup and
+        // thumbnail meta query per subscriber row (see .claude/rules/performance.md).
+        $page_product_ids = array_unique( array_map( 'absint', wp_list_pluck( $subscriber_records, 'product_id' ) ) );
+
+        $products_by_id = array();
+
+        if ( ! empty( $page_product_ids ) ) {
+            $page_products = wc_get_products(
+                array(
+                    'include' => $page_product_ids,
+                    'limit'   => count( $page_product_ids ),
+                )
+            );
+
+            foreach ( $page_products as $page_product ) {
+                $products_by_id[ $page_product->get_id() ] = $page_product;
+            }
+
+            update_meta_cache( 'post', $page_product_ids );
+        }
+
         $subscriber_items = array();
 
         $statuses = array(
@@ -311,7 +357,7 @@ class Utill {
         );
 
         foreach ( $subscriber_records as $subscriber ) {
-            $product = wc_get_product( $subscriber->product_id );
+            $product = $products_by_id[ $subscriber->product_id ] ?? null;
             $image   = get_the_post_thumbnail_url(
                 $subscriber->product_id,
                 'full'
@@ -339,7 +385,7 @@ class Utill {
                     'user_link'  => $user ? get_edit_user_link( $user->ID ) : '',
                     'product'    => $product ? $product->get_name() : '',
                     'product_id' => $product ? $product->get_id() : '',
-                    'image'      => $image ?: wc_placeholder_img_src(),
+                    'image'      => ! empty( $image ) ? $image : wc_placeholder_img_src(),
                 ),
                 $subscriber
             );

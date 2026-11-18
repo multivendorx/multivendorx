@@ -249,6 +249,7 @@ const DashboardTab: React.FC<object> = () => {
 							'Build a smarter catalog',
 							'catalogx'
 						)}
+						titleIcon="section"
 						badge={[
 							{
 								text: 'Starting at $299/year',
@@ -301,8 +302,8 @@ const DashboardTab: React.FC<object> = () => {
 
 			{/* Right Side */}
 			<ColumnComponent grid={4}>
-				<CardComponent title={__('Extend your website', 'catalogx')}>
-					<ColumnComponent row>
+				<CardComponent title={__('Extend your website', 'catalogx')} titleIcon="section" desc="Discover more tools to grow your marketplace.">
+					<ColumnComponent>
 						{pluginStatus['dc-woocommerce-multi-vendor'] ? (
 							<ListComponent
 								className="mini-card"
@@ -345,7 +346,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('MultiVendorX', 'catalogx'),
+										title: 'MultiVendorX',
 										desc: __(
 											'Turn your store into a product catalog with enquiry-based sales',
 											'catalogx'
@@ -438,7 +439,7 @@ const DashboardTab: React.FC<object> = () => {
 								background
 								items={[
 									{
-										title: __('Notifima', 'catalogx'),
+										title: 'Notifima',
 										desc: __(
 											'Advanced stock alerts and wishlist features for WooCommerce',
 											'catalogx'
@@ -492,7 +493,7 @@ const DashboardTab: React.FC<object> = () => {
 				</CardComponent>
 
 				{/* Quick Links */}
-				<CardComponent title={__('Need help getting started?', 'catalogx')}>
+				<CardComponent title={__('Need help getting started?', 'catalogx')} titleIcon="help" desc="Find the guides and support you need to build your marketplace.">
 					<div className="quick-link">
 						{resources.map((res) => (
 							<ListComponent

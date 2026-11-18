@@ -127,11 +127,6 @@ class Admin {
                         'subtab'   => 'overview',
                         'priority' => 80,
                     ),
-                    'modules'             => array(
-                        'name'     => __( 'Modules', 'multivendorx' ),
-                        'subtab'   => '',
-                        'priority' => 90,
-                    ),
                     'status-tools'        => array(
                         'name'     => __( 'Status & Tools', 'multivendorx' ),
                         'subtab'   => 'system-status',

@@ -263,6 +263,7 @@ const FreeVsProTab: React.FC<object> = () => {
 			<ColumnComponent grid={8}>
 				<CardComponent
 					title={__('Free vs Pro comparison', 'multivendorx')}
+					titleIcon="pro-tag"
 					desc={__(
 						'See what you get with MultiVendorX Pro',
 						'multivendorx'

@@ -133,8 +133,12 @@
     .view-toggle {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 1.813rem;
+        margin: 1.5rem 0;
         align-items: center;
+
+        .tabs-wrapper{
+            display: flex;
+        }
     }
 
     .tabs-wrapper {
@@ -165,9 +169,11 @@
 
 .buttons-wrapper.left {
     justify-content: start !important;
+
     .icon{
         cursor: pointer;
     }
+
     .admin-badge{
         font-size: 0.95rem;
         padding: 0.5rem;
@@ -194,161 +200,213 @@
         cursor: pointer;
     }
 }
+
 // icon set
 .notification-container {
     .store-pending-approval::before {
         content: "\ef5f";
     }
+
     .store-activated::before {
         content: "\e954";
     }
+
     .store-rejected::before {
         content: "\e953";
     }
+
     .store-rejected::before {
         content: "\e953";
     }
+
     .store-suspended::before {
         content: "\e962";
     }
+
     .order-completed::before{
        content: "\e959";
     }
+
     .order-cancelled::before{
         content: "\e927"; 
     }
+
     .order-delivered-alt::before{
         content: "\e944";
     }
+
     .product-approved::before{
         content: "\e941";
     }
+
     .payout-received::before{
         content: "\e940";
     }
+
     .withdrawal-requested::before{
         content: "\e913";
     }
+
     .withdrawal-requested::before{
         content: "\e913";
     }
+
     .wholesale-buyer-approved::before {
         content: "\e965";
     }
+
     .wholesale-buyer-rejected::before {
         content: "\e966";
     }
+
     .product-rejected::before {
         content: "\e964";
     }
+
     .store-permanently-rejected::before{
         content: "\e912";
     }
+
     .store-account-created-by-admin::before{
         content: "\e520";
     }
+
     .store-under-review::before{
         content: "\e964";
     }
+
     .store-deactivation-request-rejected::before{
         content: "\e955";
     }
+
     .new-order-store::before{
         content: "\efff";
     }
+
     .order-processing::before{
         content: "\e953";
     }
+
      .order-processing::before{
         content: "\e953";
     }
+
     .order-refunded::before{
         content: "\e957";
     }
+
     .shipment-tracking-added::before{
         content: "\ef91";
     }
+
     .order-delivered::before{
         content: "\e945";
     }
+
     .refund-requested::before{
         content: "\ef4f";
     }
+
     .refund-accepted::before{
         content: "\e941";
     }
+
     .refund-rejected::before{
         content: "\e810";
     }
+
     .new-store-review::before{
         content: "\ef44";
     }
+
     .review-reply::before{
         content: "\efe2";
     }
+
     .review-reply::before{
         content: "\efe2";
     }
+
     .product-submitted::before{
         content: "\ef8a";
     } 
+
     .product-rejected::before{
         content: "\e928";
     } 
+
     .product-rejected::before{
         content: "\e928";
     } 
+
     .product-out-of-stock::before{
         content: "\e951";
     } 
+
     .product-low-stock::before{
         content: "\ef45";
     } 
+
     .product-question-submitted::before{
         content: "\e92f";
     }
+
     .product-question-reply::before{
         content: "\e93f";
     }
+
     .payout-failed::before{
         content: "\ef53";
     }
+
     .payout-failed::before{
         content: "\ef53";
     }
+
     .withdrawal-released::before{
         content: "\ef80";
     }
+
     .withdrawl-rejected::before{
         content: "\e927";
     }
+
     .report-abuse-submitted::before{
         content: "\ef58";
     }
+
     .system-announcement::before{
         content: "\ef37";
     }
+
     .store-followed::before{
         content: "\ef43";
     }
+
     .store-followed::before{
         content: "\ef43";
     }
+
     .store-new-product-to-followers::before{
         content: "\ef8e";
     }
+
     .store-new-coupon-to-followers::before{
         content: "\e92c";
     }
+
     .store-vacation-alert-to-followers::before{
         content: "\ef67";
     }
+
     .store-permanently-deactivated::before{
         content: "\e928";
     }
+
     .store-permanently-deactivated::before{
         content: "\e928";
     }
+
     .store-account-deactivation-request::before{
         content: "\ef76";
     }

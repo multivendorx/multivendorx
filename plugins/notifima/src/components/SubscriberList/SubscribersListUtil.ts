@@ -116,3 +116,15 @@ export const defaultCategoryCounts = [
 		count: 3,
 	},
 ];
+
+export const csvHeaders = {
+	id: { label: __('Subscriber ID', 'notifima') },
+	product: { label: __('Product', 'notifima') },
+	product_id: { label: __('Product ID', 'notifima') },
+	email: { label: __('Email', 'notifima') },
+	phone: { label: __('Phone', 'notifima') },
+	status: { label: __('Status', 'notifima') },
+	reg_user: { label: __('Registered User', 'notifima') },
+	date: { label: __('Date', 'notifima') },
+	image: { label: __('Product Image URL', 'notifima') },
+};

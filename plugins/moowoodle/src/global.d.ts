@@ -1,5 +1,7 @@
 declare module 'body-scroll-lock' {
+	// eslint-disable-next-line no-unused-vars -- ambient type signature; the param name is part of the declared shape, not a real binding.
 	export function disableBodyScroll(targetElement: Element): void;
+	// eslint-disable-next-line no-unused-vars -- ambient type signature; the param name is part of the declared shape, not a real binding.
 	export function enableBodyScroll(targetElement: Element): void;
 }
 

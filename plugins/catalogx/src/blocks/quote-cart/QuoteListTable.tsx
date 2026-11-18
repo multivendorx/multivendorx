@@ -110,12 +110,6 @@ const QuoteList = () => {
             },
         })
             .then((response) => {
-                const items = response.data.response || [];
-
-                const ids = items
-                    .filter((item: QuoteRow) => item?.id != null)
-                    .map((item: QuoteRow) => Number(item.id));
-
                 setRows(response.data.response || []);
 
                 setIsLoading(false);

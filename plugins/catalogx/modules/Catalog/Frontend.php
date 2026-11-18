@@ -106,9 +106,9 @@ class Frontend {
      * @return string              The modified (or original) price HTML.
      */
     public function exclude_price_for_selected_product( $price, $product ) {
-        $price_hide_product_page = CatalogX()->setting->get_setting( 'hide_product_price' );
+        $price_hide_product_page = CatalogX()->setting->get_setting( 'hide_product_price','visible' );
 
-        if ( Util::is_available_for_product( $product->get_id() ) && $price_hide_product_page && is_shop() ) {
+        if ( Util::is_available_for_product( $product->get_id() ) && 'hidden' === $price_hide_product_page ) {
             return '';
         }
 

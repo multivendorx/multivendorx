@@ -46,7 +46,7 @@ class Settings extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'update_item' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+					'permission_callback' => array( $this, 'multivendorx_update_item_permissions_check' ),
 				),
 			)
         );
@@ -58,12 +58,12 @@ class Settings extends \WP_REST_Controller {
                 array(
                     'methods'             => 'POST',
                     'callback'            => array( $this, 'set_modules' ),
-                    'permission_callback' => array( $this, 'set_modules_permissions_check' ),
+                    'permission_callback' => array( $this, 'multivendorx_set_modules_permissions_check' ),
                 ),
                 array(
                     'methods'             => 'GET',
                     'callback'            => array( $this, 'get_modules' ),
-                    'permission_callback' => array( $this, 'get_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'multivendorx_get_item_permissions_check' ),
                 ),
             )
         );
@@ -74,9 +74,8 @@ class Settings extends \WP_REST_Controller {
      *
      * @param object $request The REST request object.
      */
-    public function update_item_permissions_check( $request ) {
-        // Store owners save their own settings from the store dashboard, so edit_stores must be allowed.
-        return Utill::current_user_has_capability( array( 'manage_options', 'edit_stores' ) );
+    public function multivendorx_update_item_permissions_check( $request ) {
+        return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 
     /**
@@ -84,7 +83,7 @@ class Settings extends \WP_REST_Controller {
      *
      * @param object $request The REST request object.
      */
-    public function set_modules_permissions_check( $request ) {
+    public function multivendorx_set_modules_permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'manage_options' ) );
     }
 
@@ -93,7 +92,7 @@ class Settings extends \WP_REST_Controller {
      *
      * @param object $request The REST request object.
      */
-    public function get_item_permissions_check( $request ) {
+    public function multivendorx_get_item_permissions_check( $request ) {
         return is_user_logged_in() && ! empty(
             array_intersect(
                 array( 'customer', 'administrator', 'store_owner', 'facilitator' ),

@@ -119,14 +119,15 @@ class Store {
 
         $table = $wpdb->prefix . Utill::TABLES['store'];
 
-        $sql = $wpdb->prepare(
-            'SELECT * FROM %i WHERE ID = %d LIMIT 1',
-            $table,
-            $store_id
-        );
-
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $row = $wpdb->get_row( $sql, ARRAY_A );
+        $row = $wpdb->get_row(
+            $wpdb->prepare(
+                'SELECT * FROM %i WHERE ID = %d LIMIT 1',
+                $table,
+                $store_id
+            ),
+            ARRAY_A
+        );
         if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
             MultiVendorX()->util->log( $wpdb->last_error, 'ERROR' );
         }
@@ -191,9 +192,9 @@ class Store {
         $table = esc_sql( $wpdb->prefix . Utill::TABLES['store'] );
 
         $data = array(
-            Utill::STORE_SETTINGS_KEYS['name']        => $this->data['name'] ?? '',
+            Utill::STORE_SETTINGS_KEYS['name']        => sanitize_text_field( $this->data['name'] ?? '' ),
             Utill::STORE_SETTINGS_KEYS['slug']        => $this->data['slug'] ?? sanitize_title( $this->data['name'] ?? '' ),
-            Utill::STORE_SETTINGS_KEYS['description'] => $this->data['description'] ?? '',
+            Utill::STORE_SETTINGS_KEYS['description'] => wp_kses_post( $this->data['description'] ?? '' ),
             Utill::STORE_SETTINGS_KEYS['who_created'] => $this->data['who_created'] ?? 'admin',
             Utill::STORE_SETTINGS_KEYS['status']      => $this->data['status'] ?? 'active',
         );
@@ -257,19 +258,20 @@ class Store {
 
         $table = $wpdb->prefix . Utill::TABLES['store_meta'];
 
-        $sql = $wpdb->prepare(
-            'SELECT meta_key, meta_value FROM %i WHERE store_id = %d',
-            $table,
-            $this->id
-        );
-
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $rows = $wpdb->get_results( $sql, ARRAY_A );
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT meta_key, meta_value FROM %i WHERE store_id = %d',
+                $table,
+                $this->id
+            ),
+            ARRAY_A
+        );
 
         $meta = array();
 
         foreach ( $rows as $row ) {
-			$meta[ $row['meta_key'] ] = is_serialized( $row['meta_value'] ) ? unserialize( $row['meta_value'], array( 'allowed_classes' => false ) ) : $row['meta_value'];
+			$meta[ $row['meta_key'] ] = Utill::safe_unserialize( $row['meta_value'] );
 		}
         $this->meta_data = $meta;
         return $this->meta_data;
@@ -438,8 +440,8 @@ class Store {
                     return $stores;
 
                 case 'primary_owner':
-                    $status = sanitize_text_field( $value );
-					$stores = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+                    $status                          = sanitize_text_field( $value );
+					$stores                          = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 						$wpdb->prepare(
                             'SELECT * FROM %i WHERE who_created = %d AND status = %s',
                             $table,
@@ -454,21 +456,21 @@ class Store {
                 case 'user':
                     $user_id           = (int) $value;
 					$excluded_statuses = array( 'permanently_rejected', 'deactivated' );
-					$placeholders      = implode( ', ', array_fill( 0, count( $excluded_statuses ), '%s' ) );
 					$params            = array_merge( array( $store_users, $table, $user_id ), $excluded_statuses );
 
-					$sql = "
+					$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+                        $wpdb->prepare(
+                            '
                         SELECT
                             su.store_id AS id,
                             s.name AS name
                         FROM %i su
                         INNER JOIN %i s ON s.ID = su.store_id
                         WHERE su.user_id = %d
-                        AND s.status NOT IN ($placeholders)
-                    ";
-
-					$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-                        $wpdb->prepare( $sql, $params ),
+                        AND s.status NOT IN (%s, %s)
+                    ',
+                            $params
+                        ),
                         ARRAY_A
 					);
 
@@ -500,21 +502,25 @@ class Store {
 		$table = $wpdb->prefix . Utill::TABLES['store'];
 
 		if ( $exclude_id ) {
-			$query = $wpdb->prepare(
-                'SELECT COUNT(*) FROM %i WHERE slug = %s AND ID != %d',
-                $table,
-                $slug,
-                $exclude_id
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$exists = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT COUNT(*) FROM %i WHERE slug = %s AND ID != %d',
+					$table,
+					$slug,
+					$exclude_id
+				)
 			);
 		} else {
-			$query = $wpdb->prepare(
-                'SELECT COUNT(*) FROM %i WHERE slug = %s',
-                $table,
-                $slug
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$exists = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT COUNT(*) FROM %i WHERE slug = %s',
+					$table,
+					$slug
+				)
 			);
 		}
-
-		$exists = (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );

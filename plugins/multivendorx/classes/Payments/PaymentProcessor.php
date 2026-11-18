@@ -212,9 +212,10 @@ class PaymentProcessor {
 		if ( 'success' !== $status ) {
 			$row = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->prepare(
-                    "SELECT *
-                        FROM {$transaction_table}
-                        WHERE id = %d",
+                    'SELECT *
+                        FROM %i
+                        WHERE id = %d',
+                    $transaction_table,
                     $transaction_id
                 )
 			);

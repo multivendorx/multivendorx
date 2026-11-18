@@ -40,7 +40,7 @@ class Tracking extends \WP_REST_Controller {
                 array(
                     'methods'             => \WP_REST_Server::CREATABLE,
                     'callback'            => array( $this, 'create_item' ),
-                    'permission_callback' => array( $this, 'create_item_permissions_check' ),
+                    'permission_callback' => array( $this, 'multivendorx_create_item_permissions_check' ),
                 ),
             )
         );
@@ -51,7 +51,7 @@ class Tracking extends \WP_REST_Controller {
      *
      * @param object $request Request data.
      */
-    public function create_item_permissions_check( $request ) {
+    public function multivendorx_create_item_permissions_check( $request ) {
         return Utill::current_user_has_capability( array( 'create_stores' ) );
     }
 	/**

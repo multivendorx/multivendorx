@@ -10,8 +10,16 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'database',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'database',
+			title: __('Cache & Database Tools', 'multivendorx'),
+		},
 		{
 			key: 'transients',
 			type: 'button',
@@ -42,6 +50,7 @@ export default {
 		{
 			key: 'separator_content',
 			type: 'section',
+			icon: 'tools',
 			title: __('Maintenance Tools', 'multivendorx'),
 			desc: __('', 'multivendorx'),
 		},
@@ -77,6 +86,7 @@ export default {
 		{
 			key: 'separator_content',
 			type: 'section',
+			icon: 'version-control',
 			title: __('Version Control', 'multivendorx'),
 			desc: __('', 'multivendorx'),
 		},
@@ -101,6 +111,7 @@ export default {
 		{
 			key: 'separator_content',
 			type: 'section',
+			icon: 'css',
 			title: __('Store dashboard styling', 'multivendorx'),
 			desc: __('', 'multivendorx'),
 		},
@@ -116,7 +127,8 @@ export default {
 		{
 			key: 'separator_content',
 			type: 'section',
-			wrapperClass: 'red',
+			icon: 'notification',
+			wrapperClass: 'danger',
 			title: __('Notification Events Handling', 'multivendorx'),
 			desc: __('', 'multivendorx'),
 		},

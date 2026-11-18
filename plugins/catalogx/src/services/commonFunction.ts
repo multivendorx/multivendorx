@@ -228,7 +228,7 @@ const updatePlainPermalinkUrl = (segments: string[]) => {
  * @param segments  e.g. ['products'], ['products', 'edit'], ['products', 'edit', '123']
  */
 export const dashNavigate = (
-	navigate: (path: string) => void,
+	navigate: (_path: string) => void,
 	segments: string[]
 ) => {
 	const ALLOWED_SEGMENTS = ['products', 'orders', 'dashboard'];

@@ -3,11 +3,11 @@
     .canvas-editor {
         .form-field-container-wrapper {
             flex-direction: column;
-            padding: 0 !important; //for overwrite default style
+            padding: 0 !important; // for overwrite default style
             margin-bottom: 0.625rem;
 
             .settings-form-label {
-                width: 100% !important; //for overwrite default style
+                width: 100% !important; // for overwrite default style
                 margin-bottom: 0.625rem;
             }
         }

@@ -1,5 +1,9 @@
 import React from 'react';
-import { CardComponent, ColumnComponent, ContainerComponent } from '@zyra/components';
+import {
+	CardComponent,
+	ColumnComponent,
+	ContainerComponent,
+} from '@zyra/components';
 import { __ } from '@wordpress/i18n';
 import MoowoodleConcept from '../../assets/images/moowoodle-concept.png';
 interface Feature {
@@ -245,6 +249,7 @@ const FreeVsProTab: React.FC = () => {
 			<ColumnComponent grid={8}>
 				<CardComponent
 					title={__('Free vs Pro comparison', 'moowoodle')}
+					titleIcon="pro-tag"
 					desc={__(
 						'See what you get with MooWoodle Pro',
 						'moowoodle'

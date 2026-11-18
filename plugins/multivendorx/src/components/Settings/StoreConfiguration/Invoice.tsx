@@ -332,6 +332,7 @@ const Invoice: React.FC = () => {
 			<ColumnComponent>
 				<CardComponent
 					title={__('Invoice preview', 'multivendorx')}
+					titleIcon="review"
 					desc={__(
 						'Preview how the invoice layout will appear to customers and stores',
 						'multivendorx'
@@ -521,6 +522,7 @@ const Invoice: React.FC = () => {
 			<ColumnComponent grid={8}>
 				<CardComponent
 					title={__('Customer invoice', 'multivendorx')}
+					titleIcon="customer-support"
 					desc={__(
 						'Define when invoices should be automatically created and how they are delivered to customers.',
 						'multivendorx'
@@ -632,7 +634,7 @@ const Invoice: React.FC = () => {
 						</FormGroupComponent>
 					</FormGroupWrapperComponent>
 				</CardComponent>
-				<CardComponent title={__('Packing slip generator', 'multivendorx')}>
+				<CardComponent title={__('Packing slip generator', 'multivendorx')} titleIcon="section" desc="Customize the information included in packing slips to simplify order fulfillment.">
 					<FormGroupWrapperComponent>
 						<FormGroupComponent
 							cols={6}
@@ -681,7 +683,7 @@ const Invoice: React.FC = () => {
 						</FormGroupComponent>
 					</FormGroupWrapperComponent>
 				</CardComponent>
-				<CardComponent title={__('Store commission invoices', 'multivendorx')}>
+				<CardComponent title={__('Store commission invoices', 'multivendorx')} titleIcon="commission" desc="Choose how often commission invoices are generated for stores and track marketplace earnings.">
 					<FormGroupWrapperComponent>
 						<FormGroupComponent
 							label="Commission invoices will be issued"
@@ -720,6 +722,7 @@ const Invoice: React.FC = () => {
 						'Invoices will include these additional notes',
 						'multivendorx'
 					)}
+					titleIcon="invoice"
 					desc={__(
 						'Customize additional text that appears on the invoice document when customers download it.',
 						'multivendorx'
@@ -758,6 +761,8 @@ const Invoice: React.FC = () => {
 						'Invoices will display these tax details',
 						'multivendorx'
 					)}
+					titleIcon="tax-compliance"
+					desc="Manage the tax and registration details displayed on marketplace and store invoices."
 				>
 					<FormGroupWrapperComponent>
 						<FormGroupComponent
@@ -782,6 +787,7 @@ const Invoice: React.FC = () => {
 				</CardComponent>
 				<CardComponent
 					title={__('Invoices PDF format', 'multivendorx')}
+					titleIcon="invoice"
 					desc={__(
 						'Configure the layout and numbering format used for all generated invoices.',
 						'multivendorx'
@@ -862,6 +868,8 @@ const Invoice: React.FC = () => {
 						'Invoice branding: logo & signature',
 						'multivendorx'
 					)}
+					titleIcon="invoice"
+					desc="Add your company logo and signature to create professional, branded invoices."
 				>
 					<FormGroupWrapperComponent>
 						<FormGroupComponent

@@ -26,7 +26,7 @@ interface SettingsFormRendererProps {
 
 const SettingsFormRenderer: React.FC<SettingsFormRendererProps> = ({
 	currentTab,
-	settingsArray
+	settingsArray,
 }) => {
 	const { setting, settingName, setSetting, updateSetting } = useSetting();
 	const { modules } = useModules();
@@ -34,7 +34,10 @@ const SettingsFormRenderer: React.FC<SettingsFormRendererProps> = ({
 
 	useEffect(() => {
 		if (settingName !== currentTab) {
-			setSetting(currentTab, appLocalizer.admin_settings[currentTab] || {});
+			setSetting(
+				currentTab,
+				appLocalizer.admin_settings[currentTab] || {}
+			);
 		}
 	}, [currentTab, settingName, setSetting]);
 

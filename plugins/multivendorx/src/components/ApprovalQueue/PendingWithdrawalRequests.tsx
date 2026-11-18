@@ -5,7 +5,11 @@ import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import { ButtonInput } from '@zyra/inputs';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
-import { getUrl } from '@/services/commonFunction';
+import {
+	formatCurrency,
+	formatStatusLabel,
+	getUrl,
+} from '@/services/commonFunction';
 
 const PendingWithdrawal: React.FC<object> = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -38,24 +42,11 @@ const PendingWithdrawal: React.FC<object> = () => {
 	const headers = {
 		store_name: {
 			label: __('Store', 'multivendorx'),
-			render: (row) => (
-				<a
-					href={getUrl(row.store_id, 'store', 'edit')}
-					target="_blank"
-					rel="noopener noreferrer"
-					className="link-item"
-				>
-					{row.store_name}
-				</a>
-			),
-		},
-		status: {
-			label: __('Status', 'multivendorx'),
-			type: 'status' , statusClass: (row) => `${row.status}`,
-		},
-		withdraw_amount: {
-			label: __('Withdraw Amount', 'multivendorx'),
-			type: 'currency',
+			type: 'info',
+			iconKey: 'info_icon',
+			titleLinkKey: 'info_link',
+			descriptionKey: 'info_descriptions',
+			badgesKey: 'info_badges',
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
@@ -116,10 +107,30 @@ const PendingWithdrawal: React.FC<object> = () => {
 			});
 	};
 
+	const infoRows = rows.map((row: any) => ({
+		...row,
+		info_icon: 'wallet',
+		info_link: getUrl(row.store_id, 'store', 'edit'),
+		info_descriptions: [
+			{
+				label: __('Withdraw Amount', 'multivendorx'),
+				icon: 'dollar',
+				value: formatCurrency(row.withdraw_amount),
+			},
+		],
+		info_badges: [
+			{
+				text: formatStatusLabel(row.status),
+				color: `badge-${row.status}`,
+			},
+		],
+	}));
+
 	return (
 		<TableCard
 			headers={headers}
-			rows={rows}
+			variant="transparent"
+			rows={infoRows}
 			totalRows={totalRows}
 			isLoading={isLoading}
 			onQueryUpdate={doRefreshTableData}

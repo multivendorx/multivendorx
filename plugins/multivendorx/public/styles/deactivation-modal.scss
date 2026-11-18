@@ -6,11 +6,13 @@
 	justify-content: center;
 	z-index: 99999;
 }
+
 .modal-bg {
 	position: absolute;
 	inset: 0;
-	background: rgba(0, 0, 0, 0.75);
+	background: rgb(0 0 0 / 75%);
 }
+
 .modal-box {
 	position: relative;
 	z-index: 1;
@@ -20,7 +22,7 @@
 	background: #fff;
 	border-radius: 0.375rem;
 	overflow-y: auto;
-	box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.25);
+	box-shadow: 0 0.5rem 2rem rgb(0 0 0 / 25%);
 }
 
 .form-head {
@@ -36,6 +38,7 @@
 	padding: 1.25rem;
 	color: #444;
 }
+
 .form-body p {
 	margin: 0 0 1rem;
 	font-size: 0.9rem;
@@ -47,6 +50,7 @@
 	gap: 0.75rem;
 	margin-bottom: 1.25rem;
 }
+
 .support-card {
 	flex: 1 0 6rem;
 	padding: 1rem 0.75rem;
@@ -62,16 +66,20 @@
 	text-align: center;
 	transition: background 0.2s;
 }
+
 .support-card span {
 	font-size: 0.95rem;
 	font-weight: 500;
 }
+
 .support-card:hover {
 	background: #f5f0fb;
 }
+
 .support-card:hover span {
 	color: #5007aa;
 }
+
 .support-card svg {
 	width: 2rem;
 	height: 2rem;
@@ -84,14 +92,17 @@
 	padding: 0;
 	list-style: none;
 }
+
 .deactivation-reasons li {
 	margin-bottom: 0.75rem;
 }
+
 .deactivation-reasons label {
 	margin-left: 0.4rem;
 	color: #555;
 	cursor: pointer;
 }
+
 .deactivation-reasons .extra-field {
 	display: block;
 	margin-top: 0.5rem;
@@ -102,6 +113,7 @@
 	border-radius: 0.25rem;
 	font-size: 0.875rem;
 }
+
 .deactivation-reasons textarea.extra-field {
 	height: 5rem;
 	resize: vertical;
@@ -131,6 +143,7 @@
 	bottom: 0;
 	background: #fff;
 }
+
 .footer-button {
 	padding: 0.6rem 1.2rem;
 	border-radius: 0.25rem;
@@ -141,14 +154,17 @@
 	border: none;
 	display: inline-block;
 }
+
 .button-skip {
 	background: #fff3f1;
 	color: #ef9587;
 }
+
 .button-skip:hover {
 	background: #e0e0e0;
 	color: #333;
 }
+
 .button-submit {
 	background: #5007aa;
 	color: #fff;

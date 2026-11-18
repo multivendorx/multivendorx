@@ -221,7 +221,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 				<ColumnComponent grid={8}>
 					{(formData.core_data?.status == 'pending' ||
 						formData.core_data?.status == 'rejected') && (
-						<CardComponent title={__('Store details', 'multivendorx')}>
+						<CardComponent title={__('Store details', 'multivendorx')} titleIcon="storefront" desc="Review the store’s profile information and approval status.">
 							<FormGroupWrapperComponent>
 								{formData.core_data &&
 								Object.keys(formData.core_data).length > 0 ? (
@@ -263,7 +263,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 						formData.core_data?.status == 'rejected' ||
 						formData.core_data?.status == 'permanently_rejected') && (
 						<>
-							<CardComponent title="Submitted by">
+							<CardComponent title="Submitted by" titleIcon="section" desc="View the applicant’s contact details and registration information.">
 								<FormGroupWrapperComponent>
 									<FormGroupComponent row label="Display Name">
 										{formData.primary_owner_info?.display_name ||
@@ -282,7 +282,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 							</CardComponent>
 
 							{previousNotes.length > 0 && (
-								<CardComponent title="Previous Notes">
+								<CardComponent title="Previous Notes" titleIcon="text" desc="Add a reason or note when approving or rejecting the store.">
 									<div className="form-group-wrapper">
 										<div className="form-group">
 											<ul>
@@ -301,7 +301,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 							)}
 							{formData.core_data?.status !=
 								'permanently_rejected' && (
-								<CardComponent title="Note">
+								<CardComponent title="Note" titleIcon="text" desc="Add a reason for permanently rejecting this store for future reference.">
 									<FormGroupWrapperComponent>
 										<FormGroupComponent>
 											<TextAreaInput
@@ -374,6 +374,8 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 			<ColumnComponent grid={4}>
 				<CardComponent
 					title={__('Registration Details', 'multivendorx')}
+					titleIcon="form"
+					desc="Review the information submitted during store registration."
 					action={
 						formData.registration_data &&
 						Object.keys(formData.registration_data).length > 0 && (
@@ -449,12 +451,14 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 				</CardComponent> 
 			</ColumnComponent>
 			<ColumnComponent grid={4}>
-				<CardComponent title={__('Activity Log', 'multivendorx')}>          
+				<CardComponent title={__('Activity Log', 'multivendorx')} titleIcon="recent" desc="Track registration events and store approval history.">          
           			<div className="activity-log">
 						{Array.isArray(activities) && activities.length > 0 ? (
 							activities.slice(0, 5).map((a, i) => (
 								<div key={i} className="activity">
-									<div className="title">{a.title}</div>
+									{a.title && (
+										<div className="title">{a.title}</div>
+									)}
 									<div className="des">{a.message}</div>
 									<span>{formatDate(a.date)}</span>
 								</div>

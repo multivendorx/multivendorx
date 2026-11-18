@@ -501,7 +501,7 @@ const Dashboard = () => {
 							{/* Dark mode toggle */}
 							<TooltipComponent
 								position="bottom"
-								text={__(isDarkMode ? 'Light mode' : 'Dark mode', 'multivendorx')}
+								text={isDarkMode ? __('Light mode', 'multivendorx') : __('Dark mode', 'multivendorx')}
 							>
 								<li onClick={() => setIsDarkMode((prev) => !prev)}>
 									<div

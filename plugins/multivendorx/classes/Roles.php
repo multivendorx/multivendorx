@@ -45,6 +45,8 @@ class Roles {
             );
         }
 
+        $wp_roles->add_cap( 'store_owner', 'read' );
+
         $all_caps = $this->get_custom_capability();
         foreach ( $all_caps as $cap ) {
             $wp_roles->add_cap( 'administrator', $cap );

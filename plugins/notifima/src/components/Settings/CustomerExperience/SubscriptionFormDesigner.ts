@@ -1,5 +1,4 @@
 import { __ } from '@wordpress/i18n';
-import { CountryCodes } from '@zyra/core';
 
 const REGISTRATION_BLOCK_GROUPS = [
     {

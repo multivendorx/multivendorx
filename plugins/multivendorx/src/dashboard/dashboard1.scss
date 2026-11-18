@@ -6,7 +6,6 @@ ul {
     padding: 0;
 }
 
-
 // input[type="checkbox"]:checked {
 //     width: 0 !important;
 // }
@@ -26,7 +25,6 @@ body:has(#store-dashboard) {
     line-height: 0.95rem;
 
     #store-dashboard.collapsed {
-
         .tab-wrapper,
         .top-navbar {
             margin-left: 4rem;
@@ -56,7 +54,6 @@ body:has(#store-dashboard) {
 
                 .dashboard-tabs {
                     .tab-name {
-
                         .subtabs,
                         .admin-arrow,
                         span {

@@ -7,6 +7,8 @@
 
 namespace MultiVendorX\StoreShipping;
 
+use MultiVendorX\Utill;
+
 use WC_Data_Store;
 use WC_Shipping_Zone;
 
@@ -114,7 +116,7 @@ class Util {
         }
 
         // Proper way for WP meta.
-        $settings = maybe_unserialize( $settings );
+        $settings = Utill::safe_unserialize( $settings );
 
         return array(
             'method_id' => $method_id,

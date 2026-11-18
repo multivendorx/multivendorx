@@ -63,7 +63,10 @@ export default {
 				{
 					action: 'get_site_info',
 					message: __('Connecting to Moodle', 'moowoodle'),
-					failureMessage: __('Failed to connect to Moodle.', 'moowoodle'),
+					failureMessage: __(
+						'Failed to connect to Moodle.',
+						'moowoodle'
+					),
 				},
 				{
 					action: 'get_courses',
@@ -73,7 +76,10 @@ export default {
 				{
 					action: 'get_categories',
 					message: __('Category Fetch', 'moowoodle'),
-					failureMessage: __('Failed to fetch categories.', 'moowoodle'),
+					failureMessage: __(
+						'Failed to fetch categories.',
+						'moowoodle'
+					),
 				},
 				{
 					action: 'create_users',
@@ -86,7 +92,10 @@ export default {
 				{
 					action: 'get_users',
 					message: __('User Fetch', 'moowoodle'),
-					failureMessage: __('Failed to get the test user.', 'moowoodle'),
+					failureMessage: __(
+						'Failed to get the test user.',
+						'moowoodle'
+					),
 				},
 				{
 					action: 'update_users',
@@ -120,7 +129,7 @@ export default {
 				},
 			],
 		},
-				{
+		{
 			key: 'section',
 			type: 'section',
 			icon: 'sign-out',
@@ -157,7 +166,7 @@ export default {
 					'moowoodle'
 				),
 				appLocalizer.moodle_site_url +
-				'admin/settings.php?section=authsettingmoowoodle'
+					'admin/settings.php?section=authsettingmoowoodle'
 			),
 			size: '50%',
 			label: __('SSO secret key', 'moowoodle'),

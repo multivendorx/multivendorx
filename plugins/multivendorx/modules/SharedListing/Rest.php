@@ -85,16 +85,12 @@ class Rest {
             $table = $wpdb->prefix . Utill::TABLES['shared_listing'];
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            $sql = 'SELECT * FROM %i WHERE ID = %d';
-
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $row = $wpdb->get_row(
-                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-                $wpdb->prepare( $sql, $table, $existing_map_id )
+                $wpdb->prepare( 'SELECT * FROM %i WHERE ID = %d', $table, $existing_map_id )
             );
 
             if ( $row ) {
-                $map_array = maybe_unserialize( $row->listing_products, true );
+                $map_array = Utill::safe_unserialize( $row->listing_products );
 
                 if ( ! is_array( $map_array ) ) {
                     $map_array = array();

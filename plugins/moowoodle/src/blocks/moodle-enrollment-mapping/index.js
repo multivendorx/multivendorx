@@ -1,3 +1,4 @@
+/* global moowoodleProduct */
 import { render, useEffect, useState } from '@wordpress/element';
 import {
 	RadioControl,
@@ -6,7 +7,7 @@ import {
 	Notice,
 	Disabled,
 	ToggleControl,
-	ComboboxControl
+	ComboboxControl,
 } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
@@ -19,9 +20,7 @@ const ProTag = ({ isProVersion }) => {
 };
 
 const ProductTab = () => {
-	const [linkType, setLinkType] = useState(
-		moowoodleProduct.linkType || ''
-	);
+	const [linkType, setLinkType] = useState(moowoodleProduct.linkType || '');
 
 	const [linkedItemId, setLinkedItemId] = useState(
 		String(moowoodleProduct.linkedItemId || '')
@@ -36,8 +35,9 @@ const ProductTab = () => {
 	);
 
 	// Enrollment Extension fields.
-	const [enableEnrollmentExtension, setEnableEnrollmentExtension] =
-		useState(Boolean(moowoodleProduct.enableEnrollmentExtension));
+	const [enableEnrollmentExtension, setEnableEnrollmentExtension] = useState(
+		Boolean(moowoodleProduct.enableEnrollmentExtension)
+	);
 
 	const [extensionDays, setExtensionDays] = useState(
 		moowoodleProduct.extensionDays || ''
@@ -145,7 +145,10 @@ const ProductTab = () => {
 								onChange={(value) => {
 									setLinkedItemId(value || '');
 								}}
-								placeholder={__('Search or select an item...', 'moowoodle')}
+								placeholder={__(
+									'Search or select an item...',
+									'moowoodle'
+								)}
 							/>
 						</div>
 					</p>
@@ -168,7 +171,9 @@ const ProductTab = () => {
 									setExpiryDays(event.target.value)
 								}
 							/>
-							<ProTag isProVersion={moowoodleProduct.khali_dabba} />
+							<ProTag
+								isProVersion={moowoodleProduct.khali_dabba}
+							/>
 						</p>
 
 						{/* Expiry Type */}
@@ -195,14 +200,19 @@ const ProductTab = () => {
 								]}
 								onChange={setExpiryType}
 							/>
-							<ProTag isProVersion={moowoodleProduct.khali_dabba} />
+							<ProTag
+								isProVersion={moowoodleProduct.khali_dabba}
+							/>
 						</p>
 
 						{/* Enrollment Extension */}
 						<div className="enrollment-extension">
 							<p className="form-field">
 								<label htmlFor="course_expiry_type">
-									{__('Enable Enrollment Extension', 'moowoodle')}
+									{__(
+										'Enable Enrollment Extension',
+										'moowoodle'
+									)}
 								</label>
 								<ToggleControl
 									checked={enableEnrollmentExtension}
@@ -215,17 +225,16 @@ const ProductTab = () => {
 										}
 									}}
 								/>
-								<ProTag isProVersion={moowoodleProduct.khali_dabba} />
+								<ProTag
+									isProVersion={moowoodleProduct.khali_dabba}
+								/>
 							</p>
 							{enableEnrollmentExtension && (
 								<>
 									{/* Extension Days */}
 									<p className="form-field input">
 										<label htmlFor="enrollment_extension_days">
-											{__(
-												'Extension Days',
-												'moowoodle'
-											)}
+											{__('Extension Days', 'moowoodle')}
 										</label>
 
 										<input
@@ -244,10 +253,7 @@ const ProductTab = () => {
 									{/* Extension Cost */}
 									<p className="form-field input">
 										<label htmlFor="enrollment_extension_cost">
-											{__(
-												'Extension Cost',
-												'moowoodle'
-											)}
+											{__('Extension Cost', 'moowoodle')}
 										</label>
 
 										<input
@@ -269,10 +275,7 @@ const ProductTab = () => {
 
 						{!moowoodleProduct.khali_dabba && (
 							<span className="description">
-								{__(
-									'Available in MooWoodle Pro.',
-									'moowoodle'
-								)}
+								{__('Available in MooWoodle Pro.', 'moowoodle')}
 							</span>
 						)}
 					</>
@@ -283,20 +286,14 @@ const ProductTab = () => {
 					isDismissible={false}
 					actions={[
 						{
-							label: __(
-								'Synchronize Moodle data',
-								'moowoodle'
-							),
+							label: __('Synchronize Moodle data', 'moowoodle'),
 							url: moowoodleProduct.syncUrl,
 							variant: 'link',
 						},
 					]}
 				>
 					<p>
-						{__(
-							"Can't find your course or cohort?",
-							'moowoodle'
-						)}
+						{__("Can't find your course or cohort?", 'moowoodle')}
 					</p>
 				</Notice>
 			</div>
@@ -305,19 +302,32 @@ const ProductTab = () => {
 			<input type="hidden" name="linked_item_id" value={linkedItemId} />
 			<input type="hidden" name="course_expiry_days" value={expiryDays} />
 			<input type="hidden" name="course_expiry_type" value={expiryType} />
-			<input type="hidden" name="enable_enrollment_extension" value={enableEnrollmentExtension ? 'yes' : 'no'} />
-			<input type="hidden" name="enrollment_extension_days" value={extensionDays} />
-			<input type="hidden" name="enrollment_extension_cost" value={extensionCost} />
-			<input type="hidden" name="product_meta_nonce" value={moowoodleProduct.productMetaNonce} />
-
+			<input
+				type="hidden"
+				name="enable_enrollment_extension"
+				value={enableEnrollmentExtension ? 'yes' : 'no'}
+			/>
+			<input
+				type="hidden"
+				name="enrollment_extension_days"
+				value={extensionDays}
+			/>
+			<input
+				type="hidden"
+				name="enrollment_extension_cost"
+				value={extensionCost}
+			/>
+			<input
+				type="hidden"
+				name="product_meta_nonce"
+				value={moowoodleProduct.productMetaNonce}
+			/>
 		</>
 	);
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-	const container = document.getElementById(
-		'moodle-enrollment-mapping-tab'
-	);
+	const container = document.getElementById('moodle-enrollment-mapping-tab');
 
 	if (container) {
 		render(<ProductTab />, container);

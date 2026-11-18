@@ -271,6 +271,18 @@ const RegistrationForm = () => {
 					onSubmit={onSubmit}
 					countryList={memoizedCountryList}
 					stateList={memoizedStateList}
+					formMessages={{
+						/* translators: %s: Field label. */
+						fieldRequired: __('%s is required.', 'multivendorx'),
+						invalidEmail: __(
+							'Please enter a valid email address.',
+							'multivendorx'
+						),
+						termsRequired: __(
+							'Please accept the Terms & Conditions.',
+							'multivendorx'
+						),
+					}}
 				/>
 				<div
 					dangerouslySetInnerHTML={{

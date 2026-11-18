@@ -158,7 +158,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
                                 <input
                                     type="email"
                                     defaultValue={userEmail}
-                                    placeholder="Enter your email"
+                                    placeholder={__('Enter Your Email', 'notifima')}
                                     className="woocommerce-form__input woocommerce-form__input-checkbox"
                                     onChange={(e) => {
                                         subscription.email = e.target.value;

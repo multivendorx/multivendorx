@@ -29,95 +29,94 @@ class Util {
      */
     public static function query_questions( $args ) {
         global $wpdb;
-        $where = array();
+        $table = $wpdb->prefix . Utill::TABLES['customer_queries'];
 
-        // Filter by question IDs.
+        $conditions = array();
+        $values     = array();
+
         if ( isset( $args['id'] ) ) {
-            $ids     = is_array( $args['id'] ) ? $args['id'] : array( $args['id'] );
-            $ids     = implode( ',', array_map( 'intval', $ids ) );
-            $where[] = "id IN ($ids)";
+            $ids          = array_map( 'intval', (array) $args['id'] );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $conditions[] = 'id IN (' . $placeholders . ')';
+            $values       = array_merge( $values, $ids );
         }
 
-        // Filter by product IDs.
-        if ( isset( $args['product_ids'] ) && is_array( $args['product_ids'] ) && ! empty( $args['product_ids'] ) ) {
-            $product_ids = implode( ',', array_map( 'intval', $args['product_ids'] ) );
-            $where[]     = "product_id IN ($product_ids)";
+        if ( ! empty( $args['product_ids'] ) && is_array( $args['product_ids'] ) ) {
+            $ids          = array_map( 'intval', $args['product_ids'] );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $conditions[] = 'product_id IN (' . $placeholders . ')';
+            $values       = array_merge( $values, $ids );
         }
 
-        // Filter by store_id (optional).
         if ( isset( $args['store_id'] ) ) {
-            $where[] = 'store_id = ' . intval( $args['store_id'] );
+            $conditions[] = 'store_id = %d';
+            $values[]     = intval( $args['store_id'] );
         }
 
-        if ( isset( $args['question_visibility'] ) ) { // remove any tab/space.
-            $where[] = "question_visibility = '" . esc_sql( $args['question_visibility'] ) . "'";
+        if ( isset( $args['question_visibility'] ) ) {
+            $conditions[] = 'question_visibility = %s';
+            $values[]     = (string) $args['question_visibility'];
         }
 
         if ( ! empty( $args['start_date'] ) ) {
-            $where[] = "question_date >= '" . esc_sql( $args['start_date'] ) . "'";
+            $conditions[] = 'question_date >= %s';
+            $values[]     = (string) $args['start_date'];
         }
 
         if ( ! empty( $args['end_date'] ) ) {
-            $where[] = "question_date <= '" . esc_sql( $args['end_date'] ) . "'";
+            $conditions[] = 'question_date <= %s';
+            $values[]     = (string) $args['end_date'];
         }
 
-        // Filter by answered (has answer).
         if ( ! empty( $args['has_answer'] ) ) {
-            $where[] = "answer_text IS NOT NULL AND answer_text != ''";
+            $conditions[] = "answer_text IS NOT NULL AND answer_text != ''";
         }
 
-        // Filter by unanswered (no answer).
         if ( ! empty( $args['no_answer'] ) ) {
-            $where[] = "(answer_text IS NULL OR answer_text = '')";
+            $conditions[] = "( answer_text IS NULL OR answer_text = '' )";
         }
 
-        // Filter by search term.
         if ( ! empty( $args['search'] ) ) {
-            $like    = '%' . esc_sql( $wpdb->esc_like( $args['search'] ) ) . '%';
-            $where[] = "(question_text LIKE '$like' OR answer_text LIKE '$like')";
+            $conditions[] = '( question_text LIKE %s OR answer_text LIKE %s )';
+            $search       = '%' . $wpdb->esc_like( (string) $args['search'] ) . '%';
+            $values[]     = $search;
+            $values[]     = $search;
         }
 
-        $table = $wpdb->prefix . Utill::TABLES['customer_queries'];
+        $join      = ( 'OR' === strtoupper( trim( $args['condition'] ?? 'AND' ) ) ) ? ' OR ' : ' AND ';
+        $where_sql = $conditions ? ' WHERE ' . implode( $join, $conditions ) : '';
 
-        // Build query.
         if ( isset( $args['count'] ) ) {
-            $query = $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table );
-        } else {
-            $query = $wpdb->prepare( 'SELECT * FROM %i', $table );
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            return (int) ( $wpdb->get_var(
+                $wpdb->prepare(
+                    'SELECT COUNT(*) FROM %i' . $where_sql,
+                    $table,
+                    ...$values
+                )
+            ) ?? 0 );
         }
 
-        if ( ! empty( $where ) ) {
-            $condition = $args['condition'] ?? ' AND ';
-            $query    .= ' WHERE ' . implode( $condition, $where );
-        }
+        // Ordering needs both order_by and order; otherwise rows come back by id.
+        $allowed_columns = array( 'question_date', 'total_votes', 'product_id', 'store_id' );
+        $column          = sanitize_text_field( $args['order_by'] ?? '' );
+        $column          = in_array( $column, $allowed_columns, true ) ? $column : 'id';
+        $order_dir       = ( ! empty( $args['order'] ) && 'desc' === strtolower( $args['order'] ) ) ? 'DESC' : 'ASC';
+        $has_limit       = isset( $args['limit'] ) && isset( $args['offset'] );
+        $limit           = $has_limit ? intval( $args['limit'] ) : PHP_INT_MAX;
+        $offset          = $has_limit ? intval( $args['offset'] ) : 0;
 
-        // Add ORDER BY support safely.
-        if ( ! isset( $args['count'] ) && ! empty( $args['order_by'] ) && ! empty( $args['order'] ) ) {
-            $allowed_columns = array(
-                'question_date' => 'question_date',
-                'total_votes'   => 'total_votes',
-                'product_id'    => 'product_id',
-                'store_id'      => 'store_id',
-            );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $results = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT * FROM %i' . $where_sql . ' ORDER BY %i ' . $order_dir . ' LIMIT %d OFFSET %d',
+                $table,
+                ...array_merge( $values, array( $column, $limit, $offset ) )
+            ),
+            ARRAY_A
+        );
 
-            $column    = sanitize_text_field( $args['order_by'] );
-            $direction = strtolower( $args['order'] ) === 'desc' ? 'DESC' : 'ASC';
-
-            if ( isset( $allowed_columns[ $column ] ) ) {
-                $query .= ' ORDER BY ' . $allowed_columns[ $column ] . ' ' . $direction;
-            }
-        }
-
-        // Limit & offset (only for data, not count).
-        if ( isset( $args['limit'] ) && isset( $args['offset'] ) && ! isset( $args['count'] ) ) {
-            $query .= ' LIMIT ' . intval( $args['limit'] ) . ' OFFSET ' . intval( $args['offset'] );
-        }
-
-        // Execute query.
-        if ( isset( $args['count'] ) ) {
-            return (int) ( $wpdb->get_var( $query ) ?? 0 );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-        }
-        return $wpdb->get_results( $query, ARRAY_A ) ? $wpdb->get_results( $query, ARRAY_A ) : array();// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+        return $results ? $results : array();
     }
 
     /**
@@ -148,7 +147,7 @@ class Util {
 
         $formats = array( '%d', '%d', '%s', '%d', '%d', '%s', '%s', '%s', '%s' );
 
-        $inserted = $wpdb->insert( $table, $insert_data, $formats );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+        $inserted = $wpdb->insert( $table, $insert_data, $formats );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
         if ( $inserted ) {
             return $wpdb->insert_id;
@@ -226,7 +225,7 @@ class Util {
 
         $where        = array( 'id' => intval( $id ) );
         $where_format = array( '%d' );
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $updated = $wpdb->update(
             $table,
             $update_data,
@@ -261,7 +260,7 @@ class Util {
         if ( ! $id ) {
             return false;
         }
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $deleted = $wpdb->delete(
             $table,
             array( 'id' => $id ),

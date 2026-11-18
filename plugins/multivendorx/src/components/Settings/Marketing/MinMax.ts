@@ -11,8 +11,16 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'min-max',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'min-max',
+			title: __('Product Purchase Limits', 'multivendorx'),
+		},
 		{
 			key: 'product_quantity_rules',
 			type: 'nested',
@@ -77,6 +85,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
+			icon: 'cart',
 			title: __('Order Purchase Limits', 'multivendorx'),
 			desc: __(
 				'Set limits on the total quantity or total value of an order to control bulk purchases or enforce minimum order requirements.',

@@ -167,7 +167,7 @@ class WCFMMarketplace {
         $wcfm_orders_table = $wpdb->prefix . 'wcfm_marketplace_orders';
         $table_name        = $wpdb->prefix . Utill::TABLES['commission'];
 
-        $wcfm_orders = $wpdb->get_results( "SELECT * FROM {$wcfm_orders_table}" );
+        $wcfm_orders = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i', $wcfm_orders_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
         foreach ( $wcfm_orders as $row ) {
             $order_id = $row->order_id;
@@ -182,7 +182,7 @@ class WCFMMarketplace {
 					'customer_id' => $order->get_customer_id(),
                 )
             );
-            // Set parent order
+            // Set parent order.
             $suborder->set_parent_id( $order_id );
             $product = wc_get_product( $row->product_id );
             $suborder->add_product(
@@ -193,13 +193,13 @@ class WCFMMarketplace {
                     'total'    => $row->item_total,
                 )
             );
-            // Copy billing & shipping
+            // Copy billing & shipping.
             $suborder->set_address( $order->get_address( 'billing' ), 'billing' );
             $suborder->set_address( $order->get_address( 'shipping' ), 'shipping' );
             $suborder->set_payment_method( $order->get_payment_method() );
-            // Calculate totals
+            // Calculate totals.
             $suborder->calculate_totals();
-            // Set status
+            // Set status.
             $suborder->update_status( 'processing' );
             $suborder->set_created_via( Utill::ORDER_META_SETTINGS['multivendorx_store_order'] );
             $suborder->update_meta_data( Utill::POST_META_SETTINGS['store_id'], $store_id );
@@ -243,17 +243,19 @@ class WCFMMarketplace {
         }
 
         $balance_table        = $wpdb->prefix . 'wcfm_marketplace_vendor_ledger';
-        $wcfm_vendor_balances = $wpdb->get_results( "SELECT * FROM {$balance_table}" );
+        $wcfm_vendor_balances = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i', $balance_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
         foreach ( $wcfm_vendor_balances as $row ) {
             $wcfm_commission_id = $row->reference_id;
 
-            $query = $wpdb->prepare(
-                "SELECT * FROM {$wcfm_orders_table} WHERE ID = %d",
-                $wcfm_commission_id
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            $wcfm_order = $wpdb->get_row(
+                $wpdb->prepare(
+                    'SELECT * FROM %i WHERE ID = %d',
+                    $wcfm_orders_table,
+                    $wcfm_commission_id
+                )
             );
-
-            $wcfm_order = $wpdb->get_row( $query );
 
             if ( in_array( $wcfm_order->order_status, array( 'pending', 'on-hold', 'cancelled', 'draft', 'failed' ) ) ) {
                 continue;
@@ -274,19 +276,19 @@ class WCFMMarketplace {
 
             $store_id = get_user_meta( $row->vendor_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
 
-            if ( $row->reference == 'order' ) {
+            if ( 'order' == $row->reference ) {
                 $entry_type       = 'Cr';
                 $transaction_type = 'Commission';
                 $amount           = $row->credit;
             }
 
-            if ( $row->reference == 'withdraw' ) {
+            if ( 'withdraw' == $row->reference ) {
                 $entry_type       = 'Dr';
                 $transaction_type = 'Withdraw';
                 $amount           = $row->debit;
             }
 
-            if ( $row->reference == 'refund' ) {
+            if ( 'refund' == $row->reference ) {
                 $entry_type       = 'Dr';
                 $transaction_type = 'Refund';
                 $amount           = $row->debit;
@@ -320,16 +322,16 @@ class WCFMMarketplace {
      * @return void
      */
 	public function deactive_previous_multivendor() {
-		// WCFM free deactive
+		// WCFM free deactive.
 		require_once ABSPATH . '/wp-admin/includes/plugin.php';
 		if ( is_plugin_active( 'wc-multivendor-marketplace/wc-multivendor-marketplace.php' ) ) {
 	    	deactivate_plugins( 'wc-multivendor-marketplace/wc-multivendor-marketplace.php' );
 	    }
-	    // WCFM frontend manager deactive
+	    // WCFM frontend manager deactive.
 	    if ( is_plugin_active( 'wc-frontend-manager/wc_frontend_manager.php' ) ) {
 	    	deactivate_plugins( 'wc-frontend-manager/wc_frontend_manager.php' );
 	    }
-	    // WCFM membership deactive
+	    // WCFM membership deactive.
 	    if ( is_plugin_active( 'wc-multivendor-membership/wc-multivendor-membership.php' ) ) {
 	    	deactivate_plugins( 'wc-multivendor-membership/wc-multivendor-membership.php' );
 	    }

@@ -300,6 +300,7 @@ const AddProduct = () => {
 							'What kind of product is this?',
 							'multivendorx'
 						)}
+						titleIcon="product"
 						desc={__(
 							'Choose the type that best describes what you are selling.',
 							'multivendorx'
@@ -322,6 +323,8 @@ const AddProduct = () => {
 					<div className='sticky-card-wrapper'>
 						<CardComponent
 							title={__('Recommended', 'multivendorx')}
+							titleIcon="section"
+							desc="Sell a single product with its own price and inventory."
 							toggle={true}
 							action={
 								<div className="admin-badge blue">
@@ -357,12 +360,10 @@ const AddProduct = () => {
 												</div>
 												<div className="details">
 													<div className="title">
-														Price
+														{__('Price', 'multivendorx')}
 													</div>
 													<div className="des">
-														Set competitive prices
-														including any sale or
-														discount options
+														{__('Set competitive prices including any sale or discount options', 'multivendorx')}
 													</div>
 												</div>
 											</li>
@@ -377,12 +378,10 @@ const AddProduct = () => {
 												</div>
 												<div className="details">
 													<div className="title">
-														Stock
+														{__('Stock', 'multivendorx')}
 													</div>
 													<div className="des">
-														A clear, descriptive title
-														that helps customers find
-														your product
+														{__('A clear, descriptive title that helps customers find your product', 'multivendorx')}
 													</div>
 												</div>
 											</li>
@@ -460,6 +459,8 @@ const AddProduct = () => {
 								'Product Rejected by Admin',
 								'multivendorx'
 							)}
+							titleIcon="rejecte"
+							desc="Review the admin’s feedback, update your product, and resubmit for approval."
 						// action={
 						// <ButtonInput
 						// 	buttons={[
@@ -485,6 +486,7 @@ const AddProduct = () => {
 							'General information - Tell customers what you are selling',
 							'multivendorx'
 						)}
+						titleIcon="text"
 						desc={__(
 							'A good name and description help people find your product and feel confident buying it.',
 							'multivendorx'
@@ -664,6 +666,7 @@ const AddProduct = () => {
 								'Pricing - How much does it cost?',
 								'multivendorx'
 							)}
+							titleIcon="dollar"
 							desc={__(
 								'Set your normal price. If you are running a promotion, you can add sale price',
 								'multivendorx'
@@ -758,6 +761,8 @@ const AddProduct = () => {
 					{modules.includes('wpml') && (
 						<CardComponent
 							title={__('Translations', 'multivendorx')}
+							titleIcon="global-community"
+							desc="Translate your store content to reach customers in multiple languages."
 							iconName="translate"
 							toggle={true}
 						>
@@ -797,7 +802,11 @@ const AddProduct = () => {
 						</CardComponent>
 					)}
 
-					<CardComponent title={__('Upload image', 'multivendorx')}>
+					<CardComponent
+						title={__('Upload image', 'multivendorx')}
+						titleIcon="image"
+						desc="Upload images to showcase your products or store."
+					>
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
 								label={__('Features Image', 'multivendorx')}

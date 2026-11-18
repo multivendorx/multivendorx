@@ -18,7 +18,18 @@ use CatalogX\Utill;
  * @author      MultiVendorX
  */
 class Frontend {
+    /**
+     * Cached 'enquiry_user_permission' setting value.
+     *
+     * @var string
+     */
     private $enquiry_user_permission;
+
+    /**
+     * Cached 'is_enable_out_of_stock' setting value.
+     *
+     * @var string
+     */
     private $enable_out_of_stock;
 
     /**
@@ -324,7 +335,7 @@ class Frontend {
             return;
         }
 
-        $button_text = Utill::get_translated_string( 'catalogx', 'send_an_enquiry', __('Send an enquiry','catalogx') );
+        $button_text = Utill::get_translated_string( 'catalogx', 'send_an_enquiry', __( 'Send an enquiry', 'catalogx' ) );
         if ( is_shop() ) {
             $product_link = get_permalink( $product->get_id() );
             echo '<div class="catalogx-enquiry">';

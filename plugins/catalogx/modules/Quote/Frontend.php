@@ -63,7 +63,6 @@ class Frontend {
      */
     public function catalogx_add_quote_button() {
         global $product;
-        $render_button = CatalogX()->render_quote_btn_via;
         if ( empty( trim( CatalogX()->render_quote_btn_via ) ) ) {
             CatalogX()->render_quote_btn_via = 'hook';
             $this->add_button_for_quote( $product->get_id() );
