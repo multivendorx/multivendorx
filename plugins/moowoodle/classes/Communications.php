@@ -173,6 +173,37 @@ class Communications {
 		);
 	}
 
+		/**
+	 * Layout of the VuloMail notice: an icon tile, the title and description, then the actions, on one row from 783px
+	 * up and stacked below that. `#wpbody` lets it outrank the MooWoodle admin app's own notice restyle, which would
+	 * otherwise recolour the install button's label to match its background.
+	 *
+	 * @return string
+	 */
+	private function get_vulomail_notice_css() {
+		return '
+			#wpbody .moowoodle-vulomail-notice { display: flex; align-items: center; gap: 16px; padding: 16px 48px 16px 16px; border-left-color: #5007aa; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-icon { flex: none; width: 44px; height: 44px; border-radius: 10px; background: #f4eefb; color: #5007aa; font-size: 24px; line-height: 44px; text-align: center; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-body { flex: 1; min-width: 0; }
+			#wpbody .moowoodle-vulomail-notice p { margin: 0; padding: 0; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-title { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; color: #1d2327; font-size: 14px; font-weight: 600; line-height: 1.4; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-badge { padding: 1px 8px; border-radius: 999px; background: #e7f6ec; color: #1a7f37; font-size: 11px; font-weight: 600; line-height: 18px; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-desc { margin-top: 2px; color: #50575e; font-size: 13px; line-height: 1.5; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-actions { display: flex; flex: none; align-items: center; gap: 16px; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-install { margin: 0; border-color: #5007aa; background: #5007aa; color: #fff; font-weight: 600; text-decoration: none; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-install:hover,
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-install:focus { border-color: #3f0588; background: #3f0588; color: #fff; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-learn { display: inline-flex; align-items: center; gap: 2px; color: #5007aa; font-weight: 600; text-decoration: none; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-learn:hover { text-decoration: underline; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-learn .dashicons { width: 16px; height: 16px; font-size: 16px; }
+			@media (max-width: 782px) {
+				#wpbody .moowoodle-vulomail-notice { flex-wrap: wrap; align-items: flex-start; }
+				#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-body { flex-basis: calc(100% - 60px); }
+				#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-actions { flex-basis: 100%; padding-left: 60px; }
+			}
+		';
+	}
+
 	/**
 	 * Check whether the admin notice should be displayed.
 	 *
