@@ -328,6 +328,60 @@ class VuloCloudClient {
     }
 
     /**
+     * Build the generic site/environment fields every tracking payload needs - site info,
+     * PHP/theme/host details, and the active/inactive plugin lists. The caller adds its own
+     * plugin-specific fields ('Plugin', 'Version', 'Pro Version', ...) on top of this array.
+     *
+     * @return array
+     */
+    public static function build_site_snapshot(): array {
+        global $wpdb;
+
+        if ( ! function_exists( 'get_plugins' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        $all_plugins    = array_keys( get_plugins() );
+        $active_plugins = (array) get_option( 'active_plugins', array() );
+        if ( is_multisite() ) {
+            $network_plugins = array_keys( (array) get_site_option( 'active_sitewide_plugins', array() ) );
+            $active_plugins   = array_merge( $active_plugins, $network_plugins );
+        }
+        $active_plugins = array_values( array_unique( $active_plugins ) );
+
+        $theme         = wp_get_theme();
+        $server_header = filter_input( INPUT_SERVER, 'SERVER_SOFTWARE', FILTER_UNSAFE_RAW );
+
+        $current_user = wp_get_current_user();
+        $email        = $current_user->exists() && $current_user->user_email
+            ? $current_user->user_email
+            : get_bloginfo( 'admin_email' );
+
+        return array(
+            'Site Name'        => get_bloginfo( 'name' ),
+            'Site Version'     => get_bloginfo( 'version' ),
+            'Site Language'    => get_bloginfo( 'language' ),
+            'Charset'          => get_bloginfo( 'charset' ),
+            'Php Version'      => phpversion(),
+            'Multisite'        => is_multisite(),
+            'File Location'    => ABSPATH,
+            'Email'            => sanitize_email( $email ),
+            'Server'           => sanitize_text_field( (string) ( $server_header ?? getenv( 'SERVER_SOFTWARE' ) ) ),
+            'Text Direction'   => is_rtl() ? 'rtl' : 'ltr',
+            'Theme'            => sanitize_text_field( (string) $theme->get( 'Name' ) ),
+            'Theme Version'    => sanitize_text_field( (string) $theme->get( 'Version' ) ),
+            'Platform'         => 'WordPress',
+            'Database'         => $wpdb->db_version(),
+            'Environment'      => wp_get_environment_type(),
+            'Hosting Type'     => self::detect_hosting_type(),
+            'Commerce Platform' => defined( 'WC_VERSION' ) ? 'WooCommerce ' . WC_VERSION : '',
+            'Site URL'         => home_url(),
+            'Active Plugins'   => $active_plugins,
+            'Inactive Plugins' => array_values( array_diff( $all_plugins, $active_plugins ) ),
+        );
+    }
+
+    /**
      * Build the `/connected-sites/register` request body.
      *
      * @param array      $payload Snapshot to send.

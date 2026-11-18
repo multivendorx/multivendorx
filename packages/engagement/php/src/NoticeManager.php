@@ -188,8 +188,9 @@ class NoticeManager {
             return new \WP_Error( 'engagement_invalid_notice', 'Notice layout is invalid.' );
         }
 
+        $actions      = (array) ( $notice['actions'] ?? array() );
         $action_types = array( 'url', 'dismiss', 'event' );
-        foreach ( (array) ( $notice['actions'] ?? array() ) as $action ) {
+        foreach ( $actions as $action ) {
             if ( empty( $action['id'] ) || empty( $action['type'] ) || ! in_array( $action['type'], $action_types, true ) ) {
                 return new \WP_Error( 'engagement_invalid_notice', 'Notice action is invalid.' );
             }
@@ -226,7 +227,7 @@ class NoticeManager {
                         'url'   => isset( $action['url'] ) ? esc_url_raw( $action['url'] ) : '',
                     );
                 },
-                (array) ( $notice['actions'] ?? array() )
+                $actions
             ),
             'frequency' => $frequency,
         );

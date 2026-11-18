@@ -74,15 +74,7 @@ class Storage {
      * @return array
      */
     public function get_settings() {
-        $settings = get_option( self::SETTINGS_OPTION, null );
-
-        if ( ! is_array( $settings ) ) {
-            $settings = self::default_settings();
-            $this->save_settings( $settings );
-            return $settings;
-        }
-
-        $settings = $this->merge_recursive( self::default_settings(), $settings );
+        $settings = $this->read_option( self::SETTINGS_OPTION, self::default_settings(), array( $this, 'save_settings' ) );
 
         if ( empty( $settings['version'] ) || version_compare( $settings['version'], self::SCHEMA_VERSION, '<' ) ) {
             $settings['version'] = self::SCHEMA_VERSION;
@@ -108,15 +100,7 @@ class Storage {
      * @return array
      */
     public function get_data() {
-        $data = get_option( self::DATA_OPTION, null );
-
-        if ( ! is_array( $data ) ) {
-            $data = self::default_data();
-            $this->save_data( $data );
-            return $data;
-        }
-
-        return $this->merge_recursive( self::default_data(), $data );
+        return $this->read_option( self::DATA_OPTION, self::default_data(), array( $this, 'save_data' ) );
     }
 
     /**
@@ -127,6 +111,25 @@ class Storage {
      */
     public function save_data( array $data ) {
         return update_option( self::DATA_OPTION, $data, false );
+    }
+
+    /**
+     * Shared read path for both options - default+persist if missing, else merge onto defaults.
+     *
+     * @param string   $option_key Option name.
+     * @param array    $defaults   Default shape for this option.
+     * @param callable $save       Callback to persist the defaults when the option is missing.
+     * @return array
+     */
+    private function read_option( $option_key, array $defaults, callable $save ) {
+        $stored = get_option( $option_key, null );
+
+        if ( ! is_array( $stored ) ) {
+            $save( $defaults );
+            return $defaults;
+        }
+
+        return $this->merge_recursive( $defaults, $stored );
     }
 
     /**

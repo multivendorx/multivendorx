@@ -39,8 +39,7 @@ class StateManager {
      * @return array
      */
     public function get_notice_state( $notice_id ) {
-        $data = $this->storage->get_data();
-        return isset( $data['notices'][ $notice_id ] ) ? $data['notices'][ $notice_id ] : $this->default_notice_state();
+        return $this->get_state_row( 'notices', $notice_id, $this->default_notice_state() );
     }
 
     /**
@@ -50,8 +49,7 @@ class StateManager {
      * @return array
      */
     public function get_campaign_state( $campaign_id ) {
-        $data = $this->storage->get_data();
-        return isset( $data['campaigns'][ $campaign_id ] ) ? $data['campaigns'][ $campaign_id ] : $this->default_campaign_state();
+        return $this->get_state_row( 'campaigns', $campaign_id, $this->default_campaign_state() );
     }
 
     /**
@@ -170,9 +168,7 @@ class StateManager {
      * @param array  $state     Full state row to store.
      */
     private function save_notice_state( $notice_id, array $state ) {
-        $data                           = $this->storage->get_data();
-        $data['notices'][ $notice_id ] = $state;
-        $this->storage->save_data( $data );
+        $this->save_state_row( 'notices', $notice_id, $state );
     }
 
     /**
@@ -182,8 +178,32 @@ class StateManager {
      * @param array  $state       Full state row to store.
      */
     private function save_campaign_state( $campaign_id, array $state ) {
-        $data                               = $this->storage->get_data();
-        $data['campaigns'][ $campaign_id ] = $state;
+        $this->save_state_row( 'campaigns', $campaign_id, $state );
+    }
+
+    /**
+     * Shared read path for a notice/campaign state row, keyed by storage bucket.
+     *
+     * @param string $bucket        'notices' or 'campaigns'.
+     * @param string $id            Notice or campaign id.
+     * @param array  $default_state Row to return when nothing is stored yet.
+     * @return array
+     */
+    private function get_state_row( $bucket, $id, array $default_state ) {
+        $data = $this->storage->get_data();
+        return isset( $data[ $bucket ][ $id ] ) ? $data[ $bucket ][ $id ] : $default_state;
+    }
+
+    /**
+     * Shared write path for a notice/campaign state row, keyed by storage bucket.
+     *
+     * @param string $bucket 'notices' or 'campaigns'.
+     * @param string $id     Notice or campaign id.
+     * @param array  $state  Full state row to store.
+     */
+    private function save_state_row( $bucket, $id, array $state ) {
+        $data            = $this->storage->get_data();
+        $data[ $bucket ][ $id ] = $state;
         $this->storage->save_data( $data );
     }
 
