@@ -1,11 +1,9 @@
-import React from 'react';
-import {
-	CardComponent,
-	ColumnComponent,
-	ContainerComponent,
-} from '@zyra/components';
-import { __ } from '@wordpress/i18n';
-import MoowoodleConcept from '../../assets/images/moowoodle-concept.png';
+import React, { useState } from 'react';
+import { PopupComponent } from '@zyra/components';
+import { __, sprintf } from '@wordpress/i18n';
+import ShowProPopup, { LICENSES } from '../Popup/Popup';
+import './free-vs-pro.scss';
+
 interface Feature {
 	name: string;
 	free: boolean | string;
@@ -232,138 +230,222 @@ const sections: Section[] = [
 	},
 ];
 
+/** Counts, for the hero: what Free includes, and how many more Pro adds on top. */
+const allFeatures = sections.flatMap((section) => section.features);
+const freeCount = allFeatures.filter((feature) => feature.free).length;
+const proOnlyCount = allFeatures.length - freeCount;
+
+/** A Free/Pro cell: a mark for sighted readers, and the words for screen readers. */
+const Cell: React.FC<{ value: boolean | string; pro?: boolean }> = ({
+	value,
+	pro = false,
+}) => {
+	if ('string' === typeof value) {
+		return <>{value}</>;
+	}
+
+	return value ? (
+		<span className={`mw-fvp-yes${pro ? ' is-pro' : ''}`}>
+			<i className="adminfont-check" aria-hidden="true" />
+			<span className="screen-reader-text">
+				{__('Included', 'moowoodle')}
+			</span>
+		</span>
+	) : (
+		<span className="mw-fvp-no">
+			<span aria-hidden="true">—</span>
+			<span className="screen-reader-text">
+				{__('Not included', 'moowoodle')}
+			</span>
+		</span>
+	);
+};
+
+/**
+ * Dashboard → Free vs Pro (free sites only): what Pro adds, feature by feature. One upgrade button at the top and one
+ * at the end, both opening the Pro popup (features, plans, buy) like every other upgrade button in MooWoodle.
+ */
 const FreeVsProTab: React.FC = () => {
-	const renderCell = (value: string | boolean) => {
-		if (typeof value === 'boolean') {
-			return value ? (
-				<i className="check-icon adminfont-check"></i>
-			) : (
-				<i className="close-icon adminfont-close"></i>
-			);
-		}
-		return value;
-	};
+	const [open, setOpen] = useState(false);
+	const lowestPrice = LICENSES[0]?.price;
+
+	const upgradeButton = (className = '') => (
+		<button
+			type="button"
+			className={`admin-btn mw-upgrade-btn mw-fvp-upgrade ${className}`.trim()}
+			onClick={() => setOpen(true)}
+		>
+			<i className="adminfont-pro-tag" aria-hidden="true" />
+			{__('Upgrade to Pro', 'moowoodle')}
+		</button>
+	);
 
 	return (
-		<ContainerComponent>
-			<ColumnComponent grid={8}>
-				<CardComponent
-					title={__('Free vs Pro comparison', 'moowoodle')}
-					titleIcon="pro-tag"
-					desc={__(
-						'See what you get with MooWoodle Pro',
-						'moowoodle'
-					)}
-					action={
-						<a
-							href="https://dualcube.com/product/moowoodle-pro/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle"
-							className="admin-btn btn-purple"
-						>
-							{__('Get Pro Access Today!', 'moowoodle')}
-							<i className="adminfont-arrow-right icon-pro-btn"></i>
-						</a>
-					}
-				>
-					<div id="free-vs-pro" className="free-vs-pro">
-						{sections.map((section, idx) => (
-							<table key={`${idx}-${section.title}`}>
-								<thead>
-									<tr>
-										<th scope="col">{section.title}</th>
-										<th scope="col">
-											{__('Free', 'moowoodle')}
+		<div className="mw-fvp">
+			<section className="mw-fvp-hero">
+				<div className="mw-fvp-hero-text">
+					<span className="mw-fvp-pill">
+						<i className="adminfont-pro-tag" aria-hidden="true" />
+						{__('MooWoodle Pro', 'moowoodle')}
+					</span>
+					<h2>
+						{__(
+							'Everything in Free, plus the tools to sell to groups, subscribers and classrooms',
+							'moowoodle'
+						)}
+					</h2>
+					<p>
+						{__(
+							'Keep every course, product and enrollment you have today. Pro adds automation, Single Sign-On and new ways to sell on top.',
+							'moowoodle'
+						)}
+					</p>
+					<div className="mw-fvp-hero-actions">
+						{upgradeButton('is-large')}
+						{lowestPrice && (
+							<span className="mw-fvp-price">
+								{sprintf(
+									/* translators: %s: lowest Pro license price, e.g. $199. */
+									__('Plans from %s', 'moowoodle'),
+									lowestPrice
+								)}
+							</span>
+						)}
+					</div>
+					<p className="mw-fvp-guarantee">
+						<i className="adminfont-security" aria-hidden="true" />
+						{__('15-day money-back guarantee', 'moowoodle')}
+					</p>
+				</div>
+				<dl className="mw-fvp-stats">
+					<div>
+						<dt>{__('Included in Free', 'moowoodle')}</dt>
+						<dd>{freeCount}</dd>
+					</div>
+					<div className="is-pro">
+						<dt>{__('More with Pro', 'moowoodle')}</dt>
+						<dd>+{proOnlyCount}</dd>
+					</div>
+				</dl>
+			</section>
+
+			<section
+				className="mw-fvp-compare"
+				aria-labelledby="mw-fvp-compare-title"
+			>
+				<header className="mw-fvp-compare-head">
+					<h3 id="mw-fvp-compare-title">
+						{__('Compare feature by feature', 'moowoodle')}
+					</h3>
+					<p>
+						{__(
+							'Pro includes every Free feature. Rows marked Pro only are what you unlock.',
+							'moowoodle'
+						)}
+					</p>
+				</header>
+				<table className="mw-fvp-table">
+					<thead>
+						<tr>
+							<th scope="col">
+								<span className="screen-reader-text">
+									{__('Feature', 'moowoodle')}
+								</span>
+							</th>
+							<th scope="col">{__('Free', 'moowoodle')}</th>
+							<th scope="col" className="is-pro">
+								{__('Pro', 'moowoodle')}
+							</th>
+						</tr>
+					</thead>
+					{sections.map((section) => {
+						const added = section.features.filter(
+							(feature) => !feature.free
+						).length;
+
+						return (
+							<tbody key={section.title}>
+								<tr className="mw-fvp-group">
+									<th scope="rowgroup" colSpan={2}>
+										{section.title}
+										{added > 0 && (
+											<span className="mw-fvp-added">
+												{sprintf(
+													/* translators: %d: number of features only in Pro. */
+													__(
+														'+%d with Pro',
+														'moowoodle'
+													),
+													added
+												)}
+											</span>
+										)}
+									</th>
+									<td className="is-pro" aria-hidden="true" />
+								</tr>
+								{section.features.map((feature) => (
+									<tr
+										key={feature.name}
+										className={
+											feature.free ? '' : 'is-pro-only'
+										}
+									>
+										<th scope="row">
+											{feature.name}
+											{!feature.free && (
+												<span className="mw-fvp-tag">
+													{__(
+														'Pro only',
+														'moowoodle'
+													)}
+												</span>
+											)}
 										</th>
-										<th scope="col">
-											{__('Pro', 'moowoodle')}
-										</th>
+										<td>
+											<Cell value={feature.free} />
+										</td>
+										<td className="is-pro">
+											<Cell value={feature.pro} pro />
+										</td>
 									</tr>
-								</thead>
-								<tbody>
-									{section.features.map((feature) => (
-										<tr
-											key={`${section.title}-${feature.name}`}
-										>
-											<td>{feature.name}</td>
-											<td>{renderCell(feature.free)}</td>
-											<td>{renderCell(feature.pro)}</td>
-										</tr>
-									))}
-								</tbody>
-							</table>
-						))}
-					</div>
-				</CardComponent>
-			</ColumnComponent>
+								))}
+							</tbody>
+						);
+					})}
+				</table>
+			</section>
 
-			<ColumnComponent grid={4}>
-				<CardComponent>
-					<div className="right-pro-banner">
-						<div className="image-wrapper">
-							<img
-								src={MoowoodleConcept}
-								alt={__(
-									'Moowoodle marketplace concept illustration',
-									'moowoodle'
-								)}
-							/>
-						</div>
+			<section className="mw-fvp-cta">
+				<div>
+					<h3>
+						{sprintf(
+							/* translators: %d: number of features only in Pro. */
+							__('Unlock all %d Pro features today', 'moowoodle'),
+							proOnlyCount
+						)}
+					</h3>
+					<p>
+						{__(
+							'Every plan includes every Pro feature. Plans differ only in how many sites you activate.',
+							'moowoodle'
+						)}
+					</p>
+				</div>
+				{upgradeButton('is-light')}
+			</section>
 
-						<div className="title">
-							{__(
-								'Powering modern eLearning businesses worldwide',
-								'moowoodle'
-							)}
-						</div>
-
-						<div className="des">
-							{__(
-								'From individual educators to large training organizations, MooWoodle helps simplify course selling, learner management, and Moodle-WooCommerce integration at scale.',
-								'moowoodle'
-							)}
-						</div>
-
-						<ul>
-							<li>
-								<i className="adminfont-check"></i>
-								{__(
-									'Sell course with WooCommerce',
-									'moowoodle'
-								)}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Automate course enrollments', 'moowoodle')}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__(
-									'Classroom, cohort based learning',
-									'moowoodle'
-								)}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__(
-									'Seamless Single Sign-On experiences',
-									'moowoodle'
-								)}
-							</li>
-						</ul>
-
-						<div className="button-wrapper">
-							<a
-								href="https://dualcube.com/product/moowoodle-pro/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle"
-								className="admin-btn btn-purple"
-							>
-								<i className="adminfont-pro-tag"></i>
-								{__('Upgrade Now', 'moowoodle')}
-								<i className="adminfont-arrow-right icon-pro-btn"></i>
-							</a>
-						</div>
-					</div>
-				</CardComponent>
-			</ColumnComponent>
-		</ContainerComponent>
+			{open && (
+				<PopupComponent
+					position="lightbox"
+					open
+					onClose={() => setOpen(false)}
+					width={46}
+					height="auto"
+				>
+					<ShowProPopup />
+				</PopupComponent>
+			)}
+		</div>
 	);
 };
 

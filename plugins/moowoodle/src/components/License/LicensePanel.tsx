@@ -1,8 +1,7 @@
 /* global appLocalizer */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
-import { PopupComponent } from '@zyra/components';
-import ShowProPopup from '../Popup/Popup';
+import ProPitch from './ProPitch';
 import './license-panel.scss';
 
 /** One input of the license form, named exactly as the old License page printed it. */
@@ -69,44 +68,6 @@ const Row: React.FC<{
 	</div>
 );
 
-/** Without MooWoodle Pro: what the tab is for, and the way to get Pro. */
-const GetPro: React.FC = () => {
-	const [open, setOpen] = useState(false);
-
-	return (
-		<Card
-			icon="lock"
-			title={__('MooWoodle Pro license', 'moowoodle')}
-			desc={__(
-				'Install MooWoodle Pro to activate its license here.',
-				'moowoodle'
-			)}
-		>
-			<Row label={__('License', 'moowoodle')}>
-				<button
-					type="button"
-					className="admin-btn btn-purple-bg"
-					onClick={() => setOpen(true)}
-				>
-					<i className="adminfont-pro-tag" aria-hidden="true" />
-					{__('Upgrade to Pro', 'moowoodle')}
-				</button>
-			</Row>
-			{open && (
-				<PopupComponent
-					position="lightbox"
-					open
-					onClose={() => setOpen(false)}
-					width={46}
-					height="auto"
-				>
-					<ShowProPopup />
-				</PopupComponent>
-			)}
-		</Card>
-	);
-};
-
 /**
  * Settings → License: the MooWoodle Pro license form, moved here from Pro's old License submenu.
  *
@@ -128,7 +89,8 @@ const LicensePanel: React.FC = () => {
 	}, []);
 
 	if (!form || !form.action_url) {
-		return <GetPro />;
+		// Without MooWoodle Pro there is no form to fill in: say what Pro adds, what it costs, and how to install it.
+		return <ProPitch />;
 	}
 
 	const { strings } = form;

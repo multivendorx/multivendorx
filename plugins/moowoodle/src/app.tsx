@@ -13,10 +13,8 @@ import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import SearchHeader from './components/Header/SearchHeader';
 import './styles/admin.scss';
 
-/** Tabs that moved into Settings, and the Settings sub-tab each one is now. Old links still land on them. */
-const MOVED_TO_SETTINGS: Record<string, string> = {
-	'help-support': 'help-support',
-};
+/** Help & Support was its own tab, then a Settings tab; it is now a card on the dashboard. Old links scroll to it. */
+const HELP_SUPPORT_LINK = '#&tab=dashboard&view=help-support';
 
 /**
  * Picks the screen for the open tab. Tabs are admin sidebar submenu entries (classes/Admin.php), each pointing to
@@ -25,16 +23,20 @@ const MOVED_TO_SETTINGS: Record<string, string> = {
 const Route = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const tab = new URLSearchParams(location.hash).get('tab');
+	const hashParams = new URLSearchParams(location.hash);
+	const tab = hashParams.get('tab');
+	const isOldHelpLink =
+		'help-support' === tab ||
+		('settings' === tab && 'help-support' === hashParams.get('subtab'));
 
 	useEffect(() => {
-		if (tab && MOVED_TO_SETTINGS[tab]) {
+		if (isOldHelpLink) {
 			navigate(
-				`${location.pathname}${location.search}#&tab=settings&subtab=${MOVED_TO_SETTINGS[tab]}`,
+				`${location.pathname}${location.search}${HELP_SUPPORT_LINK}`,
 				{ replace: true }
 			);
 		}
-	}, [tab]);
+	}, [isOldHelpLink]);
 
 	// The submenu entries are hash tabs, which WordPress can't match on the server, so mark the open one here.
 	useEffect(() => {
@@ -89,15 +91,33 @@ const bannerItem = [
 		'moowoodle'
 	),
 	__(
-		'<b>Automatic User Synchronization for Moodle™ and WordPress:</b>Syncs users between Moodle™ and WordPress for seamless account management across both platforms.',
+		'<b>Automatic User Synchronization for Moodle™ and WordPress:</b> Syncs users between Moodle™ and WordPress for seamless account management across both platforms.',
 		'moowoodle'
 	),
 ];
+
+/**
+ * Keyframes for the Pro banner's rotation, sized to its message count.
+ *
+ * zyra's banner (NoticeComponent, `type="banner"`) starts message i at i × 4s in a cycle of count × 4s, but its own
+ * `cycle-banner` keyframes show each message for a fixed 12.5% of the cycle — right only for 8 messages. With 5 it
+ * showed each for 2.5s of its 4s slot, leaving the banner blank for 1.5s after every message. Here each message is
+ * shown for exactly its share of the cycle (100% / count), so one hands over to the next with no gap.
+ */
+const bannerShare = 100 / bannerItem.length;
+const bannerCycleCss = `
+@keyframes moowoodle-banner-cycle {
+	0%, ${bannerShare.toFixed(3)}% { opacity: 1; visibility: visible; }
+	${(bannerShare + 0.001).toFixed(3)}%, 100% { opacity: 0; visibility: hidden; }
+}
+#wpbody .ui-notice.type-banner .notice-desc { animation-name: moowoodle-banner-cycle; }
+`;
 
 /** Root of the admin app: the search header, the Pro banner (Free only) and the screen for the open tab. */
 const App = () => (
 	<>
 		<SearchHeader />
+		{!appLocalizer.khali_dabba && <style>{bannerCycleCss}</style>}
 		{!appLocalizer.khali_dabba && (
 			<NoticeComponent
 				uniqueKey="banner"

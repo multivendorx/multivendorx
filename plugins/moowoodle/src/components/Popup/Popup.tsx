@@ -33,8 +33,8 @@ interface PopupProps {
 	feature?: ProFeature;
 }
 
-/** Everything MooWoodle Pro adds, in the order the popup lists it. */
-const PRO_FEATURES = [
+/** Everything MooWoodle Pro adds, in the order the popup lists it. Also listed by Settings → License (ProPitch). */
+export const PRO_FEATURES = [
 	{
 		icon: 'bulk-course-sync',
 		name: __('Bulk Course Sync', 'moowoodle'),
@@ -107,7 +107,7 @@ const PRO_FEATURES = [
 ];
 
 /** License tiers: how many sites, the price, and the add-to-cart link. */
-const LICENSES = [
+export const LICENSES = [
 	{
 		id: 'one',
 		label: __('1 site', 'moowoodle'),

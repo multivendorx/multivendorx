@@ -179,22 +179,23 @@
 			outline: 0;
 		}
 
-		// Top bar scope picker ("Everything", "Settings"...): sized to its label, a hairline divider instead of a
-		// tinted block, and no separator line inside it.
+		// Top bar scope picker ("Everything", "Settings"...): exactly as wide as the chosen label and its chevron, so the
+		// search input gets every other pixel; a hairline divider instead of a tinted block, and no separator line
+		// inside it. (`!important` only beats the fixed inline width zyra sets from SearchHeader's `searchSize`.)
 		.search-action {
-			flex: 0 0 8.5rem;
-			width: 8.5rem;
+			flex: 0 0 auto;
+			width: auto;
 			border-inline-end: 1px solid var(--mw-border);
 			background: #f8f8fb;
 
 			.form-select-field,
 			.select-wrapper {
-				width: 100%;
+				width: auto !important;
 				height: 100%;
 			}
 
 			.select-prefix__control {
-				width: 100%;
+				width: auto;
 				height: 100%;
 				border: 0;
 				border-radius: 0;
@@ -203,8 +204,16 @@
 				cursor: pointer;
 			}
 
+			// The label sets the width: in flow, not overlaid, and never wrapped.
+			.select-prefix__value-container {
+				flex: 0 1 auto;
+				padding: 0 0.25rem 0 0.75rem;
+			}
+
 			.select-prefix__single-value {
 				overflow: visible;
+				max-width: none;
+				white-space: nowrap;
 				color: var(--mw-text);
 				font-size: 0.8125rem;
 				font-weight: 500;
@@ -212,6 +221,12 @@
 
 			.select-prefix__indicator-separator {
 				display: none;
+			}
+
+			// The list of scopes: as wide as its longest option, never narrower than the picker.
+			.select-prefix__menu {
+				width: max-content;
+				min-width: 100%;
 			}
 		}
 	}

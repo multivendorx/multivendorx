@@ -94,6 +94,7 @@ export function SearchHeader() {
 			free={appLocalizer.free_version}
 			pro={appLocalizer.pro_data?.version || undefined}
 			utilityList={utilityList}
+			// Overridden by styles/design-system.scss: the scope picker fits its chosen label instead of a fixed width.
 			searchSize={7}
 		/>
 	);

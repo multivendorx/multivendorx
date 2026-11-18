@@ -28,6 +28,8 @@ declare global {
 		chat_url: any;
 		pro_data: any;
 		products_link: any;
+		/** The logged-in admin's first name (or display name), for the dashboard greeting. */
+		user_first_name?: string;
 	}
 
 	interface CourseMyAcc {
