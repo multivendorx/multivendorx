@@ -6,11 +6,8 @@ import {
     InformationItemComponent,
     NavigatorHeaderComponent,
 } from '@zyra/components';
-import { TableCard } from '@zyra/table';
-import LockedPreview from '../Popup/LockedPreview';
-import useNoRecordsYet from '../Popup/useNoRecordsYet';
+import PreviewTable from '../Popup/PreviewTable';
 import { __ } from '@wordpress/i18n';
-import { applyFilters } from '@wordpress/hooks';
 import { defaultCategoryCounts, dummyProducts } from './ManagestockUtil';
 
 
@@ -167,76 +164,44 @@ const Managestock = () => {
         totalRows: dummyProducts.length,
     };
 
-    const { props: tableProps, hasNoRecords } = useNoRecordsYet(
-        applyFilters(
-            'notifima_manage_stock_table_props',
-            defaultTableProps
-        ) as typeof defaultTableProps
-    );
-
-    /**
-     * The sample rows behind a card: for the Pro card (Pro off) and the "none yet" card (Pro on, no products). The
-     * plugin's own sample rows, not the filtered props: Notifima Pro may be installed without a license, and its filter
-     * would swap the samples for real data.
-     */
-    const sampleTable = (
-        <TableCard
-            {...defaultTableProps}
-            rows={SAMPLE_ROWS}
-            totalRows={SAMPLE_ROWS.length}
+    const previewTable = (
+        <PreviewTable
+            defaultTableProps={defaultTableProps}
+            filterHook="notifima_manage_stock_table_props"
+            sampleRows={SAMPLE_ROWS}
+            proFeature={{
+                title: __('Manage Stock', 'notifima'),
+                description: __(
+                    'Edit stock, prices and backorders for every product and variation in one table, and import or export it as a CSV.',
+                    'notifima'
+                ),
+                icon: 'store-analytics',
+            }}
+            empty={{
+                feature: {
+                    title: __('Manage Stock', 'notifima'),
+                    description: __(
+                        'Every WooCommerce product and variation shows here, with its stock, prices and how many shoppers are waiting for it.',
+                        'notifima'
+                    ),
+                    icon: 'store-analytics',
+                },
+                heading: __('No products yet', 'notifima'),
+                actions: (
+                    <a
+                        className="nf-locked-button"
+                        href={`${appLocalizer.admin_url}post-new.php?post_type=product`}
+                    >
+                        {__('Add a product', 'notifima')}
+                    </a>
+                ),
+                note: __(
+                    'A preview with sample products. Yours show here once you add them.',
+                    'notifima'
+                ),
+            }}
         />
     );
-
-    const renderTableContent = () => {
-        if (!appLocalizer.khali_dabba) {
-            return (
-                <LockedPreview
-                    feature={{
-                        title: __('Manage Stock', 'notifima'),
-                        description: __(
-                            'Edit stock, prices and backorders for every product and variation in one table, and import or export it as a CSV.',
-                            'notifima'
-                        ),
-                        icon: 'store-analytics',
-                    }}
-                >
-                    {sampleTable}
-                </LockedPreview>
-            );
-        }
-
-        if (hasNoRecords) {
-            return (
-                <LockedPreview
-                    feature={{
-                        title: __('Manage Stock', 'notifima'),
-                        description: __(
-                            'Every WooCommerce product and variation shows here, with its stock, prices and how many shoppers are waiting for it.',
-                            'notifima'
-                        ),
-                        icon: 'store-analytics',
-                    }}
-                    heading={__('No products yet', 'notifima')}
-                    actions={
-                        <a
-                            className="nf-locked-button"
-                            href={`${appLocalizer.admin_url}post-new.php?post_type=product`}
-                        >
-                            {__('Add a product', 'notifima')}
-                        </a>
-                    }
-                    note={__(
-                        'A preview with sample products. Yours show here once you add them.',
-                        'notifima'
-                    )}
-                >
-                    {sampleTable}
-                </LockedPreview>
-            );
-        }
-
-        return <TableCard {...tableProps} />;
-    };
 
     return (
         <>
@@ -250,7 +215,7 @@ const Managestock = () => {
             />
             <ContainerComponent general>
                 <ColumnComponent>
-                    {renderTableContent()}
+                    {previewTable}
                 </ColumnComponent>
             </ContainerComponent>
         </>

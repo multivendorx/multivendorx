@@ -43,14 +43,9 @@ declare global {
         restUrl: string;
         nonce: string;
         admin_url: string;
-        subscriber_list: string;
-        inventory_manager: string;
-        export_button: string;
         khali_dabba: boolean;
-        tab_name: string;
         settings_databases_value: any;
         pro_url: string;
-        pro_settings_list: any;
         free_version: any;
         pro_data: ProData;
         /** The logged-in admin's first name (or display name), for the dashboard greeting. */

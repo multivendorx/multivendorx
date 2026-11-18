@@ -1,15 +1,5 @@
 @use '../config.scss' as *;
 
-.table-details {
-	display: flex;
-	flex-direction: column;
-	gap: 0.25rem;
-
-	span {
-		font-weight: 600;
-	}
-}
-
 // ---- "Plugin required" popup (Popup.tsx's `plugin` branch) ----
 .popup-wrapper {
 	.popup-header {

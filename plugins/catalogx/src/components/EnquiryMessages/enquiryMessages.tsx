@@ -1,519 +1,280 @@
 import React from 'react';
 import {
-    ContainerComponent,
-    ColumnComponent,
-    NavigatorHeaderComponent,
+	ContainerComponent,
+	ColumnComponent,
+	NavigatorHeaderComponent,
 } from '@zyra/components';
 import ListGate from '../Popup/ListGate';
-import './enquiryMessages.scss';
+import './inbox.scss';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
-// Demo data
-const demoChatList = [
-    {
-        id: 1,
-        name: 'Emily Carter',
-        lastChat: 'Yes, this product is currently available in stock.',
-        date: 'June 11, 2026',
-        active: false
-    },
-    {
-        id: 2,
-        name: 'Michael Johnson',
-        lastChat: 'The bulk pricing starts from an order of 50 units.',
-        date: 'June 11, 2026',
-        active: false
-    },
-    {
-        id: 3,
-        name: 'Sophia Williams',
-        lastChat: 'I have shared the product dimensions below.',
-        date: 'June 11, 2026',
-        active: true
-    },
-    {
-        id: 4,
-        name: 'Daniel Brown',
-        lastChat: 'The item will be back in stock next week.',
-        date: 'June 10, 2026',
-        active: false
-    },
-    {
-        id: 5,
-        name: 'Olivia Taylor',
-        lastChat: "I've sent you the quotation for 100 units.",
-        date: 'June 10, 2026',
-        active: false
-    },
-    {
-        id: 6,
-        name: 'James Anderson',
-        lastChat: 'Can you confirm the estimated delivery time?',
-        date: 'June 10, 2026',
-        active: false
-    },
-    {
-        id: 7,
-        name: 'Isabella Martinez',
-        lastChat: 'The sample order has been shipped today.',
-        date: 'June 9, 2026',
-        active: false
-    },
-    {
-        id: 8,
-        name: 'William Thomas',
-        lastChat: 'Yes, we can customize the packaging for your order.',
-        date: 'June 9, 2026',
-        active: false
-    },
-    {
-        id: 9,
-        name: 'Ava Garcia',
-        lastChat: 'Please let me know if you need a revised quotation.',
-        date: 'June 9, 2026',
-        active: false
-    },
-    {
-        id: 10,
-        name: 'Benjamin Wilson',
-        lastChat: 'The minimum order quantity is 25 pieces.',
-        date: 'June 8, 2026',
-        active: false
-    },
-    {
-        id: 11,
-        name: 'Mia Rodriguez',
-        lastChat: 'Your payment has been received successfully.',
-        date: 'June 8, 2026',
-        active: false
-    },
-    {
-        id: 12,
-        name: 'Lucas Moore',
-        lastChat: 'We have updated the tracking information.',
-        date: 'June 8, 2026',
-        active: false
-    },
-    {
-        id: 13,
-        name: 'Charlotte Jackson',
-        lastChat: 'Thank you for your enquiry. We will get back to you shortly.',
-        date: 'June 7, 2026',
-        active: false
-    },
-    {
-        id: 14,
-        name: 'Henry White',
-        lastChat: 'The requested color variant is currently unavailable.',
-        date: 'June 7, 2026',
-        active: false
-    },
-    {
-        id: 15,
-        name: 'Amelia Harris',
-        lastChat: 'A discount has been applied to your wholesale account.',
-        date: 'June 7, 2026',
-        active: false
-    }
+/** Sample conversations for the preview: name, product asked about, last message, when, unread replies. */
+const SAMPLE_CONVERSATIONS = [
+	{ name: 'Sophia Williams', product: 'Oak dining table + 1 more', preview: 'Could you share the exact dimensions?', date: __('Today', 'catalogx'), unread: 2 },
+	{ name: 'Michael Johnson', product: 'Linen armchair', preview: 'Bulk pricing starts from 50 units.', date: __('Today', 'catalogx'), unread: 0 },
+	{ name: 'Emily Carter', product: 'Walnut bookshelf', preview: 'Yes, it is in stock and ready to ship.', date: __('Yesterday', 'catalogx'), unread: 1 },
+	{ name: 'Daniel Brown', product: 'Rattan pendant lamp', preview: 'Back in stock next week.', date: 'Mon', unread: 0 },
+	{ name: 'Olivia Taylor', product: 'Ceramic vase set', preview: 'I have sent the quotation for 100 units.', date: 'Nov 9', unread: 0 },
+	{ name: 'James Anderson', product: 'Velvet sofa', preview: 'Can you confirm the delivery time?', date: 'Nov 8', unread: 0 },
 ];
 
-const demoMessages = [
-    {
-        id: 1,
-        date: 'June 11, 2026',
-        messages: [
-            {
-                id: 1,
-                name: 'Customer',
-                time: '09:12 AM',
-                text: 'Hi, is this product currently available in stock?'
-            },
-            {
-                id: 2,
-                name: 'Emily Carter',
-                time: '09:15 AM',
-                text: 'Hello! Yes, the product is currently in stock and ready for dispatch.'
-            },
-            {
-                id: 3,
-                name: 'Customer',
-                time: '09:18 AM',
-                text: 'Great! How long will shipping take to Germany?'
-            },
-            {
-                id: 4,
-                name: 'Emily Carter',
-                time: '09:21 AM',
-                text: 'Standard shipping usually takes 5–7 business days.'
-            }
-        ]
-    },
-    {
-        id: 2,
-        date: 'June 11, 2026',
-        messages: [
-            {
-                id: 5,
-                name: 'Customer',
-                time: '11:05 AM',
-                text: 'Do you offer discounts for bulk purchases?'
-            },
-            {
-                id: 6,
-                name: 'Michael Johnson',
-                time: '11:09 AM',
-                text: 'Yes, we do. Bulk pricing starts from an order of 50 units.'
-            },
-            {
-                id: 7,
-                name: 'Customer',
-                time: '11:12 AM',
-                text: 'Can you send me a quotation for 75 units?'
-            },
-            {
-                id: 8,
-                name: 'Michael Johnson',
-                time: '11:16 AM',
-                text: 'Certainly! I\'ll prepare the quotation and send it to your email shortly.'
-            }
-        ]
-    },
-    {
-        id: 3,
-        date: 'June 11, 2026',
-        messages: [
-            {
-                id: 9,
-                name: 'Customer',
-                time: '02:30 PM',
-                text: 'Could you tell me the dimensions of this product?'
-            },
-            {
-                id: 10,
-                name: 'Sophia Williams',
-                time: '02:34 PM',
-                text: 'Of course! The product measures 45 × 30 × 18 cm.'
-            },
-            {
-                id: 11,
-                name: 'Customer',
-                time: '02:36 PM',
-                text: 'Is it suitable for outdoor use?'
-            },
-            {
-                id: 12,
-                name: 'Sophia Williams',
-                time: '02:39 PM',
-                text: "Yes, it's made from weather-resistant materials and is suitable for outdoor use."
-            }
-        ]
-    },
-    {
-        id: 4,
-        date: 'June 10, 2026',
-        messages: [
-            {
-                id: 13,
-                name: 'Customer',
-                time: '04:08 PM',
-                text: 'This product shows as out of stock. When will it be available again?'
-            },
-            {
-                id: 14,
-                name: 'Daniel Brown',
-                time: '04:12 PM',
-                text: 'Our next shipment is expected early next week.'
-            },
-            {
-                id: 15,
-                name: 'Customer',
-                time: '04:14 PM',
-                text: 'Can I reserve one in advance?'
-            },
-            {
-                id: 16,
-                name: 'Daniel Brown',
-                time: '04:17 PM',
-                text: 'Absolutely! I can reserve one for you once the stock arrives.'
-            }
-        ]
-    },
-    {
-        id: 5,
-        date: 'June 10, 2026',
-        messages: [
-            {
-                id: 17,
-                name: 'Customer',
-                time: '08:42 AM',
-                text: 'I\'m interested in ordering 100 units. Can I get a custom quotation?'
-            },
-            {
-                id: 18,
-                name: 'Olivia Taylor',
-                time: '08:47 AM',
-                text: 'Certainly! I\'ve prepared a quotation based on your requested quantity.'
-            },
-            {
-                id: 19,
-                name: 'Customer',
-                time: '08:50 AM',
-                text: 'Does the quotation include shipping charges?'
-            },
-            {
-                id: 20,
-                name: 'Olivia Taylor',
-                time: '08:53 AM',
-                text: 'Yes, the quotation includes both product and estimated shipping costs.'
-            }
-        ]
-    }
+/** The open sample conversation: the enquiry form, then the replies. */
+const SAMPLE_FORM = [
+	{ label: __('Name', 'catalogx'), value: 'Sophia Williams' },
+	{ label: __('Email', 'catalogx'), value: 'sophia@example.com' },
+	{ label: __('Message', 'catalogx'), value: 'We are furnishing a café. Is the oak table available in a 6-seat size, and do you offer trade prices?' },
 ];
+
+const SAMPLE_MESSAGES = [
+	{ own: true, author: __('You', 'catalogx'), time: '10:12 AM', text: 'Hi Sophia, yes, the 6-seat version is in stock. For 4 tables or more we offer 12% off.' },
+	{ own: false, author: 'Sophia Williams', time: '10:40 AM', text: 'That works. Could you share the exact dimensions?' },
+	{ own: false, author: 'Sophia Williams', time: '10:41 AM', text: 'And a quote for 5 tables with the chairs, please.' },
+];
+
+const SAMPLE_PRODUCTS = [
+	{ name: 'Oak dining table', meta: '$480 × 5', stock: __('In stock', 'catalogx'), stockClass: 'is-good' },
+	{ name: 'Linen dining chair', meta: '$95 × 20', stock: __('On backorder', 'catalogx'), stockClass: 'is-warn' },
+];
+
+const AVATAR_COLORS = ['#5007aa', '#0e7490', '#b45309', '#15803d', '#be123c', '#4338ca'];
+
+/** Initials avatar, as the real inbox draws it. */
+const Avatar = ({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' | 'lg' }) => (
+	<span
+		className={`cx-inbox-avatar is-${size}`}
+		style={{
+			background:
+				AVATAR_COLORS[[...name].reduce((sum, char) => sum + char.charCodeAt(0), 0) % AVATAR_COLORS.length],
+		}}
+		aria-hidden="true"
+	>
+		{name
+			.split(/\s+/)
+			.slice(0, 2)
+			.map((part) => part.charAt(0))
+			.join('')}
+	</span>
+);
 
 /**
  * Enquiry Messages: CatalogX Pro's inbox (swapped in through `catalogx_enquiry_messages_component`). Without Pro, or
- * with the Enquiry module off, the sample conversation is drawn behind the same card as every other Pro page.
+ * with the Enquiry module off, the sample inbox is drawn behind the same card as every other Pro page.
  */
 const EnquiryMessages = () => {
-    const MessageComponent = applyFilters(
-        'catalogx_enquiry_messages_component',
-        DummyEnquiryMessages
-    ) as React.ComponentType;
+	const MessageComponent = applyFilters(
+		'catalogx_enquiry_messages_component',
+		SampleInbox
+	) as React.ComponentType;
 
-    return (
-        <>
-            <NavigatorHeaderComponent
-                headerIcon="enquiry"
-                headerTitle={__('Enquiry Messages', 'catalogx')}
-                headerDescription={__(
-                    'Every enquiry as a conversation: read what the customer asked, reply, attach files and send a quote.',
-                    'catalogx'
-                )}
-            />
-            <ContainerComponent general>
-                <ColumnComponent>
-                    <ListGate
-                        feature={{
-                            title: __('Enquiry Messages', 'catalogx'),
-                            description: __(
-                                'Answer every enquiry from one inbox, with files, tags and a quote button, instead of from your email.',
-                                'catalogx'
-                            ),
-                            icon: 'enquiry',
-                        }}
-                        module={{
-                            id: 'enquiry',
-                            name: __('Enquiry', 'catalogx'),
-                        }}
-                        sample={<DummyEnquiryMessages />}
-                        isEmpty={false}
-                        empty={{
-                            heading: '',
-                            description: '',
-                            actions: null,
-                            note: '',
-                        }}
-                    >
-                        <MessageComponent />
-                    </ListGate>
-                </ColumnComponent>
-            </ContainerComponent>
-        </>
-    );
+	return (
+		<>
+			<NavigatorHeaderComponent
+				headerIcon="enquiry"
+				headerTitle={__('Enquiry Messages', 'catalogx')}
+				headerDescription={__(
+					'Every enquiry as a conversation: read what the customer asked, reply, attach files and send a quote.',
+					'catalogx'
+				)}
+			/>
+			<ContainerComponent general>
+				<ColumnComponent>
+					<ListGate
+						feature={{
+							title: __('Enquiry Messages', 'catalogx'),
+							description: __(
+								'Answer every enquiry from one inbox, with files, tags and a quote button, instead of from your email.',
+								'catalogx'
+							),
+							icon: 'enquiry',
+						}}
+						module={{ id: 'enquiry', name: __('Enquiry', 'catalogx') }}
+						sample={<SampleInbox />}
+						isEmpty={false}
+						empty={{ heading: '', description: '', actions: null, note: '' }}
+					>
+						<MessageComponent />
+					</ListGate>
+				</ColumnComponent>
+			</ContainerComponent>
+		</>
+	);
 };
 
-/** A sample conversation list and thread, drawn behind the Pro card. */
-const DummyEnquiryMessages = () => {
-    return (
-        <div id="enquiry-messages">
-            <ContainerComponent>
-                <ColumnComponent>
-                    <div className="enquiry-container">
-                            <div className="chat-list">
-                                <div className="header-container-wrapper">
-                                    <div className="search-field">
-                                        <div className="search-section">
-                                            <div className="setting-form-input input-wrapper">
-                                                <input
-                                                    className="basic-input"
-                                                    type="text"
-                                                    name="basic-input"
-                                                    placeholder="Search here..."
-                                                    autoComplete="off"
-                                                    value=""
-                                                />
-                                            </div>
-                                            <i className="adminfont-search"></i>
-                                        </div>
-                                    </div>
-                                    <div className="date-filter">
-                                        <div className="settings-calender">
-                                            <input
-                                                className="basic-input calender-input"
-                                                readOnly
-                                                name="calendar-input"
-                                                placeholder="MMMM DD YYYY"
-                                                value=""
-                                            />
-                                        </div>
-                                    </div>
-                                    <span className="starter-message">
-                                        <i className="admin-font adminfont-more-vertical"></i>
-                                    </span>
-                                </div>
+/**
+ * A static copy of the Pro inbox (same markup and classes as catalogx-pro/src/blocks/enquiry-messages), filled with
+ * sample data. It is only ever drawn inert behind the Pro card, so nothing in it does anything.
+ */
+const SampleInbox = () => (
+	<div className="cx-inbox">
+		<aside className="cx-inbox-list">
+			<header className="cx-inbox-list-head">
+				<div className="cx-inbox-list-title">
+					<h2>{__('Enquiries', 'catalogx')}</h2>
+					<span className="cx-inbox-count">{SAMPLE_CONVERSATIONS.length}</span>
+				</div>
+				<div className="cx-inbox-list-tools">
+					<span className="cx-inbox-icon-btn">
+						<i className="adminfont-star-o" aria-hidden="true" />
+					</span>
+					<span className="cx-inbox-icon-btn">
+						<i className="adminfont-download" aria-hidden="true" />
+					</span>
+				</div>
+			</header>
+			<div className="cx-inbox-filters">
+				<span className="cx-inbox-search">
+					<i className="adminfont-search" aria-hidden="true" />
+					<input type="search" readOnly tabIndex={-1} placeholder={__('Search name, email, product…', 'catalogx')} />
+				</span>
+				<div className="cx-inbox-filter-row">
+					<div className="cx-inbox-tabs">
+						<button type="button" tabIndex={-1} className="is-active">
+							{__('All', 'catalogx')}
+						</button>
+						<button type="button" tabIndex={-1}>
+							{__('Unread', 'catalogx')}
+							<span className="cx-inbox-tab-badge">2</span>
+						</button>
+					</div>
+				</div>
+			</div>
+			<ul className="cx-inbox-conversations">
+				{SAMPLE_CONVERSATIONS.map((conversation, index) => (
+					<li key={conversation.name}>
+						<span
+							className={`cx-inbox-row${0 === index ? ' is-active' : ''}${conversation.unread ? ' is-unread' : ''}`}
+						>
+							<Avatar name={conversation.name} />
+							<span className="cx-inbox-row-body">
+								<span className="cx-inbox-row-top">
+									<span className="cx-inbox-row-name">{conversation.name}</span>
+									<span className="cx-inbox-row-date">{conversation.date}</span>
+								</span>
+								<span className="cx-inbox-row-product">{conversation.product}</span>
+								<span className="cx-inbox-row-bottom">
+									<span className="cx-inbox-row-preview">{conversation.preview}</span>
+									{conversation.unread > 0 && (
+										<span className="cx-inbox-unread">{conversation.unread}</span>
+									)}
+								</span>
+							</span>
+						</span>
+					</li>
+				))}
+			</ul>
+		</aside>
 
-                                <div className="chat-list-container">
-                                    <div className="recent-message">Enquiry Messages<span className="total-message">(4)</span><button type="button" className="download-chats-btn" title="Download all chats"><i className="adminfont-download"></i>Download</button></div>
-                                    <div className="chat-list-wrapper">
-                                        {demoChatList.map((chat) => (
-                                            <div
-                                                key={chat.id}
-                                                className={`chat-item ${chat.active ? 'active' : ''}`}
-                                            >
-                                                <div className="chat-item-container">
-                                                    <div className="chat-img">
-                                                        <img
-                                                            src="https://secure.gravatar.com/avatar/be3221a6fac131657111728b4d912a877ec158b123d5db3afef3bd8a59784ece?s=96&d=mm&r=g"
-                                                            alt="Avatar"
-                                                        />
-                                                    </div>
-                                                    <div className="chat-meta">
-                                                        <div className="name">{chat.name}</div>
-                                                        <div className="last-chat">{chat.lastChat}</div>
-                                                    </div>
-                                                    <span className="date">{chat.date}</span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
+		<section className="cx-inbox-thread">
+			<header className="cx-inbox-thread-head">
+				<Avatar name="Sophia Williams" />
+				<div className="cx-inbox-thread-who">
+					<strong>Sophia Williams</strong>
+					<span>{__('Enquiry #1042', 'catalogx')} · sophia@example.com</span>
+				</div>
+				<div className="cx-inbox-thread-tools">
+					<span className="cx-inbox-icon-btn">
+						<i className="adminfont-search" aria-hidden="true" />
+					</span>
+				</div>
+			</header>
+			<div className="cx-inbox-pinned">
+				<i className="adminfont-pushpin" aria-hidden="true" />
+				<span className="cx-inbox-pinned-text">
+					{__('Trade discount: 12% off for 4 tables or more.', 'catalogx')}
+				</span>
+			</div>
+			<div className="cx-inbox-messages">
+				<div className="cx-inbox-day">
+					<span>{__('Today', 'catalogx')}</span>
+				</div>
+				<article className="cx-inbox-form-card">
+					<header>
+						<i className="adminfont-enquiry" aria-hidden="true" />
+						<span>
+							<strong>{__('Sophia Williams sent an enquiry', 'catalogx')}</strong>
+							<time>09:58 AM</time>
+						</span>
+					</header>
+					<dl>
+						{SAMPLE_FORM.map((field) => (
+							<div key={field.label}>
+								<dt>{field.label}</dt>
+								<dd>{field.value}</dd>
+							</div>
+						))}
+					</dl>
+				</article>
+				{SAMPLE_MESSAGES.map((message) => (
+					<div key={message.time} className={`cx-inbox-msg${message.own ? ' is-own' : ''}`}>
+						{!message.own && <Avatar name={message.author} size="sm" />}
+						<div className="cx-inbox-msg-body">
+							<div className="cx-inbox-msg-meta">
+								<span className="cx-inbox-msg-author">{message.author}</span>
+								<time>{message.time}</time>
+							</div>
+							<div className="cx-inbox-bubble">
+								<div className="cx-inbox-text">{message.text}</div>
+							</div>
+						</div>
+					</div>
+				))}
+			</div>
+			<div className="cx-inbox-composer">
+				<div className="cx-inbox-compose-box">
+					<textarea readOnly tabIndex={-1} rows={1} placeholder={__('Reply to Sophia Williams…', 'catalogx')} />
+					<div className="cx-inbox-compose-bar">
+						<div className="cx-inbox-compose-tools">
+							<span className="cx-inbox-icon-btn">
+								<i className="adminfont-plus" aria-hidden="true" />
+							</span>
+							<span className="cx-inbox-icon-btn">
+								<i className="adminfont-smile-o" aria-hidden="true" />
+							</span>
+						</div>
+						<span className="cx-inbox-send">
+							{__('Send', 'catalogx')}
+							<i className="adminfont-send" aria-hidden="true" />
+						</span>
+					</div>
+				</div>
+			</div>
+		</section>
 
-                            <div className="enquiry-details">
-                                <div className="enquiry-navbar">
-                                    <div className="chat-meta">
-                                        <img
-                                            src="https://secure.gravatar.com/avatar/be3221a6fac131657111728b4d912a877ec158b123d5db3afef3bd8a59784ece?s=96&d=mm&r=g"
-                                            alt="Avatar"
-                                        />
-                                        <div className="chat-name">{__('admin', 'catalogx')}</div>
-                                        <div className="enquery-id">
-                                            <b>{__('Enquiry ID', 'catalogx')}</b>{__('#3', 'catalogx')}
-                                        </div>
-                                    </div>
-                                    <div className="chat-more-option">
-                                        <ul>
-                                            <li className="chat-more-option-item">
-                                                <div className="input-container">
-                                                    <input
-                                                        placeholder="Search..."
-                                                        className="input"
-                                                        type="text"
-                                                    />
-                                                    <i className="admin-font icon adminfont-search"></i>
-                                                </div>
-                                            </li>
-                                            <li className="chat-more-option-item">
-                                                <button className="chat-more-option-button">
-                                                    <i className="admin-font adminfont-info"></i>
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
+		<aside className="cx-inbox-side">
+			<div className="cx-inbox-side-head">
+				<Avatar name="Sophia Williams" size="lg" />
+				<strong>Sophia Williams</strong>
+				<span className="cx-inbox-muted">sophia@example.com</span>
+			</div>
+			<div className="cx-inbox-quote">
+				<span className="cx-inbox-btn is-primary is-block">
+					<i className="adminfont-quote" aria-hidden="true" />
+					{__('Create quote', 'catalogx')}
+				</span>
+			</div>
+			<div className="cx-inbox-side-section">
+				<h3>
+					{__('Products', 'catalogx')}
+					<span className="cx-inbox-count">{SAMPLE_PRODUCTS.length}</span>
+				</h3>
+				<ul className="cx-inbox-products">
+					{SAMPLE_PRODUCTS.map((product) => (
+						<li key={product.name} className="cx-inbox-product">
+							<span className="cx-inbox-avatar is-sm" style={{ background: '#eef0f6', color: '#6b7280', borderRadius: '0.5rem' }}>
+								<i className="adminfont-cart" aria-hidden="true" />
+							</span>
+							<span className="cx-inbox-product-text">
+								<strong>{product.name}</strong>
+								<span className="cx-inbox-product-meta">{product.meta}</span>
+							</span>
+							<span className={`cx-inbox-stock ${product.stockClass}`}>{product.stock}</span>
+						</li>
+					))}
+				</ul>
+			</div>
+		</aside>
+	</div>
+);
 
-                                <div className="enquiry-body">
-                                    {demoMessages.map((messageGroup) => (
-                                        <React.Fragment key={messageGroup.id}>
-                                            <div className="date">
-                                                <span>{messageGroup.date}</span>
-                                            </div>
-                                            {messageGroup.messages.map((message) => (
-                                                <div key={message.id} className="message-box-wrapper">
-                                                    <div className="sender-img">
-                                                        <img
-                                                            src="https://secure.gravatar.com/avatar/be3221a6fac131657111728b4d912a877ec158b123d5db3afef3bd8a59784ece?s=96&d=mm&r=g"
-                                                            alt="Avatar"
-                                                        />
-                                                    </div>
-                                                    <div className="chat-content">
-                                                        <div className="content">
-                                                            <div className="chat-name-wrapper">
-                                                                <div className="chat-name">{message.name}</div>
-                                                                <span className="chat-time">{message.time}</span>
-                                                            </div>
-                                                            <div className="message-text">
-                                                                <span>{message.text}</span>
-                                                            </div>
-                                                            <div className="status"></div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="chat-actions">
-                                                        <div className="tooltip-wrapper top">
-                                                            <i className="action-reply adminfont-reply"></i>
-                                                            <span className="tooltip-name">{__('Reply', 'catalogx')}</span>
-                                                        </div>
-                                                        <div className="tooltip-wrapper top">
-                                                            <i className="action-copy adminfont-vendor-form-copy"></i>
-                                                            <span className="tooltip-name">{__('Copy', 'catalogx')}</span>
-                                                        </div>
-                                                        <div className="tooltip-wrapper top">
-                                                            <i className="action-push adminfont-pushpin"></i>
-                                                            <span className="tooltip-name">{__('Pin', 'catalogx')}</span>
-                                                        </div>
-                                                        <div className="tooltip-wrapper top">
-                                                            <i className="star-icon adminfont-star-o"></i>
-                                                            <span className="tooltip-name">{__('Star', 'catalogx')}</span>
-                                                        </div>
-                                                        <div className="tooltip-wrapper top">
-                                                            <i className="action-react adminfont-smile-o"></i>
-                                                            <span className="tooltip-name">{__('React', 'catalogx')}</span>
-                                                        </div>
-                                                        <i className="action-delete adminfont-delete"></i>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </React.Fragment>
-                                    ))}
-                                </div>
-
-                                <div className="chat-controls-wrapper">
-                                    <section className="chat-attachment-wrapper"></section>
-                                    <div className="chat-controls">
-                                        <div className="typing-section">
-                                            <textarea placeholder="Message admin"></textarea>
-                                        </div>
-                                        <div className="footer-buttons">
-                                            <div className="chat-attachment">
-                                                <div className="tooltip-wrapper top">
-                                                    <i className="plus-icon adminfont-plus"></i>
-                                                    <span className="tooltip-name">{__('Add File', 'catalogx')}</span>
-                                                </div>
-                                                <div className="tooltip-wrapper top">
-                                                    <i className="adminfont-form-email"></i>
-                                                    <span className="tooltip-name">{__('Tag', 'catalogx')}</span>
-                                                </div>
-                                                <div className="tooltip-wrapper top">
-                                                    <i className="admin-font adminfont-quote"></i>
-                                                    <span className="tooltip-name">{__('Quotation', 'catalogx')}</span>
-                                                </div>
-                                                <div className="tooltip-wrapper top">
-                                                    <i className="adminfont-smile-o"></i>
-                                                    <span className="tooltip-name">{__('Emoji', 'catalogx')}</span>
-                                                </div>
-                                            </div>
-                                            <div className="message-send-btn">
-                                                <i className="send-btn purple-color adminfont-send"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                </ColumnComponent>
-            </ContainerComponent>
-        </div>
-    );
-}
 export default EnquiryMessages;

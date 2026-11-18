@@ -191,8 +191,6 @@ const buildInsights = (data: DashboardData): Insight[] => {
 	const insights: Insight[] = [];
 	const waiting = subscriptions.by_status.subscribed ?? 0;
 	const failed = subscriptions.by_status.notification_failed ?? 0;
-	const money = (amount: number) =>
-		formatMoney(amount, data.currency ?? 'USD');
 
 	if (products.restocked > 0) {
 		insights.push({
@@ -331,7 +329,10 @@ const buildInsights = (data: DashboardData): Insight[] => {
 									'Worth %s at today’s price. Restock it and they are emailed right away.',
 									'notifima'
 								),
-								money(product.price * product.waiting)
+								formatMoney(
+									product.price * product.waiting,
+									data.currency
+								)
 							)
 						: __(
 								'Restock it and they are emailed right away.',
@@ -692,8 +693,6 @@ const Insights: React.FC<InsightsProps> = ({ pro, learn, help, team }) => {
 	const sparkline = data.daily.some((day) => day.count > 0)
 		? data.daily.map((day) => ({ value: day.count }))
 		: undefined;
-	const money = (amount: number) =>
-		formatMoney(amount, data.currency ?? 'USD');
 	const periodChoices = data.period_choices ?? [7, 30, 90];
 	// The most urgent few, so the list reads as priorities; the rest behind "Show all".
 	const visibleInsights = showAllInsights
@@ -877,7 +876,10 @@ const Insights: React.FC<InsightsProps> = ({ pro, learn, help, team }) => {
 						{
 							icon: 'revenue',
 							label: __('Demand waiting', 'notifima'),
-							value: money(products.demand_value),
+							value: formatMoney(
+								products.demand_value,
+								data.currency
+							),
 							caption: sprintf(
 								/* translators: %s: number of products. */
 								_n(

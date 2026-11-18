@@ -255,20 +255,7 @@ class Dashboard extends \WP_REST_Controller {
 			return array();
 		}
 
-		$product_ids = array_map( 'absint', wp_list_pluck( $waitlist_rows, 'product_id' ) );
-		$products    = array();
-
-		// One query for every product, variations included, rather than wc_get_product() per row.
-		foreach ( wc_get_products(
-			array(
-				'include' => $product_ids,
-				'type'    => array_merge( array_keys( wc_get_product_types() ), array( 'variation' ) ),
-				'status'  => array( 'publish', 'private', 'draft', 'pending' ),
-				'limit'   => -1,
-			)
-		) as $product ) {
-			$products[ $product->get_id() ] = $product;
-		}
+		$products = $this->get_products_by_id( wp_list_pluck( $waitlist_rows, 'product_id' ) );
 
 		return array_map(
 			function ( $waitlist_row ) use ( $products ) {
@@ -448,32 +435,48 @@ class Dashboard extends \WP_REST_Controller {
 			ARRAY_A
 		);
 
-		$product_ids = array_unique( array_map( 'absint', wp_list_pluck( (array) $subscriber_rows, 'product_id' ) ) );
-		$names       = array();
-
-		if ( $product_ids ) {
-			foreach ( wc_get_products(
-				array(
-					'include' => $product_ids,
-					'type'    => array_merge( array_keys( wc_get_product_types() ), array( 'variation' ) ),
-					'status'  => array( 'publish', 'private', 'draft', 'pending' ),
-					'limit'   => -1,
-				)
-			) as $product ) {
-				$names[ $product->get_id() ] = wp_strip_all_tags( $product->get_name() );
-			}
-		}
+		$products = $this->get_products_by_id( wp_list_pluck( (array) $subscriber_rows, 'product_id' ) );
 
 		return array_map(
-			function ( $subscriber_row ) use ( $names ) {
+			function ( $subscriber_row ) use ( $products ) {
+				$product = $products[ absint( $subscriber_row['product_id'] ) ] ?? null;
+
 				return array(
 					'email'   => sanitize_email( $subscriber_row['email'] ),
-					'product' => $names[ absint( $subscriber_row['product_id'] ) ] ?? '',
+					'product' => $product ? wp_strip_all_tags( $product->get_name() ) : '',
 					'status'  => sanitize_key( $subscriber_row['status'] ),
 					'date'    => gmdate( 'c', (int) $subscriber_row['created'] ),
 				);
 			},
 			(array) $subscriber_rows
 		);
+	}
+
+	/**
+	 * Loads products by id in one query, variations included, rather than wc_get_product() per row.
+	 *
+	 * @param array $product_ids Product or variation ids.
+	 * @return \WC_Product[] Keyed by id; ids that no longer exist are missing.
+	 */
+	private function get_products_by_id( $product_ids ) {
+		$product_ids = array_unique( array_filter( array_map( 'absint', (array) $product_ids ) ) );
+		$products    = array();
+
+		if ( empty( $product_ids ) ) {
+			return $products;
+		}
+
+		foreach ( wc_get_products(
+			array(
+				'include' => $product_ids,
+				'type'    => array_merge( array_keys( wc_get_product_types() ), array( 'variation' ) ),
+				'status'  => array( 'publish', 'private', 'draft', 'pending' ),
+				'limit'   => -1,
+			)
+		) as $product ) {
+			$products[ $product->get_id() ] = $product;
+		}
+
+		return $products;
 	}
 }

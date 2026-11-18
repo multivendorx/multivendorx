@@ -200,7 +200,6 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
 			key={currentTab}
 			// zyra saves a form under `settings.id`: a sub-tab saves as its parent tab, so both share one option.
 			settings={{ ...settingModal, id: storageId } as RendererSettings}
-			proSetting={appLocalizer.pro_settings_list}
 			setting={setting}
 			updateSetting={updateSetting}
 			modules={modules}

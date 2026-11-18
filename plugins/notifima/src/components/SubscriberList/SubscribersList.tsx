@@ -7,11 +7,8 @@ import {
     InformationItemComponent,
     NavigatorHeaderComponent,
 } from '@zyra/components';
-import { TableCard } from '@zyra/table';
-import LockedPreview from '../Popup/LockedPreview';
-import useNoRecordsYet from '../Popup/useNoRecordsYet';
+import PreviewTable from '../Popup/PreviewTable';
 import { __ } from '@wordpress/i18n';
-import { applyFilters } from '@wordpress/hooks';
 import { csvHeaders, defaultCategoryCounts, subscriptions } from './SubscribersListUtil';
 import axios from 'axios';
 
@@ -181,84 +178,52 @@ const SubscribersList = () => {
         totalRows: subscriptions.length,
     };
 
-    const { props: tableProps, hasNoRecords } = useNoRecordsYet(
-        applyFilters(
-            'notifima_subscriber_list_table_props',
-            defaultTableProps
-        ) as typeof defaultTableProps
-    );
-
-    /**
-     * The sample rows behind a card: for the Pro card (Pro off) and the "none yet" card (Pro on, nothing yet). The
-     * plugin's own sample rows, not the filtered props: Notifima Pro may be installed without a license, and its filter
-     * would swap the samples for real (empty) data.
-     */
-    const sampleTable = (
-        <TableCard
-            {...defaultTableProps}
-            rows={SAMPLE_ROWS}
-            totalRows={SAMPLE_ROWS.length}
+    const previewTable = (
+        <PreviewTable
+            defaultTableProps={defaultTableProps}
+            filterHook="notifima_subscriber_list_table_props"
+            sampleRows={SAMPLE_ROWS}
+            proFeature={{
+                title: __('Subscribers', 'notifima'),
+                description: __(
+                    'See every shopper waiting for a product, whether their back-in-stock email went out, and filter or export the list.',
+                    'notifima'
+                ),
+                icon: 'subscriber',
+            }}
+            empty={{
+                feature: {
+                    title: __('Subscribers', 'notifima'),
+                    description: __(
+                        'Shoppers subscribe from the form on an out-of-stock product page. Each one shows here, with the product and whether they were notified.',
+                        'notifima'
+                    ),
+                    icon: 'subscriber',
+                },
+                heading: __('No subscribers yet', 'notifima'),
+                actions: (
+                    <>
+                        <a
+                            className="nf-locked-button"
+                            href="#&tab=settings&subtab=subscription-form-designer"
+                        >
+                            {__('Design the form', 'notifima')}
+                        </a>
+                        <a
+                            className="nf-locked-link"
+                            href="#&tab=settings&subtab=automation"
+                        >
+                            {__('Review automation', 'notifima')}
+                        </a>
+                    </>
+                ),
+                note: __(
+                    'A preview with sample subscribers. Yours show here after the first signup.',
+                    'notifima'
+                ),
+            }}
         />
     );
-
-    const renderTableContent = () => {
-        if (!appLocalizer.khali_dabba) {
-            return (
-                <LockedPreview
-                    feature={{
-                        title: __('Subscribers', 'notifima'),
-                        description: __(
-                            'See every shopper waiting for a product, whether their back-in-stock email went out, and filter or export the list.',
-                            'notifima'
-                        ),
-                        icon: 'subscriber',
-                    }}
-                >
-                    {sampleTable}
-                </LockedPreview>
-            );
-        }
-
-        if (hasNoRecords) {
-            return (
-                <LockedPreview
-                    feature={{
-                        title: __('Subscribers', 'notifima'),
-                        description: __(
-                            'Shoppers subscribe from the form on an out-of-stock product page. Each one shows here, with the product and whether they were notified.',
-                            'notifima'
-                        ),
-                        icon: 'subscriber',
-                    }}
-                    heading={__('No subscribers yet', 'notifima')}
-                    actions={
-                        <>
-                            <a
-                                className="nf-locked-button"
-                                href="#&tab=settings&subtab=subscription-form-designer"
-                            >
-                                {__('Design the form', 'notifima')}
-                            </a>
-                            <a
-                                className="nf-locked-link"
-                                href="#&tab=settings&subtab=automation"
-                            >
-                                {__('Review automation', 'notifima')}
-                            </a>
-                        </>
-                    }
-                    note={__(
-                        'A preview with sample subscribers. Yours show here after the first signup.',
-                        'notifima'
-                    )}
-                >
-                    {sampleTable}
-                </LockedPreview>
-            );
-        }
-
-        return <TableCard {...tableProps} />;
-    };
 
     return (
         <>
@@ -279,7 +244,7 @@ const SubscribersList = () => {
             />
             <ContainerComponent general>
                 <ColumnComponent>
-                    {renderTableContent()}
+                    {previewTable}
                 </ColumnComponent>
             </ContainerComponent>
         </>

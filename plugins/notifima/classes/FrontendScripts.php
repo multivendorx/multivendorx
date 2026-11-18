@@ -284,9 +284,7 @@ class FrontendScripts {
                     'use_settings' => true,
 					'data'         => array(
                         'admin_url'     => admin_url(),
-						'export_button' => wp_nonce_url( admin_url( 'admin-ajax.php?action=export_subscribers' ), 'export_subscribers_nonce' ),
 						'khali_dabba'   => Utill::is_khali_dabba(),
-						'tab_name'      => __( 'Notifima', 'notifima' ),
 						'pro_url'       => esc_url( NOTIFIMA_PRO_SHOP_URL ),
 						'free_version'  => Notifima()->version,
 						// The dashboard greets the admin by name ("Good morning, Ana"); empty when no one is logged in.

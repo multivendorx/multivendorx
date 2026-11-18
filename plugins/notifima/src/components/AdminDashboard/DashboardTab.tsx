@@ -5,7 +5,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import axios from 'axios';
 import catalogx from '../../assets/images/catalogx.png';
 import multivendorx from '../../assets/images/multivendorx.png';
-import ShowProPopup from '../Popup/Popup';
+import ShowProPopup, { PRO_FEATURES } from '../Popup/Popup';
 import Insights from './Insights';
 import {
 	ACCOUNT_URL,
@@ -19,58 +19,6 @@ interface WPPlugin {
 	plugin?: string;
 	status?: string;
 }
-
-/** The Pro features the dashboard's Pro panel lists (free sites only). */
-const PRO_FEATURES = [
-	{
-		icon: 'double-opt-in',
-		title: __('Double opt-in', 'notifima'),
-		desc: __(
-			'Shoppers confirm by email, so every subscriber on the list really wants the product.',
-			'notifima'
-		),
-	},
-	{
-		icon: 'ban-spam-mail',
-		title: __('Spam protection', 'notifima'),
-		desc: __(
-			'reCAPTCHA and an email and domain blocklist keep bots off your waitlists.',
-			'notifima'
-		),
-	},
-	{
-		icon: 'subscription-dashboard',
-		title: __('Subscriber list', 'notifima'),
-		desc: __(
-			'See who is waiting for what, filter by status and date, and export it.',
-			'notifima'
-		),
-	},
-	{
-		icon: 'mailchimp',
-		title: __('Mailchimp sync', 'notifima'),
-		desc: __(
-			'Send new subscribers to a Mailchimp audience for your own campaigns.',
-			'notifima'
-		),
-	},
-	{
-		icon: 'export-import-stock',
-		title: __('Inventory manager', 'notifima'),
-		desc: __(
-			'Edit stock, prices and backorders for every product in one table, with CSV import.',
-			'notifima'
-		),
-	},
-	{
-		icon: 'subscription-details',
-		title: __('One-click unsubscribe', 'notifima'),
-		desc: __(
-			'Shoppers leave a waitlist from their account, without emailing you.',
-			'notifima'
-		),
-	},
-];
 
 interface HelpLink {
 	icon: string;
@@ -330,13 +278,14 @@ const DashboardTab: React.FC<object> = () => {
 			}
 		>
 			<ul className="nf-dash-pro-features">
-				{PRO_FEATURES.map((feature) => (
-					<li key={feature.title}>
+				{/* The first six of the features the Pro popup lists, so the two never disagree. */}
+				{PRO_FEATURES.slice(0, 6).map((feature) => (
+					<li key={feature.name}>
 						<span className="nf-dash-icon" aria-hidden="true">
 							<i className={`adminfont-${feature.icon}`} />
 						</span>
 						<span>
-							<strong>{feature.title}</strong>
+							<strong>{feature.name}</strong>
 							<span>{feature.desc}</span>
 						</span>
 					</li>
