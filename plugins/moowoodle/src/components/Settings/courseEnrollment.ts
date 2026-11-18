@@ -151,5 +151,48 @@ export default {
 			],
 			look: 'toggle',
 		},
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'clock',
+			title: __('Expiry processing', 'moowoodle'),
+			settingDescription: __(
+				'Control automatic course expiry and unenrollment processing.',
+				'moowoodle'
+			),
+		},
+		{
+			key: 'expiry_processing_disable',
+			type: 'checkbox',
+			settingDescription: __(
+				'Disable automatic expiry processing. When enabled, users will not be automatically unenrolled from courses when their access expires.',
+				'moowoodle'
+			),
+			label: __('Disable expiry processing', 'moowoodle'),
+			options: [
+				{
+					key: 'expiry_processing_disable',
+					value: 'expiry_processing_disable',
+				},
+			],
+			look: 'toggle',
+			proSetting: true,
+		},
+		{
+			key: 'expiry_unenroll_limit',
+			type: 'number',
+			size: 5,
+			settingDescription: __(
+				'Set the maximum number of users to unenroll during each expiry-processing run. This helps control server load when processing expired enrollments.',
+				'moowoodle'
+			),
+			label: __('Unenrollment limit per run', 'moowoodle'),
+			dependent: {
+				key: 'expiry_processing_disable',
+				set: true,
+				value: 'expiry_processing_disable',
+			},
+			proSetting: true,
+		},
 	],
 };

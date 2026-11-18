@@ -7,6 +7,7 @@ import {
 	InformationItemComponent,
 	PopupComponent,
 	NavigatorHeaderComponent,
+	NoticeManager
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import { __ } from '@wordpress/i18n';
@@ -24,6 +25,7 @@ interface EnrollmentRow {
 	category_name?: string;
 	status?: string;
 	enrollment_date?: string;
+	unenrollment_date?: string;
 	customer_img?: string;
 	course_image?: string;
 	order_id?: number;
@@ -81,15 +83,19 @@ const Enrollment: React.FC = () => {
 		enrollment_date: {
 			label: __('Date', 'moowoodle'),
 			render: (row: EnrollmentRow) => {
+				const isEnrolled = row.status === 'enrolled';
+
 				return (
-					<>
-						<div className="table-details">
-							<span className="label">
-								{__('Enrollment Date', 'moowoodle')}
-							</span>
-							{row.enrollment_date || '-'}
-						</div>
-					</>
+					<div className="table-details">
+						<span className="label">
+							{isEnrolled
+								? __('Enrollment Date', 'moowoodle')
+								: __('Unenrollment Date', 'moowoodle')}
+						</span>
+						{isEnrolled
+							? row.enrollment_date || '-'
+							: row.unenrollment_date || '-'}
+					</div>
 				);
 			},
 		},
