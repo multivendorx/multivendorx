@@ -1,16 +1,15 @@
 /* global appLocalizer */
-import React, { useState } from 'react';
+import React from 'react';
 import { __ } from '@wordpress/i18n';
 
 import {
 	ColumnComponent,
 	ContainerComponent,
 	InformationItemComponent,
-	PopupComponent,
 	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
-import ShowProPopup from '../Popup/Popup';
+import LockedPreview from '../Popup/LockedPreview';
 import { applyFilters } from '@wordpress/hooks';
 import { dummyCohorts } from './CohortUtil';
 
@@ -25,13 +24,16 @@ export interface CohortRow {
 	product_image?: string;
 	status?: string;
 	date?: string;
+	products?: Record<string, unknown>;
 }
 
+/** No-op handler for the sample rows' actions: LockedPreview makes the sample inert. */
+const noop = () => undefined;
+
+/** The sample rows drawn behind the unlock card: a few, as the preview fades out below them. */
+const SAMPLE_ROWS = dummyCohorts.slice(0, 4);
+
 const Cohort: React.FC = () => {
-	const [openPopup, setopenPopup] = useState(false);
-
-	let tableProps: any = {};
-
 	// Define table headers
 	const headers = {
 		cohort_name: {
@@ -72,10 +74,7 @@ const Cohort: React.FC = () => {
 				{
 					label: __('Sync Cohort Data', 'moowoodle'),
 					icon: 'refresh',
-					// eslint-disable-next-line no-unused-vars -- row param required by the action button's callback signature.
-					onClick: (row) => {
-						setopenPopup(true);
-					},
+					onClick: noop,
 				},
 
 				{
@@ -93,10 +92,7 @@ const Cohort: React.FC = () => {
 							? 'update-product'
 							: 'add-product';
 					},
-					// eslint-disable-next-line no-unused-vars -- row param required by the action button's callback signature.
-					onClick: (row) => {
-						setopenPopup(true);
-					},
+					onClick: noop,
 				},
 			],
 		},
@@ -112,31 +108,13 @@ const Cohort: React.FC = () => {
 		},
 	};
 
-	tableProps = applyFilters(
+	const tableProps = applyFilters(
 		'moowoodle_cohort_table_props',
 		defaultTableProps
 	);
 
-	const handleTableWrapperClick = () => {
-		if (!appLocalizer.khali_dabba) {
-			setopenPopup(true);
-		}
-	};
-
 	return (
 		<>
-			{openPopup && (
-				<PopupComponent
-					position="lightbox"
-					open={openPopup}
-					onClose={() => setopenPopup(false)}
-					width={31.25}
-					height="auto"
-				>
-					<ShowProPopup />
-				</PopupComponent>
-			)}
-
 			<NavigatorHeaderComponent
 				headerIcon="cohort"
 				headerDescription={__(
@@ -147,17 +125,28 @@ const Cohort: React.FC = () => {
 			/>
 			<ContainerComponent general>
 				<ColumnComponent>
-					<div
-						className="demo-wrapper"
-						onClick={handleTableWrapperClick}
-					>
-						{!appLocalizer.khali_dabba && (
-							<div className="watermark">
-								{__('This is sample Data', 'moowoodle')}
-							</div>
-						)}
+					{appLocalizer.khali_dabba ? (
 						<TableCard {...tableProps} />
-					</div>
+					) : (
+						<LockedPreview
+							feature={{
+								title: __('Cohorts', 'moowoodle'),
+								description: __(
+									'Sync Moodle™ cohorts, link them to products and enroll whole cohorts in one purchase.',
+									'moowoodle'
+								),
+								icon: 'cohort',
+							}}
+						>
+							{/* The plugin's own sample rows, not the filtered props: MooWoodle Pro may be installed without a
+							license, and its filter would swap the samples for real (empty) data. */}
+							<TableCard
+								{...defaultTableProps}
+								rows={SAMPLE_ROWS}
+								totalRows={SAMPLE_ROWS.length}
+							/>
+						</LockedPreview>
+					)}
 				</ColumnComponent>
 			</ContainerComponent>
 		</>

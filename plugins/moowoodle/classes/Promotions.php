@@ -60,22 +60,29 @@ class Communications {
 
 		$install_url = wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=vulomail' ), 'install-plugin_vulomail' );
 		?>
-		<div class="notice notice-info is-dismissible moowoodle-vulomail-notice" >
-			<h2><?php esc_html_e( 'Track enrollment emails with VuloMail', 'moowoodle' ); ?></h2>
+		<div class="notice notice-info is-dismissible moowoodle-vulomail-notice">
+			<span class="moowoodle-vulomail-icon dashicons dashicons-email-alt" aria-hidden="true"></span>
 
-			<p>
-				<?php esc_html_e( 'See which enrollment emails were sent to students and quickly identify emails that failed to send.', 'moowoodle' ); ?>
-			</p>
+			<div class="moowoodle-vulomail-body">
+				<p class="moowoodle-vulomail-title">
+					<?php esc_html_e( 'Track enrollment emails with VuloMail', 'moowoodle' ); ?>
+					<span class="moowoodle-vulomail-badge"><?php esc_html_e( 'Free', 'moowoodle' ); ?></span>
+				</p>
+				<p class="moowoodle-vulomail-desc">
+					<?php esc_html_e( 'See which enrollment emails were sent to students and quickly identify emails that failed to send.', 'moowoodle' ); ?>
+				</p>
+			</div>
 
-			<p>
-				<a class="button button-secondary" href="<?php echo esc_url( $install_url ); ?>">
+			<div class="moowoodle-vulomail-actions">
+				<a class="button button-primary moowoodle-vulomail-install" href="<?php echo esc_url( $install_url ); ?>">
 					<?php esc_html_e( 'Install VuloMail', 'moowoodle' ); ?>
 				</a>
-
-				<a href="<?php echo esc_url( 'https://vulomail.com/' ); ?>" target="_blank" rel="noopener noreferrer">
+				<a class="moowoodle-vulomail-learn" href="<?php echo esc_url( 'https://vulomail.com/' ); ?>" target="_blank" rel="noopener noreferrer">
 					<?php esc_html_e( 'Learn more', 'moowoodle' ); ?>
+					<span class="screen-reader-text"><?php esc_html_e( '(opens in a new tab)', 'moowoodle' ); ?></span>
+					<span class="dashicons dashicons-external" aria-hidden="true"></span>
 				</a>
-			</p>
+			</div>
 		</div>
 		<?php
 	}
@@ -150,6 +157,12 @@ class Communications {
 	 */
 	public function enqueue_notice_script() {
 		FrontendScripts::enqueue_script( 'moowoodle-admin-notices' );
+
+		// The VuloMail notice shows on every admin screen, not only MooWoodle's, so its layout ships as an inline
+		// stylesheet here rather than in the admin app's bundle.
+		wp_register_style( 'moowoodle-admin-notices', false, array(), MOOWOODLE_PLUGIN_VERSION );
+		wp_enqueue_style( 'moowoodle-admin-notices' );
+		wp_add_inline_style( 'moowoodle-admin-notices', $this->get_vulomail_notice_css() );
 		FrontendScripts::localize_script(
 			'moowoodle-admin-notices',
 			'moowoodleAdminNotices',

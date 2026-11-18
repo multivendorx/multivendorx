@@ -1,37 +1,61 @@
 /* global appLocalizer */
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { __ } from '@wordpress/i18n';
+import { NoticeComponent } from '@zyra/components';
 
 import Settings from './components/Settings/Settings';
 import Synchronization from './components/Synchronization/Synchronization';
 import Cohort from './components/Cohort/Cohort';
 import Enrollment from './components/Enrollment/Enrollment';
 import Courses from './components/Courses/Courses';
-import { useState } from 'react';
-import { searchIndex, SearchItem } from './searchIndex';
-import MoowoodleLogo from './assets/images/moowoodle-logo.png';
-import { __ } from '@wordpress/i18n';
-import { NoticeComponent, HeaderComponent } from '@zyra/components';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import HelpSupport from './components/HelpSupport/HelpSupport';
+import SearchHeader from './components/Header/SearchHeader';
+import './styles/admin.scss';
 
+/**
+ * Picks the screen for the open tab. Tabs are admin sidebar submenu entries (classes/Admin.php), each pointing to
+ * `moowoodle#&tab={tab}`, so switching tabs only changes the hash.
+ */
 const Route = () => {
-	const currentTab = new URLSearchParams(useLocation().hash);
-	return (
-		<>
-			{currentTab.get('tab') === 'settings' && (
-				<Settings id={'settings'} />
-			)}
+	const tab = new URLSearchParams(useLocation().hash).get('tab');
 
-			{currentTab.get('tab') === 'synchronization' && (
-				<Synchronization id={'synchronization'} />
-			)}
-			{currentTab.get('tab') === 'courses' && <Courses />}
-			{currentTab.get('tab') === 'enrolments' && <Enrollment />}
-			{currentTab.get('tab') === 'cohorts' && <Cohort />}
-			{currentTab.get('tab') === 'dashboard' && <AdminDashboard />}
-			{currentTab.get('tab') === 'help-support' && <HelpSupport />}
-		</>
-	);
+	// The submenu entries are hash tabs, which WordPress can't match on the server, so mark the open one here.
+	useEffect(() => {
+		document
+			.querySelectorAll('#toplevel_page_moowoodle .wp-submenu li')
+			.forEach((item) => {
+				const link = item.querySelector('a');
+				const href = link?.getAttribute('href') ?? '';
+				const linkTab = new URLSearchParams(
+					href.split('#')[1] ?? ''
+				).get('tab');
+				const isCurrent = !!tab && linkTab === tab;
+
+				item.classList.toggle('current', isCurrent);
+				link?.classList.toggle('current', isCurrent);
+			});
+	}, [tab]);
+
+	switch (tab) {
+		case 'settings':
+			return <Settings id="settings" />;
+		case 'synchronization':
+			return <Synchronization id="synchronization" />;
+		case 'courses':
+			return <Courses />;
+		case 'enrolments':
+			return <Enrollment />;
+		case 'cohorts':
+			return <Cohort />;
+		case 'dashboard':
+			return <AdminDashboard />;
+		case 'help-support':
+			return <HelpSupport />;
+		default:
+			return null;
+	}
 };
 
 const bannerItem = [
@@ -56,107 +80,26 @@ const bannerItem = [
 		'moowoodle'
 	),
 ];
-const App = () => {
-	const currentTabParams = new URLSearchParams(useLocation().hash);
-	const [, setQuery] = useState('');
-	const [results, setResults] = useState<SearchItem[]>([]);
-	const selectValue = 'all';
 
-	document
-		.querySelectorAll('#toplevel_page_moowoodle>ul>li>a')
-		.forEach((menuItem) => {
-			const menuItemUrl = new URL((menuItem as HTMLAnchorElement).href);
-			const menuItemHashParams = new URLSearchParams(
-				menuItemUrl.hash.substring(1)
-			);
-
-			if (menuItem.parentNode) {
-				(menuItem.parentNode as HTMLElement).classList.remove(
-					'current'
-				);
-			}
-			if (menuItemHashParams.get('tab') === currentTabParams.get('tab')) {
-				(menuItem.parentNode as HTMLElement).classList.add('current');
-			}
-		});
-	// 🔹 Search handlers
-	const handleSearchChange = (value: string) => {
-		setQuery(value);
-
-		if (!value.trim()) {
-			setResults([]);
-			return;
-		}
-
-		const lowerValue = value.toLowerCase();
-
-		const filtered = searchIndex.filter((item) => {
-			// Filter by dropdown selection
-			if (selectValue !== 'all' && item.tab !== selectValue) {
-				return false;
-			}
-
-			// Case-insensitive search
-			const name = item.name?.toLowerCase() || '';
-			const desc = item.desc?.toLowerCase() || '';
-			return name.includes(lowerValue) || desc.includes(lowerValue);
-		});
-
-		setResults(filtered);
-	};
-
-	const handleResultClick = (item: SearchItem) => {
-		window.location.hash = item.link;
-		setQuery('');
-		setResults([]);
-	};
-	const profileItems = [
-		{
-			title: __('Manage Plan', 'moowoodle'),
-			icon: 'person',
-			link: 'https://dualcube.com/my-account/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
-			targetBlank: true,
-		},
-		{
-			title: __('Contact Support', 'moowoodle'),
-			icon: 'user-network-icon',
-			link: 'https://dualcube.com/contact-us/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
-			targetBlank: true,
-		},
-	];
-	const utilityList = [
-		{
-			toggleIcon: 'admin-icon adminfont-user-circle',
-			tooltipName: __('Support', 'moowoodle'),
-			tooltipPosition: 'bottom',
-			items: profileItems,
-		},
-	];
-	return (
-		<>
-			<HeaderComponent
-				brandImg={MoowoodleLogo}
-				results={results}
-				onQueryUpdate={handleSearchChange}
-				onResultClick={handleResultClick}
-				free={appLocalizer.free_version}
-				pro={appLocalizer.pro_data.version}
-				utilityList={utilityList}
-			/>
+/** Root of the admin app: the search header, the Pro banner (Free only) and the screen for the open tab. */
+const App = () => (
+	<>
+		<SearchHeader />
+		{!appLocalizer.khali_dabba && (
 			<NoticeComponent
 				uniqueKey="banner"
 				type="banner"
 				validity="lifetime"
 				displayPosition="banner"
 				message={bannerItem}
-				actionLabel="Upgrade Now"
+				actionLabel={__('Upgrade Now', 'moowoodle')}
 				onAction={() => {
 					window.location.href = appLocalizer.shop_url;
 				}}
 			/>
-			<Route />
-		</>
-	);
-};
+		)}
+		<Route />
+	</>
+);
 
 export default App;

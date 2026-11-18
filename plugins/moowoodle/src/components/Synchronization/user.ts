@@ -62,14 +62,26 @@ export default {
 		'moowoodle'
 	),
 	headerIcon: 'supervised-user-circle',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	proDependent: true,
 	modal: [
 		{
+			key: 'synchronize-user-section',
+			type: 'section',
+			icon: 'supervised-user-circle',
+			title: __('User synchronization', 'moowoodle'),
+			desc: __(
+				'Which way accounts flow between WordPress and Moodle, and which profile details travel with them.',
+				'moowoodle'
+			),
+		},
+		{
 			key: 'user_sync_direction',
 			type: 'choice-toggle',
-			desc: __(
-				"The synchronization flow specifies the direction of data transfer. To enable two-way synchronization, select both directions. This applies to existing users as well. With 'Real-time profile synchronization', user profile information will sync immediately whenever users update their profiles.<br><br> <span class='highlighted-part'>User uniqueness will be checked based on email. If the user exists in the other system, their profile information will be synchronized; otherwise, a new user will be created. <br>Synchronizing user information fails if the same username is found in another instance but linked to a different email address.</span>",
+			settingDescription: __(
+				"Choose which way accounts sync. Select both for two-way sync. Existing users are included.<br><span class='highlighted-part'>Users are matched by email: a match is updated, anyone else is created. A user is skipped when their username already belongs to a different email on the other site.</span>",
 				'moowoodle'
 			),
 			label: __('Synchronization flow between sites', 'moowoodle'),
@@ -93,8 +105,8 @@ export default {
 		{
 			key: 'wordpress_user_role',
 			type: 'checkbox',
-			desc: __(
-				'Users from the chosen roles will be added or updated in Moodle.',
+			settingDescription: __(
+				'Users with these roles are created or updated in Moodle.',
 				'moowoodle'
 			),
 			label: __('WordPress user role to synchronize', 'moowoodle'),
@@ -117,8 +129,8 @@ export default {
 		{
 			key: 'moodle_user_role',
 			type: 'checkbox',
-			desc: __(
-				'Users from the chosen roles will be added or updated in WordPress.',
+			settingDescription: __(
+				'Users with these roles are created or updated in WordPress.',
 				'moowoodle'
 			),
 			label: __('Moodle user role to synchronize', 'moowoodle'),
@@ -146,8 +158,8 @@ export default {
 			mapping: true,
 			addButtonLabel: __('Add New', 'moowoodle'),
 			deleteButtonLabel: __('Remove', 'moowoodle'),
-			desc: __(
-				"Define the user profile information mapping between WordPress and Moodle. Add multiple rows above to define all the profile data you wish to map. Any remaining profile field will be excluded from the synchronization process.<br>User will be created based on their e-mail id, hence email id can't be mapped.",
+			settingDescription: __(
+				"Pair the WordPress and Moodle profile fields to keep in sync. Fields you don't map aren't synced.<br>Email can't be mapped: it is how users are matched.",
 				'moowoodle'
 			),
 			nestedFields,
@@ -155,8 +167,8 @@ export default {
 		{
 			key: 'realtime_user_sync',
 			type: 'checkbox',
-			desc: __(
-				'If enabled, the real-time profile update scheduler will initiate based on the "synchronization flow" settings.<br>When a new user is added or updates their profile information, it will be synchronized between WordPress to Moodle, or vice versa, according to the profile information mapping settings above, based on the specified direction.',
+			settingDescription: __(
+				'Sync a profile as soon as a user is added or changes it, in the direction and with the fields set above.',
 				'moowoodle'
 			),
 			label: __('Real-Time profile synchronization', 'moowoodle'),
@@ -172,18 +184,19 @@ export default {
 		},
 		{
 			key: 'sync_user_btn',
-			label: 'On-demand course',
-			settingDescription:
-				'Courses are fetched from Moodle and synchronized with WordPress, ensuring product details remain updated.',
+			label: __('Synchronize users now', 'moowoodle'),
+			settingDescription: __(
+				'Run a full user sync right away, using the direction, roles and field mapping above.',
+				'moowoodle'
+			),
 			type: 'sequential-task-executor',
-			buttonText: 'Synchronize users now!',
+			buttonText: __('Synchronize users now', 'moowoodle'),
 			buttonIcon: 'bulk-course-sync',
 			apilink: 'synchronization',
 			parameter: 'user',
 			interval: 2500,
-			successMessage: 'Users synchronized successfully!',
-			failureMessage: 'Failed to synchronize users.',
-			desc: "Initiate the immediate synchronization of all users from Moodle to WordPress.<br><span class='highlighted-part'><br>With the 'User & product synchronization' option, you have the ability to specify whether you want to create new products, update existing products.<br>Through the 'User information mapping' feature, you gain the flexibility to define which specific user data gets imported from Moodle, like user ID number/user images etc. By default we will fetch only the category of the product.</span>",
+			successMessage: __('Users synchronized.', 'moowoodle'),
+			failureMessage: __('Could not synchronize users.', 'moowoodle'),
 		},
 	],
 };

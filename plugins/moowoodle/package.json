@@ -40,14 +40,14 @@
         "fix:php": "composer run-script phpfix",
         "test": "pnpm run test:php",
         "test:php": "./vendor/bin/phpunit -c phpunit.xml.dist",
-        "env:create": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start && pnpm run env:start:database",
-        "env:start": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start && pnpm run env:start:database",
+        "env:create": "node ../../tools/scripts/wp-env.mjs start && pnpm run env:start:database",
+        "env:start": "node ../../tools/scripts/wp-env.mjs start && pnpm run env:start:database",
         "env:start:database": "node ../../tools/scripts/docker-compose.mjs && docker compose up -d",
-        "env:dev": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env start --update && pnpm run env:start:database && pnpm --if-present --filter storybook run watch:build:storybook",
-        "env:stop": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env stop && docker compose down",
-        "env:restart": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env restart",
-        "env:clean": "pnpm wp-env clean",
-        "env:destroy": "NODE_OPTIONS='--no-network-family-autoselection' pnpm wp-env destroy && rimraf docker-compose.yml",
+        "env:dev": "node ../../tools/scripts/wp-env.mjs start --update && pnpm run env:start:database && pnpm --if-present --filter storybook run watch:build:storybook",
+        "env:stop": "node ../../tools/scripts/wp-env.mjs stop && docker compose down",
+        "env:restart": "node ../../tools/scripts/wp-env.mjs restart",
+        "env:clean": "node ../../tools/scripts/wp-env.mjs clean",
+        "env:destroy": "node ../../tools/scripts/wp-env.mjs destroy && rimraf docker-compose.yml",
         "readme": "wp-readme-to-md",
         "composer": "composer dump-autoload && composer update",
         "clean": "node ../../tools/scripts/clean.mjs",
@@ -106,7 +106,7 @@
         "react": "19.2.6",
         "react-dom": "19.2.6",
         "react-router-dom": "^7.15.1",
-        "@multivendorx/zyra": "^1.0.62"
+        "@multivendorx/zyra": "^1.0.65"
     },
     "devDependencies": {
         "wireit": "^0.14.12"
