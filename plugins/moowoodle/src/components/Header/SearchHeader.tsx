@@ -4,6 +4,7 @@ import { __ } from '@wordpress/i18n';
 import { HeaderComponent } from '@zyra/components';
 import MoowoodleLogo from '../../assets/images/moowoodle-logo.png';
 import { buildSearchIndex, type SearchItem } from '../../searchIndex';
+import { ACCOUNT_URL, CONTACT_URL } from '../../services/links';
 
 /**
  * The header of the MooWoodle admin page: brand, Free/Pro versions, a search box and the support menu. Results cover
@@ -59,13 +60,13 @@ export function SearchHeader() {
 				{
 					title: __('Manage Plan', 'moowoodle'),
 					icon: 'person',
-					link: 'https://dualcube.com/my-account/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
+					link: ACCOUNT_URL,
 					targetBlank: true,
 				},
 				{
 					title: __('Contact Support', 'moowoodle'),
 					icon: 'user-network-icon',
-					link: 'https://dualcube.com/contact-us/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
+					link: CONTACT_URL,
 					targetBlank: true,
 				},
 			],

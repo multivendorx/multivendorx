@@ -1,5 +1,4 @@
 /* global appLocalizer */
-import './AdminDashboard.scss';
 import {
 	ColumnComponent,
 	ContainerComponent,

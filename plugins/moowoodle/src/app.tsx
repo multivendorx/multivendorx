@@ -13,7 +13,7 @@ import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import SearchHeader from './components/Header/SearchHeader';
 import './styles/admin.scss';
 
-/** Help & Support was its own tab, then a Settings tab; it is now a card on the dashboard. Old links scroll to it. */
+/** Help & Support was its own tab; it is now a card on the dashboard, and old links scroll to it. */
 const HELP_SUPPORT_LINK = '#&tab=dashboard&view=help-support';
 
 /**
@@ -23,11 +23,8 @@ const HELP_SUPPORT_LINK = '#&tab=dashboard&view=help-support';
 const Route = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const hashParams = new URLSearchParams(location.hash);
-	const tab = hashParams.get('tab');
-	const isOldHelpLink =
-		'help-support' === tab ||
-		('settings' === tab && 'help-support' === hashParams.get('subtab'));
+	const tab = new URLSearchParams(location.hash).get('tab');
+	const isOldHelpLink = 'help-support' === tab;
 
 	useEffect(() => {
 		if (isOldHelpLink) {

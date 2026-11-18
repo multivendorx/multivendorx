@@ -823,13 +823,6 @@ $mw-info-bg: #eff6ff;
 	padding: 0;
 }
 
-// ---- Page header actions ----
-.admin-main-wrapper .mw-dash-header-actions {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.5rem;
-}
-
 // Two cards side by side (setup and help, Pro and the team's plugins) end on the same line.
 .admin-main-wrapper .mw-insights-grid.is-equal > .card-wrapper > .card-content {
 	height: 100%;

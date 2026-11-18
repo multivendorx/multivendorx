@@ -10,6 +10,7 @@ import {
 	TrendStatComponent,
 } from '@zyra/components';
 import './insights.scss';
+import { DOCS_URL } from '../../services/links';
 
 /** GET moowoodle/v1/dashboard (classes/RestAPI/Controllers/Dashboard.php). */
 interface DashboardData {
@@ -842,7 +843,7 @@ const Insights: React.FC<InsightsProps> = ({ pro, learn, help, team }) => {
 												!connection.configured && (
 													<a
 														className="mw-insights-more"
-														href="https://moowoodle.com/docs/knowledgebase/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle"
+														href={DOCS_URL}
 														target="_blank"
 														rel="noopener noreferrer"
 													>
@@ -891,727 +892,651 @@ const Insights: React.FC<InsightsProps> = ({ pro, learn, help, team }) => {
 
 	return (
 		<div className="mw-insights">
-			{hasData && (
-				<div className="mw-insights-toolbar">
-					<p>
-						{isConnected && (
-							<span className="mw-insights-connected">
-								<span
-									className="mw-insights-dot is-good"
-									aria-hidden="true"
-								/>
-								{connection.site_name}
-							</span>
+			<div className="mw-insights-toolbar">
+				<p>
+					{isConnected && (
+						<span className="mw-insights-connected">
+							<span
+								className="mw-insights-dot is-good"
+								aria-hidden="true"
+							/>
+							{connection.site_name}
+						</span>
+					)}
+					<span>
+						{sprintf(
+							/* translators: %1$s: number of days (used twice). */
+							__(
+								'Last %1$s days, compared with the %1$s days before',
+								'moowoodle'
+							),
+							periodDays
 						)}
-						<span>
+					</span>
+				</p>
+				<div
+					className="mw-insights-range"
+					role="group"
+					aria-label={__('Reporting period', 'moowoodle')}
+				>
+					{periodChoices.map((choice) => (
+						<button
+							key={choice}
+							type="button"
+							aria-pressed={choice === periodDays}
+							className={choice === periodDays ? 'is-active' : ''}
+							disabled={isRefreshing}
+							onClick={() => setDays(choice)}
+						>
 							{sprintf(
-								/* translators: %1$s: number of days (used twice). */
-								__(
-									'Last %1$s days, compared with the %1$s days before',
+								/* translators: %s: number of days; "30d" means 30 days. */
+								__('%sd', 'moowoodle'),
+								choice
+							)}
+						</button>
+					))}
+				</div>
+			</div>
+
+			<div className={isRefreshing ? 'mw-insights-refreshing' : ''}>
+				<TrendStatComponent
+					cols={4}
+					items={[
+						{
+							icon: 'revenue',
+							label: __('Course revenue', 'moowoodle'),
+							value: money(revenue.current),
+							caption:
+								null === perEnrollment
+									? sprintf(
+											/* translators: 1: an amount, 2: number of days. */
+											__(
+												'%1$s the %2$s days before',
+												'moowoodle'
+											),
+											money(revenue.previous),
+											periodDays
+										)
+									: sprintf(
+											/* translators: %s: an amount. */
+											__(
+												'%s per new enrollment',
+												'moowoodle'
+											),
+											formatMoney(
+												perEnrollment,
+												currency,
+												true
+											)
+										),
+							badge: changeBadge(revenue, true),
+							chartData: revenueSparkline,
+							chartDataKey: 'value',
+						},
+						{
+							icon: 'classroom-enrollment',
+							label: __('New enrollments', 'moowoodle'),
+							value: numberFormat.format(enrollments.new.current),
+							caption: daysBefore(enrollments.new.previous),
+							badge: changeBadge(enrollments.new, true),
+							chartData: sparkline,
+							chartDataKey: 'value',
+						},
+						{
+							icon: 'person',
+							label: __('Active students', 'moowoodle'),
+							value: numberFormat.format(
+								enrollments.by_status.enrolled ?? 0
+							),
+							caption: sprintf(
+								/* translators: %s: number of unenrollments. */
+								_n(
+									'%s unenrolled in this period',
+									'%s unenrolled in this period',
+									enrollments.unenrolled.current,
 									'moowoodle'
 								),
-								periodDays
-							)}
-						</span>
-					</p>
-					<div
-						className="mw-insights-range"
-						role="group"
-						aria-label={__('Reporting period', 'moowoodle')}
-					>
-						{periodChoices.map((choice) => (
-							<button
-								key={choice}
-								type="button"
-								aria-pressed={choice === periodDays}
-								className={
-									choice === periodDays ? 'is-active' : ''
-								}
-								disabled={isRefreshing}
-								onClick={() => setDays(choice)}
-							>
-								{sprintf(
-									/* translators: %s: number of days; "30d" means 30 days. */
-									__('%sd', 'moowoodle'),
-									choice
-								)}
-							</button>
-						))}
-					</div>
-				</div>
-			)}
-
-			{hasData && (
-				<div className={isRefreshing ? 'mw-insights-refreshing' : ''}>
-					<TrendStatComponent
-						cols={4}
-						items={[
-							{
-								icon: 'revenue',
-								label: __('Course revenue', 'moowoodle'),
-								value: money(revenue.current),
-								caption:
-									null === perEnrollment
-										? sprintf(
-												/* translators: 1: an amount, 2: number of days. */
-												__(
-													'%1$s the %2$s days before',
-													'moowoodle'
-												),
-												money(revenue.previous),
-												periodDays
-											)
-										: sprintf(
-												/* translators: %s: an amount. */
-												__(
-													'%s per new enrollment',
-													'moowoodle'
-												),
-												formatMoney(
-													perEnrollment,
-													currency,
-													true
+								numberFormat.format(
+									enrollments.unenrolled.current
+								)
+							),
+							// Only worth a colour when more students are leaving than before.
+							badge:
+								unenrolledMore > 0
+									? {
+											text: sprintf(
+												/* translators: %s: number of extra unenrollments. */
+												__('+%s leaving', 'moowoodle'),
+												numberFormat.format(
+													unenrolledMore
 												)
 											),
-								badge: changeBadge(revenue, true),
-								chartData: revenueSparkline,
-								chartDataKey: 'value',
-							},
-							{
-								icon: 'classroom-enrollment',
-								label: __('New enrollments', 'moowoodle'),
-								value: numberFormat.format(
-									enrollments.new.current
-								),
-								caption: daysBefore(enrollments.new.previous),
-								badge: changeBadge(enrollments.new, true),
-								chartData: sparkline,
-								chartDataKey: 'value',
-							},
-							{
-								icon: 'person',
-								label: __('Active students', 'moowoodle'),
-								value: numberFormat.format(
-									enrollments.by_status.enrolled ?? 0
-								),
-								caption: sprintf(
-									/* translators: %s: number of unenrollments. */
-									_n(
-										'%s unenrolled in this period',
-										'%s unenrolled in this period',
-										enrollments.unenrolled.current,
-										'moowoodle'
-									),
-									numberFormat.format(
-										enrollments.unenrolled.current
-									)
-								),
-								// Only worth a colour when more students are leaving than before.
-								badge:
-									unenrolledMore > 0
-										? {
-												text: sprintf(
-													/* translators: %s: number of extra unenrollments. */
-													__(
-														'+%s leaving',
-														'moowoodle'
-													),
-													numberFormat.format(
-														unenrolledMore
-													)
-												),
-												color: 'red',
-											}
-										: undefined,
-							},
-							{
-								icon: 'catalog',
-								label: __('Courses on sale', 'moowoodle'),
-								value: numberFormat.format(
-									courses.with_product
-								),
-								caption: sprintf(
-									/* translators: %s: number of synced courses. */
-									__('of %s synced courses', 'moowoodle'),
-									numberFormat.format(courses.total)
-								),
-								badge:
-									courses.without_product > 0
-										? {
-												text: sprintf(
-													/* translators: %s: number of courses. */
-													__(
-														'%s unlisted',
-														'moowoodle'
-													),
-													numberFormat.format(
-														courses.without_product
-													)
-												),
-												color: 'gray',
-											}
-										: undefined,
-							},
-						]}
-					/>
-				</div>
-			)}
-
-			{hasData && (
-				<ContainerComponent className="mw-insights-grid">
-					<ColumnComponent grid={8}>
-						<div className="mw-insights-stack">
-							{(insights.length > 0 || setupComplete) && (
-								<CardComponent
-									title={__(
-										'Needs your attention',
-										'moowoodle'
-									)}
-									desc={
-										insights.length > 0
-											? sprintf(
-													/* translators: %s: number of items. */
-													_n(
-														'%s thing to look at',
-														'%s things to look at',
-														insights.length,
-														'moowoodle'
-													),
-													numberFormat.format(
-														insights.length
-													)
+											color: 'red',
+										}
+									: undefined,
+						},
+						{
+							icon: 'catalog',
+							label: __('Courses on sale', 'moowoodle'),
+							value: numberFormat.format(courses.with_product),
+							caption: sprintf(
+								/* translators: %s: number of synced courses. */
+								__('of %s synced courses', 'moowoodle'),
+								numberFormat.format(courses.total)
+							),
+							badge:
+								courses.without_product > 0
+									? {
+											text: sprintf(
+												/* translators: %s: number of courses. */
+												__('%s unlisted', 'moowoodle'),
+												numberFormat.format(
+													courses.without_product
 												)
-											: __(
-													'Nothing waiting on you',
-													'moowoodle'
-												)
-									}
-								>
-									{insights.length > 0 ? (
-										<>
-											<ul className="mw-insights-list">
-												{visibleInsights.map(
-													(insight) => (
-														<li
-															key={insight.id}
-															className={`is-${insight.severity}`}
-														>
-															<span
-																className="mw-insights-severity"
-																title={
-																	SEVERITY_LABEL[
-																		insight
-																			.severity
-																	]
-																}
-															>
-																<i
-																	className={`adminfont-${SEVERITY_ICON[insight.severity]}`}
-																	aria-hidden="true"
-																/>
-																<span className="screen-reader-text">
-																	{
-																		SEVERITY_LABEL[
-																			insight
-																				.severity
-																		]
-																	}
-																</span>
-															</span>
-															<span className="mw-insights-list-text">
-																<strong>
-																	{
-																		insight.title
-																	}
-																</strong>
-																<span>
-																	{
-																		insight.detail
-																	}
-																</span>
-															</span>
-															<a
-																className="mw-insights-action"
-																href={
-																	insight.link
-																}
-															>
-																{insight.cta}
-																<i
-																	className="adminfont-arrow-right"
-																	aria-hidden="true"
-																/>
-															</a>
-														</li>
-													)
-												)}
-											</ul>
-											{insights.length >
-												INSIGHTS_SHOWN && (
-												<button
-													type="button"
-													className="mw-insights-more mw-insights-toggle"
-													aria-expanded={
-														showAllInsights
-													}
-													onClick={() =>
-														setShowAllInsights(
-															!showAllInsights
-														)
-													}
-												>
-													{showAllInsights
-														? __(
-																'Show fewer',
-																'moowoodle'
-															)
-														: sprintf(
-																/* translators: %s: number of items. */
-																__(
-																	'Show all %s',
-																	'moowoodle'
-																),
-																insights.length
-															)}
-												</button>
-											)}
-										</>
-									) : (
-										<p className="mw-insights-clear">
-											<i
-												className="adminfont-check"
-												aria-hidden="true"
-											/>
-											{__(
-												'Your courses are connected, on sale and enrolling students.',
-												'moowoodle'
-											)}
-										</p>
-									)}
-								</CardComponent>
-							)}
+											),
+											color: 'gray',
+										}
+									: undefined,
+						},
+					]}
+				/>
+			</div>
 
+			<ContainerComponent className="mw-insights-grid">
+				<ColumnComponent grid={8}>
+					<div className="mw-insights-stack">
+						{(insights.length > 0 || setupComplete) && (
 							<CardComponent
-								title={
-									'revenue' === chartMetric
-										? __(
-												'Course revenue per day',
-												'moowoodle'
-											)
-										: __(
-												'New enrollments per day',
-												'moowoodle'
-											)
-								}
+								title={__('Needs your attention', 'moowoodle')}
 								desc={
-									'revenue' === chartMetric
+									insights.length > 0
 										? sprintf(
-												/* translators: 1: an amount, 2: number of days. */
-												__(
-													'%1$s in the last %2$s days',
-													'moowoodle'
-												),
-												money(revenue.current),
-												periodDays
-											)
-										: sprintf(
-												/* translators: 1: number of enrollments, 2: number of days. */
+												/* translators: %s: number of items. */
 												_n(
-													'%1$s in the last %2$s days',
-													'%1$s in the last %2$s days',
-													enrollments.new.current,
+													'%s thing to look at',
+													'%s things to look at',
+													insights.length,
 													'moowoodle'
 												),
 												numberFormat.format(
-													enrollments.new.current
-												),
-												periodDays
+													insights.length
+												)
+											)
+										: __(
+												'Nothing waiting on you',
+												'moowoodle'
 											)
 								}
-								action={
-									<div
-										className="mw-insights-range"
-										role="group"
-										aria-label={__('Chart', 'moowoodle')}
-									>
-										{(
-											[
-												[
-													'enrollments',
-													__(
-														'Enrollments',
-														'moowoodle'
-													),
-												],
-												[
-													'revenue',
-													__('Revenue', 'moowoodle'),
-												],
-											] as const
-										).map(([metric, label]) => (
+							>
+								{insights.length > 0 ? (
+									<>
+										<ul className="mw-insights-list">
+											{visibleInsights.map((insight) => (
+												<li
+													key={insight.id}
+													className={`is-${insight.severity}`}
+												>
+													<span
+														className="mw-insights-severity"
+														title={
+															SEVERITY_LABEL[
+																insight.severity
+															]
+														}
+													>
+														<i
+															className={`adminfont-${SEVERITY_ICON[insight.severity]}`}
+															aria-hidden="true"
+														/>
+														<span className="screen-reader-text">
+															{
+																SEVERITY_LABEL[
+																	insight
+																		.severity
+																]
+															}
+														</span>
+													</span>
+													<span className="mw-insights-list-text">
+														<strong>
+															{insight.title}
+														</strong>
+														<span>
+															{insight.detail}
+														</span>
+													</span>
+													<a
+														className="mw-insights-action"
+														href={insight.link}
+													>
+														{insight.cta}
+														<i
+															className="adminfont-arrow-right"
+															aria-hidden="true"
+														/>
+													</a>
+												</li>
+											))}
+										</ul>
+										{insights.length > INSIGHTS_SHOWN && (
 											<button
-												key={metric}
 												type="button"
-												aria-pressed={
-													metric === chartMetric
-												}
-												className={
-													metric === chartMetric
-														? 'is-active'
-														: ''
-												}
+												className="mw-insights-more mw-insights-toggle"
+												aria-expanded={showAllInsights}
 												onClick={() =>
-													setChartMetric(metric)
+													setShowAllInsights(
+														!showAllInsights
+													)
 												}
 											>
-												{label}
+												{showAllInsights
+													? __(
+															'Show fewer',
+															'moowoodle'
+														)
+													: sprintf(
+															/* translators: %s: number of items. */
+															__(
+																'Show all %s',
+																'moowoodle'
+															),
+															insights.length
+														)}
 											</button>
-										))}
-									</div>
-								}
-							>
-								<div
-									className={
-										isRefreshing
-											? 'mw-insights-refreshing'
-											: ''
-									}
-								>
-									{'revenue' === chartMetric ? (
-										<DailyTrend
-											daily={data.daily}
-											valueOf={(day) => day.revenue ?? 0}
-											formatValue={(value) =>
-												formatMoney(
-													value,
-													currency,
-													true
-												)
-											}
-											formatAxis={money}
-											caption={{
-												title: __(
-													'Course revenue per day',
-													'moowoodle'
-												),
-												column: __(
-													'Revenue',
-													'moowoodle'
-												),
-											}}
-											emptyText={__(
-												'No course revenue in this period yet. Sales of course products show up here.',
-												'moowoodle'
-											)}
-										/>
-									) : (
-										<DailyTrend
-											daily={data.daily}
-											valueOf={(day) => day.count}
-											formatValue={(value) =>
-												sprintf(
-													/* translators: %s: number of enrollments. */
-													_n(
-														'%s enrollment',
-														'%s enrollments',
-														value,
-														'moowoodle'
-													),
-													numberFormat.format(value)
-												)
-											}
-											formatAxis={(value) =>
-												numberFormat.format(value)
-											}
-											caption={{
-												title: __(
-													'New enrollments per day',
-													'moowoodle'
-												),
-												column: __(
-													'Enrollments',
-													'moowoodle'
-												),
-											}}
-											emptyText={__(
-												'No new enrollments in this period yet. Each purchase of a course product shows up here.',
-												'moowoodle'
-											)}
-										/>
-									)}
-								</div>
-							</CardComponent>
-
-							<CardComponent
-								title={__('Top courses', 'moowoodle')}
-								desc={sprintf(
-									/* translators: %s: number of days. */
-									__(
-										'By new enrollments, last %s days',
-										'moowoodle'
-									),
-									periodDays
-								)}
-								action={
-									<a
-										className="mw-insights-more"
-										href={TAB.courses}
-									>
-										{__('All courses', 'moowoodle')}
+										)}
+									</>
+								) : (
+									<p className="mw-insights-clear">
 										<i
-											className="adminfont-arrow-right"
+											className="adminfont-check"
 											aria-hidden="true"
 										/>
-									</a>
-								}
-							>
-								{data.top_courses.length > 0 ? (
-									<table className="mw-insights-table">
-										<thead>
-											<tr>
-												<th scope="col">
-													{__('Course', 'moowoodle')}
-												</th>
-												<th scope="col">
-													{__(
-														'New enrollments',
-														'moowoodle'
-													)}
-												</th>
-												<th
-													scope="col"
-													className="is-number"
-												>
-													{__('Revenue', 'moowoodle')}
-												</th>
-												<th scope="col">
-													<span className="screen-reader-text">
-														{__(
-															'Product',
-															'moowoodle'
-														)}
-													</span>
-												</th>
-											</tr>
-										</thead>
-										<tbody>
-											{data.top_courses.map((course) => (
-												<tr key={course.course_id}>
-													<td className="mw-insights-table-title">
-														{course.name ||
-															__(
-																'Deleted course',
-																'moowoodle'
-															)}
-													</td>
-													<td>
-														<span className="mw-insights-meter">
-															<span
-																className="mw-insights-meter-bar"
-																aria-hidden="true"
-															>
-																<span
-																	style={{
-																		width: `${(course.enrollments / topMax) * 100}%`,
-																	}}
-																/>
-															</span>
-															{numberFormat.format(
-																course.enrollments
-															)}
-														</span>
-													</td>
-													<td className="is-number">
-														{money(
-															course.revenue ?? 0
-														)}
-													</td>
-													<td className="mw-insights-table-action">
-														{course.product_url && (
-															<a
-																href={
-																	course.product_url
-																}
-															>
-																{__(
-																	'Edit product',
-																	'moowoodle'
-																)}
-															</a>
-														)}
-													</td>
-												</tr>
-											))}
-										</tbody>
-									</table>
-								) : (
-									<p className="mw-insights-empty">
 										{__(
-											'Courses with new enrollments in this period are ranked here.',
+											'Your courses are connected, on sale and enrolling students.',
 											'moowoodle'
 										)}
 									</p>
 								)}
 							</CardComponent>
-						</div>
-					</ColumnComponent>
+						)}
 
-					<ColumnComponent grid={4}>
-						<div className="mw-insights-stack">
-							{team}
-							{setupCard}
-							<CardComponent
-								title={__('Moodle™ connection', 'moowoodle')}
-								desc={
-									isConnected
-										? connection.site_name
-										: __('Not connected', 'moowoodle')
-								}
-							>
-								<dl className="mw-insights-pulse">
-									<div>
-										<dt>{__('Status', 'moowoodle')}</dt>
-										<dd>
-											<span
-												className={`mw-insights-dot ${isConnected ? 'is-good' : 'is-off'}`}
-												aria-hidden="true"
-											/>
-											{isConnected
-												? __('Connected', 'moowoodle')
-												: __(
-														'Not connected',
-														'moowoodle'
-													)}
-										</dd>
-									</div>
-									<div>
-										<dt>
-											{__('Courses synced', 'moowoodle')}
-										</dt>
-										<dd>
-											{numberFormat.format(courses.total)}
-										</dd>
-									</div>
-									<div>
-										<dt>{__('Categories', 'moowoodle')}</dt>
-										<dd>
-											{numberFormat.format(
-												courses.categories
-											)}
-										</dd>
-									</div>
-									<div>
-										<dt>
-											{__('Course sync', 'moowoodle')}
-										</dt>
-										<dd>
-											{connection.sync_running ? (
-												<a href={TAB.syncCourses}>
-													{__('Running', 'moowoodle')}
-												</a>
-											) : (
-												__('Idle', 'moowoodle')
-											)}
-										</dd>
-									</div>
-								</dl>
-							</CardComponent>
-
-							<CardComponent
-								title={__('Latest enrollments', 'moowoodle')}
-								desc={__('Most recent first', 'moowoodle')}
-								action={
-									data.recent.length > 0 &&
-									appLocalizer.khali_dabba ? (
-										<a
-											className="mw-insights-more"
-											href={TAB.enrollments}
+						<CardComponent
+							title={
+								'revenue' === chartMetric
+									? __('Course revenue per day', 'moowoodle')
+									: __('New enrollments per day', 'moowoodle')
+							}
+							desc={
+								'revenue' === chartMetric
+									? sprintf(
+											/* translators: 1: an amount, 2: number of days. */
+											__(
+												'%1$s in the last %2$s days',
+												'moowoodle'
+											),
+											money(revenue.current),
+											periodDays
+										)
+									: sprintf(
+											/* translators: 1: number of enrollments, 2: number of days. */
+											_n(
+												'%1$s in the last %2$s days',
+												'%1$s in the last %2$s days',
+												enrollments.new.current,
+												'moowoodle'
+											),
+											numberFormat.format(
+												enrollments.new.current
+											),
+											periodDays
+										)
+							}
+							action={
+								<div
+									className="mw-insights-range"
+									role="group"
+									aria-label={__('Chart', 'moowoodle')}
+								>
+									{(
+										[
+											[
+												'enrollments',
+												__('Enrollments', 'moowoodle'),
+											],
+											[
+												'revenue',
+												__('Revenue', 'moowoodle'),
+											],
+										] as const
+									).map(([metric, label]) => (
+										<button
+											key={metric}
+											type="button"
+											aria-pressed={
+												metric === chartMetric
+											}
+											className={
+												metric === chartMetric
+													? 'is-active'
+													: ''
+											}
+											onClick={() =>
+												setChartMetric(metric)
+											}
 										>
-											{__('View all', 'moowoodle')}
-											<i
-												className="adminfont-arrow-right"
-												aria-hidden="true"
-											/>
-										</a>
-									) : undefined
+											{label}
+										</button>
+									))}
+								</div>
+							}
+						>
+							<div
+								className={
+									isRefreshing ? 'mw-insights-refreshing' : ''
 								}
 							>
-								{data.recent.length > 0 ? (
-									<ul className="mw-insights-recent">
-										{data.recent.map(
-											(enrollment, index) => (
-												<li
-													key={`${enrollment.date}-${index}`}
-												>
-													<span
-														className="mw-insights-avatar"
-														aria-hidden="true"
-													>
-														{(
-															enrollment.student ||
-															'?'
-														)
-															.charAt(0)
-															.toUpperCase()}
-													</span>
-													<span className="mw-insights-recent-text">
-														<strong>
-															{enrollment.student}
-														</strong>
-														<span>
-															{enrollment.course ||
-																__(
-																	'Deleted course',
-																	'moowoodle'
-																)}
-														</span>
-													</span>
-													<span className="mw-insights-recent-meta">
-														<span
-															className={`mw-insights-status-tag is-${enrollment.status}`}
-														>
-															{STATUS_LABEL[
-																enrollment
-																	.status
-															] ??
-																enrollment.status}
-														</span>
-														<time
-															dateTime={
-																enrollment.date
-															}
-														>
-															{formatAgo(
-																enrollment.date
-															)}
-														</time>
-													</span>
-												</li>
-											)
+								{'revenue' === chartMetric ? (
+									<DailyTrend
+										daily={data.daily}
+										valueOf={(day) => day.revenue ?? 0}
+										formatValue={(value) =>
+											formatMoney(value, currency, true)
+										}
+										formatAxis={money}
+										caption={{
+											title: __(
+												'Course revenue per day',
+												'moowoodle'
+											),
+											column: __('Revenue', 'moowoodle'),
+										}}
+										emptyText={__(
+											'No course revenue in this period yet. Sales of course products show up here.',
+											'moowoodle'
 										)}
-									</ul>
+									/>
 								) : (
-									<p className="mw-insights-empty">
-										{nextStep
-											? sprintf(
-													/* translators: %s: name of the next setup step. */
-													__(
-														'No enrollments yet. Next step: %s.',
-														'moowoodle'
-													),
-													nextStep.title
-												)
-											: __(
-													'No enrollments yet.',
+									<DailyTrend
+										daily={data.daily}
+										valueOf={(day) => day.count}
+										formatValue={(value) =>
+											sprintf(
+												/* translators: %s: number of enrollments. */
+												_n(
+													'%s enrollment',
+													'%s enrollments',
+													value,
+													'moowoodle'
+												),
+												numberFormat.format(value)
+											)
+										}
+										formatAxis={(value) =>
+											numberFormat.format(value)
+										}
+										caption={{
+											title: __(
+												'New enrollments per day',
+												'moowoodle'
+											),
+											column: __(
+												'Enrollments',
+												'moowoodle'
+											),
+										}}
+										emptyText={__(
+											'No new enrollments in this period yet. Each purchase of a course product shows up here.',
+											'moowoodle'
+										)}
+									/>
+								)}
+							</div>
+						</CardComponent>
+
+						<CardComponent
+							title={__('Top courses', 'moowoodle')}
+							desc={sprintf(
+								/* translators: %s: number of days. */
+								__(
+									'By new enrollments, last %s days',
+									'moowoodle'
+								),
+								periodDays
+							)}
+							action={
+								<a
+									className="mw-insights-more"
+									href={TAB.courses}
+								>
+									{__('All courses', 'moowoodle')}
+									<i
+										className="adminfont-arrow-right"
+										aria-hidden="true"
+									/>
+								</a>
+							}
+						>
+							{data.top_courses.length > 0 ? (
+								<table className="mw-insights-table">
+									<thead>
+										<tr>
+											<th scope="col">
+												{__('Course', 'moowoodle')}
+											</th>
+											<th scope="col">
+												{__(
+													'New enrollments',
 													'moowoodle'
 												)}
-									</p>
-								)}
-							</CardComponent>
-						</div>
-					</ColumnComponent>
-				</ContainerComponent>
-			)}
+											</th>
+											<th
+												scope="col"
+												className="is-number"
+											>
+												{__('Revenue', 'moowoodle')}
+											</th>
+											<th scope="col">
+												<span className="screen-reader-text">
+													{__('Product', 'moowoodle')}
+												</span>
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{data.top_courses.map((course) => (
+											<tr key={course.course_id}>
+												<td className="mw-insights-table-title">
+													{course.name ||
+														__(
+															'Deleted course',
+															'moowoodle'
+														)}
+												</td>
+												<td>
+													<span className="mw-insights-meter">
+														<span
+															className="mw-insights-meter-bar"
+															aria-hidden="true"
+														>
+															<span
+																style={{
+																	width: `${(course.enrollments / topMax) * 100}%`,
+																}}
+															/>
+														</span>
+														{numberFormat.format(
+															course.enrollments
+														)}
+													</span>
+												</td>
+												<td className="is-number">
+													{money(course.revenue ?? 0)}
+												</td>
+												<td className="mw-insights-table-action">
+													{course.product_url && (
+														<a
+															href={
+																course.product_url
+															}
+														>
+															{__(
+																'Edit product',
+																'moowoodle'
+															)}
+														</a>
+													)}
+												</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							) : (
+								<p className="mw-insights-empty">
+									{__(
+										'Courses with new enrollments in this period are ranked here.',
+										'moowoodle'
+									)}
+								</p>
+							)}
+						</CardComponent>
+					</div>
+				</ColumnComponent>
+
+				<ColumnComponent grid={4}>
+					<div className="mw-insights-stack">
+						{team}
+						{setupCard}
+						<CardComponent
+							title={__('Moodle™ connection', 'moowoodle')}
+							desc={
+								isConnected
+									? connection.site_name
+									: __('Not connected', 'moowoodle')
+							}
+						>
+							<dl className="mw-insights-pulse">
+								<div>
+									<dt>{__('Status', 'moowoodle')}</dt>
+									<dd>
+										<span
+											className={`mw-insights-dot ${isConnected ? 'is-good' : 'is-off'}`}
+											aria-hidden="true"
+										/>
+										{isConnected
+											? __('Connected', 'moowoodle')
+											: __('Not connected', 'moowoodle')}
+									</dd>
+								</div>
+								<div>
+									<dt>{__('Courses synced', 'moowoodle')}</dt>
+									<dd>
+										{numberFormat.format(courses.total)}
+									</dd>
+								</div>
+								<div>
+									<dt>{__('Categories', 'moowoodle')}</dt>
+									<dd>
+										{numberFormat.format(
+											courses.categories
+										)}
+									</dd>
+								</div>
+								<div>
+									<dt>{__('Course sync', 'moowoodle')}</dt>
+									<dd>
+										{connection.sync_running ? (
+											<a href={TAB.syncCourses}>
+												{__('Running', 'moowoodle')}
+											</a>
+										) : (
+											__('Idle', 'moowoodle')
+										)}
+									</dd>
+								</div>
+							</dl>
+						</CardComponent>
+
+						<CardComponent
+							title={__('Latest enrollments', 'moowoodle')}
+							desc={__('Most recent first', 'moowoodle')}
+							action={
+								data.recent.length > 0 &&
+								appLocalizer.khali_dabba ? (
+									<a
+										className="mw-insights-more"
+										href={TAB.enrollments}
+									>
+										{__('View all', 'moowoodle')}
+										<i
+											className="adminfont-arrow-right"
+											aria-hidden="true"
+										/>
+									</a>
+								) : undefined
+							}
+						>
+							{data.recent.length > 0 ? (
+								<ul className="mw-insights-recent">
+									{data.recent.map((enrollment, index) => (
+										<li key={`${enrollment.date}-${index}`}>
+											<span
+												className="mw-insights-avatar"
+												aria-hidden="true"
+											>
+												{(enrollment.student || '?')
+													.charAt(0)
+													.toUpperCase()}
+											</span>
+											<span className="mw-insights-recent-text">
+												<strong>
+													{enrollment.student}
+												</strong>
+												<span>
+													{enrollment.course ||
+														__(
+															'Deleted course',
+															'moowoodle'
+														)}
+												</span>
+											</span>
+											<span className="mw-insights-recent-meta">
+												<span
+													className={`mw-insights-status-tag is-${enrollment.status}`}
+												>
+													{STATUS_LABEL[
+														enrollment.status
+													] ?? enrollment.status}
+												</span>
+												<time
+													dateTime={enrollment.date}
+												>
+													{formatAgo(enrollment.date)}
+												</time>
+											</span>
+										</li>
+									))}
+								</ul>
+							) : (
+								<p className="mw-insights-empty">
+									{nextStep
+										? sprintf(
+												/* translators: %s: name of the next setup step. */
+												__(
+													'No enrollments yet. Next step: %s.',
+													'moowoodle'
+												),
+												nextStep.title
+											)
+										: __(
+												'No enrollments yet.',
+												'moowoodle'
+											)}
+								</p>
+							)}
+						</CardComponent>
+					</div>
+				</ColumnComponent>
+			</ContainerComponent>
 
 			<SupportRows pro={pro} learn={learn} help={help} />
 		</div>

@@ -2,7 +2,6 @@ import { applyFilters } from '@wordpress/hooks';
 /// <reference types="webpack-env" />
 
 // Predefined contexts
-// eslint-disable-next-line no-undef -- __WebpackModuleApi is a global TS namespace from @types/webpack-env, not a runtime identifier.
 const contexts: Record<string, __WebpackModuleApi.RequireContext> = {
 	settings: require.context('../components/Settings', true, /\.ts$/),
 	synchronization: require.context(
@@ -20,7 +19,6 @@ type SettingNode = {
 };
 
 const importAll = (
-	// eslint-disable-next-line no-undef -- __WebpackModuleApi is a global TS namespace from @types/webpack-env, not a runtime identifier.
 	inpContext: __WebpackModuleApi.RequireContext
 ): SettingNode[] => {
 	const folderStructure: SettingNode[] = [];

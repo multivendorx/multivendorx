@@ -4,9 +4,7 @@ import { __ } from '@wordpress/i18n';
 import { PopupComponent } from '@zyra/components';
 import ShowProPopup, { LICENSES, PRO_FEATURES } from '../Popup/Popup';
 import './pro-pitch.scss';
-
-const UTM =
-	'utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle';
+import { UTM } from '../../services/links';
 
 /**
  * Settings → License without MooWoodle Pro: why Pro is worth it (what it adds, the plans and their prices, the

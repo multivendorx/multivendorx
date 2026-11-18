@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ButtonInput } from '@zyra/inputs';
 import { __, sprintf } from '@wordpress/i18n';
 import './Popup.scss';
+import { UTM } from '../../services/links';
 
 /** The page or feature the upgrade was asked from, shown first in the Pro popup. */
 export interface ProFeature {
@@ -20,15 +21,6 @@ interface RequiredPlugin {
 interface PopupProps {
 	moduleName?: string;
 	settings?: string;
-	wooSetting?: string;
-	wooLink?: string;
-	confirmMode?: boolean;
-	title?: string;
-	confirmMessage?: string;
-	confirmYesText?: string;
-	confirmNoText?: string;
-	onConfirm?: () => void;
-	onCancel?: () => void;
 	plugin?: RequiredPlugin | string;
 	feature?: ProFeature;
 }
@@ -112,64 +104,32 @@ export const LICENSES = [
 		id: 'one',
 		label: __('1 site', 'moowoodle'),
 		price: '$199',
-		link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18156&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
+		link: `https://dualcube.com/product/moowoodle-pro/?add-to-cart=18156&${UTM}`,
 	},
 	{
 		id: 'three',
 		label: __('3 sites', 'moowoodle'),
 		price: '$349',
-		link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18158&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
+		link: `https://dualcube.com/product/moowoodle-pro/?add-to-cart=18158&${UTM}`,
 	},
 	{
 		id: 'ten',
 		label: __('10 sites', 'moowoodle'),
 		price: '$499',
-		link: 'https://dualcube.com/product/moowoodle-pro/?add-to-cart=18157&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
+		link: `https://dualcube.com/product/moowoodle-pro/?add-to-cart=18157&${UTM}`,
 	},
 ];
 
 /**
  * The popup zyra's InputRenderer opens when a locked field (`proSetting`, `dependentPlugin`) is clicked, passed as the
- * `Popup` prop of `<InputRenderer>` (components/SettingsNavigator). Also the confirmation dialog of the list screens
- * (`confirmMode`).
+ * `Popup` prop of `<InputRenderer>` (components/SettingsNavigator). (MooWoodle Pro's list screens have their own
+ * confirmation dialog.)
  *
  * The `plugin` branch says which plugin is required (zyra passes `{ plugin, name, link }`). The default branch is the upgrade prompt: what was asked for
  * first, then everything Pro adds, with the license picker and buy button always in view.
  */
 const ShowProPopup: React.FC<PopupProps> = (props) => {
 	const [license, setLicense] = useState(LICENSES[0]);
-
-	if (props.confirmMode) {
-		return (
-			<div className="popup-confirm">
-				<i className="popup-icon adminfont-suspended admin-badge red"></i>
-				<div className="title">
-					{props.title || __('Confirmation', 'moowoodle')}
-				</div>
-				<div className="desc">{props.confirmMessage}</div>
-				<ButtonInput
-					position="center"
-					buttons={[
-						{
-							icon: 'close',
-							text:
-								props.confirmNoText ||
-								__('Cancel', 'moowoodle'),
-							color: 'red',
-							onClick: props.onCancel,
-						},
-						{
-							icon: 'delete',
-							text:
-								props.confirmYesText ||
-								__('Confirm', 'moowoodle'),
-							onClick: props.onConfirm,
-						},
-					]}
-				/>
-			</div>
-		);
-	}
 
 	if (props.plugin) {
 		const required: RequiredPlugin =

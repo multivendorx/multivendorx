@@ -7,14 +7,12 @@ import catalogx from '../../assets/images/catalogx.png';
 import notifima from '../../assets/images/notifima.png';
 import ShowProPopup from '../Popup/Popup';
 import Insights from './Insights';
+import { ACCOUNT_URL, CONTACT_URL, DOCS_URL, UTM } from '../../services/links';
 
 interface WPPlugin {
 	plugin?: string;
 	status?: string;
 }
-
-const UTM =
-	'utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle';
 
 /** The Pro features the dashboard's Pro panel lists (free sites only). */
 const PRO_FEATURES = [
@@ -85,7 +83,7 @@ const LEARN: HelpLink[] = [
 			'Guides for connecting Moodle™, syncing courses and selling them.',
 			'moowoodle'
 		),
-		link: `https://moowoodle.com/docs/knowledgebase/?${UTM}`,
+		link: DOCS_URL,
 	},
 	{
 		icon: 'youtube',
@@ -138,7 +136,7 @@ const CONTACT: HelpLink[] = [
 			'Send our team a ticket and get a reply by email.',
 			'moowoodle'
 		),
-		link: `https://dualcube.com/contact-us/?${UTM}`,
+		link: CONTACT_URL,
 	},
 	{
 		icon: 'coding',
@@ -158,7 +156,7 @@ const CONTACT: HelpLink[] = [
 						'Download MooWoodle Pro, manage license keys and renew.',
 						'moowoodle'
 					),
-					link: `https://dualcube.com/my-account/?${UTM}`,
+					link: ACCOUNT_URL,
 				},
 			]
 		: []),
