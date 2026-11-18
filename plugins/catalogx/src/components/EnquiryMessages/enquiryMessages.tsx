@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
-import { PopupComponent, ContainerComponent, ColumnComponent } from '@zyra/components';
-import ShowProPopup from '../Popup/Popup';
+import React from 'react';
+import {
+    ContainerComponent,
+    ColumnComponent,
+    NavigatorHeaderComponent,
+} from '@zyra/components';
+import ListGate from '../Popup/ListGate';
 import './enquiryMessages.scss';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
@@ -267,48 +271,65 @@ const demoMessages = [
     }
 ];
 
+/**
+ * Enquiry Messages: CatalogX Pro's inbox (swapped in through `catalogx_enquiry_messages_component`). Without Pro, or
+ * with the Enquiry module off, the sample conversation is drawn behind the same card as every other Pro page.
+ */
 const EnquiryMessages = () => {
     const MessageComponent = applyFilters(
         'catalogx_enquiry_messages_component',
         DummyEnquiryMessages
-    );
+    ) as React.ComponentType;
 
     return (
-        <ContainerComponent general>
-            <ColumnComponent>
-                <MessageComponent />
-            </ColumnComponent>
-        </ContainerComponent>
+        <>
+            <NavigatorHeaderComponent
+                headerIcon="enquiry"
+                headerTitle={__('Enquiry Messages', 'catalogx')}
+                headerDescription={__(
+                    'Every enquiry as a conversation: read what the customer asked, reply, attach files and send a quote.',
+                    'catalogx'
+                )}
+            />
+            <ContainerComponent general>
+                <ColumnComponent>
+                    <ListGate
+                        feature={{
+                            title: __('Enquiry Messages', 'catalogx'),
+                            description: __(
+                                'Answer every enquiry from one inbox, with files, tags and a quote button, instead of from your email.',
+                                'catalogx'
+                            ),
+                            icon: 'enquiry',
+                        }}
+                        module={{
+                            id: 'enquiry',
+                            name: __('Enquiry', 'catalogx'),
+                        }}
+                        sample={<DummyEnquiryMessages />}
+                        isEmpty={false}
+                        empty={{
+                            heading: '',
+                            description: '',
+                            actions: null,
+                            note: '',
+                        }}
+                    >
+                        <MessageComponent />
+                    </ListGate>
+                </ColumnComponent>
+            </ContainerComponent>
+        </>
     );
 };
 
+/** A sample conversation list and thread, drawn behind the Pro card. */
 const DummyEnquiryMessages = () => {
-    const [openPopup, setopenPopup] = useState(false);
     return (
         <div id="enquiry-messages">
-            {openPopup && (
-                <PopupComponent
-                    position="lightbox"
-                    open={openPopup}
-                    onClose={() => setopenPopup(false)}
-                    width={31.25}
-                    height="auto"
-                >
-                    <ShowProPopup />
-                </PopupComponent>
-            )}
-
             <ContainerComponent>
                 <ColumnComponent>
-                    <div
-                        id="enquiry-messages"
-                        className="demo-wrapper"
-                        onClick={() => {
-                            setopenPopup(true);
-                        }}
-                    >
-                        <div className="watermark">{__('This is sample Data', 'catalogx')}</div>
-                        <div className="enquiry-container">
+                    <div className="enquiry-container">
                             <div className="chat-list">
                                 <div className="header-container-wrapper">
                                     <div className="search-field">
@@ -490,7 +511,6 @@ const DummyEnquiryMessages = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </ColumnComponent>
             </ContainerComponent>
         </div>

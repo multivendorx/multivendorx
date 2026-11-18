@@ -1,0 +1,18 @@
+// Entry stylesheet for the CatalogX admin app (imported once, from src/app.tsx).
+
+// design-system.scss restyles zyra's building blocks; _table-and-controls.scss fixes the table, select and page
+// container spacing. The rules below cover what only CatalogX renders.
+@use './design-system';
+@use './table-and-controls';
+
+// Settings → System: the log viewer (zyra's `log` field) takes the full width of its card instead of the control
+// column of the two-column row.
+.admin-main-wrapper.admin-main-wrapper .catalogx-settings .settings-right-section .form-group:has(.section-log-container, .log-container-wrapper) {
+	grid-template-columns: minmax(0, 1fr);
+
+	.section-log-container,
+	.log-container-wrapper {
+		width: 100%;
+		max-width: none;
+	}
+}

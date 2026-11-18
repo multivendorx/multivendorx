@@ -243,6 +243,23 @@ class FrontendScripts {
     }
 
     /**
+     * The logged-in user's first name, or their display name when no first name is set.
+     *
+     * @return string Empty when no user is logged in.
+     */
+    public static function current_user_first_name() {
+        $user = wp_get_current_user();
+
+        if ( ! $user->exists() ) {
+            return '';
+        }
+
+        $first_name = trim( (string) $user->first_name );
+
+        return '' !== $first_name ? $first_name : (string) $user->display_name;
+    }
+
+    /**
 	 * Localize all scripts.
 	 *
 	 * @param string $handle Script handle the data will be attached to.
@@ -272,6 +289,8 @@ class FrontendScripts {
 						'tab_name'      => __( 'Notifima', 'notifima' ),
 						'pro_url'       => esc_url( NOTIFIMA_PRO_SHOP_URL ),
 						'free_version'  => Notifima()->version,
+						// The dashboard greets the admin by name ("Good morning, Ana"); empty when no one is logged in.
+						'user_first_name' => self::current_user_first_name(),
                         'pro_data'      => apply_filters(
                             'notifima_update_pro_data',
                             array(

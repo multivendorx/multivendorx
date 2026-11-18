@@ -3,13 +3,14 @@ import { useState } from 'react';
 import {
     ColumnComponent,
     ContainerComponent,
-    ModuleGuardComponent,
     PopupComponent,
     NavigatorHeaderComponent,
     InformationItemComponent
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
-import ShowProPopup from '../Popup/Popup';
+import ShowProPopup, { type ProFeature } from '../Popup/Popup';
+import ListGate from '../Popup/ListGate';
+import useNoRecordsYet from '../Popup/useNoRecordsYet';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { dummyRules } from './RulesUtil';
@@ -35,6 +36,16 @@ export interface RuleRow {
     type?: 'fixed' | 'percentage';
     active?: number;
 }
+
+/** This page, as the Pro card and the Pro popup name it. */
+const FEATURE: ProFeature = {
+    title: __('Dynamic Pricing Rules', 'catalogx'),
+    description: __(
+        'Set prices by role, customer, product, category or quantity, and order the rules by priority.',
+        'catalogx'
+    ),
+    icon: 'rules',
+};
 
 const Rules = () => {
     const [openPopup, setopenPopup] = useState(false);
@@ -186,45 +197,22 @@ const Rules = () => {
         onRowReorder: () => { },
     };
 
-    tableProps = applyFilters(
-        'catalogx_rules_table_props',
-        defaultTableProps
+    const { props: filteredProps, hasNoRecords } = useNoRecordsYet(
+        applyFilters(
+            'catalogx_rules_table_props',
+            defaultTableProps
+        ) as typeof defaultTableProps & Record<string, any>
     );
+    tableProps = filteredProps;
 
-    const renderTableContent = () => {
-        if (!appLocalizer.khali_dabba) {
-            return (
-                <div className="demo-wrapper" onClick={() => setopenPopup(true)}>
-                    <div className="watermark">{__('This is sample Data', 'catalogx')}</div>
-                    <TableCard {...tableProps} />
-                </div>
-            );
-        }
-
-        if (!appLocalizer.active_modules.includes('rules')) {
-            return (
-                <ModuleGuardComponent
-                    title={__(
-                        'Looks like product rules aren’t set up yet!',
-                        'catalogx'
-                    )}
-                    desc={__(
-                        'Enable the Rules module to create and manage custom catalog rules for your products.',
-                        'catalogx'
-                    )}
-                    buttonText={__('Enable Now', 'catalogx')}
-                    buttonLink={`${appLocalizer.admin_url}#&tab=modules&module=rules`}
-                />
-            );
-        }
-
-        return (
-            <>
-                <TableCard {...tableProps} />
-                {tableProps.popup}
-            </>
-        );
-    };
+    /** The sample rows drawn behind every card: the plugin's own, never the filtered (real) props. */
+    const sampleTable = (
+        <TableCard
+            {...defaultTableProps}
+            rows={dummyRules.slice(0, 4)}
+            totalRows={Math.min(4, dummyRules.length)}
+        />
+    );
 
     return (
         <>
@@ -233,11 +221,11 @@ const Rules = () => {
                     position="lightbox"
                     open={openPopup}
                     onClose={() => setopenPopup(false)}
-                    width={31.25}
+                    width={46}
                     height="auto"
                 >
                     {!appLocalizer.khali_dabba ? (
-                        <ShowProPopup />
+                        <ShowProPopup feature={FEATURE} />
                     ) : (
                         <ShowProPopup moduleName="rules" />
                     )}
@@ -258,7 +246,7 @@ const Rules = () => {
                             if (tableProps?.setAddingNewRule) {
                                 tableProps.setAddingNewRule(true);
                             } else {
-                                setopenPopup(true)
+                                setopenPopup(true);
                             }
                         },
                     },
@@ -269,7 +257,37 @@ const Rules = () => {
             )}
             <ContainerComponent general>
                 <ColumnComponent>
-                    {renderTableContent()}
+                    <ListGate
+                        feature={FEATURE}
+                        module={{ id: 'rules', name: __('Rules', 'catalogx') }}
+                        sample={sampleTable}
+                        isEmpty={hasNoRecords && !tableProps.addingNewRule}
+                        empty={{
+                            heading: __('No pricing rules yet', 'catalogx'),
+                            description: __(
+                                'A rule changes the price for a role, a customer, a product, a category or a quantity. Add the first one to start.',
+                                'catalogx'
+                            ),
+                            actions: tableProps?.setAddingNewRule ? (
+                                <button
+                                    type="button"
+                                    className="cx-locked-button"
+                                    onClick={() =>
+                                        tableProps.setAddingNewRule(true)
+                                    }
+                                >
+                                    {__('Add the first rule', 'catalogx')}
+                                </button>
+                            ) : null,
+                            note: __(
+                                'A preview with sample rules. Yours show here once you add them.',
+                                'catalogx'
+                            ),
+                        }}
+                    >
+                        <TableCard {...tableProps} />
+                        {tableProps.popup}
+                    </ListGate>
                 </ColumnComponent>
             </ContainerComponent>
         </>

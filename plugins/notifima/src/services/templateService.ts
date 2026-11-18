@@ -10,6 +10,8 @@ type SettingNode = {
 	type: 'folder' | 'file';
 	content: SettingNode[] | any;
 	folderPriority?: number;
+	/** The folder's menu icon (zyra's NavigatorComponent reads `headerIcon` on a folder as on a tab). */
+	headerIcon?: string;
 };
 
 const importAll = (
@@ -17,8 +19,9 @@ const importAll = (
 ): SettingNode[] => {
 	const folderStructure: SettingNode[] = [];
 
-	// Step 1: Build folder priority map
+	// Step 1: Build folder priority and icon maps (both from a folder's FolderPriority.ts)
 	const folderPriorityMap: Record<string, number> = {};
+	const folderIconMap: Record<string, string> = {};
 
 	inpContext.keys().forEach((key) => {
 		if (key.endsWith('FolderPriority.ts')) {
@@ -28,6 +31,9 @@ const importAll = (
 			const priorityData = inpContext(key)?.default;
 			if (priorityData && typeof priorityData.priority === 'number') {
 				folderPriorityMap[folderPath] = priorityData.priority;
+			}
+			if (priorityData && typeof priorityData.headerIcon === 'string') {
+				folderIconMap[folderPath] = priorityData.headerIcon;
 			}
 		}
 	});
@@ -66,6 +72,7 @@ const importAll = (
 					type: 'folder',
 					content: [],
 					folderPriority: folderPriorityMap[fullPath], // attach priority if exists
+					headerIcon: folderIconMap[fullPath], // attach menu icon if exists
 				};
 				currentFolder.push(folderObject);
 			}
@@ -130,14 +137,4 @@ const getTemplateData = (
 	return importAll(ctx);
 };
 
-const getModuleData = () => {
-	try {
-		const module = require('../components/Modules/index.ts').default;
-		return module;
-	} catch (error) {
-		console.warn('Module not found, skipping...', error);
-		return null;
-	}
-};
-
-export { getTemplateData, getModuleData };
+export { getTemplateData };

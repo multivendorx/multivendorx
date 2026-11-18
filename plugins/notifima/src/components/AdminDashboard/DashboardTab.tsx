@@ -1,92 +1,267 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
-import {
-	CardComponent,
-	ColumnComponent,
-	ListComponent,
-	ContainerComponent,
-	NoticeManager,
-} from '@zyra/components';
+import { CardComponent, NoticeManager, PopupComponent } from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 import axios from 'axios';
-import Mascot from '../../assets/images/brand-icon.png';
 import catalogx from '../../assets/images/catalogx.png';
 import multivendorx from '../../assets/images/multivendorx.png';
+import ShowProPopup from '../Popup/Popup';
+import Insights from './Insights';
+import {
+	ACCOUNT_URL,
+	CONSULTATION_URL,
+	CONTACT_URL,
+	DOCS_URL,
+	UTM,
+} from '../../services/links';
 
 interface WPPlugin {
 	plugin?: string;
 	status?: string;
 }
 
+/** The Pro features the dashboard's Pro panel lists (free sites only). */
+const PRO_FEATURES = [
+	{
+		icon: 'double-opt-in',
+		title: __('Double opt-in', 'notifima'),
+		desc: __(
+			'Shoppers confirm by email, so every subscriber on the list really wants the product.',
+			'notifima'
+		),
+	},
+	{
+		icon: 'ban-spam-mail',
+		title: __('Spam protection', 'notifima'),
+		desc: __(
+			'reCAPTCHA and an email and domain blocklist keep bots off your waitlists.',
+			'notifima'
+		),
+	},
+	{
+		icon: 'subscription-dashboard',
+		title: __('Subscriber list', 'notifima'),
+		desc: __(
+			'See who is waiting for what, filter by status and date, and export it.',
+			'notifima'
+		),
+	},
+	{
+		icon: 'mailchimp',
+		title: __('Mailchimp sync', 'notifima'),
+		desc: __(
+			'Send new subscribers to a Mailchimp audience for your own campaigns.',
+			'notifima'
+		),
+	},
+	{
+		icon: 'export-import-stock',
+		title: __('Inventory manager', 'notifima'),
+		desc: __(
+			'Edit stock, prices and backorders for every product in one table, with CSV import.',
+			'notifima'
+		),
+	},
+	{
+		icon: 'subscription-details',
+		title: __('One-click unsubscribe', 'notifima'),
+		desc: __(
+			'Shoppers leave a waitlist from their account, without emailing you.',
+			'notifima'
+		),
+	},
+];
+
+interface HelpLink {
+	icon: string;
+	title: string;
+	desc: string;
+	/** Absolute URL (opens in a new tab), or `#&tab=…` for a screen of this admin page. */
+	link: string;
+}
+
+/** Learning Notifima on your own: the docs, the community forum and a call with the team. */
+const LEARN: HelpLink[] = [
+	{
+		icon: 'knowledgebase',
+		title: __('Documentation', 'notifima'),
+		desc: __(
+			'Guides for the subscription form, the emails and every setting.',
+			'notifima'
+		),
+		link: DOCS_URL,
+	},
+	{
+		icon: 'forum',
+		title: __('Community forum', 'notifima'),
+		desc: __(
+			'Ask on WordPress.org and get answers from our team and other users.',
+			'notifima'
+		),
+		link: 'https://wordpress.org/support/plugin/woocommerce-product-stock-alert/',
+	},
+	{
+		icon: 'customer-support',
+		title: __('Expert consultation', 'notifima'),
+		desc: __(
+			'Book a free call for advice tailored to your store.',
+			'notifima'
+		),
+		link: CONSULTATION_URL,
+	},
+];
+
+/** Most problems are an email that isn't sent or a form that doesn't show: the two screens that decide which. */
+const TROUBLESHOOT: HelpLink[] = [
+	{
+		icon: 'mail',
+		title: __('Check the back-in-stock email', 'notifima'),
+		desc: __(
+			'Make sure it is enabled in WooCommerce, and preview what subscribers receive.',
+			'notifima'
+		),
+		link: `${appLocalizer.admin_url}admin.php?page=wc-settings&tab=email`,
+	},
+	{
+		icon: 'automation',
+		title: __('Review who sees the form', 'notifima'),
+		desc: __(
+			'Guests or logged-in shoppers only, out-of-stock or backorder products too.',
+			'notifima'
+		),
+		link: '#&tab=settings&subtab=automation',
+	},
+];
+
+/** Ways to reach the team. Manage plan only applies once there is a plan. */
+const CONTACT: HelpLink[] = [
+	{
+		icon: 'customer-support',
+		title: __('Contact support', 'notifima'),
+		desc: __(
+			'Send our team a message and get a reply by email.',
+			'notifima'
+		),
+		link: CONTACT_URL,
+	},
+	...(appLocalizer.khali_dabba
+		? [
+				{
+					icon: 'person',
+					title: __('Manage plan', 'notifima'),
+					desc: __(
+						'Download Notifima Pro, manage license keys and renew.',
+						'notifima'
+					),
+					link: ACCOUNT_URL,
+				},
+			]
+		: []),
+];
+
+/** The team's other WooCommerce plugins: the wordpress.org slug decides installed/active, the Pro link replaces Install once active. */
+const COMPANION_PLUGINS = [
+	{
+		slug: 'woocommerce-catalog-enquiry',
+		name: 'CatalogX',
+		desc: __(
+			'Turn your store into a catalog with enquiry-based sales.',
+			'notifima'
+		),
+		logo: catalogx,
+		proUrl: `https://catalogx.com/pricing/?${UTM}`,
+	},
+	{
+		slug: 'dc-woocommerce-multi-vendor',
+		name: 'MultiVendorX',
+		desc: __(
+			'Let other sellers open stores on your WooCommerce site.',
+			'notifima'
+		),
+		logo: multivendorx,
+		proUrl: `https://multivendorx.com/pricing/?${UTM}`,
+	},
+];
+
+const isExternal = (link: string) => !link.startsWith('#');
+
+/** One help row: icon, title and description, the whole row a link (external ones open in a new tab). */
+const LinkRow = ({ item }: { item: HelpLink }) => (
+	<li>
+		<a
+			className="nf-dash-row"
+			href={item.link}
+			{...(isExternal(item.link)
+				? { target: '_blank', rel: 'noopener noreferrer' }
+				: {})}
+		>
+			<span className="nf-dash-icon" aria-hidden="true">
+				<i className={`adminfont-${item.icon}`} />
+			</span>
+			<span className="nf-dash-row-text">
+				<strong>{item.title}</strong>
+				<span>{item.desc}</span>
+			</span>
+			<i
+				className={`nf-dash-row-arrow adminfont-${isExternal(item.link) ? 'external' : 'arrow-right'}`}
+				aria-hidden="true"
+			/>
+			{isExternal(item.link) && (
+				<span className="screen-reader-text">
+					{__('(opens in a new tab)', 'notifima')}
+				</span>
+			)}
+		</a>
+	</li>
+);
+
+/**
+ * The Overview tab: builds the Learn, Help & Support, companion-plugin and (free sites) Pro cards, and hands them to
+ * Insights.tsx, which places them around the setup card or the figures.
+ */
 const DashboardTab: React.FC<object> = () => {
 	const [installing, setInstalling] = useState<string>('');
-	const [pluginStatus, setPluginStatus] = useState<{
-		[key: string]: boolean;
-	}>({});
+	const [pluginStatus, setPluginStatus] = useState<Record<string, boolean>>(
+		{}
+	);
 	const [plugins, setPlugins] = useState<WPPlugin[]>([]);
+	const [proPopupOpen, setProPopupOpen] = useState(false);
 
 	const isPro = !!appLocalizer.khali_dabba;
 
-	const renderUpgradeButton = (label = __('Upgrade Now', 'notifima')) => {
-		if (isPro) {
-			return null;
-		}
-		return (
-			<a
-				href={appLocalizer.pro_url}
-				target="_blank"
-				className="admin-btn btn-purple"
-			>
-				<i className="adminfont-pro-tag"></i>
-				{__(label, 'notifima')}
-				<i className="adminfont-arrow-right icon-pro-btn"></i>
-			</a>
-		);
-	};
-
 	useEffect(() => {
-		fetchPlugins();
-	}, []);
-
-	const fetchPlugins = () => {
 		axios
 			.get(`${appLocalizer.apiUrl}/wp/v2/plugins`, {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			})
 			.then((response) => {
-				const pluginList = response.data;
-
-				setPlugins(pluginList);
-
+				const pluginList: WPPlugin[] = response.data;
 				const statusMap: Record<string, boolean> = {};
 
-				[
-					'woocommerce-catalog-enquiry',
-					'dc-woocommerce-multi-vendor',
-				].forEach((slug) => {
+				COMPANION_PLUGINS.forEach(({ slug }) => {
 					statusMap[slug] = pluginList.some(
-						(plugin: WPPlugin) =>
-							plugin.plugin.includes(slug) &&
-							plugin.status === 'active'
+						(plugin) =>
+							!!plugin.plugin?.includes(slug) &&
+							'active' === plugin.status
 					);
 				});
 
+				setPlugins(pluginList);
 				setPluginStatus(statusMap);
 			})
 			.catch((error) => {
 				console.error('Failed to fetch plugins:', error);
 			});
-	};
+	}, []);
 
 	const installOrActivatePlugin = (slug: string) => {
 		if (!slug || installing) {
 			return;
 		}
 
-		const isInstalled = plugins.some((p) => p.plugin?.includes(slug));
-
-		if (isInstalled) {
+		if (plugins.some((plugin) => plugin.plugin?.includes(slug))) {
 			NoticeManager.add({
+				uniqueKey: `notifima-plugin-redirect-${slug}`,
 				title: __('Redirecting...', 'notifima'),
 				message: __(
 					'Plugin already installed. Redirecting to activate...',
@@ -111,13 +286,12 @@ const DashboardTab: React.FC<object> = () => {
 				{ slug, status: 'active' },
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
-			.then((res) => {
-				setPlugins((prev) => [...prev, res.data]);
-				setPluginStatus((prev) => ({ ...prev, [slug]: true }));
+			.then(() => {
 				window.location.reload();
 			})
 			.catch(() => {
 				NoticeManager.add({
+					uniqueKey: `notifima-plugin-install-${slug}`,
 					title: __('Error!', 'notifima'),
 					message: sprintf(
 						/* translators: %s: Plugin slug or plugin name. */
@@ -130,371 +304,177 @@ const DashboardTab: React.FC<object> = () => {
 			})
 			.finally(() => setInstalling(''));
 	};
-	const resources = [
-		{
-			title: __('Documentation', 'notifima'),
-			desc: __(
-				'Step-by-step setup guides to configure Notifima quickly.',
-				'notifima'
-			),
-			iconClass: 'knowledgebase',
-			linkText: __('Explore Docs', 'notifima'),
-			href: 'https://notifima.com/docs/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
-		},
-		{
-			title: __('Expert consultation', 'notifima'),
-			desc: __(
-				'Get tailored advice from our specialists.',
-				'notifima'
-			),
-			iconClass: 'customer-support',
-			linkText: __('Book Consultation', 'notifima'),
-			href: 'https://calendly.com/contact-notifima/30min?back=1',
-		}
-	];
 
-	const featuresList = [
-		{
-			title: __('Back-in-stock notifications', 'notifima'),
-			desc: __(
-				'Let customers join a waitlist and automatically email them when their favorite products are available again.',
+	const proCard = isPro ? null : (
+		<CardComponent
+			title={__('Do more with Notifima Pro', 'notifima')}
+			desc={__(
+				'Cleaner waitlists, a full subscriber list, Mailchimp and an inventory manager, in the admin you already use.',
 				'notifima'
-			),
-			icon: 'notification',
-		},
-		{
-			title: __('Smart inventory management', 'notifima'),
-			desc: __(
-				'Track stock levels across your store and manage inventory from a centralized dashboard.',
-				'notifima'
-			),
-			icon: 'store-analytics',
-		},
-		{
-			title: __('Grow your subscriber list', 'notifima'),
-			desc: __(
-				'Capture customer interest with product waitlists and turn subscribers into loyal, repeat buyers.',
-				'notifima'
-			),
-			icon: 'subscriber',
-		},
-		{
-			title: __('Flexible product support', 'notifima'),
-			desc: __(
-				'Works seamlessly with simple, variable, grouped, subscription, and bundled products.',
-				'notifima'
-			),
-			icon: 'customer-support',
-		},
-		{
-			title: __('Personalized notifications', 'notifima'),
-			desc: __(
-				'Customize forms, email subjects, messages, and branding to create a consistent customer experience.',
-				'notifima'
-			),
-			icon: 'notification',
-		},
-		{
-			title: __('Export and manage data', 'notifima'),
-			desc: __(
-				'Export subscriber lists and stock data for reporting, marketing, and better inventory planning.',
-				'notifima'
-			),
-			icon: 'import-export',
-		},
-	];
-
-	return (
-		<ContainerComponent>
-			<ColumnComponent grid={8}>
-				<CardComponent>
-					<div className="pro-banner-wrapper">
-						<div className="content">
-							<div className="heading">
-								{__('Welcome to Notifima', 'notifima')}
-							</div>
-							<div className="description">
-								{__(
-									'Never lose a sale because a product is out of stock. Turn product demand into revenue with smart stock alerts, waitlists, and inventory management tools for WooCommerce.',
-									'notifima'
-								)}
-							</div>
-
-							<div className="button-wrapper">
-								{renderUpgradeButton(
-									__('Upgrade Now', 'notifima')
-								)}
-							</div>
-						</div>
-
-						<div className="image">
-							<img src={Mascot} alt="" />
-						</div>
-					</div>
-				</CardComponent>
-				{!appLocalizer.khali_dabba && (
-					<CardComponent
-						title={__(
-							'Recover lost sales automatically',
-							'notifima'
-						)}
-						titleIcon="sales"
-						desc={__(
-							'Keep customers engaged even when products are unavailable and notify them the moment items are back in stock.',
-							'notifima'
-						)}
+			)}
+			className="nf-dash-pro"
+			action={
+				<span className="nf-dash-pro-cta">
+					<span>
+						{__('15-day money-back guarantee', 'notifima')}
+					</span>
+					<button
+						type="button"
+						className="admin-btn btn-purple-bg"
+						onClick={() => setProPopupOpen(true)}
 					>
-						<ListComponent
-							className="feature-list"
-							items={featuresList.map(
-								({ icon, title, desc }) => ({
-									icon: icon,
-									title: title,
-									desc: desc,
-								})
-							)}
-						/>
-						<div className="pro-banner">
-							<div className="text">
-								{__(
-									'Turn Waiting into Winning',
-									'notifima'
-								)}
-							</div>
-							<div className="des">
-								{__(
-									'Capture customer interest today and transform tomorrows restock into instant sales.',
-									'notifima'
-								)}
-							</div>
+						<i className="adminfont-pro-tag" aria-hidden="true" />
+						{__('Upgrade to Pro', 'notifima')}
+					</button>
+				</span>
+			}
+		>
+			<ul className="nf-dash-pro-features">
+				{PRO_FEATURES.map((feature) => (
+					<li key={feature.title}>
+						<span className="nf-dash-icon" aria-hidden="true">
+							<i className={`adminfont-${feature.icon}`} />
+						</span>
+						<span>
+							<strong>{feature.title}</strong>
+							<span>{feature.desc}</span>
+						</span>
+					</li>
+				))}
+			</ul>
+			{proPopupOpen && (
+				<PopupComponent
+					position="lightbox"
+					open
+					onClose={() => setProPopupOpen(false)}
+					width={46}
+					height="auto"
+				>
+					<ShowProPopup />
+				</PopupComponent>
+			)}
+		</CardComponent>
+	);
 
-							{renderUpgradeButton(
-								__('Upgrade Now', 'notifima')
-							)}
+	const learnCard = (
+		<CardComponent
+			title={__('Learn Notifima', 'notifima')}
+			desc={__('Guides, the community and our team', 'notifima')}
+		>
+			<ul className="nf-dash-list">
+				{LEARN.map((item) => (
+					<LinkRow key={item.title} item={item} />
+				))}
+			</ul>
+		</CardComponent>
+	);
 
-							<div className="des">
-								{__(
-									'15-day money-back guarantee',
-									'notifima'
-								)}
-							</div>
-						</div>
-					</CardComponent>
-				)}
-			</ColumnComponent>
-
-			{/* Right Side */}
-			<ColumnComponent grid={4}>
-				<CardComponent title={__('Extend your website', 'notifima')} titleIcon="section" desc="Discover tools and add-ons to expand your website’s capabilities.">
-					<ColumnComponent>
-						{/* notifima */}
-						{pluginStatus['woocommerce-catalog-enquiry'] ? (
-							<ListComponent
-								className="mini-card"
-								background
-								items={[
-									{
-										title: 'CatalogX Pro',
-										desc: __(
-											'Advanced product catalog, quotation, and enquiry features with premium templates.',
-											'notifima'
-										),
-										img: catalogx,
-										tags: (
-											<>
-												<span className="admin-badge red">
-													<i className="adminfont-pro-tag"></i>{' '}
-													{__('Pro', 'notifima')}
-												</span>
-												<a
-													href={appLocalizer.pro_url}
-													target="_blank"
-													rel="noopener noreferrer"
-												>
-													{__('Get Pro', 'notifima')}
-												</a>
-											</>
-										),
-									},
-								]}
-							/>
-						) : (
-							<ListComponent
-								className="mini-card"
-								background
-								items={[
-									{
-										title: 'CatalogX',
-										desc: __(
-											'Turn your WooCommerce store into a product catalog with enquiry and quotation features.',
-											'notifima'
-										),
-										img: catalogx,
-										tags: (
-											<>
-												<span className="admin-badge green">
-													{__('Free', 'notifima')}
-												</span>
-												<a
-													href="#"
-													onClick={(e) => {
-														e.preventDefault();
-														if (!installing) {
-															installOrActivatePlugin(
-																'woocommerce-catalog-enquiry'
-															);
-														}
-													}}
-													style={{
-														pointerEvents:
-															installing ===
-																'woocommerce-catalog-enquiry'
-																? 'none'
-																: 'auto',
-														opacity:
-															installing ===
-																'woocommerce-catalog-enquiry'
-																? 0.6
-																: 1,
-													}}
-												>
-													{installing ===
-														'woocommerce-catalog-enquiry'
-														? __(
-															'Installing...',
-															'notifima'
-														)
-														: __('Install', 'notifima')}
-												</a>
-											</>
-										),
-									},
-								]}
-							/>
-						)}
-
-						{/* MultiVendorX */}
-						{pluginStatus['dc-woocommerce-multi-vendor'] ? (
-							<ListComponent
-								className="mini-card"
-								background
-								items={[
-									{
-										title: __(
-											'MultiVendorX Pro',
-											'notifima'
-										),
-										desc: __(
-											'Advanced multivendor marketplace features with premium vendor management tools.',
-											'notifima'
-										),
-										img: multivendorx,
-										tags: (
-											<>
-												<span className="admin-badge red">
-													<i className="adminfont-pro-tag"></i>{' '}
-													{__('Pro', 'notifima')}
-												</span>
-												<a
-													href="https://multivendorx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima"
-													target="_blank"
-													rel="noopener noreferrer"
-												>
-													{__('Get Pro', 'notifima')}
-												</a>
-											</>
-										),
-									},
-								]}
-							/>
-						) : (
-							<ListComponent
-								className="mini-card"
-								background
-								items={[
-									{
-										title: 'MultiVendorX',
-										desc: __(
-											'Build and manage a multivendor marketplace with powerful vendor management features.',
-											'notifima'
-										),
-										img: multivendorx,
-										tags: (
-											<>
-												<span className="admin-badge green">
-													{__('Free', 'notifima')}
-												</span>
-												<a
-													href="#"
-													onClick={(e) => {
-														e.preventDefault();
-														if (!installing) {
-															installOrActivatePlugin(
-																'dc-woocommerce-multi-vendor'
-															);
-														}
-													}}
-													style={{
-														pointerEvents:
-															installing ===
-																'dc-woocommerce-multi-vendor'
-																? 'none'
-																: 'auto',
-														opacity:
-															installing ===
-																'dc-woocommerce-multi-vendor'
-																? 0.6
-																: 1,
-													}}
-												>
-													{installing ===
-														'dc-woocommerce-multi-vendor'
-														? __(
-															'Installing...',
-															'notifima'
-														)
-														: __('Install', 'notifima')}
-												</a>
-											</>
-										),
-									},
-								]}
-							/>
-						)}
-					</ColumnComponent>
-				</CardComponent>
-
-				{/* Quick Links */}
-				<CardComponent title={__('Need help getting started?', 'notifima')} titleIcon="help" desc="Find guides, resources, and support to help you set up and manage your WooCommerce store.">
-					<div className="quick-link">
-						{resources.map((res) => (
-							<ListComponent
-								key={res.href}
-								className="mini-card list"
-								border
-								items={[
-									{
-										title: __(res.title, 'notifima'),
-										desc: __(res.desc, 'notifima'),
-										icon: res.iconClass,
-										tags: (
-											<a
-												href={res.href}
-												target="_blank"
-												rel="noopener noreferrer"
-											>
-												{__(res.linkText, 'notifima')}
-												<i className="adminfont-external"></i>
-											</a>
-										),
-									},
-								]}
-							/>
+	// Help & Support links (`#&tab=dashboard&view=help-support`, from the header search) scroll to this card.
+	const helpCard = (
+		<CardComponent
+			id="notifima-help-support"
+			title={__('Help & Support', 'notifima')}
+			desc={__(
+				'Most problems are an email that isn’t sent or a form that doesn’t show. Still stuck? We are a message away.',
+				'notifima'
+			)}
+		>
+			<div className="nf-dash-help-groups">
+				<section>
+					<h3>{__('Troubleshoot first', 'notifima')}</h3>
+					<ul className="nf-dash-list">
+						{TROUBLESHOOT.map((item) => (
+							<LinkRow key={item.title} item={item} />
 						))}
-					</div>
-				</CardComponent>
-			</ColumnComponent>
-		</ContainerComponent>
+					</ul>
+				</section>
+				<section>
+					<h3>{__('Talk to our team', 'notifima')}</h3>
+					<ul className="nf-dash-list">
+						{CONTACT.map((item) => (
+							<LinkRow key={item.title} item={item} />
+						))}
+					</ul>
+				</section>
+			</div>
+		</CardComponent>
+	);
+
+	const teamCard = (
+		<CardComponent
+			title={__('More from the Notifima team', 'notifima')}
+			desc={__('Free plugins for your WooCommerce store', 'notifima')}
+		>
+			<ul className="nf-dash-list">
+				{COMPANION_PLUGINS.map((companion) => {
+					const isActive = !!pluginStatus[companion.slug];
+					const isBusy = installing === companion.slug;
+
+					return (
+						<li key={companion.slug} className="nf-dash-row">
+							<img
+								className="nf-dash-logo"
+								src={companion.logo}
+								alt=""
+							/>
+							<span className="nf-dash-row-text">
+								<strong>
+									{companion.name}
+									<span
+										className={`nf-dash-tag ${isActive ? 'is-active' : 'is-free'}`}
+									>
+										{isActive
+											? __('Active', 'notifima')
+											: __('Free', 'notifima')}
+									</span>
+								</strong>
+								<span>{companion.desc}</span>
+							</span>
+							{isActive ? (
+								<a
+									className="nf-dash-action"
+									href={companion.proUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									{sprintf(
+										/* translators: %s: plugin name. */
+										__('Get %s Pro', 'notifima'),
+										companion.name
+									)}
+									<span className="screen-reader-text">
+										{__('(opens in a new tab)', 'notifima')}
+									</span>
+								</a>
+							) : (
+								<button
+									type="button"
+									className="nf-dash-action"
+									disabled={!!installing}
+									onClick={() =>
+										installOrActivatePlugin(companion.slug)
+									}
+								>
+									{isBusy
+										? __('Installing…', 'notifima')
+										: __('Install', 'notifima')}
+								</button>
+							)}
+						</li>
+					);
+				})}
+			</ul>
+		</CardComponent>
+	);
+
+	// Insights decides where these sit: beside the setup card on a new site, under the figures once there are some.
+	return (
+		<Insights
+			pro={proCard}
+			learn={learnCard}
+			help={helpCard}
+			team={teamCard}
+		/>
 	);
 };
 

@@ -30,7 +30,7 @@ export const getTourSteps = (appLocalizer: AppLocalizer): TourStep[] => [
 			'catalogx'
 		),
 		next: {
-			link: `${appLocalizer.admin_url}#&tab=modules`,
+			link: `${appLocalizer.admin_url}#&tab=settings&subtab=modules`,
 			step: 1,
 		},
 	},
@@ -56,7 +56,7 @@ export const getTourSteps = (appLocalizer: AppLocalizer): TourStep[] => [
 			'catalogx'
 		),
 		next: {
-			link: `${appLocalizer.admin_url}#&tab=modules`,
+			link: `${appLocalizer.admin_url}#&tab=settings&subtab=modules`,
 			step: 3,
 		},
 	},

@@ -1,0 +1,1601 @@
+// CatalogX design system - one look for every admin screen.
+
+// The same layer VuloCart's admin uses (vulocart/src/app/design-system.scss), trimmed to what CatalogX renders:
+// zyra draws the screens (header, tabs, tables, filters, settings), and this file sets the shared tokens once and
+// restyles zyra's building blocks so every screen reads the same - bold page titles, quiet table headers, flat
+// hairline rows, a sticky section menu with one card per settings section. It is scoped to `.admin-main-wrapper`
+// (doubled, to outrank zyra's own selectors), so it only reaches the CatalogX admin page.
+
+.admin-main-wrapper.admin-main-wrapper {
+	--cx-primary: var(--color-primary, #5007aa);
+	--cx-ink: #1f1b3e;
+	--cx-text: #374151;
+	--cx-muted: #6b7280;
+	--cx-border: #e3e6ef;
+	--cx-border-soft: #eef0f6;
+	--cx-surface: #fff;
+	--cx-surface-hover: #faf9fe;
+	--cx-radius: 0.5rem;
+
+	// ---- Page header: a large bold title and one quiet line under it. No icon and no divider: the toolbar or
+	// tabs right below it are the next thing on the page. ----
+	.title-section {
+		align-items: flex-end;
+		gap: 1rem;
+		padding: 0;
+		margin-bottom: 1.5rem;
+		border-bottom: 0;
+
+		.title-wrapper {
+			display: flex;
+			flex-direction: column;
+			gap: 0.25rem;
+			min-width: 0;
+		}
+
+		.typography-title {
+			display: flex;
+			align-items: center;
+			gap: 0.625rem;
+			font-size: 1.75rem;
+			font-weight: 700;
+			line-height: 1.2;
+			letter-spacing: -0.02em;
+			color: var(--cx-ink);
+		}
+
+		.title-icon {
+			display: none;
+		}
+
+		.typography-desc {
+			max-width: 60rem;
+			font-size: 0.875rem;
+			line-height: 1.5;
+			color: var(--cx-muted);
+		}
+	}
+
+	// ---- Cards ----
+	.admin-table-wrapper,
+	.card-content {
+		border: 1px solid var(--cx-border);
+		border-radius: var(--cx-radius);
+		background: var(--cx-surface);
+		box-shadow: 0 1px 2px rgb(16 24 40 / 4%);
+	}
+
+	.admin-table-wrapper {
+		padding: 0.5rem 1.25rem 0.75rem;
+		overflow: hidden;
+	}
+
+	// ---- Status tabs ("All (4)", "Draft (2)") as underline tabs, like Inventory/Shipping/Settings ----
+	.admin-table-wrapper .admin-top-filter {
+		padding-top: 0.25rem;
+		border-bottom: 1px solid var(--cx-border-soft);
+
+		.top-filter-wrapper .filters {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 1.5rem;
+		}
+	}
+
+	// ---- Search ----
+	.search-field {
+		border: 1px solid #dcdfea;
+		border-radius: 0.5rem;
+		background: #fff;
+		transition: border-color 0.15s, box-shadow 0.15s;
+
+		&:hover {
+			border-color: #c4c9db;
+		}
+
+		&:focus-within {
+			border-color: var(--cx-primary);
+			box-shadow: 0 0 0 3px color-mix(in srgb, var(--cx-primary) 14%, transparent);
+		}
+
+		input {
+			font-size: 0.875rem;
+		}
+	}
+
+	// Every search box (top bar, tables): one flat field with the magnifier on the left and the input filling the
+	// rest. zyra sizes its inner section to the input (a blank strip after the icon) and gives the input its own focus
+	// ring inside the field's ring.
+	.search-field {
+		display: flex;
+		align-items: stretch;
+		box-sizing: border-box;
+		overflow: hidden;
+
+		.search-section {
+			display: flex;
+			flex: 1 1 auto;
+			align-items: center;
+			gap: 0.5rem;
+			min-width: 0;
+			padding: 0 0.75rem;
+		}
+
+		.adminfont-search {
+			order: -1;
+			padding: 0;
+			color: var(--cx-muted);
+			font-size: 1rem;
+		}
+
+		&:focus-within .adminfont-search {
+			color: var(--cx-primary);
+		}
+
+		.input-wrapper {
+			flex: 1 1 auto;
+			min-width: 0;
+			height: 100%;
+			padding: 0;
+			border: 0;
+			background: transparent;
+			box-shadow: none;
+		}
+
+		.basic-input,
+		.basic-input:focus {
+			width: 100%;
+			height: 100%;
+			padding: 0;
+			border: 0;
+			background: transparent;
+			box-shadow: none;
+			outline: 0;
+		}
+
+		// Top bar scope picker ("Everything", "Settings"...): exactly as wide as the chosen label and its chevron, so the
+		// search input gets every other pixel; a hairline divider instead of a tinted block, and no separator line
+		// inside it. (`!important` only beats the fixed inline width zyra sets from SearchHeader's `searchSize`.)
+		.search-action {
+			flex: 0 0 auto;
+			width: auto;
+			border-inline-end: 1px solid var(--cx-border);
+			background: #f8f8fb;
+
+			.form-select-field,
+			.select-wrapper {
+				width: auto !important;
+				height: 100%;
+			}
+
+			.select-prefix__control {
+				width: auto;
+				height: 100%;
+				border: 0;
+				border-radius: 0;
+				background: #f8f8fb;
+				box-shadow: none;
+				cursor: pointer;
+			}
+
+			// The label sets the width: in flow, not overlaid, and never wrapped.
+			.select-prefix__value-container {
+				flex: 0 1 auto;
+				padding: 0 0.25rem 0 0.75rem;
+			}
+
+			.select-prefix__single-value {
+				overflow: visible;
+				max-width: none;
+				white-space: nowrap;
+				color: var(--cx-text);
+				font-size: 0.8125rem;
+				font-weight: 500;
+			}
+
+			.select-prefix__indicator-separator {
+				display: none;
+			}
+
+			// The list of scopes: as wide as its longest option, never narrower than the picker.
+			.select-prefix__menu {
+				width: max-content;
+				min-width: 100%;
+			}
+		}
+	}
+
+	// ---- Table: quiet header, flat hairline rows ----
+	.admin-table-wrapper .table-wrapper .admin-table {
+		border-collapse: collapse;
+		border-spacing: 0;
+
+		.admin-table-header .header-col {
+			padding: 0.75rem;
+			font-size: 0.6875rem;
+			font-weight: 600;
+			letter-spacing: 0.06em;
+			text-transform: uppercase;
+			color: var(--cx-muted);
+		}
+
+		.admin-table-header .header-row {
+			height: auto;
+			border-bottom: 1px solid var(--cx-border-soft);
+		}
+
+		.admin-table-body .admin-row {
+			margin: 0;
+			border-radius: 0;
+			background: transparent;
+			border-bottom: 1px solid var(--cx-border-soft);
+			transition: background 0.12s;
+
+			&:hover {
+				background: var(--cx-surface-hover);
+			}
+
+			&:last-child {
+				border-bottom: 0;
+			}
+		}
+
+		.admin-table-body .admin-column {
+			padding: 0.875rem 0.75rem;
+			font-size: 0.875rem;
+			color: var(--cx-text);
+			vertical-align: middle;
+		}
+	}
+
+	// ---- Footer: count text, and the filter bar in the flow instead of stuck over the last row ----
+	.admin-pagination {
+		padding: 0.75rem 0.75rem 0.25rem;
+
+		.show-section {
+			font-size: 0.8125rem;
+			color: var(--cx-muted);
+		}
+	}
+
+	.admin-table-wrapper {
+		display: flex;
+		flex-direction: column;
+
+		.admin-top-filter {
+			order: -2;
+		}
+
+		.filter-wrapper {
+			order: -1;
+			margin: 0.75rem 0 0.25rem;
+
+			.table-filter-wrapper {
+				display: flex;
+				justify-content: flex-start;
+			}
+		}
+	}
+
+	.admin-table-wrapper .filter-wrapper .table-filter-wrapper .table-filter {
+		position: static;
+		margin: 0;
+		border-radius: 0.5rem;
+	}
+
+	// Bulk actions: a dark bar floats over the bottom of the table once rows are ticked and follows
+	// the scroll, so the actions are always in reach. The filter row stays above the table (components/TableCard
+	// draws it, so selecting rows never hides it); only zyra's bulk bar sits below and sticks to the screen bottom.
+	.admin-table-wrapper .filter-wrapper:has(.table-filter.bulk) {
+		position: sticky;
+		bottom: 1.25rem;
+		z-index: 20;
+		order: 1;
+		display: flex;
+		justify-content: center;
+		margin: 0.75rem 0 0;
+		pointer-events: none;
+
+		.table-filter-wrapper {
+			justify-content: center;
+			width: auto;
+			background: transparent;
+		}
+	}
+
+	.admin-table-wrapper .filter-wrapper .table-filter-wrapper .table-filter.bulk {
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.5rem 0.5rem 0.5rem 1rem;
+		border: 0;
+		border-radius: 0.75rem;
+		background: #16151d;
+		box-shadow: 0 0.75rem 2rem rgb(22 21 29 / 28%), 0 0.125rem 0.375rem rgb(22 21 29 / 16%);
+		font-size: 0.875rem;
+		pointer-events: auto;
+
+		.action-item {
+			align-items: center;
+			padding: 0;
+			border: 0;
+			color: #fff;
+		}
+
+		// "2 Rows selected" with its clear button.
+		.action-item.count {
+			gap: 0.375rem;
+			font-weight: 600;
+
+			i {
+				display: inline-grid;
+				place-items: center;
+				width: 1.5rem;
+				height: 1.5rem;
+				border-radius: 0.375rem;
+				font-size: 0.625rem;
+				color: rgb(255 255 255 / 60%);
+				cursor: pointer;
+
+				&:hover {
+					background: rgb(255 255 255 / 12%);
+					color: #fff;
+				}
+			}
+		}
+
+		// "Select all": a link, set apart from the count by a hairline.
+		.action-item .admin-btn {
+			min-height: 0;
+			padding: 0 0 0 0.75rem;
+			border: 0;
+			border-left: 1px solid rgb(255 255 255 / 18%);
+			border-radius: 0;
+			background: transparent;
+			font-size: 0.875rem;
+			font-weight: 600;
+			color: #c9c1ff;
+			cursor: pointer;
+
+			&:hover {
+				color: #fff;
+			}
+		}
+
+		.group-field {
+			width: 12rem;
+		}
+
+		.select-prefix__control {
+			min-height: 2.25rem;
+			border: 1px solid rgb(255 255 255 / 18%);
+			border-radius: 0.5rem;
+			background: rgb(255 255 255 / 8%);
+			box-shadow: none;
+
+			&:hover,
+			&.select-prefix__control--is-focused {
+				border-color: rgb(255 255 255 / 36%);
+			}
+		}
+
+		.select-prefix__placeholder,
+		.select-prefix__single-value,
+		.select-prefix__input-container {
+			color: #fff;
+		}
+
+		.select-prefix__indicator-separator {
+			background: rgb(255 255 255 / 18%);
+		}
+
+		.select-prefix__indicator {
+			color: rgb(255 255 255 / 70%);
+		}
+
+		// The options list stays light, like every other dropdown.
+		.select-prefix__menu {
+			color: var(--cx-ink);
+		}
+
+		.buttons-wrapper .admin-btn {
+			min-height: 2.25rem;
+			border: 1px solid rgb(255 255 255 / 18%);
+			border-radius: 0.5rem;
+			background: transparent;
+			color: #fff;
+
+			&:hover {
+				border-color: rgb(255 255 255 / 36%);
+				background: rgb(255 255 255 / 8%);
+			}
+		}
+	}
+
+	.admin-table-wrapper .filter-wrapper {
+		justify-content: flex-start;
+		width: 100%;
+	}
+
+	// A table card inside another card (Categories, Tags, ...): one border, not two.
+	.card-content .admin-table-wrapper,
+	.card-wrapper .card-content .admin-table-wrapper {
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		padding: 0;
+	}
+
+	// ---- List pages: toolbar on the page, the table in its own card ----
+	// zyra's TableCard is one box holding the status chips and search, the filter bar, the table and the pager.
+	// On a list page (not a table nested in a card) that box becomes transparent: the chips and search sit on the
+	// page background as the toolbar under the header, the filters under them, and only the rows get the card.
+	.admin-table-wrapper:not(.card-content .admin-table-wrapper) {
+		padding: 0;
+		border: 0;
+		border-radius: 0;
+		background: transparent;
+		box-shadow: none;
+		overflow: visible;
+
+		> .admin-top-filter {
+			display: flex;
+			align-items: center;
+			gap: 0.75rem 1rem;
+			margin: 0 0 1rem;
+			padding: 0;
+			border: 0;
+
+			.top-filter-wrapper {
+				flex: 1 1 auto;
+				min-width: 0;
+			}
+
+			.table-action-wrapper {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				margin-inline-start: auto;
+			}
+
+			.search-field {
+				width: 17.5rem;
+				height: 2.25rem;
+				background: var(--cx-surface);
+				transition: width 0.2s ease, border-color 0.15s, box-shadow 0.15s;
+
+				&:focus-within {
+					width: 21.25rem;
+				}
+			}
+		}
+
+		> .filter-wrapper {
+			margin: 0 0 1rem;
+		}
+
+		> .table-wrapper {
+			padding: 0.25rem 1.25rem;
+			border: 1px solid var(--cx-border);
+			border-radius: 0.625rem;
+			background: var(--cx-surface);
+			box-shadow: 0 1px 2px rgb(16 24 40 / 4%);
+		}
+
+		> .admin-pagination {
+			padding: 0.875rem 0.25rem 0;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.admin-table-wrapper > .admin-top-filter .search-field {
+			transition: none;
+		}
+	}
+
+	// A list whose status chips are only "All" shows no chip row.
+	.admin-table-wrapper > .admin-top-filter .choice-toggle-wrapper.chips:not(:has(> :nth-child(2))) {
+		display: none;
+	}
+
+	// ---- Buttons: one primary, one secondary, one quiet icon button ----
+	// Primary (`btn-purple-bg`): the solid accent, for the one main action on a screen.
+	// Secondary (`btn-purple`): white with a hairline border and dark text - Export, Add images, Cancel.
+	.admin-btn {
+		border-radius: 0.375rem;
+		box-shadow: none;
+		transition: background 0.15s, border-color 0.15s, color 0.15s;
+	}
+
+	// Header and toolbar buttons share the 36px height of the ⋮ button and search box beside them.
+	.title-right-section .admin-btn,
+	.admin-top-filter .admin-btn,
+	.table-action-wrapper .admin-btn {
+		box-sizing: border-box;
+		height: 2.25rem;
+		min-height: 2.25rem;
+	}
+
+	.admin-btn.btn-purple-bg {
+		&:hover:not(:disabled) {
+			background: color-mix(in srgb, var(--cx-primary) 86%, #000);
+		}
+	}
+
+	.admin-btn.btn-purple {
+		border: 1px solid #d9d9e3;
+		background: var(--cx-surface);
+		color: #4b4a57;
+		font-weight: 500;
+
+		i {
+			color: var(--cx-muted);
+		}
+
+		&:hover:not(:disabled) {
+			border-color: #a9a8b6;
+			background: var(--cx-surface);
+			color: var(--cx-ink);
+		}
+	}
+
+	// ⋮ / ✎ icon buttons: a 36px square with a hairline border, the same height as the buttons beside it.
+	.title-right-section .popup-icon,
+	.table-action-wrapper .popup-icon {
+		display: inline-grid;
+		box-sizing: border-box;
+		place-items: center;
+		width: 2.25rem;
+		height: 2.25rem;
+		padding: 0;
+		border: 1px solid #d9d9e3;
+		border-radius: 0.375rem;
+		background: var(--cx-surface);
+		color: #4b4a57;
+		cursor: pointer;
+
+		&:hover {
+			border-color: #a9a8b6;
+			color: var(--cx-ink);
+		}
+	}
+
+	// The filter bar's "Filter" tag is a label, not a button: quiet text and icon, so the screen's primary
+	// button stays the only solid accent.
+	.admin-table-wrapper .filter-wrapper .table-filter > .typography-title {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		padding: 0 0.75rem 0 0.25rem;
+		background: transparent;
+		color: var(--cx-muted);
+		font-size: 0.8125rem;
+		font-weight: 600;
+
+		i {
+			color: var(--cx-muted);
+		}
+	}
+
+	// ---- Section and card headers: a small plain icon, not a tinted tile ----
+	.card-content .card-header .left > i {
+		padding: 0;
+		background: transparent;
+		font-size: 1.125rem;
+		color: var(--cx-muted);
+	}
+
+	.settings-left-section .title-wrapper .typography-title {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 1rem;
+		font-weight: 650;
+		line-height: 1.3;
+		color: var(--cx-ink);
+
+		i {
+			width: auto;
+			height: auto;
+			padding: 0;
+			border-radius: 0;
+			background: transparent;
+			font-size: 1.125rem;
+			color: var(--cx-muted);
+		}
+	}
+
+	// ---- Card headers and field labels: one set of sizes everywhere ----
+	.card-content .card-header .typography-title,
+	.card-content .card-header .title {
+		font-size: 0.9375rem;
+		font-weight: 600;
+		line-height: 1.3;
+		color: var(--cx-ink);
+	}
+
+	.card-content .card-header .des,
+	.card-content .card-header .typography-desc {
+		font-size: 0.8125rem;
+		color: var(--cx-muted);
+	}
+
+	.form-group .settings-form-label .typography-title,
+	.form-group-wrapper .form-group .settings-form-label .typography-title {
+		display: block;
+		font-size: 0.8125rem;
+		font-weight: 500;
+		line-height: 1.4;
+		color: #4b5563;
+	}
+
+	// Settings has no `.container-wrapper` around it, so it gets the same header rhythm the other screens get from
+	// app.scss: the title starts 1rem under the top bar, with a half-rem under it, and the breadcrumb is set in the
+	// same quiet small type as the description.
+	.settings-wrapper.admin-settings {
+		padding-top: 0;
+
+		// Only the vertical spacing changes: zyra's own left and right margins on the header stay, which is what
+		// lines the title up with the tabs and cards below it.
+		.title-section {
+			margin-bottom: 0;
+			padding: 1rem 0 0.5rem;
+		}
+
+		.breadcrumbs {
+			padding-top: 0.25rem;
+			font-weight: 400;
+			font-size: 0.8125rem;
+			line-height: 1.5;
+			color: var(--cx-muted);
+
+			a {
+				font-weight: 500;
+				color: var(--cx-primary);
+			}
+		}
+	}
+}
+
+// Every multi-checkbox setting lists its options in two columns, so a group of three or five reads as a tidy grid
+// instead of running past the card.
+.admin-main-wrapper.admin-main-wrapper .settings-input-content .simple-checkbox {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0.75rem 1.5rem;
+}
+
+// A choice-toggle whose options carry a preview image reads as a row of
+// picture cards: equal widths across the whole row, the drawing filling each card.
+.admin-main-wrapper.admin-main-wrapper .settings-input-content .choice-toggle-wrapper:has(.toggle-option img) {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+	gap: 1rem;
+	width: 100%;
+
+	.toggle-option {
+		width: auto;
+	}
+
+	// zyra draws a choice-toggle as one joined strip: only the first label gets rounded left corners, only the last
+	// gets rounded right ones, and the labels carry the border. Here every option is its own card, so each label gets
+	// the full border and all four rounded corners, and the selected one just changes its border colour.
+	.toggle-option label,
+	.toggle-option:first-child label,
+	.toggle-option:last-child label {
+		border: 1px solid #e3e6ef;
+		border-radius: 0.75rem;
+		overflow: hidden;
+	}
+
+	.toggle-option input:checked + label {
+		border: 1px solid var(--cx-primary);
+		box-shadow: 0 0 0 1px var(--cx-primary);
+	}
+
+	.toggle-option label,
+	.toggle-option label > span {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		width: 100%;
+	}
+
+	.toggle-option img {
+		width: 100%;
+		height: auto;
+		margin-bottom: 0.5rem;
+	}
+}
+
+.admin-main-wrapper.admin-main-wrapper .form-group.row:has(.toggle-option img) {
+	.settings-input-content {
+		flex: 1 1 100%;
+		width: 100%;
+		max-width: none;
+	}
+
+	.choice-toggle-container {
+		width: 100%;
+	}
+
+	.toggle-option {
+		opacity: 1;
+	}
+}
+
+// Settings tables (zones, packages, rates…) sit inside a second `.container-wrapper` that adds its own 20px side
+// margin, indenting the card against the tabs and header above it. Keep one gutter only.
+.catalogx-settings .tab-content > .container-wrapper {
+	margin-inline: 0;
+}
+
+// ---- Settings: a section menu on the left, one card per section, a row per setting ----
+// A 200px sticky menu of sections on the left, the open section's cards on
+// the right, the whole page capped at 1280px so rows never stretch across a wide screen. Each card has an icon,
+// title and description at the top, then its settings as rows split by hairlines: label and help text in the left
+// two-fifths, the control in the right three-fifths. Under 960px the menu becomes a scrolling row of pills.
+// The doubled class and [data-template] outweigh zyra's `.settings-wrapper[data-template="default"]:not(:has(.tabs))
+// .general-wrapper .tab-content:not(:has(.card-content))` rules, which frame the content in a white bordered box.
+.admin-main-wrapper.admin-main-wrapper .settings-wrapper.catalogx-settings.catalogx-settings[data-template] {
+	display: grid;
+	grid-template-columns: 12.5rem minmax(0, 1fr);
+	column-gap: 2rem;
+	align-items: start;
+	box-sizing: border-box;
+	max-width: 80rem;
+	padding-inline: 1.25rem;
+	padding-bottom: 3rem;
+
+	// Starts 24px under the top bar (or under a notice), like every other screen's title.
+	> .title-section {
+		grid-column: 1 / -1;
+		margin: 0 0 1.25rem;
+	}
+
+	// The section menu: sidebar links - icon and word, a soft accent pill on the open one.
+	> .tabs-wrapper.settings-tab {
+		position: sticky;
+		top: 3.5rem;
+		grid-column: 1;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: transparent;
+
+		// zyra makes the wrapper a flex row, which shrinks the list to its longest label; fill the column instead.
+		.tabs-item {
+			display: flex;
+			flex: 1 1 auto;
+			flex-direction: column;
+			gap: 0.125rem;
+			width: 100%;
+			min-width: 0;
+			border: 0;
+		}
+
+		.tab {
+			flex: none;
+			margin: 0;
+			padding: 0.5rem 0.625rem;
+			border: 0;
+			border-radius: 0.375rem;
+			background: transparent;
+			box-shadow: none;
+			font-size: 0.875rem;
+			font-weight: 500;
+			color: #4b4a57;
+			text-decoration: none;
+			transition:
+				background 0.15s,
+				color 0.15s;
+
+			&::before,
+			&::after {
+				display: none;
+			}
+
+			.tab-name {
+				display: flex;
+				align-items: center;
+				gap: 0.625rem;
+				font: inherit;
+				color: inherit;
+				white-space: nowrap;
+			}
+
+			i {
+				width: 1.125rem;
+				margin: 0;
+				font-size: 1.0625rem;
+				text-align: center;
+				color: var(--cx-muted);
+			}
+
+			&:hover {
+				background: var(--cx-surface);
+				color: var(--cx-ink);
+			}
+
+			&:focus-visible {
+				outline: 2px solid var(--cx-primary);
+				outline-offset: -2px;
+			}
+
+			&.active-tab {
+				background: color-mix(in srgb, var(--cx-primary) 9%, #fff);
+				box-shadow: none;
+				font-weight: 600;
+				color: var(--cx-primary);
+
+				i {
+					color: inherit;
+				}
+			}
+		}
+	}
+
+	// zyra pushes the content down with `.settings-wrapper[data-template] .general-wrapper { margin-top: 1.5rem
+	// !important }`; the grid already places it beside the menu. Only an !important can undo it.
+	> .container-wrapper.general-wrapper {
+		grid-column: 2;
+		min-width: 0;
+		margin: 0 !important;
+		padding: 0;
+	}
+
+	.tab-content,
+	.tab-content > .form-group-wrapper {
+		padding: 0;
+		border: 0;
+		border-radius: 0;
+		background: transparent;
+		box-shadow: none;
+	}
+
+	.tab-content > .form-group-wrapper {
+		gap: 0;
+	}
+
+	.settings-section-group {
+		display: block;
+
+		// A card placed straight into .tab-content is content-box in zyra: the padding would widen it past the page edge.
+		box-sizing: border-box;
+		width: 100%;
+
+		// Space below every section card, whether the cards share one wrapper or each sit in their own.
+		margin: 0 0 1rem;
+		padding: 1.25rem 1.375rem 0.25rem;
+		border: 1px solid var(--cx-border);
+		border-radius: 0.625rem;
+		background: var(--cx-surface);
+		box-shadow: 0 1px 2px rgb(22 21 29 / 4%);
+	}
+
+	// Card header: icon beside the title, description under the title. No divider of its own - the first row's
+	// hairline closes it, so a one-setting card doesn't get two lines.
+	.settings-left-section {
+		width: auto;
+		max-width: none;
+		margin: 0;
+		padding: 0 0 0.875rem;
+		border: 0;
+		background: transparent;
+
+		.divider-section {
+			display: grid;
+			grid-template-columns: auto minmax(0, 1fr);
+			column-gap: 0.625rem;
+			align-items: center;
+			padding: 0;
+			border: 0;
+			background: transparent;
+		}
+
+		.title-wrapper,
+		.title-wrapper > .typography-title {
+			display: contents;
+		}
+
+		.title-wrapper i {
+			grid-row: 1 / span 2;
+			align-self: start;
+			margin: 0.0625rem 0 0;
+			font-size: 1.15rem;
+			color: var(--cx-muted);
+		}
+
+		.title-wrapper span {
+			grid-column: 2;
+			font-size: 1rem;
+			font-weight: 650;
+			line-height: 1.4;
+			color: var(--cx-ink);
+		}
+
+		.typography-desc {
+			grid-column: 2;
+			margin: 0.125rem 0 0;
+			padding: 0;
+			font-size: 0.8125rem;
+			line-height: 1.45;
+			color: var(--cx-muted);
+		}
+	}
+
+	.settings-right-section {
+		width: auto;
+		max-width: none;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: transparent;
+
+		.form-group-wrapper {
+			background: transparent;
+		}
+
+		.form-group {
+			margin: 0;
+			padding: 1.125rem 0;
+			border-top: 1px solid var(--cx-border-soft);
+			background: transparent;
+		}
+
+		// Label and help text on the left, the control on the right, both from the top.
+		.form-group.row {
+			display: grid;
+			grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+			gap: 0.5rem 2rem;
+			align-items: start;
+
+			> .settings-form-label,
+			> .settings-input-content {
+				width: auto;
+				min-width: 0;
+				max-width: none;
+				margin: 0;
+				padding: 0;
+			}
+
+			// A row with no label (the listing template picker) uses the whole width.
+			&:not(:has(> .settings-form-label)) {
+				grid-template-columns: minmax(0, 1fr);
+			}
+		}
+
+		.settings-form-label .typography-title {
+			font-size: 0.875rem;
+			font-weight: 600;
+			color: var(--cx-ink);
+		}
+
+		.settings-metabox-description {
+			margin-top: 0.125rem;
+			font-size: 0.8125rem;
+			line-height: 1.5;
+			color: var(--cx-muted);
+		}
+	}
+
+	@media (width <= 960px) {
+		grid-template-columns: minmax(0, 1fr);
+
+		> .tabs-wrapper.settings-tab {
+			position: static;
+			margin-bottom: 1rem;
+
+			.tabs-item {
+				flex-direction: row;
+				gap: 0.375rem;
+				overflow-x: auto;
+				scrollbar-width: none;
+				padding-bottom: 0.125rem;
+			}
+
+			.tab {
+				border: 1px solid var(--cx-border);
+				background: var(--cx-surface);
+
+				&.active-tab {
+					border-color: transparent;
+				}
+			}
+		}
+
+		> .container-wrapper.general-wrapper {
+			grid-column: 1;
+		}
+	}
+
+	@media (width <= 782px) {
+		padding-inline: 0.75rem;
+
+		.settings-section-group {
+			padding-inline: 1rem;
+		}
+
+		.settings-right-section .form-group.row {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+}
+
+// ---- Empty states (zyra's ModuleGuardComponent: every "No … yet" list, Free and Pro) ----
+// No dashed frame, a soft icon tile, a title, one muted line and the action. The page
+// header keeps the description and the main button, so the empty state only says what is missing and what next.
+.admin-main-wrapper.admin-main-wrapper .module-guard {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.375rem;
+	margin: 0;
+	padding: 3rem 1.5rem;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	text-align: center;
+
+	> i {
+		display: inline-grid;
+		place-items: center;
+		width: 3rem;
+		height: 3rem;
+		margin-bottom: 0.5rem;
+		border-radius: 0.75rem;
+		background: color-mix(in srgb, var(--cx-primary) 8%, #fff);
+		font-size: 1.375rem;
+		color: var(--cx-primary);
+	}
+
+	.typography-title {
+		margin: 0;
+		font-size: 1rem;
+		font-weight: 600;
+		color: var(--cx-ink);
+	}
+
+	.typography-desc,
+	p {
+		max-width: 30rem;
+		margin: 0;
+		font-size: 0.875rem;
+		line-height: 1.5;
+		color: var(--cx-muted);
+	}
+
+	.admin-btn,
+	button {
+		margin-top: 0.75rem;
+	}
+}
+
+// A card that holds only an empty state needs no inner padding of its own.
+.admin-main-wrapper.admin-main-wrapper .card-content:has(> .card-body > .module-guard:only-child) > .card-body {
+	padding: 0;
+}
+
+// An empty table: no column headings or select-all box over a table with no rows.
+.admin-main-wrapper.admin-main-wrapper .admin-table:has(.admin-column.empty-table) .admin-table-header {
+	display: none;
+}
+
+.admin-main-wrapper.admin-main-wrapper .admin-column.empty-table {
+	padding: 0;
+	border: 0;
+}
+
+// A pill choice-toggle in a page header: a segmented control - one grey
+// track, the chosen option a raised white tab - at the 36px height of the header's other controls, instead of a
+// strip of bordered boxes with a purple-outlined selection.
+.admin-main-wrapper.admin-main-wrapper .title-right-section .choice-toggle-wrapper.pill {
+	display: inline-flex;
+	box-sizing: border-box;
+	height: 2.25rem;
+	padding: 0.1875rem;
+	gap: 0.125rem;
+	border-radius: 0.5rem;
+	background: #eef0f5;
+
+	.toggle-option {
+		display: flex;
+	}
+
+	.toggle-option label {
+		display: inline-flex;
+		align-items: center;
+		height: 100%;
+		padding: 0 0.75rem;
+		border: 0;
+		border-radius: 0.375rem;
+		background: transparent;
+		color: var(--cx-muted);
+		font-size: 0.8125rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+
+		.details-title {
+			color: inherit;
+		}
+
+		&:hover {
+			color: var(--cx-ink);
+		}
+	}
+
+	.toggle-option input:checked + label {
+		background: #fff;
+		box-shadow: 0 1px 2px rgb(16 24 40 / 10%), 0 0 0 1px rgb(16 24 40 / 4%);
+		color: var(--cx-ink);
+		font-weight: 600;
+	}
+
+	.toggle-option input:focus-visible + label {
+		outline: 2px solid var(--cx-primary);
+		outline-offset: 1px;
+	}
+}
+
+// WordPress admin notices (zyra moves them into `.notice-wrapper` at the top of every CatalogX screen): they start
+// where a page title would (24px under the top bar), keep 8px between each other, and leave the same 24px before the
+// page header (whose own 16px top padding supplies the rest). Restyled as a soft card with a coloured edge, so a
+// notice reads as part of the page rather than a WordPress strip pasted above it.
+.admin-main-wrapper.admin-main-wrapper > .notice-wrapper {
+	// Same side edges as the page content below it.
+	margin: 0 1.25rem;
+	padding: 1rem 0 0.5rem;
+
+	// zyra puts each notice in its own <div>, so the space between two notices goes on the wrapper's column.
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+
+	&:not(:has(.notice, .error, .updated)) {
+		display: none;
+	}
+
+	> div {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.notice,
+	.error,
+	.updated {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0.75rem 1rem;
+		border: 1px solid var(--cx-border);
+		border-left-width: 3px;
+		border-radius: 0;
+		background: var(--cx-surface);
+		box-shadow: 0 1px 2px rgb(16 24 40 / 4%);
+		color: var(--cx-text);
+		font-size: 0.875rem;
+		line-height: 1.5;
+
+		p {
+			margin: 0;
+			padding: 0;
+			font-size: inherit;
+		}
+
+		a {
+			color: var(--cx-primary);
+			font-weight: 600;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	.notice-error,
+	.error {
+		border-color: #f5d0d0;
+		border-left-color: #dc2626;
+		background: #fef6f6;
+	}
+
+	.notice-warning {
+		border-color: #f6e3c0;
+		border-left-color: #d97706;
+		background: #fffaf0;
+	}
+
+	.notice-success,
+	.updated {
+		border-color: #cdebd8;
+		border-left-color: #16a34a;
+		background: #f5fcf7;
+	}
+
+	.notice-info {
+		border-left-color: var(--cx-primary);
+	}
+}
+
+// ---- Page titles: one type style on every screen (lists, settings, editors, the type chooser) ----
+// 26px bold in a neutral near-black with slightly tightened tracking. The description sits 4px under it in the muted body size.
+.admin-main-wrapper.admin-main-wrapper {
+	.title-section .typography-title {
+		margin: 0;
+		color: #16151d;
+		font-size: 1.625rem;
+		font-weight: 700;
+		line-height: 1.25;
+		letter-spacing: -0.015em;
+	}
+
+	.title-section .typography-desc {
+		margin: 0.25rem 0 0;
+		color: var(--cx-muted);
+		font-size: 0.875rem;
+		line-height: 1.5;
+	}
+
+	.title-section .title-wrapper {
+		gap: 0;
+	}
+}
+
+// ---- Settings: Pro-only options inside a segmented choice ----
+// A locked option keeps its label on one line, muted, with a small "lock Pro" tag pinned to the segment's top-right
+// corner (white-ringed so it reads cleanly over the strip's edge). zyra's own red badge is restyled into that tag; its
+// icon is redrawn as zyra's lock glyph. The strip gets a little top room so the tags are never clipped.
+.admin-main-wrapper.admin-main-wrapper .catalogx-settings.catalogx-settings.catalogx-settings .settings-input-content .choice-toggle-wrapper:has(.pro-tag) {
+	flex-wrap: nowrap;
+	max-width: 100%;
+	margin-top: 0.75rem;
+	overflow: visible;
+
+	.toggle-option {
+		position: relative;
+	}
+
+	.toggle-option > label {
+		padding-left: 0.75rem;
+		padding-right: 0.75rem;
+	}
+
+	.details-title {
+		white-space: nowrap;
+	}
+
+	.toggle-option:has(> .pro-tag) > label {
+		color: var(--cx-muted);
+
+		.details-title {
+			color: inherit;
+		}
+	}
+
+	.toggle-option:has(> .pro-tag):hover > label {
+		color: var(--cx-ink);
+	}
+}
+
+// Corner placement for the Pro tag on a locked segment: pinned to the top-right corner, with a
+// white ring so it reads cleanly over the strip's edge.
+#wpbody .catalogx-settings .choice-toggle-wrapper .toggle-option > .admin-tag.pro-tag {
+	position: absolute;
+	inset: -0.875rem -0.375rem auto auto;
+	z-index: 1;
+	margin: 0;
+	border: 2px solid #fff;
+	pointer-events: none;
+}
+
+// ---- Pro tag: one look everywhere ----
+// Every "this needs Pro" tag in the admin is the same small soft-purple pill with a lock and "Pro": zyra's own
+// `.admin-tag.pro-tag` (settings fields, checkbox options, segmented choices). Only where it sits differs (set beside each). `#wpbody` outranks zyra's
+// and the older per-screen styles; the lock is zyra's own glyph.
+@mixin cx-pro-tag {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	gap: 0.1875rem;
+	height: 1rem;
+	padding: 0 0.375rem 0 0.3125rem;
+	border-radius: 999px;
+	background: #f1ebfb;
+	box-shadow: none;
+	font-size: 0.625rem;
+	font-weight: 700;
+	line-height: 1;
+	letter-spacing: 0.02em;
+	text-transform: none;
+	white-space: nowrap;
+	vertical-align: middle;
+	color: var(--cx-primary, #5007aa);
+
+	i {
+		display: inline-block;
+		width: auto;
+		height: auto;
+		margin: 0;
+		padding: 0;
+		background: none;
+		font-size: 0.625rem;
+		line-height: 1;
+		color: inherit;
+
+		&::before {
+			content: "\e975";
+		}
+	}
+}
+
+#wpbody .admin-tag.pro-tag {
+	@include cx-pro-tag;
+}
+
+// Not in a corner: a plain inline tag with no ring.
+#wpbody .admin-tag.pro-tag:not(.toggle-option > .pro-tag) {
+	border: 0;
+}
+
+// Beside a checkbox option's label.
+#wpbody .checkbox-label .admin-tag.pro-tag {
+	margin-left: 0.375rem;
+}
+
+// ---- Date range filter popup (zyra's calendar input, on every list with a date filter) ----
+// zyra pins a 25rem popup to the right edge of a 15rem field (so it hangs off to the left), with no edge, 18-24px
+// numbers in 53px cells, purple weekday labels and "today" filled like a selected day. Here it is a compact menu
+// under the field: a two-option segmented switch (Presets / Custom), presets as a quiet two-column list, and a
+// calendar in 36px cells where only the chosen range is coloured (filled ends, soft band between).
+#wpbody .settings-calender {
+	.calendar-tabs-container {
+		left: 0;
+		right: auto;
+		width: 19.5rem;
+		max-width: calc(100vw - 2rem);
+		padding: 0.375rem;
+		box-sizing: border-box;
+		border: 1px solid #e3e6ef;
+		border-radius: 0.75rem;
+		background: #fff;
+		box-shadow:
+			0 1px 2px rgb(28 27 51 / 6%),
+			0 12px 32px -8px rgb(28 27 51 / 20%);
+
+		&.open-downward {
+			top: calc(100% + 0.375rem);
+		}
+
+		&.open-upward {
+			bottom: calc(100% + 0.375rem);
+		}
+	}
+
+	// Presets / Custom: one segmented switch.
+	.calendar-tabs-container .tabs-wrapper {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: transparent;
+	}
+
+	.calendar-tabs-container .tabs-item {
+		display: flex;
+		gap: 0.125rem;
+		width: 100%;
+		padding: 0.1875rem;
+		box-sizing: border-box;
+		border: 0;
+		border-radius: 0.5rem;
+		background: #f1f2f6;
+	}
+
+	.calendar-tabs-container .tabs-item .tab {
+		display: flex;
+		flex: 1;
+		justify-content: center;
+		width: auto;
+		margin: 0;
+		padding: 0.375rem 0.5rem;
+		border: 0;
+		border-radius: 0.375rem;
+		background: transparent;
+		box-shadow: none;
+		font-size: 0.8125rem;
+		font-weight: 500;
+		color: #4b4a57;
+		cursor: pointer;
+
+		&::before,
+		&::after {
+			display: none;
+		}
+
+		&:hover {
+			color: #1f1b3e;
+		}
+
+		&.active-tab {
+			background: #fff;
+			box-shadow: 0 1px 2px rgb(28 27 51 / 12%);
+			font-weight: 600;
+			color: #1f1b3e;
+		}
+	}
+
+	.calendar-tab-content {
+		padding: 0.375rem 0 0;
+	}
+
+	// Presets: a two-column list of plain options.
+	.calendar-tabs-container .range-picker-wrapper {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.125rem;
+		width: 100%;
+		padding: 0;
+
+		div {
+			width: auto;
+			padding: 0.5rem 0.625rem;
+			border: 0;
+			border-radius: 0.375rem;
+			background: transparent;
+			font-size: 0.8125rem;
+			font-weight: 500;
+			text-align: left;
+			color: #374151;
+			cursor: pointer;
+
+			&:hover {
+				background: #f4f5f9;
+				color: #1f1b3e;
+			}
+		}
+	}
+
+	// Custom: a compact calendar.
+	.input-calendar.rmdp-wrapper,
+	.input-calendar .rmdp-top-class,
+	.input-calendar .rmdp-calendar {
+		width: 100%;
+		padding: 0;
+		border: 0;
+		box-shadow: none !important;
+	}
+
+	.input-calendar .rmdp-header {
+		margin: 0.125rem 0 0.25rem;
+		padding: 0;
+		font-size: inherit;
+	}
+
+	.input-calendar .rmdp-header .rmdp-header-values {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: #1f1b3e;
+
+		// "October, 2026": the comma sits between the two spans, so only the year gets a gap before it.
+		span {
+			padding: 0;
+		}
+
+		span:last-child {
+			margin-left: 0.25rem;
+		}
+	}
+
+	.input-calendar .rmdp-header .rmdp-arrow-container {
+		display: grid;
+		place-items: center;
+		width: 1.875rem;
+		height: 1.875rem;
+		margin: 0;
+		border-radius: 0.375rem;
+
+		i {
+			width: 0.375rem;
+			height: 0.375rem;
+			margin: 0;
+			padding: 0;
+			border-color: #6b7280;
+			border-width: 0 1.5px 1.5px 0;
+		}
+
+		&:hover {
+			background: #f4f5f9;
+
+			i {
+				border-color: #1f1b3e;
+			}
+		}
+	}
+
+	.input-calendar .rmdp-day-picker {
+		justify-content: center;
+		padding: 0;
+	}
+
+	.input-calendar .rmdp-day-picker .rmdp-week {
+		gap: 0;
+		padding: 0;
+	}
+
+	.input-calendar .rmdp-day-picker .rmdp-week .rmdp-week-day {
+		width: 2.25rem;
+		height: 1.75rem;
+		padding: 0;
+		font-size: 0.6875rem;
+		font-weight: 600;
+		color: #8a8fa0;
+	}
+
+	.input-calendar .rmdp-day-picker .rmdp-day {
+		width: 2.25rem;
+		height: 2.25rem;
+		margin: 0;
+		background: transparent;
+		color: #1f1b3e;
+		box-shadow: none;
+
+		span.sd,
+		span {
+			inset: 0.125rem;
+			border-radius: 0.375rem;
+			background: transparent;
+			box-shadow: none;
+			font-size: 0.8125rem;
+			font-weight: 500;
+			color: inherit;
+		}
+
+		&:not(.rmdp-disabled, .rmdp-day-hidden, .rmdp-range) span:hover {
+			background: #f4f5f9;
+			color: #1f1b3e;
+		}
+
+		// Today: marked by colour only, so it is never mistaken for a chosen day.
+		&.rmdp-today span {
+			background: transparent;
+			font-weight: 700;
+			color: var(--cx-primary, #5007aa);
+		}
+
+		// The chosen range: a soft band, ends filled.
+		&.rmdp-range {
+			background: color-mix(in srgb, var(--cx-primary, #5007aa) 9%, #fff);
+			color: var(--cx-primary, #5007aa);
+			box-shadow: none;
+
+			span {
+				color: inherit;
+			}
+
+			&.start {
+				border-radius: 0.5rem 0 0 0.5rem;
+			}
+
+			&.end {
+				border-radius: 0 0.5rem 0.5rem 0;
+			}
+
+			&.start.end {
+				border-radius: 0.5rem;
+			}
+
+			&.start span,
+			&.end span {
+				background: var(--cx-primary, #5007aa);
+				color: #fff;
+				font-weight: 600;
+			}
+		}
+
+		&.rmdp-day-hidden,
+		&.rmdp-disabled {
+			background: transparent;
+		}
+	}
+}

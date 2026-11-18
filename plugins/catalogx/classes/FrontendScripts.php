@@ -465,6 +465,10 @@ class FrontendScripts {
 								)
 							),
                             'email_tags'               => Utill::get_tags_enquiry_form(),
+                            // The dashboard greets the admin by name ("Good morning, Ana"); empty when no one is logged in.
+                            'user_first_name'          => self::current_user_first_name(),
+                            // The enquiry inbox tells the admin's own messages from the customer's by sender id.
+                            'user_id'                  => get_current_user_id(),
                         )
                     ),
                 ),
@@ -584,5 +588,22 @@ class FrontendScripts {
      */
     public static function enqueue_style( $handle ) {
         wp_enqueue_style( $handle );
+    }
+
+    /**
+     * The logged-in user's first name, or their display name when no first name is set.
+     *
+     * @return string Empty when no user is logged in.
+     */
+    public static function current_user_first_name() {
+        $user = wp_get_current_user();
+
+        if ( ! $user->exists() ) {
+            return '';
+        }
+
+        $first_name = trim( (string) $user->first_name );
+
+        return '' !== $first_name ? $first_name : (string) $user->display_name;
     }
 }

@@ -1,0 +1,13 @@
+// Entry stylesheet for the Notifima admin app (imported once, from src/app.tsx).
+
+// design-system.scss restyles zyra's building blocks; _table-and-controls.scss fixes the table, select and page
+// container spacing. The rules below cover what only Notifima renders.
+@use './design-system';
+@use './table-and-controls';
+@use '../components/common';
+
+// Keep long values (an email address, a product name) inside the control column rather than letting them run under
+// the label.
+.admin-main-wrapper.admin-main-wrapper .notifima-settings .settings-right-section .form-group.row .settings-input-content {
+	overflow-wrap: anywhere;
+}
