@@ -353,58 +353,17 @@ class Tracker {
     }
 
     /**
-     * Build the snapshot sent to VuloCloud.
+     * Build the snapshot sent to VuloCloud - the generic site/environment fields come from
+     * the shared client; only Notifima's own identity fields are added here.
      *
      * @return array
      */
     public function get_tracking_payload(): array {
-        global $wpdb;
-
-        if ( ! function_exists( 'get_plugins' ) ) {
-            require_once ABSPATH . 'wp-admin/includes/plugin.php';
-        }
-
-        $all_plugins    = array_keys( get_plugins() );
-        $active_plugins = (array) get_option( 'active_plugins', array() );
-        if ( is_multisite() ) {
-            $active_plugins = array_merge( $active_plugins, array_keys( (array) get_site_option( 'active_sitewide_plugins', array() ) ) );
-        }
-        $active_plugins = array_values( array_unique( $active_plugins ) );
-
-        $theme         = wp_get_theme();
-        $server_header = filter_input( INPUT_SERVER, 'SERVER_SOFTWARE', FILTER_UNSAFE_RAW );
-
-        $current_user = Notifima()->current_user;
-        $email        = $current_user && $current_user->exists() && $current_user->user_email
-            ? $current_user->user_email
-            : get_bloginfo( 'admin_email' );
-
-        $payload = array(
-            'Site Name'         => get_bloginfo( 'name' ),
-            'Site Version'      => get_bloginfo( 'version' ),
-            'Site Language'     => get_bloginfo( 'language' ),
-            'Charset'           => get_bloginfo( 'charset' ),
-            'Php Version'       => phpversion(),
-            'Multisite'         => is_multisite(),
-            'File Location'     => ABSPATH,
-            'Email'             => sanitize_email( $email ),
-            'Server'            => sanitize_text_field( (string) ( $server_header ?? getenv( 'SERVER_SOFTWARE' ) ) ),
-            'Text Direction'    => is_rtl() ? 'rtl' : 'ltr',
-            'Plugin'            => 'Notifima',
-            'Version'           => Notifima()->version,
-            'Status'            => 'active',
-            'Theme'             => sanitize_text_field( (string) $theme->get( 'Name' ) ),
-            'Theme Version'     => sanitize_text_field( (string) $theme->get( 'Version' ) ),
-            'Platform'          => 'WordPress',
-            'Database'          => $wpdb->db_version(),
-            'Environment'       => wp_get_environment_type(),
-            'Hosting Type'      => VuloCloudClient::detect_hosting_type(),
-            'Commerce Platform' => defined( 'WC_VERSION' ) ? 'WooCommerce ' . WC_VERSION : '',
-            'Site URL'          => home_url(),
-            'Pro Version'       => defined( 'NOTIFIMA_PRO_PLUGIN_VERSION' ) ? NOTIFIMA_PRO_PLUGIN_VERSION : '',
-            'Active Plugins'    => $active_plugins,
-            'Inactive Plugins'  => array_values( array_diff( $all_plugins, $active_plugins ) ),
-        );
+        $payload                = VuloCloudClient::build_site_snapshot();
+        $payload['Plugin']      = 'Notifima';
+        $payload['Version']     = Notifima()->version;
+        $payload['Status']      = 'active';
+        $payload['Pro Version'] = defined( 'NOTIFIMA_PRO_PLUGIN_VERSION' ) ? NOTIFIMA_PRO_PLUGIN_VERSION : '';
 
         return apply_filters( 'notifima_tracking_payload', $payload );
     }
