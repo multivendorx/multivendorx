@@ -1,234 +1,498 @@
-// Settings → Modules (Modules.tsx). The card frame and header come from styles/design-system.scss; this draws the
-// module rows: icon tile, name and description, links, and the on/off switch on the right.
-.admin-main-wrapper.admin-main-wrapper .catalogx-settings .cx-modules {
-	padding-bottom: 0;
+// Settings → Modules (Modules.tsx): zyra's ModuleGridComponent restyled into VuloCart's compact module grid.
+// Ported from vulocart/src/app/design-system.scss; keep the two in step. The Pro tag look is in styles/design-system.scss.
 
-	.settings-left-section {
+// Each module is one small white card: icon tile, name and category on the left, the settings link and the switch
+// on the right, two lines of description, then the free and Pro features (at most four each, then "+N more").
+// Above the grid: category pills, then an All / Active / Inactive segmented control with search on the right.
+// zyra's module selectors run to eight or nine classes and load after this file, hence the repeated class.
+.admin-main-wrapper.admin-main-wrapper .catalogx-settings.catalogx-settings.catalogx-settings.catalogx-settings .module-container[data-variant] {
+	// ---- Toolbar ----
+	.list-toolbar {
 		display: flex;
-		gap: 1rem;
-		align-items: flex-start;
-		justify-content: space-between;
+		flex-direction: column;
+		gap: 0.875rem;
+		margin: 0 0 1.25rem;
+		padding: 0;
+		border: 0;
+		background: transparent;
+	}
 
-		.divider-section {
-			flex: 1 1 auto;
-			min-width: 0;
+	.list-toolbar-main,
+	.list-toolbar-filters {
+		margin: 0;
+		padding: 0;
+	}
+
+	.filter-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.375rem;
+	}
+
+	.filter-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		height: 2rem;
+		padding: 0 0.75rem;
+		border: 1px solid var(--cx-border);
+		border-radius: 999px;
+		background: var(--cx-surface);
+		box-shadow: none;
+		font-size: 0.8125rem;
+		font-weight: 500;
+		color: #4b4a57;
+		cursor: pointer;
+		transition:
+			background 0.15s ease,
+			border-color 0.15s ease,
+			color 0.15s ease;
+
+		&:hover {
+			border-color: #d6d9e4;
+			color: var(--cx-ink);
+		}
+
+		&.active {
+			border-color: transparent;
+			background: color-mix(in srgb, var(--cx-primary) 10%, #fff);
+			color: var(--cx-primary);
+			font-weight: 600;
+
+			.filter-chip-count {
+				background: color-mix(in srgb, var(--cx-primary) 16%, #fff);
+				color: var(--cx-primary);
+			}
 		}
 	}
 
-	.cx-modules-aside {
-		flex: none;
+	.filter-chip-count {
+		display: inline-grid;
+		place-items: center;
+		min-width: 1.25rem;
+		height: 1.25rem;
+		padding: 0 0.3125rem;
+		border-radius: 999px;
+		background: #f1f2f6;
+		font-size: 0.6875rem;
+		font-weight: 600;
+		color: var(--cx-muted);
 	}
 
-	.cx-modules-list {
+	.list-toolbar-sub {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
 		margin: 0;
 		padding: 0;
-		list-style: none;
-	}
-}
-
-.admin-main-wrapper.admin-main-wrapper .cx-module {
-	display: grid;
-	grid-template-columns: auto minmax(0, 1fr) auto;
-	gap: 0.875rem;
-	align-items: center;
-	margin: 0 -1.375rem;
-	padding: 1rem 1.375rem;
-	border-top: 1px solid var(--cx-border-soft);
-	transition: background 0.15s;
-
-	&:last-child {
-		border-radius: 0 0 0.625rem 0.625rem;
 	}
 
-	&.is-highlighted {
-		background: color-mix(in srgb, var(--cx-primary) 6%, #fff);
-		box-shadow: inset 3px 0 0 var(--cx-primary);
+	// "16 modules" repeats the "All (16)" beside it.
+	.list-toolbar-summary-group {
+		display: none;
 	}
 
-	.cx-module-icon {
+	.list-toolbar-secondary {
+		display: flex;
+		flex: 1;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+		margin: 0;
+	}
+
+	// Status switch on the left, search on the right.
+	.list-toolbar-secondary > .choice-toggle-container {
+		order: -1;
+	}
+
+	.list-toolbar-search {
+		position: relative;
+		display: flex;
+		align-items: center;
+		flex: 0 1 18rem;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		box-shadow: none;
+
+		i {
+			position: absolute;
+			left: 0.75rem;
+			font-size: 0.875rem;
+			color: var(--cx-muted);
+			pointer-events: none;
+		}
+
+		input {
+			width: 100%;
+			height: 2.25rem;
+			padding: 0 0.75rem 0 2.125rem;
+			border: 1px solid var(--cx-border);
+			border-radius: 0.5rem;
+			background: var(--cx-surface);
+			box-shadow: none;
+			font-size: 0.8125rem;
+
+			&:focus {
+				border-color: var(--cx-primary);
+				outline: 0;
+				box-shadow: 0 0 0 3px color-mix(in srgb, var(--cx-primary) 14%, transparent);
+			}
+		}
+	}
+
+	// All / Active / Inactive: one segmented control.
+	.choice-toggle-container {
+		width: auto;
+		margin: 0;
+	}
+
+	.choice-toggle-wrapper.chips {
+		display: inline-flex;
+		gap: 0.125rem;
+		padding: 0.1875rem;
+		border: 0;
+		border-radius: 0.5rem;
+		background: #eef0f5;
+
+		.toggle-option {
+			margin: 0;
+			padding: 0;
+			border: 0;
+			border-radius: 0.375rem;
+			background: transparent;
+			box-shadow: none;
+
+			label {
+				display: block;
+				margin: 0;
+				padding: 0.375rem 0.75rem;
+				border: 0;
+				border-radius: inherit;
+				background: transparent;
+				cursor: pointer;
+			}
+
+			.details-title {
+				font-size: 0.8125rem;
+				font-weight: 500;
+				line-height: 1.2;
+				white-space: nowrap;
+				color: #4b4a57;
+			}
+
+			&:has(input:checked) {
+				background: var(--cx-surface);
+				box-shadow: 0 1px 2px rgb(28 27 51 / 10%);
+
+				.details-title {
+					font-weight: 600;
+					color: var(--cx-ink);
+				}
+			}
+		}
+	}
+
+	// ---- Cards ----
+	.module-option-row {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+		gap: 0.875rem;
+		margin: 0;
+	}
+
+	.module-list-item {
+		display: grid;
+		grid-template: "icon name actions" auto "icon meta actions" auto "desc desc desc" auto "feat feat feat" 1fr "req req req" auto / 2.5rem minmax(0, 1fr) auto;
+		column-gap: 0.75rem;
+		width: auto;
+		min-width: 0;
+		margin: 0;
+		padding: 1rem 1rem 1.125rem 1.125rem;
+		overflow: hidden;
+		border: 1px solid var(--cx-border);
+		border-radius: 0.75rem;
+		background: var(--cx-surface);
+		box-shadow: 0 1px 2px rgb(28 27 51 / 4%);
+		transition:
+			border-color 0.15s ease,
+			box-shadow 0.15s ease;
+
+		&:hover {
+			border-color: #d6d9e4;
+			box-shadow: 0 4px 14px -8px rgb(28 27 51 / 16%);
+		}
+
+		&:has(.toggle-checkbox input:checked) {
+			border-color: color-mix(in srgb, var(--cx-primary) 30%, var(--cx-border));
+
+			.module-cover-mark {
+				background: color-mix(in srgb, var(--cx-primary) 9%, #fff);
+				color: var(--cx-primary);
+			}
+		}
+
+		// With the Pro tag in front, the category starts after it.
+		&:has(.module-cover-pro) .module-eyebrow {
+			padding-left: 2.625rem;
+		}
+	}
+
+	// The gradient banner goes: its wrapper dissolves (its inline gradient then has no box to paint) and the icon
+	// inside becomes the 40px tile, so the Pro tag inside it can sit on the category line as its own grid item.
+	.module-cover {
+		display: contents;
+
+		&::after {
+			display: none;
+		}
+	}
+
+	.module-cover-mark {
+		grid-area: icon;
 		display: grid;
 		place-items: center;
-		align-self: start;
+		align-self: center;
 		width: 2.5rem;
 		height: 2.5rem;
 		border-radius: 0.625rem;
 		background: #f3f4f8;
+		font-size: 1.25rem;
+		text-shadow: none;
+		color: #4b4a57;
+	}
+
+	.module-cover-icon {
+		margin: 0;
+		font-size: 1.25rem;
+		color: inherit;
+	}
+
+	// Position only; the look is the shared Pro tag at the end of this file.
+	.module-cover-pro {
+		position: static;
+		grid-area: meta;
+		place-self: center start;
+		margin-top: 0.125rem;
+	}
+
+	.module-card-body {
+		display: contents;
+	}
+
+	.meta-name {
+		grid-area: name;
+		align-self: end;
+		margin: 0;
+		font-size: 0.9375rem;
+		font-weight: 600;
+		line-height: 1.3;
+		color: var(--cx-ink);
+	}
+
+	.module-eyebrow {
+		grid-area: meta;
+		align-self: center;
+		margin: 0.125rem 0 0;
+		font-size: 0.75rem;
+		font-weight: 500;
+		letter-spacing: 0;
+		text-transform: capitalize;
 		color: var(--cx-muted);
-		transition:
-			background 0.15s,
-			color 0.15s;
-
-		i {
-			font-size: 1.25rem;
-		}
 	}
 
-	&.is-active .cx-module-icon {
-		background: color-mix(in srgb, var(--cx-primary) 10%, #fff);
-		color: var(--cx-primary);
-	}
+	.typography-desc {
+		grid-area: desc;
+		display: -webkit-box;
+		align-self: start;
 
-	.cx-module-name {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-		align-items: center;
-
-		label {
-			font-size: 0.875rem;
-			font-weight: 600;
-			color: var(--cx-ink);
-			cursor: pointer;
-		}
-	}
-
-	.cx-module-desc {
-		max-width: 40rem;
-		margin: 0.1875rem 0 0;
+		// The row stretches in a taller card; without a cap the clamp's third line shows through.
+		max-height: 3em;
+		margin: 0.75rem 0 0;
+		overflow: hidden;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
 		font-size: 0.8125rem;
 		line-height: 1.5;
-		color: var(--cx-muted);
+		color: var(--cx-text);
 	}
 
-	.cx-module-links {
+	// Features: what is included free and what Pro adds, as two short lists under a hairline.
+	.feature-sections-wrapper {
+		grid-area: feat;
 		display: flex;
-		flex-wrap: wrap;
-		gap: 1rem;
-		margin-top: 0.375rem;
+		flex-direction: column;
+		gap: 0.75rem;
+		margin: 0.875rem 0 0;
+		padding: 0.875rem 0 0;
+		border: 0;
+		border-top: 1px solid var(--cx-border-soft);
+		border-radius: 0;
+		background: transparent;
+	}
 
-		&:empty {
+	.feature-section,
+	.feature-section:not(:last-child) {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: transparent;
+	}
+
+	.feature-header {
+		margin: 0 0 0.375rem;
+		padding: 0;
+	}
+
+	.free-badge,
+	.pro-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--cx-muted);
+
+		i {
 			display: none;
 		}
+	}
 
-		a {
-			display: inline-flex;
-			gap: 0.3125rem;
-			align-items: center;
-			font-size: 0.8125rem;
-			font-weight: 500;
-			color: var(--cx-primary);
+	.feature-list {
+		counter-reset: more;
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+
+		// Past the fourth line, count instead of listing. visibility (not display) keeps the counter running.
+		> .feature-item:nth-child(n + 5) {
+			position: absolute;
+			visibility: hidden;
+			height: 0;
+			overflow: hidden;
+			counter-increment: more;
+		}
+
+		&:has(> .feature-item:nth-child(5))::after {
+			content: "+" counter(more) " more";
+			padding-left: 1.25rem;
+			font-size: 0.75rem;
+			color: var(--cx-muted);
+		}
+	}
+
+	.feature-item,
+	.feature-item:not(:last-child) {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.5rem;
+		margin: 0;
+		padding: 0;
+		font-size: 0.8125rem;
+		line-height: 1.45;
+
+		i {
+			flex: none;
+			width: 0.75rem;
+			margin-top: 0.1875rem;
+			font-size: 0.75rem;
+		}
+
+		.check-icon {
+			color: #15803d;
+		}
+
+		.lock-icon {
+			color: #b6b9c6;
+		}
+
+		.unlocked-text {
+			color: var(--cx-text);
+		}
+
+		.locked-text {
+			color: var(--cx-muted);
+		}
+	}
+
+	// The footer's gear and switch move up beside the name.
+	.footer-wrapper {
+		display: contents;
+	}
+
+	.module-footer {
+		grid-area: actions;
+		align-self: center;
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: transparent;
+
+		.buttons a {
+			display: inline-grid;
+			place-items: center;
+			width: 2rem;
+			height: 2rem;
+			border-radius: 0.5rem;
+			color: var(--cx-muted);
 			text-decoration: none;
 
-			i {
-				font-size: 0.875rem;
-			}
-
 			&:hover {
-				text-decoration: underline;
+				background: #f3f4f8;
+				color: var(--cx-ink);
 			}
+		}
 
-			&:focus-visible {
-				border-radius: 0.25rem;
-				outline: 2px solid var(--cx-primary);
-				outline-offset: 2px;
-				box-shadow: none;
-			}
+		.buttons i {
+			font-size: 1rem;
+			color: inherit;
 		}
 	}
 
-	.cx-module-control {
-		display: flex;
-		justify-content: flex-end;
-		min-width: 4.75rem;
+	.requires {
+		grid-area: req;
+		margin: 0.5rem 0 0;
+		padding: 0;
 	}
 
-	&.is-locked {
-		.cx-module-name label {
-			color: var(--cx-text);
-			cursor: default;
+	@media (width <= 782px) {
+		.list-toolbar-secondary {
+			flex-wrap: wrap;
 		}
-	}
 
-	@media (width <= 600px) {
-		grid-template-columns: auto minmax(0, 1fr);
-
-		.cx-module-control {
-			grid-column: 2;
-			justify-content: flex-start;
+		.list-toolbar-search {
+			flex-basis: 100%;
 		}
 	}
 }
 
-// The on/off switch: a real button with role="switch", its state also written as "On"/"Off" so colour isn't the only
-// signal.
-.admin-main-wrapper.admin-main-wrapper .cx-switch {
-	display: inline-flex;
-	gap: 0.5rem;
-	align-items: center;
-	margin: 0;
-	padding: 0.25rem;
-	border: 0;
-	border-radius: 999px;
-	background: transparent;
-	font: inherit;
-	cursor: pointer;
+// The panel's own "Modules" heading repeats the page title; keep its description only.
+.admin-main-wrapper.admin-main-wrapper .catalogx-settings .tab-content > .title-section:has(~ .container-wrapper .module-container) {
+	margin: 0 0 1rem;
+	padding: 0;
 
-	.cx-switch-track {
-		position: relative;
-		width: 2.25rem;
-		height: 1.25rem;
-		border-radius: 999px;
-		background: #d4d7e1;
-		transition: background 0.18s;
+	.typography-title {
+		display: none;
 	}
 
-	.cx-switch-thumb {
-		position: absolute;
-		top: 0.125rem;
-		left: 0.125rem;
-		width: 1rem;
-		height: 1rem;
-		border-radius: 50%;
-		background: #fff;
-		box-shadow: 0 1px 2px rgb(16 24 40 / 20%);
-		transition: transform 0.18s;
-	}
-
-	.cx-switch-label {
-		min-width: 1.5rem;
-		font-size: 0.8125rem;
-		font-weight: 600;
-		text-align: start;
+	.typography-desc {
+		margin: 0;
+		font-size: 0.875rem;
 		color: var(--cx-muted);
 	}
-
-	&[aria-checked='true'] {
-		.cx-switch-track {
-			background: var(--cx-primary);
-		}
-
-		.cx-switch-thumb {
-			transform: translateX(1rem);
-		}
-
-		.cx-switch-label {
-			color: var(--cx-ink);
-		}
-	}
-
-	&[aria-busy='true'] {
-		cursor: progress;
-
-		.cx-switch-track {
-			opacity: 0.7;
-		}
-	}
-
-	&:disabled {
-		cursor: not-allowed;
-		opacity: 0.6;
-	}
-
-	&:focus-visible {
-		outline: 2px solid var(--cx-primary);
-		outline-offset: 2px;
-		box-shadow: none;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.cx-switch-track,
-		.cx-switch-thumb {
-			transition: none;
-		}
-	}
 }
+

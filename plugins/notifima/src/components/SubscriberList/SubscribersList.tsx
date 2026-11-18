@@ -11,65 +11,8 @@ import PreviewTable from '../Popup/PreviewTable';
 import { __ } from '@wordpress/i18n';
 import { csvHeaders, defaultCategoryCounts, subscriptions } from './SubscribersListUtil';
 import axios from 'axios';
+import { downloadCSV } from '../../services/csv';
 
-interface HeaderColumn {
-    label: string;
-    csvDisplay?: boolean;
-    [key: string]: unknown;
-}
-
-interface HeaderConfig {
-    [key: string]: HeaderColumn;
-}
-
-interface RowData {
-    [key: string]: string | number | boolean | null | undefined;
-}
-
-export const formatLocalDate = (date?: Date) =>
-    date ? date.toISOString().split('T')[0] : '';
-
-export const downloadCSV = (
-    headers: HeaderConfig,
-    rows: RowData[],
-    filename: string = 'export.csv'
-) => {
-    if (!rows || rows.length === 0) {
-        return;
-    }
-
-    // Exclude columns explicitly hidden from CSV.
-    const csvColumns = Object.entries(headers)
-        .filter(([, h]) => h.csvDisplay !== false)
-        .map(([key, h]) => ({ key, label: h.label }));
-
-
-    // Header row
-    const csvRows = [csvColumns.map((column) => column.label).join(',')];
-    
-    // Data rows
-    rows.forEach((row) => {
-        const rowData = csvColumns
-            .map((col) => {
-                const value = row[col.key];
-                return String(value ?? '');
-            })
-            .join(',');
-        csvRows.push(rowData);
-    });
-
-    // Trigger download
-    const csvContent = csvRows.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-};
 
 /** The sample rows drawn behind a preview card: a few, as the preview fades out below them. */
 const SAMPLE_ROWS = subscriptions.slice(0, 4);

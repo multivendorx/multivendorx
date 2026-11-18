@@ -1330,13 +1330,26 @@
 	}
 }
 
-#wpbody .admin-tag.pro-tag {
+#wpbody .admin-tag.pro-tag,
+#wpbody .module-cover-pro {
 	@include cx-pro-tag;
 }
 
 // Not in a corner: a plain inline tag with no ring.
-#wpbody .admin-tag.pro-tag:not(.toggle-option > .pro-tag) {
+#wpbody .admin-tag.pro-tag:not(.toggle-option > .pro-tag),
+#wpbody .module-cover-pro {
 	border: 0;
+}
+
+// The Modules card tag has no text of its own (zyra renders only an icon in it).
+#wpbody .module-cover-pro {
+	&::before {
+		content: none;
+	}
+
+	&::after {
+		content: "Pro";
+	}
 }
 
 // Beside a checkbox option's label.
