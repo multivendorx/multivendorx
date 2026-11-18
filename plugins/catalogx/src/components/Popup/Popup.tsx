@@ -85,10 +85,10 @@ export const PRO_FEATURES = [
 		),
 	},
 	{
-		icon: 'cart',
-		name: __('Buy or enquire', 'catalogx'),
+		icon: 'catalog',
+		name: __('Catalog Showcase', 'catalogx'),
 		desc: __(
-			'Show the cart and the enquiry button together, so customers choose.',
+			'Hide prices and Add to cart, or show buying and enquiring side by side.',
 			'catalogx'
 		),
 	},

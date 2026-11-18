@@ -6,6 +6,11 @@
 // Above the grid: category pills, then an All / Active / Inactive segmented control with search on the right.
 // zyra's module selectors run to eight or nine classes and load after this file, hence the repeated class.
 .admin-main-wrapper.admin-main-wrapper .catalogx-settings.catalogx-settings.catalogx-settings.catalogx-settings .module-container[data-variant] {
+	// zyra's container is a flex row that doesn't let the grid grow: without this it shrinks to two cards' width.
+	flex: 1 1 auto;
+	width: 100%;
+	min-width: 0;
+
 	// ---- Toolbar ----
 	.list-toolbar {
 		display: flex;
@@ -199,14 +204,19 @@
 	// ---- Cards ----
 	.module-option-row {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+
+		// Three cards a row beside the settings menu from a 1280px screen up; two, then one, below that.
+		grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
 		gap: 0.875rem;
 		margin: 0;
 	}
 
 	.module-list-item {
 		display: grid;
-		grid-template: "icon name actions" auto "icon meta actions" auto "desc desc desc" auto "feat feat feat" 1fr "req req req" auto / 2.5rem minmax(0, 1fr) auto;
+
+		// Unlike VuloCart's (name beside the icon), the icon and the gear/switch share the top row and the name gets the
+		// full width under them: at three cards a row, "Enquiry & Communication" would otherwise run under the gear.
+		grid-template: "icon . actions" auto "name name name" auto "meta meta meta" auto "desc desc desc" auto "feat feat feat" 1fr "req req req" auto / 2.5rem minmax(0, 1fr) auto;
 		column-gap: 0.75rem;
 		width: auto;
 		min-width: 0;
@@ -286,7 +296,7 @@
 	.meta-name {
 		grid-area: name;
 		align-self: end;
-		margin: 0;
+		margin: 0.75rem 0 0;
 		font-size: 0.9375rem;
 		font-weight: 600;
 		line-height: 1.3;

@@ -511,28 +511,31 @@ const DailyTrend = ({
 				</span>
 				<span>{__('Today', 'catalogx')}</span>
 			</div>
-			<table className="screen-reader-text">
-				<caption>{caption.title}</caption>
-				<thead>
-					<tr>
-						<th scope="col">{__('Date', 'catalogx')}</th>
-						<th scope="col">{caption.column}</th>
-					</tr>
-				</thead>
-				<tbody>
-					{daily.map((day) => (
-						<tr key={day.date}>
-							<td>
-								{formatDay(day.date, {
-									month: 'long',
-									day: 'numeric',
-								})}
-							</td>
-							<td>{formatValue(valueOf(day))}</td>
+			{/* The class is on a div: a table ignores the 1px height it sets and would stretch the page. */}
+			<div className="screen-reader-text">
+				<table>
+					<caption>{caption.title}</caption>
+					<thead>
+						<tr>
+							<th scope="col">{__('Date', 'catalogx')}</th>
+							<th scope="col">{caption.column}</th>
 						</tr>
-					))}
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						{daily.map((day) => (
+							<tr key={day.date}>
+								<td>
+									{formatDay(day.date, {
+										month: 'long',
+										day: 'numeric',
+									})}
+								</td>
+								<td>{formatValue(valueOf(day))}</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	);
 };

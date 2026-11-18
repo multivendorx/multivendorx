@@ -8,18 +8,17 @@ import { __ } from '@wordpress/i18n';
  * - `proModule: true` modules ship in CatalogX Pro and stay locked until Pro is active (`appLocalizer.khali_dabba`).
  * - `freeFeatures` is what the module does in CatalogX; `proFeatures` what CatalogX Pro adds (for a Pro module,
  *   everything it does). Both follow the Free vs Pro table on the dashboard (AdminDashboard/FreeVsProTab.tsx).
- * - A module id is the one the server stores; never rename it.
+ * - A module id is the one the server stores; never rename it. A category id uses `_`: zyra prints it as the card's
+ *   category line (`customer_engagement` → "Customer Engagement").
+ * - No `docLink`: like VuloCart's, a card carries only its settings link and switch, so the name has room.
  */
-const DOCS = 'https://catalogx.com/docs';
-const UTM = '?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx';
-
 export default {
 	category: true,
 	tab: 'modules',
 	modules: [
 		{
 			type: 'separator',
-			id: 'customer-engagement',
+			id: 'customer_engagement',
 			label: __('Customer engagement', 'catalogx'),
 		},
 		{
@@ -29,10 +28,9 @@ export default {
 				'An enquiry button on product pages, so customers can ask about a product and you reply from one inbox.',
 				'catalogx'
 			),
-			docLink: `${DOCS}/enquiry-communication/${UTM}`,
 			settingsLink: `${appLocalizer.admin_url}#&tab=settings&subtab=customer-engagement`,
 			proModule: false,
-			category: 'customer-engagement',
+			category: 'customer_engagement',
 			icon: 'enquiry',
 			freeFeatures: [
 				__('Enquiry button and form on product pages', 'catalogx'),
@@ -54,10 +52,9 @@ export default {
 				'Customers request a quote for one or more products, and you answer with your own price. Ideal for B2B and bulk orders.',
 				'catalogx'
 			),
-			docLink: `${DOCS}/quotation/${UTM}`,
 			settingsLink: `${appLocalizer.admin_url}#&tab=settings&subtab=customer-engagement`,
 			proModule: false,
-			category: 'customer-engagement',
+			category: 'customer_engagement',
 			icon: 'quote',
 			freeFeatures: [
 				__('Add to quote button', 'catalogx'),
@@ -84,7 +81,6 @@ export default {
 				'Show products without selling them: hide prices, the Add to cart button, and the cart and checkout pages.',
 				'catalogx'
 			),
-			docLink: `${DOCS}/catalog/${UTM}`,
 			settingsLink: `${appLocalizer.admin_url}#&tab=settings&subtab=customer-engagement`,
 			proModule: true,
 			category: 'catalog',
@@ -107,7 +103,6 @@ export default {
 				'Separate prices and minimum quantities for approved wholesale buyers.',
 				'catalogx'
 			),
-			docLink: `${DOCS}/wholesale-pricing/${UTM}`,
 			settingsLink: `${appLocalizer.admin_url}#&tab=settings&subtab=wholesale`,
 			proModule: true,
 			category: 'pricing',
@@ -127,7 +122,6 @@ export default {
 				'Discounts or markups that apply automatically by quantity, product, category or customer.',
 				'catalogx'
 			),
-			docLink: `${DOCS}/dynamic-pricing-rules/${UTM}`,
 			settingsLink: `${appLocalizer.admin_url}#&tab=rules`,
 			proModule: true,
 			category: 'pricing',

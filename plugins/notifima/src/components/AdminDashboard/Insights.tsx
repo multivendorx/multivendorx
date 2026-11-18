@@ -538,28 +538,31 @@ const DailyTrend = ({ daily }: { daily: DashboardData['daily'] }) => {
 				</span>
 				<span>{__('Today', 'notifima')}</span>
 			</div>
-			<table className="screen-reader-text">
-				<caption>{__('New subscriptions per day', 'notifima')}</caption>
-				<thead>
-					<tr>
-						<th scope="col">{__('Date', 'notifima')}</th>
-						<th scope="col">{__('Subscriptions', 'notifima')}</th>
-					</tr>
-				</thead>
-				<tbody>
-					{daily.map((day) => (
-						<tr key={day.date}>
-							<td>
-								{formatDay(day.date, {
-									month: 'long',
-									day: 'numeric',
-								})}
-							</td>
-							<td>{describe(day.count)}</td>
+			{/* The class is on a div: a table ignores the 1px height it sets and would stretch the page. */}
+			<div className="screen-reader-text">
+				<table>
+					<caption>{__('New subscriptions per day', 'notifima')}</caption>
+					<thead>
+						<tr>
+							<th scope="col">{__('Date', 'notifima')}</th>
+							<th scope="col">{__('Subscriptions', 'notifima')}</th>
 						</tr>
-					))}
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						{daily.map((day) => (
+							<tr key={day.date}>
+								<td>
+									{formatDay(day.date, {
+										month: 'long',
+										day: 'numeric',
+									})}
+								</td>
+								<td>{describe(day.count)}</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	);
 };

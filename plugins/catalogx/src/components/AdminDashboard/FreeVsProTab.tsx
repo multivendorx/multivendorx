@@ -25,7 +25,7 @@ const sections: Section[] = [
 			},
 			{
 				name: __('Catalog mode', 'catalogx'),
-				free: true,
+				free: false,
 				pro: true,
 			},
 			{
