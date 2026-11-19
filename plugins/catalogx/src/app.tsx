@@ -5,6 +5,8 @@ import { __ } from '@wordpress/i18n';
 import { NoticeComponent } from '@zyra/components';
 
 import Settings from './components/Settings/Settings';
+// Registers the `builderform-email` settings field, which zyra 1.0.65 no longer registers itself.
+import './components/Settings/EmailTemplateField';
 import EnquiryMessages from './components/EnquiryMessages/enquiryMessages';
 import WholesaleUser from './components/WholesaleUser/wholesaleUser';
 import Rules from './components/Rules/Rules';

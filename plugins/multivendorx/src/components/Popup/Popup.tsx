@@ -1,10 +1,20 @@
 /* global appLocalizer */
 import React, { useState } from 'react';
 import { ButtonInput } from '@zyra/inputs';
-import { __, sprintf } from '@wordpress/i18n';
+import { PopupComponent } from '@zyra/components';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import '../Popup/Popup.scss';
 
+/** The page or feature the upgrade was asked from, shown first in the Pro popup. */
+export interface ProFeature {
+	title: string;
+	description: string;
+	icon?: string;
+}
+
 interface PopupProps {
+	/** What the upgrade was asked from; the Pro popup names it first. */
+	feature?: ProFeature;
 	moduleName?: string;
 	wooSetting?: string;
 	wooLink?: string;
@@ -159,8 +169,11 @@ const proPopupContent = {
 	],
 };
 
+/** The Pro plans the popup offers, cheapest first: sites, price and the add-to-cart link. */
+export const LICENSES = proPopupContent.btnLink;
+
 const ShowProPopup: React.FC<PopupProps> = (props) => {
-	const [selectedBtn, setSelectedBtn] = useState(proPopupContent.btnLink[0]);
+	const [license, setLicense] = useState(proPopupContent.btnLink[0]);
 	if (props.plugin) {
 		const pluginData =
 			typeof props.plugin === 'string'
@@ -184,13 +197,11 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 				</div>
 				<div className="popup-body">
 					<div className="module-name">
-						{
-							sprintf(
-								/* translators: %s: Plugin name. */
-								__('Plugin Required: %s', 'multivendorx'),
-								pluginData.pluginName
-							)
-						}
+						{sprintf(
+							/* translators: %s: Plugin name. */
+							__('Plugin Required: %s', 'multivendorx'),
+							pluginData.pluginName
+						)}
 					</div>
 					<div className="module-desc">
 						{sprintf(
@@ -251,13 +262,11 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 					</div>
 					<div className="popup-body">
 						<div className="module-name">
-							{
-								sprintf(
-									/* translators: %s: Module name. */
-									__('Activate %s', 'multivendorx'),
-									formatModuleName(props.moduleName)
-								)
-							}
+							{sprintf(
+								/* translators: %s: Module name. */
+								__('Activate %s', 'multivendorx'),
+								formatModuleName(props.moduleName)
+							)}
 						</div>
 						<div className="module-desc">
 							{sprintf(
@@ -287,84 +296,150 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 					</div>
 				</div>
 			) : (
-				<>
-					{/* pro */}
-					<div className="popup-wrapper">
-						<div className="top-section">
-							<div className="heading">
-								{__(
-									'Upgrade every marketplace needs!',
-									'multivendorx'
-								)}
+				// The Pro upgrade popup: what was asked for, everything Pro adds, and the license picker with the buy
+				// button, always in view. Same design as Notifima's, MooWoodle's and CatalogX's Pro popups.
+				<div className="mvx-pro-popup">
+					<div className="mvx-pro-popup-head">
+						<span className="mvx-pro-popup-pill">
+							<i
+								className="adminfont-pro-tag"
+								aria-hidden="true"
+							/>
+							{__('MultiVendorX Pro', 'multivendorx')}
+						</span>
+						<h2>
+							{__(
+								'Upgrade every marketplace needs',
+								'multivendorx'
+							)}
+						</h2>
+						<p>
+							{__(
+								'Recurring revenue for you, more ways for stores to sell, and operations that run themselves.',
+								'multivendorx'
+							)}
+						</p>
+						{props.feature && (
+							<div className="mvx-pro-popup-feature">
+								<span className="mvx-pro-popup-icon">
+									<i
+										className={`adminfont-${props.feature.icon ?? 'pro-tag'}`}
+										aria-hidden="true"
+									/>
+								</span>
+								<span>
+									<strong>
+										{sprintf(
+											/* translators: %s: feature name, e.g. "Direct transactions". */
+											__(
+												'%s is included',
+												'multivendorx'
+											),
+											props.feature.title
+										)}
+									</strong>
+									{props.feature.description}
+								</span>
+								<i
+									className="adminfont-check mvx-pro-popup-check"
+									aria-hidden="true"
+								/>
 							</div>
-							<div className="description">
-								{__(
-									'Recurring revenue for you, empowered stores, automated operations',
-									'multivendorx'
-								)}{' '}
-							</div>
-							<div className="price">{selectedBtn.price}</div>
-							<div className="select-wrapper">
-								{__('For website with', 'multivendorx')}
-								<select
-									value={selectedBtn.link}
-									onChange={(e) => {
-										const found =
-											proPopupContent.btnLink.find(
-												(b) => b.link === e.target.value
-											);
-										if (found) {
-											setSelectedBtn(found);
-										}
-									}}
-								>
-									{proPopupContent.btnLink.map((b, idx) => (
-										<option key={idx} value={b.link}>
-											{b.site}
-										</option>
-									))}
-								</select>
-								{__('site license', 'multivendorx')}
-							</div>
-							<a
-								className="admin-btn"
-								href={selectedBtn.link}
-								target="_blank"
-								rel="noreferrer"
-							>
-								{__('Yes, Upgrade Me!', 'multivendorx')}
-								<i className="adminfont-arrow-right arrow-icon"></i>
-							</a>
-						</div>
-						<div className="popup-details">
-							<div className="heading-text">
-								{__('Why should you upgrade?', 'multivendorx')}
-							</div>
-
-							<ul>
-								{proPopupContent.messages.map(
-									(message, index) => (
-										<li key={index}>
-											<div className="title">
-												<i
-													className={`adminfont-${message.icon}`}
-												/>
-												{message.text}
-											</div>
-											<div className="desc">
-												{' '}
-												{message.des}
-											</div>
-										</li>
-									)
-								)}
-							</ul>
-						</div>
+						)}
 					</div>
-				</>
+					<div className="mvx-pro-popup-body">
+						<div className="mvx-pro-popup-label">
+							{__('Everything in Pro', 'multivendorx')}
+						</div>
+						<ul>
+							{proPopupContent.messages.map((message) => (
+								<li key={message.text}>
+									<span className="mvx-pro-popup-icon">
+										<i
+											className={`adminfont-${message.icon}`}
+											aria-hidden="true"
+										/>
+									</span>
+									<span>
+										<strong>{message.text}</strong>
+										<span>{message.des.trim()}</span>
+									</span>
+								</li>
+							))}
+						</ul>
+					</div>
+					<div className="mvx-pro-popup-foot">
+						<label className="mvx-pro-popup-license">
+							<span className="mvx-pro-popup-price">
+								{license.price}
+							</span>
+							<select
+								value={license.link}
+								aria-label={__('License size', 'multivendorx')}
+								onChange={(event) => {
+									const chosen = proPopupContent.btnLink.find(
+										(item) =>
+											item.link === event.target.value
+									);
+
+									if (chosen) {
+										setLicense(chosen);
+									}
+								}}
+							>
+								{proPopupContent.btnLink.map((item) => (
+									<option key={item.link} value={item.link}>
+										{sprintf(
+											/* translators: %s: number of sites, e.g. "3". */
+											_n(
+												'%s site',
+												'%s sites',
+												Number(item.site),
+												'multivendorx'
+											),
+											item.site
+										)}
+									</option>
+								))}
+							</select>
+							<span>{__('license', 'multivendorx')}</span>
+						</label>
+						<a
+							className="mvx-pro-popup-buy"
+							href={license.link}
+							target="_blank"
+							rel="noreferrer"
+						>
+							{__('Upgrade to Pro', 'multivendorx')}
+							<i
+								className="adminfont-arrow-right"
+								aria-hidden="true"
+							/>
+						</a>
+					</div>
+				</div>
 			)}
 		</>
 	);
 };
+
+/**
+ * The Pro popup in its lightbox, as every "Upgrade to Pro" button opens it. With Pro active and a `moduleName`, it asks
+ * to switch that module on instead.
+ */
+export const ProPopupDialog: React.FC<{
+	onClose: () => void;
+	moduleName?: string;
+}> = ({ onClose, moduleName }) => (
+	<PopupComponent
+		position="lightbox"
+		open
+		onClose={onClose}
+		width={46}
+		height="auto"
+	>
+		<ShowProPopup moduleName={moduleName} />
+	</PopupComponent>
+);
 
 export default ShowProPopup;

@@ -24,6 +24,12 @@ import {
 	formatStatusLabel,
 	getUrl,
 } from '../../../src/services/commonFunction';
+import ListGate from '../../../src/components/Popup/ListGate';
+import useNoRecordsYet from '../../../src/components/Popup/useNoRecordsYet';
+import {
+	SAMPLE_QUERIES,
+	sampleCategoryCounts,
+} from '../../../src/components/Popup/sampleRows';
 
 type StoreQueriesRow = {
 	id: number;
@@ -173,7 +179,12 @@ const Queries: React.FC = () => {
 							color="blue"
 							text={sprintf(
 								/* translators: %d: number of votes. */
-								_n('%d vote', '%d votes', Number(row.total_votes) || 0, 'multivendorx'),
+								_n(
+									'%d vote',
+									'%d votes',
+									Number(row.total_votes) || 0,
+									'multivendorx'
+								),
 								Number(row.total_votes) || 0
 							)}
 						/>
@@ -184,7 +195,8 @@ const Queries: React.FC = () => {
 						</div>
 					)}
 					<div className="desc">
-						{__('Asked by', 'multivendorx')} {row.author_name || '—'}
+						{__('Asked by', 'multivendorx')}{' '}
+						{row.author_name || '—'}
 					</div>
 				</div>
 			),
@@ -210,7 +222,8 @@ const Queries: React.FC = () => {
 		},
 	};
 
-	const infoRows = rows.map((row: any) => ({
+	/** A record as a table row; the sample rows go through it too, so they look like real ones. */
+	const toInfoRow = (row: any) => ({
 		...row,
 		info_icon: 'single-product',
 		info_link: getUrl(row.product_id, 'product'),
@@ -228,7 +241,8 @@ const Queries: React.FC = () => {
 			},
 			{ text: formatDate(row.question_date), color: 'blue' },
 		],
-	}));
+	});
+	const infoRows = rows.map(toInfoRow);
 
 	const filters = [
 		{
@@ -322,6 +336,13 @@ const Queries: React.FC = () => {
 			});
 	};
 
+	const sampleRowsData = SAMPLE_QUERIES;
+	const { props: gatedProps, hasNoRecords } = useNoRecordsYet({
+		rows: infoRows,
+		isLoading,
+		onQueryUpdate: doRefreshTableData,
+	});
+
 	return (
 		<>
 			<PopupComponent
@@ -350,18 +371,66 @@ const Queries: React.FC = () => {
 					}}
 				/>
 			</PopupComponent>
-			<TableCard
-				headers={headers}
-				variant="transparent"
-				rows={infoRows}
-				totalRows={totalRows}
-				isLoading={isLoading}
-				onQueryUpdate={doRefreshTableData}
-				ids={rowIds}
-				categoryCounts={categoryCounts}
-				filters={filters}
-				format={appLocalizer.date_format}
-			/>
+			<ListGate
+				feature={{
+					title: __('Customer questions', 'multivendorx'),
+					description: '',
+					icon: 'question',
+				}}
+				sample={
+					<TableCard
+						headers={headers}
+						variant="transparent"
+						filters={filters}
+						format={appLocalizer.date_format}
+						rows={sampleRowsData.map(toInfoRow)}
+						totalRows={sampleRowsData.length}
+						categoryCounts={sampleCategoryCounts(
+							sampleRowsData,
+							{
+								has_answer: __('Answered', 'multivendorx'),
+								no_answer: __('Unanswered', 'multivendorx'),
+							},
+							__('All', 'multivendorx')
+						)}
+					/>
+				}
+				isEmpty={hasNoRecords}
+				empty={{
+					heading: __('No customer questions yet', 'multivendorx'),
+					description: __(
+						'Shoppers ask about a product from its page. Each question shows here, with the store’s answer once it replies.',
+						'multivendorx'
+					),
+					actions: (
+						<>
+							<a
+								className="mvx-locked-button"
+								href={`${appLocalizer.admin_url}edit.php?post_type=product`}
+							>
+								{__('View products', 'multivendorx')}
+							</a>
+						</>
+					),
+					note: __(
+						'A preview with sample questions. Real ones show here.',
+						'multivendorx'
+					),
+				}}
+			>
+				<TableCard
+					headers={headers}
+					variant="transparent"
+					rows={infoRows}
+					totalRows={totalRows}
+					isLoading={isLoading}
+					onQueryUpdate={gatedProps.onQueryUpdate}
+					ids={rowIds}
+					categoryCounts={categoryCounts}
+					filters={filters}
+					format={appLocalizer.date_format}
+				/>
+			</ListGate>
 			{selectedQueries && (
 				<PopupComponent
 					open={selectedQueries}

@@ -9,6 +9,7 @@ addFilter(
 	(configs, { appLocalizer }) => {
 		configs.push({
 			id: 'refund-requests',
+			module: 'marketplace-refund',
 			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
 			params: {
 				meta_key: 'multivendorx_store_id',

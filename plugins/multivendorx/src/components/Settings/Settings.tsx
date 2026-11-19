@@ -1,145 +1,88 @@
 /* global appLocalizer */
-import React, { useEffect, JSX } from 'react';
-import { __ } from '@wordpress/i18n';
-import { SettingProvider, useSetting } from '../../contexts/SettingContext';
+import React, { useEffect } from 'react';
+import { SettingProvider } from '../../contexts/SettingContext';
 import { getTemplateData } from '../../services/templateService';
 
-import { InputRenderer } from '@zyra/inputs';
-import { getAvailableSettings, getSettingById, useModules } from '@zyra/core';
+import { getAvailableSettings } from '@zyra/core';
 import { NavigatorComponent } from '@zyra/components';
-import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
 import EventRules from './Notification/EventRules.tsx';
 import StoreStatus from './StoreConfiguration/StoreStatus.tsx';
 import Invoice from './StoreConfiguration/Invoice';
 import ProductCompliance from './Privacy & Compliance/ProductCompliance.tsx';
 import PluginModules from '../Modules/Modules.tsx';
+import LicensePanel from '../License/LicensePanel';
+import SettingsForm from './SettingsForm';
+import useCollapsibleMenu from './useCollapsibleMenu';
 
 interface SettingsProps {
 	id: string;
 }
 
+// Tabs drawn by a component of their own instead of the declarative form.
+const PANELS: Record<string, React.ComponentType> = {
+	'event-rules': EventRules,
+	'store-status': StoreStatus,
+	'product-compliance': ProductCompliance,
+	invoices: Invoice,
+	modules: PluginModules,
+	license: LicensePanel,
+};
+
 const Settings: React.FC<SettingsProps> = () => {
 	const settingsArray = getAvailableSettings(getTemplateData('settings'), []);
 	const location = new URLSearchParams(useLocation().hash.substring(1));
+	const { menuClassName, menuToggle } = useCollapsibleMenu();
+	const subTab = location.get('subtab');
 
-	// Render the dynamic form
-	const GetForm = (currentTab: string | null): JSX.Element | null => {
-		// get the setting context
-		const { setting, settingName, setSetting, updateSetting } =
-			useSetting();
-		const { modules } = useModules();
-
-		if (!currentTab) {
-			return null;
-		}
-		const settingModal = getSettingById(settingsArray, currentTab);
-		const [storeTabSetting, setStoreTabSetting] = React.useState(null);
-
-		// Ensure settings context is initialized
-		if (settingName !== currentTab) {
-			setSetting(
-				currentTab,
-				appLocalizer.admin_settings[currentTab] || {}
+	// A section with more sub-tabs than fit (Store Configuration has nine) scrolls them sideways; bring the open one into
+	// view, so opening e.g. Policies doesn't leave its tab out of sight. Only the tab row scrolls, never the page.
+	useEffect(() => {
+		const frame = window.requestAnimationFrame(() => {
+			const row = document.querySelector<HTMLElement>(
+				'.multivendorx-settings .tabs-wrapper.sub-tabs .tabs-item'
 			);
-		}
-
-		useEffect(() => {
-			if (settingName === currentTab) {
-				appLocalizer.admin_settings[settingName] = setting;
+			const active = row?.querySelector<HTMLElement>('.active-tab');
+			if (!row || !active) {
+				return;
 			}
-
-			const storeCapability =
-				appLocalizer.admin_settings['store-permissions'];
-
-			if (storeCapability) {
-				setStoreTabSetting(storeCapability);
-				const userCapability =
-					appLocalizer.admin_settings['user-permissions'] ||
-					{};
-
-				// all capability arrays into one
-				const storeOwnerCaps: string[] = [];
-				Object.values(storeCapability).forEach((caps) => {
-					if (Array.isArray(caps)) {
-						storeOwnerCaps.push(...caps);
-					}
-				});
-
-				const result = { store_owner: storeOwnerCaps };
-
-				Object.entries(userCapability).forEach(([role, caps]) => {
-					if (role !== 'store_owner' && Array.isArray(caps)) {
-						userCapability[role] = caps.filter((cap) =>
-							storeOwnerCaps.includes(cap)
-						);
-					}
-				});
-
-				appLocalizer.admin_settings['user-permissions'] = {
-					...userCapability,
-					...result,
-				};
+			const rowBox = row.getBoundingClientRect();
+			const tabBox = active.getBoundingClientRect();
+			if (tabBox.left < rowBox.left || tabBox.right > rowBox.right) {
+				row.scrollLeft +=
+					tabBox.left -
+					rowBox.left -
+					(rowBox.width - tabBox.width) / 2;
 			}
-		}, [setting, settingName, currentTab]);
-
-		// Special component
-		if (currentTab === 'event-rules') {
-			return <EventRules />;
-		}
-		if (currentTab === 'store-status') {
-			return <StoreStatus />;
-		}
-		if (currentTab === 'product-compliance') {
-			return <ProductCompliance />;
-		}
-		if (currentTab === 'invoices') {
-			return <Invoice />;
-		}
-		if (currentTab === 'modules') {
-			return <PluginModules />;
-		}
-
-		// A subtab id with no matching settings file (stale bookmark, a
-		// renamed setting id) has nothing to render.
-		if (!settingModal) {
-			return <>{__('Settings not found.', 'multivendorx')}</>;
-		}
-
-		return (
-			<>
-				{settingName === currentTab ? (
-					<InputRenderer
-						settings={settingModal}
-						proSetting={appLocalizer.pro_settings_list}
-						setting={setting}
-						updateSetting={updateSetting}
-						appLocalizer={appLocalizer}
-						modules={modules}
-						Popup={ShowProPopup}
-						storeTabSetting={storeTabSetting}
-						groupBySections={settingModal.groupBySections}
-					/>
-				) : (
-					<>{__('Loading...', 'multivendorx')}</>
-				)}
-			</>
-		);
-	};
+		});
+		return () => window.cancelAnimationFrame(frame);
+	}, [subTab]);
 
 	return (
 		<SettingProvider>
 			<NavigatorComponent
 				settingContent={settingsArray}
 				currentSetting={location.get('subtab') as string}
-				getForm={GetForm}
+				getForm={(currentTab: string | null) =>
+					currentTab ? (
+						<SettingsForm
+							currentTab={currentTab}
+							settingsArray={settingsArray}
+							panels={PANELS}
+						/>
+					) : null
+				}
 				prepareUrl={(subTab: string) =>
 					`?page=multivendorx#&tab=settings&subtab=${subTab}`
 				}
 				appLocalizer={appLocalizer}
 				Link={Link}
 				settingName={'Settings'}
-				className="admin-settings"
+				// `admin-settings` is the class zyra scopes its settings spacing under; `multivendorx-settings` is the one
+				// styles/design-system.scss draws the section menu and cards with.
+				className={`admin-settings multivendorx-settings ${menuClassName}`}
+				customContent={menuToggle}
+				menuIcon
 			/>
 		</SettingProvider>
 	);

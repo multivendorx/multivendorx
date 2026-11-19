@@ -11,6 +11,10 @@ import { getTourSteps } from './components/Tour/Tours';
 import NotificationTabContent from './components/Notifications/HeaderNotifications';
 import './routeRegistry';
 import './routes';
+// The admin's look (design system, tables, settings). Only the admin app loads it; the store dashboard doesn't.
+import './styles/admin.scss';
+// Registers the `builderform-email` settings field, which zyra 1.0.65 no longer registers itself.
+import './components/Settings/Notification/EmailTemplateField';
 
 // Auto-load all modules src folder.
 const modulesContext = require.context(
@@ -110,7 +114,6 @@ const Route = () => {
 	}, []);
 
 	const tab = new URLSearchParams(location.hash).get('tab') || 'dashboard';
-
 	const route = routes.find((r) => r.tab === tab);
 	const Component = route?.component;
 

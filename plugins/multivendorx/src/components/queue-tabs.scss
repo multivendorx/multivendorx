@@ -1,0 +1,143 @@
+// Queue pages (zyra NavigatorComponent `variant="card"` with `className="mvx-queue-page"`): Approval Queue, and any
+// other card-tab page that opts in. The queues read as one tab bar, the same as Transaction history: icon and name side
+// by side on a hairline, the open queue purple with a 2px underline, and a count pill only when something is waiting.
+// What each queue holds is said once, in the heading of the open tab, so zyra's per-tab description line is hidden.
+// zyra renders a tab as `a.tab > .tab-name > (i, span[count]?, "Title") + .des`. The title is a bare text node, so the
+// count pill is moved after it with `order`.
+#admin-main-wrapper.admin-main-wrapper .settings-wrapper.mvx-queue-page {
+	> .tabs-wrapper.settings-tab {
+		align-items: flex-end;
+		margin-top: 1.75rem;
+		border-bottom: 1px solid var(--mvx-border, #e3e6ef);
+
+		&::after {
+			display: none;
+		}
+
+		.tabs-item {
+			display: flex;
+			flex-flow: row nowrap;
+			gap: 0.25rem;
+			width: 100%;
+			margin-bottom: -1px;
+			overflow-x: auto;
+			scrollbar-width: none;
+		}
+
+		.tab {
+			display: flex;
+			flex: none;
+			align-items: center;
+			width: auto;
+			height: auto;
+			min-width: 0;
+			margin: 0;
+			padding: 0.75rem 0.875rem;
+			border: 0;
+			border-radius: 0.5rem 0.5rem 0 0;
+			background: transparent;
+			box-shadow: none;
+			color: var(--mvx-muted, #6b7280);
+			text-decoration: none;
+			transition:
+				color 0.15s ease,
+				background-color 0.15s ease;
+
+			&::before,
+			&::after {
+				display: none;
+			}
+
+			&:hover {
+				background: rgb(80 7 170 / 4%);
+				color: #16151d;
+			}
+
+			&:focus-visible {
+				outline: 2px solid var(--mvx-primary, #5007aa);
+				outline-offset: -2px;
+			}
+
+			&.active-tab {
+				background: transparent;
+				box-shadow: inset 0 -2px 0 var(--mvx-primary, #5007aa);
+				color: var(--mvx-primary, #5007aa);
+			}
+		}
+
+		.tab-name {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			gap: 0.5rem;
+			height: auto;
+			color: inherit;
+			font-size: 0.875rem;
+			font-weight: 600;
+			white-space: nowrap;
+
+			// One icon colour for every queue: zyra's per-queue palette classes (`zyra-yellow`, …) are overridden.
+			i {
+				width: auto;
+				height: auto;
+				background: none;
+				color: inherit;
+				font-size: 1.125rem;
+			}
+
+			// The count: only rendered when something is waiting (ApprovalQueue passes '' for an empty queue).
+			span {
+				order: 1;
+				min-width: 1.25rem;
+				padding: 0 0.4375rem;
+				border-radius: 999px;
+				background: #eef0f4;
+				color: #374151;
+				font-size: 0.75rem;
+				font-weight: 700;
+				line-height: 1.25rem;
+				text-align: center;
+				font-variant-numeric: tabular-nums;
+			}
+		}
+
+		.tab.active-tab .tab-name span {
+			background: var(--mvx-primary, #5007aa);
+			color: #fff;
+		}
+
+		.des {
+			display: none;
+		}
+	}
+
+	// The open queue's heading: the table's own title, without the rules above and below it.
+	> .general-wrapper .tab-content > .divider-section {
+		margin: 0 0 0.25rem;
+		padding: 0;
+		border: 0;
+
+		.typography-title {
+			color: #16151d;
+			font-size: 1.125rem;
+			font-weight: 700;
+		}
+
+		.typography-desc {
+			margin-top: 0.125rem;
+			color: var(--mvx-muted, #6b7280);
+			font-size: 0.875rem;
+		}
+	}
+}
+
+// Phones: zyra stacks the tab row into a column. Keep the tabs one row, scrolling sideways when they run out of room.
+@media (width <= 782px) {
+	#admin-main-wrapper.admin-main-wrapper .settings-wrapper.mvx-queue-page > .tabs-wrapper.settings-tab {
+		flex-direction: row;
+
+		.tab {
+			padding-inline: 0.625rem;
+		}
+	}
+}

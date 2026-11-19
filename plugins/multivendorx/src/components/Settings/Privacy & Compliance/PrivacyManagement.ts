@@ -18,6 +18,10 @@ export default {
 			type: 'section',
 			icon: 'privacy',
 			title: __('Store Profile Visibility', 'multivendorx'),
+			desc: __(
+				'Which store details customers can see on store pages and in orders.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'store_branding_details',

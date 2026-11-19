@@ -10,6 +10,7 @@ namespace MultiVendorX\RestAPI;
 use MultiVendorX\RestAPI\Controllers\ImportDummyData;
 use MultiVendorX\RestAPI\Controllers\Settings;
 use MultiVendorX\RestAPI\Controllers\Dashboard;
+use MultiVendorX\RestAPI\Controllers\AdminDashboard;
 use MultiVendorX\RestAPI\Controllers\Stores;
 use MultiVendorX\RestAPI\Controllers\Commissions;
 use MultiVendorX\RestAPI\Controllers\Status;
@@ -1145,6 +1146,7 @@ class Rest {
         $this->container = array(
             'settings'          => new Settings(),
             'dashboard'         => new Dashboard(),
+            'admin_dashboard'   => new AdminDashboard(),
             'store'             => new Stores(),
             'commission'        => new Commissions(),
             'status'            => new Status(),

@@ -1,0 +1,194 @@
+// Transaction history → Wallet summary (WalletSummary.tsx). One card in two bands:
+// - the hero: a wallet tile, what can be paid out now with a line saying what that means, and the payout action;
+// - a row of four figures (clearing, reserve, payout minimum, last payout), hairline-divided, each with a small icon.
+// Four figures across from 1100px, two by two below that, one column on phones.
+#admin-main-wrapper.admin-main-wrapper .card-content.mvx-wallet {
+	gap: 0;
+	padding: 0;
+	overflow: hidden;
+
+	// zyra's card body adds 10px on top and 16px between children; the two bands meet edge to edge instead.
+	> .card-body {
+		gap: 0;
+		padding: 0;
+	}
+}
+
+.mvx-wallet-hero {
+	display: flex;
+	align-items: center;
+	gap: 1.25rem;
+	padding: 1.5rem;
+	border-bottom: 1px solid var(--mvx-border, #e3e6ef);
+	background: linear-gradient(120deg, #f7f2fe 0%, #fff 60%);
+}
+
+.mvx-wallet-hero-icon {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 3.25rem;
+	height: 3.25rem;
+	border-radius: 0.875rem;
+	background: var(--mvx-primary, #5007aa);
+	color: #fff;
+	font-size: 1.5rem;
+	box-shadow: 0 0.5rem 1rem -0.375rem rgb(80 7 170 / 45%);
+}
+
+.mvx-wallet-hero-text {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 0.125rem;
+	min-width: 0;
+}
+
+.mvx-wallet-label {
+	color: var(--mvx-muted, #6b7280);
+	font-size: 0.8125rem;
+	font-weight: 600;
+}
+
+.mvx-wallet-amount {
+	color: #16151d;
+	font-size: 2rem;
+	font-weight: 700;
+	line-height: 1.2;
+	letter-spacing: -0.02em;
+	font-variant-numeric: tabular-nums;
+}
+
+#admin-main-wrapper .mvx-wallet-hint {
+	margin: 0;
+	color: var(--mvx-muted, #6b7280);
+	font-size: 0.8125rem;
+	line-height: 1.5;
+}
+
+#admin-main-wrapper .mvx-wallet-payout {
+	flex: none;
+	align-self: center;
+
+	&:disabled {
+		border-color: #e3e6ef;
+		background: #fff;
+		color: #9ca3af;
+		box-shadow: none;
+		cursor: not-allowed;
+	}
+}
+
+.mvx-wallet-stats {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	margin: 0;
+}
+
+.mvx-wallet-stat {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	min-width: 0;
+	padding: 1.125rem 1.5rem 1.25rem;
+
+	& + & {
+		border-left: 1px solid var(--mvx-border, #e3e6ef);
+	}
+
+	dt {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: 0.25rem;
+		color: var(--mvx-muted, #6b7280);
+		font-size: 0.8125rem;
+		font-weight: 600;
+	}
+
+	dd {
+		margin: 0;
+	}
+}
+
+.mvx-wallet-stat-icon {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 1.75rem;
+	height: 1.75rem;
+	border-radius: 0.5rem;
+	background: #f4eefb;
+	color: var(--mvx-primary, #5007aa);
+	font-size: 0.9375rem;
+}
+
+.mvx-wallet-stat-value {
+	color: #16151d;
+	font-size: 1.25rem;
+	font-weight: 600;
+	line-height: 1.3;
+	font-variant-numeric: tabular-nums;
+
+	&.is-empty {
+		color: #9ca3af;
+	}
+}
+
+.mvx-wallet-stat-hint {
+	color: var(--mvx-muted, #6b7280);
+	font-size: 0.8125rem;
+	line-height: 1.45;
+}
+
+#admin-main-wrapper .mvx-wallet-foot {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin: 0;
+	padding: 0.75rem 1.5rem;
+	border-top: 1px solid var(--mvx-border, #e3e6ef);
+	background: #fafafd;
+	color: var(--mvx-muted, #6b7280);
+	font-size: 0.8125rem;
+}
+
+@media (width <= 1100px) {
+	.mvx-wallet-stats {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.mvx-wallet-stat {
+		&:nth-child(odd) {
+			border-left: 0;
+		}
+
+		&:nth-child(n + 3) {
+			border-top: 1px solid var(--mvx-border, #e3e6ef);
+		}
+	}
+}
+
+@media (width <= 600px) {
+	.mvx-wallet-hero {
+		flex-wrap: wrap;
+	}
+
+	#admin-main-wrapper .mvx-wallet-payout {
+		width: 100%;
+		justify-content: center;
+	}
+
+	.mvx-wallet-stats {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.mvx-wallet-stat {
+		& + & {
+			border-top: 1px solid var(--mvx-border, #e3e6ef);
+			border-left: 0;
+		}
+	}
+}

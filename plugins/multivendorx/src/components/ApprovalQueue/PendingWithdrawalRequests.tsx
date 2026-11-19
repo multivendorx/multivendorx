@@ -10,6 +10,9 @@ import {
 	formatStatusLabel,
 	getUrl,
 } from '@/services/commonFunction';
+import ListGate from '../Popup/ListGate';
+import useNoRecordsYet from '../Popup/useNoRecordsYet';
+import { SAMPLE_WITHDRAWALS } from '../Popup/sampleRows';
 
 const PendingWithdrawal: React.FC<object> = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -107,7 +110,8 @@ const PendingWithdrawal: React.FC<object> = () => {
 			});
 	};
 
-	const infoRows = rows.map((row: any) => ({
+	/** A record as a table row; the sample rows go through it too, so they look like real ones. */
+	const toInfoRow = (row: any) => ({
 		...row,
 		info_icon: 'wallet',
 		info_link: getUrl(row.store_id, 'store', 'edit'),
@@ -124,26 +128,86 @@ const PendingWithdrawal: React.FC<object> = () => {
 				color: `badge-${row.status}`,
 			},
 		],
-	}));
+	});
+	const infoRows = rows.map(toInfoRow);
+
+	const sampleRowsData = SAMPLE_WITHDRAWALS;
+	const { props: gatedProps, hasNoRecords } = useNoRecordsYet({
+		rows: infoRows,
+		isLoading,
+		onQueryUpdate: doRefreshTableData,
+	});
 
 	return (
-		<TableCard
-			headers={headers}
-			variant="transparent"
-			rows={infoRows}
-			totalRows={totalRows}
-			isLoading={isLoading}
-			onQueryUpdate={doRefreshTableData}
-			ids={rowIds}
-			format={appLocalizer.date_format}
-			currency={{
-				currencySymbol: appLocalizer.currency_symbol,
-				priceDecimals: appLocalizer.price_decimals,
-				decimalSeparator: appLocalizer.decimal_separator,
-				thousandSeparator: appLocalizer.thousand_separator,
-				currencyPosition: appLocalizer.currency_position,
+		<ListGate
+			feature={{
+				title: __('Withdrawal requests', 'multivendorx'),
+				description: '',
+				icon: 'wallet',
 			}}
-		/>
+			sample={
+				<TableCard
+					headers={headers}
+					variant="transparent"
+					format={appLocalizer.date_format}
+					currency={{
+						currencySymbol: appLocalizer.currency_symbol,
+						priceDecimals: appLocalizer.price_decimals,
+						decimalSeparator: appLocalizer.decimal_separator,
+						thousandSeparator: appLocalizer.thousand_separator,
+						currencyPosition: appLocalizer.currency_position,
+					}}
+					rows={sampleRowsData.map(toInfoRow)}
+					totalRows={sampleRowsData.length}
+				/>
+			}
+			isEmpty={hasNoRecords}
+			empty={{
+				heading: __('No withdrawal requests', 'multivendorx'),
+				description: __(
+					'Stores ask to be paid what is in their wallet. Each request waits here until you approve it.',
+					'multivendorx'
+				),
+				actions: (
+					<>
+						<a
+							className="mvx-locked-button"
+							href={'#&tab=settings&subtab=payouts'}
+						>
+							{__('Payout settings', 'multivendorx')}
+						</a>
+						<a
+							className="mvx-locked-link"
+							href={'#&tab=transaction-history'}
+						>
+							{__('Transaction history', 'multivendorx')}
+						</a>
+					</>
+				),
+				note: __(
+					'A preview with sample requests. Real ones show here.',
+					'multivendorx'
+				),
+			}}
+		>
+			<TableCard
+				headers={headers}
+				variant="transparent"
+				rows={infoRows}
+				totalRows={totalRows}
+				isLoading={isLoading}
+				onQueryUpdate={gatedProps.onQueryUpdate}
+				ids={rowIds}
+				format={appLocalizer.date_format}
+				currency={{
+					currencySymbol: appLocalizer.currency_symbol,
+					priceDecimals: appLocalizer.price_decimals,
+					decimalSeparator: appLocalizer.decimal_separator,
+					thousandSeparator: appLocalizer.thousand_separator,
+					currencyPosition: appLocalizer.currency_position,
+				}}
+			/>
+		</ListGate>
 	);
 };
 

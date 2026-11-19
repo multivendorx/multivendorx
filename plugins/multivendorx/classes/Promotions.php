@@ -107,16 +107,29 @@ class Promotions {
         if ( false !== get_transient( 'multivendorx_review_request' ) || get_user_meta( $user_id, 'multivendorx_review_request', true ) ) {
             return;
         }
-        ?>
-        <div class="notice notice-info is-dismissible review-notice">
-			<h3><?php echo esc_html( 'MultiVendorX' ); ?></h3>
-			<p><?php esc_html_e( 'We appreciate you using MultiVendorX. If it has helped your business, please consider leaving a quick review.', 'multivendorx' ); ?></p>
-			<p>
-				<a href="#" class="button button-secondary" data-action="later"><?php esc_html_e( 'Remind me later', 'multivendorx' ); ?></a>
-				<a href="<?php echo esc_url( $this->review_url ); ?>" target="_blank" rel="noopener noreferrer" class="button button-primary" data-action="add_review"><?php esc_html_e( 'Review now', 'multivendorx' ); ?></a>
-			</p>
-		</div>
-        <?php
+        AdminNotice::render(
+            array(
+                'type'        => 'info',
+                'icon'        => 'star-filled',
+                'class'       => 'review-notice',
+                'dismissible' => true,
+                'title'       => __( 'Enjoying MultiVendorX?', 'multivendorx' ),
+                'message'     => __( 'If it has helped your business, please consider leaving a quick review. It helps other store owners find us.', 'multivendorx' ),
+                'actions'     => array(
+                    array(
+                        'label'      => __( 'Review now', 'multivendorx' ),
+                        'url'        => $this->review_url,
+                        'new_tab'    => true,
+                        'attributes' => array( 'data-action' => 'add_review' ),
+                    ),
+                    array(
+                        'label'      => __( 'Remind me later', 'multivendorx' ),
+                        'style'      => 'secondary',
+                        'attributes' => array( 'data-action' => 'later' ),
+                    ),
+                ),
+            )
+        );
     }
 
     /**
@@ -127,38 +140,7 @@ class Promotions {
             return;
         }
 
-        $yes_url = add_query_arg(
-            array(
-				'plugin'        => 'dc-woocommerce-multi-vendor',
-				'plugin_action' => 'yes',
-            )
-        );
-
-        $no_url = add_query_arg(
-            array(
-				'plugin'        => 'dc-woocommerce-multi-vendor',
-				'plugin_action' => 'no',
-            )
-        );
-
-        ?>
-        <div class="notice notice-success">
-			<p>
-				<?php echo wp_kses_post( __( 'Want to help make <strong>MultiVendorX</strong> even better? Allow anonymous usage tracking and receive a <strong>10% discount coupon</strong> for premium extensions.', 'multivendorx' ) ); ?>
-				<a href="#" class="tracking-toggle"><?php esc_html_e( 'What we collect.', 'multivendorx' ); ?></a>
-			</p>
-
-			<div class="tracking-details" style="display:none;">
-				<p><?php echo wp_kses_post( __( 'We collect non-sensitive diagnostic and usage data, including your site URL, WordPress and PHP versions, active plugins and themes, and your email address to send the discount coupon.', 'multivendorx' ) ); ?></p>
-			</div>
-
-			<p>
-				<a href="<?php echo esc_url( $yes_url ); ?>" class="button button-primary"><?php esc_html_e( 'Sure, I\'d like to help', 'multivendorx' ); ?></a>
-				<a href="<?php echo esc_url( $no_url ); ?>" class="button button-secondary"><?php esc_html_e( 'No Thanks', 'multivendorx' ); ?></a>
-			</p>
-		</div>
-        <?php
-
+        // Handle the answer first, so the notice is gone on the page load that records it.
         $plugin_action = filter_input( INPUT_GET, 'plugin_action', FILTER_UNSAFE_RAW );
         $plugin_action = is_string( $plugin_action ) ? sanitize_text_field( wp_unslash( $plugin_action ) ) : '';
 
@@ -180,7 +162,50 @@ class Promotions {
                 $email = WC()->mailer()->emails['WC_Email_Send_Site_Information'];
                 $email->trigger( get_current_user_id() );
             }
+            return;
         }
+
+        $yes_url = add_query_arg(
+            array(
+				'plugin'        => 'dc-woocommerce-multi-vendor',
+				'plugin_action' => 'yes',
+            )
+        );
+
+        $no_url = add_query_arg(
+            array(
+				'plugin'        => 'dc-woocommerce-multi-vendor',
+				'plugin_action' => 'no',
+            )
+        );
+
+        AdminNotice::render(
+            array(
+                'type'    => 'info',
+                'icon'    => 'chart-bar',
+                'title'   => __( 'Help improve MultiVendorX and get 10% off', 'multivendorx' ),
+                'message' => sprintf(
+                    '%1$s <a href="#" class="tracking-toggle" aria-expanded="false">%2$s</a>',
+                    esc_html__( 'Share anonymous usage data and we\'ll email you a 10% discount coupon for premium extensions.', 'multivendorx' ),
+                    esc_html__( 'What we collect', 'multivendorx' )
+                ),
+                'details' => sprintf(
+                    '<p class="multivendorx-notice-details tracking-details">%s</p>',
+                    esc_html__( 'Non-sensitive diagnostic and usage data: your site URL, WordPress and PHP versions, active plugins and themes, and your email address so we can send the coupon.', 'multivendorx' )
+                ),
+                'actions' => array(
+                    array(
+                        'label' => __( 'Sure, I\'d like to help', 'multivendorx' ),
+                        'url'   => $yes_url,
+                    ),
+                    array(
+                        'label' => __( 'No thanks', 'multivendorx' ),
+                        'url'   => $no_url,
+                        'style' => 'secondary',
+                    ),
+                ),
+            )
+        );
     }
 
     /**
@@ -257,19 +282,22 @@ class Promotions {
             ! empty( $this->pro_plugin_version ) &&
             version_compare( $this->pro_plugin_version, '2.0.0', '<' )
         ) {
-            ?>
-            <div class="notice notice-error is-dismissible free-pro-notice">
-                <p>
-                    <strong><?php echo esc_html__( 'MultivendorX Update Required', 'multivendorx' ); ?></strong><br>
-                    <?php echo esc_html__( 'To ensure all the feature compatibility and accessibility, MultiVendorX Pro minimum v2.0.0 is required.', 'multivendorx' ); ?>
-                </p>
-                <p>
-                    <a href="<?php echo esc_url( admin_url( 'plugins.php' ) ); ?>" class="button button-primary">
-                        <?php echo esc_html__( 'Update Now', 'multivendorx' ); ?>
-                    </a>
-                </p>
-            </div>
-            <?php
+            AdminNotice::render(
+                array(
+                    'type'        => 'error',
+                    'icon'        => 'update',
+                    'class'       => 'free-pro-notice',
+                    'dismissible' => true,
+                    'title'       => __( 'MultiVendorX Pro needs an update', 'multivendorx' ),
+                    'message'     => __( 'This version of MultiVendorX needs MultiVendorX Pro 2.0.0 or later. Update Pro to keep every feature working.', 'multivendorx' ),
+                    'actions'     => array(
+                        array(
+                            'label' => __( 'Update now', 'multivendorx' ),
+                            'url'   => admin_url( 'plugins.php' ),
+                        ),
+                    ),
+                )
+            );
         }
     }
 

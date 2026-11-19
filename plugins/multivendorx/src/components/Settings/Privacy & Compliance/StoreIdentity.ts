@@ -19,6 +19,10 @@ export default {
 			type: 'section',
 			icon: 'identity-verification',
 			title: __('Verified badge', 'multivendorx'),
+			desc: __(
+				'Show customers which stores have confirmed who they are.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'badge_img',
@@ -64,7 +68,7 @@ export default {
 			],
 		},
 		{
-			key: 'separator_content',
+			key: 'separator_content_identity_verification',
 			type: 'section',
 			icon: 'seller-verification',
 			title: __('Identity Verification', 'multivendorx'),
@@ -105,7 +109,7 @@ export default {
 			],
 		},
 		{
-			key: 'separator_content',
+			key: 'separator_content_social_verification',
 			type: 'section',
 			icon: 'social-share',
 			title: __('Social Verification', 'multivendorx'),
