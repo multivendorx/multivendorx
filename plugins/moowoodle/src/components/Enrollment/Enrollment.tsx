@@ -6,7 +6,6 @@ import {
 	ContainerComponent,
 	InformationItemComponent,
 	NavigatorHeaderComponent,
-	NoticeManager
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import { __ } from '@wordpress/i18n';
