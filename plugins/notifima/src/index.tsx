@@ -2,6 +2,7 @@
 import { createRoot } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import App from './app';
+
 import { configureZyra } from '@zyra/core';
 
 configureZyra(appLocalizer);

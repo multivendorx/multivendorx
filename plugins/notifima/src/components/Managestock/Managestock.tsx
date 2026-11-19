@@ -212,6 +212,7 @@ const Managestock = () => {
                     'notifima'
                 )}
                 headerTitle={__('Manage Stock', 'notifima')}
+                buttons={headerButtons}
             />
             <ContainerComponent general>
                 <ColumnComponent>

@@ -115,7 +115,6 @@ class Block {
     public function enqueue_scripts() {
         global $post;
         FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script( 'notifima-components-script' );
         foreach ( $this->get_blocks() as $block_script ) {
             $block_name = $block_script['textdomain'] . '/' . $block_script['name'];
 

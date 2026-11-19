@@ -181,6 +181,7 @@ const SubscribersList = () => {
                     {
                         label: __('Download CSV', 'notifima'),
                         icon: 'download',
+                        color: 'white',
                         onClick: downloadCSVByQuery,
                     },
                 ]}

@@ -1,6 +1,14 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
-import { CardComponent, NoticeManager, PopupComponent } from '@zyra/components';
+import {
+	CardComponent,
+	ColumnComponent,
+	ListComponent,
+	ContainerComponent,
+	NoticeManager,
+	InformationItemComponent,
+	IconComponent,
+} from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 import axios from 'axios';
 import catalogx from '../../assets/images/catalogx.png';

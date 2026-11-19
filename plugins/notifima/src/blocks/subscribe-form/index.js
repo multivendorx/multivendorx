@@ -1,53 +1,149 @@
-/* global jQuery */
-import { render } from '@wordpress/element';
-import SubscribeForm from './SubscribeForm';
+/* global jQuery, subscription */
+// The subscription form is VuloForm's, drawn by PHP. This only decides when it is shown: for the
+// sold-out variation a visitor picks, and inside a popup when the site is set to use one.
 
-const mountForm = (container) => {
-	if (!container || container.dataset.mounted === 'true') {
+const parse = (value, fallback) => {
+	try {
+		return JSON.parse(value || '');
+	} catch (error) {
+		return fallback;
+	}
+};
+
+const togglePopup = (container, show) => {
+	const overlay = container.querySelector('.notifima-popup-overlay');
+
+	if (overlay) {
+		overlay.style.display = show ? 'flex' : 'none';
+	}
+};
+
+const setupPopup = (container) => {
+	container.querySelector('.notifima-open-popup')?.addEventListener('click', () => {
+		togglePopup(container, true);
+	});
+
+	container.querySelector('.notifima-popup-close')?.addEventListener('click', () => {
+		togglePopup(container, false);
+	});
+
+	container.querySelector('.notifima-popup-overlay')?.addEventListener('click', (event) => {
+		if (event.target === event.currentTarget) {
+			togglePopup(container, false);
+		}
+	});
+};
+
+const prepare = (container) => {
+	const email = container.dataset.userEmail;
+
+	// A logged-in visitor's address is filled in, as the old form did.
+	if (email) {
+		container.querySelectorAll('input[type="email"]').forEach((input) => {
+			if (!input.value) {
+				input.value = email;
+			}
+		});
+	}
+
+	setupPopup(container);
+};
+
+const showInterest = (container, id) => {
+	const line = container.querySelector('.notifima-interest');
+
+	if (!line) {
 		return;
 	}
 
-	container.dataset.mounted = 'true';
+	const text = parse(container.dataset.interest, {})[id] || '';
 
-	render(
-		<SubscribeForm
-			productId={parseInt(container.dataset.productId || '0', 10)}
-			variationId={parseInt(container.dataset.variationId || '0', 10)}
-			productTitle={container.dataset.productTitle || ''}
-			userEmail={container.dataset.userEmail || ''}
-			shownInterest={container.dataset.shownInterest || ''}
-		/>,
-		container
-	);
+	line.textContent = text;
+	line.style.display = text ? '' : 'none';
+};
+
+const unsubscribe = (button) => {
+	button.disabled = true;
+
+	fetch(`${subscription.apiUrl}/${subscription.restUrl}/subscribers/${button.dataset.productId}`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-WP-Nonce': subscription.nonce,
+		},
+		body: JSON.stringify({
+			action: 'unsubscribe',
+			customer_email: button.dataset.customerEmail,
+			product_id: button.dataset.productId,
+			variation_id: button.dataset.variationId,
+		}),
+	})
+		.then((response) => response.json())
+		.then((result) => {
+			button.outerHTML = `<div class="vuloform-message vuloform-message--${result.status ? 'success' : 'error'}">${result.message}</div>`;
+		})
+		.catch(() => {
+			button.disabled = false;
+		});
 };
 
 jQuery(() => {
-	// Mount simple/grouped product form.
-	document
-		.querySelectorAll('.notifima-subscribe-form')
-		.forEach((container) => {
-			mountForm(container);
-		});
+	document.querySelectorAll('.notifima-subscribe-form').forEach((container) => {
+		prepare(container);
 
-	// Variable products.
+		const variations = parse(container.dataset.variations, []);
+
+		if (variations.length) {
+			// A variable product: nothing to show until a sold-out variation is chosen.
+			container.style.display = 'none';
+		} else {
+			showInterest(container, container.dataset.productId);
+		}
+	});
+
+	document.body.addEventListener('click', (event) => {
+		const button = event.target.closest('.notifima-unsubscribe');
+
+		if (button) {
+			unsubscribe(button);
+		}
+	});
+
 	jQuery('.variations_form')
 		.on('found_variation', (_event, variation) => {
-			// Hide all variation forms.
-			jQuery('[id^="notifima-subscribe-form-"]').hide();
+			document
+				.querySelectorAll('.notifima-subscribe-form')
+				.forEach((container) => {
+					const variations = parse(container.dataset.variations, []);
 
-			const container = document.getElementById(
-				`notifima-subscribe-form-${variation.variation_id}`
-			);
+					if (!variations.length) {
+						return;
+					}
 
-			if (!container) {
-				return;
-			}
+					const match = variations.includes(variation.variation_id);
 
-			jQuery(container).show();
+					container.style.display = match ? '' : 'none';
 
-			mountForm(container);
+					const field = container.querySelector(
+						'input[name="notifima_variation_id"]'
+					);
+
+					if (field) {
+						field.value = match ? variation.variation_id : 0;
+					}
+
+					if (match) {
+						showInterest(container, variation.variation_id);
+					}
+				});
 		})
 		.on('reset_data', () => {
-			jQuery('[id^="notifima-subscribe-form-"]').hide();
+			document
+				.querySelectorAll('.notifima-subscribe-form')
+				.forEach((container) => {
+					if (parse(container.dataset.variations, []).length) {
+						container.style.display = 'none';
+					}
+				});
 		});
 });

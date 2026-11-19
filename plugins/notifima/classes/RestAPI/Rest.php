@@ -67,6 +67,16 @@ class Rest {
 				'permission_callback' => array( $this, 'notifima_permissions_check' ),
 			)
         );
+
+        register_rest_route(
+            Notifima()->rest_namespace,
+            '/subscription-form',
+            array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_subscription_form' ),
+				'permission_callback' => array( $this, 'notifima_permissions_check' ),
+			)
+        );
     }
 
     /**
@@ -104,5 +114,29 @@ class Rest {
                 array( 'status' => 500 )
             );
         }
+    }
+
+    /**
+     * The subscription form for the settings preview.
+     *
+     * @param \WP_REST_Request $request The REST request object.
+     * @return \WP_REST_Response
+     */
+    public function get_subscription_form( $request ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+        $form_id   = SubscriptionFormService::form_id();
+        $installed = Utill::is_vuloform_installed();
+        $available = SubscriptionFormService::is_available();
+
+        return rest_ensure_response(
+            array(
+                'installed'  => $installed,
+                'plugin_url' => $installed ? admin_url( 'plugins.php' ) : admin_url( 'plugin-install.php?s=VuloForm&tab=search&type=term' ),
+                'available'  => $available,
+                'form_id'    => $form_id,
+                'edit_url'   => $form_id ? admin_url( 'admin.php?page=vuloform#&tab=forms&form=' . $form_id ) : '',
+                'style_url'  => $available ? VuloForm()->plugin_url . 'assets/styles/public/vuloform-form.min.css' : '',
+                'html'       => $form_id ? vuloform_render( $form_id ) : '',
+            )
+        );
     }
 }

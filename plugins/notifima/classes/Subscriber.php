@@ -240,6 +240,76 @@ class Subscriber {
         return false;
     }
 
+    public static function subscribe_customer( $customer_email, $product_id, $product_title = '', $variation_id = 0, $customer_phone = '' ) {
+        $settings_array = Utill::get_form_settings_array();
+
+        do_action( 'notifima_before_subscribe_product', $customer_email, $product_id, $variation_id );
+
+        if ( ! is_email( $customer_email ) ) {
+            return array(
+                'status'  => false,
+                'message' => $settings_array['valid_email'],
+            );
+        }
+
+        if ( ! $product_id ) {
+            return array(
+                'status'  => false,
+                'message' => __( 'Invalid product.', 'notifima' ),
+            );
+        }
+
+        $product_id = $variation_id > 0 ? $variation_id : $product_id;
+
+        if ( self::is_already_subscribed( $customer_email, $product_id ) ) {
+            return array(
+                'status'             => false,
+                'message'            => str_replace(
+                    array( '%product_title%', '%customer_email%' ),
+                    array( $product_title, $customer_email ),
+                    $settings_array['alert_email_exist']
+                ),
+                'already_subscribed' => true,
+                'customer_email'     => $customer_email,
+                'product_id'         => $product_id,
+                'variation_id'       => $variation_id,
+                'unsubscribe_button' => array(
+                    'text' => $settings_array['unsubscribe_button_text'],
+                ),
+            );
+        }
+
+        $subscription_status = apply_filters(
+            'notifima_eligible_to_subscribe',
+            array(
+                'status'  => true,
+                'message' => '',
+            ),
+            $customer_email,
+            $product_id,
+            $customer_phone
+        );
+
+        if ( ! $subscription_status['status'] ) {
+            return $subscription_status;
+        }
+
+        $subscriber_id = self::insert_subscriber( $customer_email, $product_id );
+        self::insert_subscriber_email_trigger( wc_get_product( $product_id ), $customer_email );
+        self::update_product_subscriber_count( $product_id );
+
+        do_action( 'notifima_subscriber_added', $customer_email, $subscriber_id, $customer_phone );
+
+        return array(
+            'status'  => true,
+            'message' => str_replace(
+                array( '%product_title%', '%customer_email%' ),
+                array( $product_title, $customer_email ),
+                $settings_array['alert_success']
+            ),
+        );
+    }
+
     /**
      * Function that unsubscribe a particular user if the user is already subscribed
      *

@@ -273,6 +273,21 @@ class Utill {
     }
 
     /**
+     * Function to check wheather VuloForm is active or not
+     *
+     * @return bool
+     */
+    public static function is_vuloform_installed() {
+        foreach ( (array) get_option( 'active_plugins', array() ) as $plugin ) {
+            if ( 0 === strpos( $plugin, 'vuloform/' ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Retrieve formatted subscriber records.
      *
      * @param array $args Query and subscriber arguments.
