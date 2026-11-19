@@ -125,15 +125,27 @@ export default {
         'catalogx'
     ),
     headerIcon: 'contact-form',
+    groupBySections: true,
+    hideSettingHeader: true,
     submitUrl: 'settings',
     modal: [
+        {
+            key: 'wholesale_form_section',
+            type: 'section',
+            icon: 'contact-form',
+            title: __('Wholesale registration form', 'catalogx'),
+            desc: __(
+                'The fields a buyer fills in to apply for a wholesale account. Add, remove and reorder them.',
+                'catalogx'
+            ),
+        },
         {
             key: 'store_registration_from',
             type: 'block-builder',
             classes: 'full-width',
             blockGroups: WHOLESALE_BLOCK_GROUPS,
             visibleGroups: ['registration'],
-            desc: 'Customise personalised store registration form for marketplace.',
+            desc: __('Add, remove and reorder the fields on the wholesale registration form.', 'catalogx'),
             context: 'form',
             proSetting: true,
             moduleEnabled: 'wholesale',

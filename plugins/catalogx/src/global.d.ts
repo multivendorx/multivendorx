@@ -20,7 +20,10 @@ declare global {
         restUrl: string;
         pages_data: Array;
         role_array: Array;
+        /** The CatalogX admin page (`admin.php?page=catalogx`); `url` is the wp-admin base. */
         admin_url: string;
+        /** The wp-admin base URL, with a trailing slash. */
+        url: string;
         users_data: Array;
         products_data: Array;
         all_product_categories: Array;
@@ -40,6 +43,10 @@ declare global {
         free_version: any;
         pro_data: any;
         email_tags: Array;
+        /** The logged-in admin's first name (or display name), for the dashboard greeting. */
+        user_first_name?: string;
+        /** The logged-in user's id (the enquiry inbox uses it to tell sent from received messages). */
+        user_id?: number;
     }
 
     interface EnquiryFormData {

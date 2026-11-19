@@ -9,6 +9,7 @@ namespace Notifima\RestAPI;
 
 use Notifima\RestAPI\Controllers\Settings;
 use Notifima\RestAPI\Controllers\Subscribers;
+use Notifima\RestAPI\Controllers\Dashboard;
 use Notifima\Utill;
 
 
@@ -44,6 +45,7 @@ class Rest {
         $this->container = array(
             'settings'   => new Settings(),
             'subscriber' => new Subscribers(),
+            'dashboard'  => new Dashboard(),
         );
     }
     /**

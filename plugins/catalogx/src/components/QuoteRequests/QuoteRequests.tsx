@@ -1,15 +1,14 @@
 import { useState } from 'react';
-
 import {
     ColumnComponent,
     ContainerComponent,
     InformationItemComponent,
-    PopupComponent,
-    ModuleGuardComponent,
     NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
-import ShowProPopup from '../Popup/Popup';
+import { type ProFeature, ProPopupDialog } from '../Popup/Popup';
+import ListGate from '../Popup/ListGate';
+import useNoRecordsYet from '../Popup/useNoRecordsYet';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { defaultCategoryCounts, dummyQuotes } from './QuoteRequestsUtil';
@@ -24,9 +23,19 @@ export interface QuoteRow {
     customer_name?: string;
 }
 
+/** This page, as the Pro card and the Pro popup name it. */
+const FEATURE: ProFeature = {
+    title: __('Quotation Requests', 'catalogx'),
+    description: __(
+        'Price every quote request, send it with an expiry date and PDF, and let the customer accept it online.',
+        'catalogx'
+    ),
+    icon: 'quote',
+};
+
 const QuoteRequests = () => {
     const [openPopup, setopenPopup] = useState(false);
-    let tableProps: any = {};
+    let tableProps: any;
     const headers = {
         order_id: {
             label: __('Order', 'catalogx'),
@@ -64,16 +73,16 @@ const QuoteRequests = () => {
             statusClass: (row: QuoteRow) => `${row.status}`
         },
         action: {
-            label: __('Action', 'catalogx-pro'),
+            label: __('Action', 'catalogx'),
             type: 'action',
             actions: [
                 {
-                    label: __('View', 'catalogx-pro'),
+                    label: __('View', 'catalogx'),
                     icon: 'eye',
                     onClick: (_row: any) => setopenPopup(true),
                 },
                 {
-                    label: __('Send Mail', 'catalogx-pro'),
+                    label: __('Send Mail', 'catalogx'),
                     icon: 'mail',
                     onClick: (_row: any) => setopenPopup(true),
                 },
@@ -98,7 +107,6 @@ const QuoteRequests = () => {
     const defaultTableProps = {
         headers,
         format: appLocalizer.date_format,
-        hideHeader: true,
         buttonActions,
         categoryCounts: defaultCategoryCounts,
         filters,
@@ -135,62 +143,29 @@ const QuoteRequests = () => {
         totalRows: dummyQuotes.length,
     };
 
-    tableProps = applyFilters(
-        'catalogx_quote_requests_table_props',
-        defaultTableProps
+    const { props: filteredProps, hasNoRecords } = useNoRecordsYet(
+        applyFilters(
+            'catalogx_quote_requests_table_props',
+            defaultTableProps
+        ) as typeof defaultTableProps & Record<string, any>
+    );
+    tableProps = filteredProps;
+
+    /** The sample rows drawn behind every card: the plugin's own, never the filtered (real) props. */
+    const sampleTable = (
+        <TableCard
+            {...defaultTableProps}
+            rows={dummyQuotes.slice(0, 4)}
+            totalRows={4}
+        />
     );
 
+    const quoteModuleOn = appLocalizer.active_modules.includes('quote');
 
-    const renderTableContent = () => {
-        if (!appLocalizer.khali_dabba) {
-            return (
-                <div className="demo-wrapper" onClick={() => setopenPopup(true)}>
-                    <div className="watermark">{__('This is sample Data', 'catalogx')}</div>
-                    <TableCard {...tableProps} />
-                </div>
-            );
-        }
-
-        if (!appLocalizer.active_modules.includes('quote')) {
-            return (
-                <ModuleGuardComponent
-                    title={__(
-                        'Looks like the Quote module isn’t enabled yet!',
-                        'catalogx'
-                    )}
-                    desc={__(
-                        'Enable the Quote module to start receiving and managing customer quote requests.',
-                        'catalogx'
-                    )}
-                    buttonText={__('Enable Now', 'catalogx')}
-                    buttonLink={`${appLocalizer.admin_url}#&tab=modules&module=quote`}
-                />
-            );
-        }
-
-        return (
-            <>
-                <TableCard {...tableProps} />
-                {tableProps.openMailPopup && tableProps.sendMail}
-            </>
-        );
-    };
     return (
         <>
             {openPopup && (
-                <PopupComponent
-                    position="lightbox"
-                    open={openPopup}
-                    onClose={() => setopenPopup(false)}
-                    width={31.25}
-                    height="auto"
-                >
-                    {!appLocalizer.khali_dabba ? (
-                        <ShowProPopup />
-                    ) : (
-                        <ShowProPopup moduleName="quote" />
-                    )}
-                </PopupComponent>
+                <ProPopupDialog onClose={() => setopenPopup(false)} feature={FEATURE} moduleName="quote" />
             )}
             <NavigatorHeaderComponent
                 headerIcon="quote"
@@ -204,7 +179,7 @@ const QuoteRequests = () => {
                         label: __('Add Quote', 'catalogx'),
                         icon: 'plus',
                         onClick: () => {
-                            if (appLocalizer.khali_dabba && appLocalizer.active_modules.includes('quote')) {
+                            if (quoteModuleOn) {
                                 window.location.assign(
                                     'admin-ajax.php?action=add_quote_from_adminend'
                                 );
@@ -220,7 +195,42 @@ const QuoteRequests = () => {
             )}
             <ContainerComponent general>
                 <ColumnComponent>
-                    {renderTableContent()}
+                    <ListGate
+                        feature={FEATURE}
+                        module={{ id: 'quote', name: __('Quotation', 'catalogx') }}
+                        sample={sampleTable}
+                        isEmpty={hasNoRecords}
+                        empty={{
+                            heading: __('No quote requests yet', 'catalogx'),
+                            description: __(
+                                'When a customer adds products to a quote and sends it, the request lands here for you to price and reply to.',
+                                'catalogx'
+                            ),
+                            actions: (
+                                <>
+                                    <a
+                                        className="cx-locked-button"
+                                        href="#&tab=settings&subtab=customer-engagement"
+                                    >
+                                        {__('Review the quote button', 'catalogx')}
+                                    </a>
+                                    <a
+                                        className="cx-locked-link"
+                                        href="admin-ajax.php?action=add_quote_from_adminend"
+                                    >
+                                        {__('Create a quote yourself', 'catalogx')}
+                                    </a>
+                                </>
+                            ),
+                            note: __(
+                                'A preview with sample quotes. Yours show here once customers send them.',
+                                'catalogx'
+                            ),
+                        }}
+                    >
+                        <TableCard {...tableProps} />
+                        {tableProps.openMailPopup && tableProps.sendMail}
+                    </ListGate>
                 </ColumnComponent>
             </ContainerComponent>
         </>

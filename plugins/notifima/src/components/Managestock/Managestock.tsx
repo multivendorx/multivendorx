@@ -1,24 +1,23 @@
 /* global appLocalizer */
-import { useState } from 'react';
-
 import { MultiCheckboxInput } from '@zyra/inputs';
 import {
     ColumnComponent,
     ContainerComponent,
     InformationItemComponent,
-    PopupComponent,
     NavigatorHeaderComponent,
 } from '@zyra/components';
-import { TableCard } from '@zyra/table';
-import ShowProPopup from '../Popup/Popup';
+import PreviewTable from '../Popup/PreviewTable';
 import { __ } from '@wordpress/i18n';
-import { applyFilters } from '@wordpress/hooks';
 import { defaultCategoryCounts, dummyProducts } from './ManagestockUtil';
 
 
+/** No-op handler for the sample rows' controls: LockedPreview makes the sample inert. */
+const noop = () => undefined;
+
+/** The sample rows drawn behind a preview card: a few, as the preview fades out below them. */
+const SAMPLE_ROWS = dummyProducts.slice(0, 4);
+
 const Managestock = () => {
-    const [openPopup, setOpenPopup] = useState(false);
-    let tableProps: any = {};
     const headers = {
         product: {
             label: __('Product', 'notifima'),
@@ -50,41 +49,62 @@ const Managestock = () => {
             ),
         },
 
-        regular_price: {
-            label: __('Regular Price', 'notifima'),
+        // Same four columns as Notifima Pro's table (Headers.tsx), so the preview matches what Pro unlocks.
+        price: {
+            label: __('Price', 'notifima'),
+            render: (row) =>
+                row.sale_price ? (
+                    <>
+                        <del>{row.regular_price}</del> <span>{row.sale_price}</span>
+                    </>
+                ) : (
+                    <span>{row.regular_price || '—'}</span>
+                ),
         },
-        sale_price: {
-            label: __('Sale Price', 'notifima'),
-        },
-        manage_stock: {
-            label: __('Manage Stock', 'notifima'),
+        stock: {
+            label: __('Stock', 'notifima'),
             render: (row) => (
-                <MultiCheckboxInput
-                    look="toggle"
-                    modules={[]}
-                    options={[
-                        {
-                            key: `enabled-${row.id}`,
-                            value: 'enabled',
-                        },
-                    ]}
-                    value={row.manage_stock ? ['enabled'] : []}
-                    onChange={() => {
-                        setOpenPopup(true);
-                    }}
-                />
+                <div className="nf-cell-stack">
+                    <div className="nf-cell-line">
+                        <span className="nf-cell-label">
+                            {__('Track', 'notifima')}
+                        </span>
+                        <MultiCheckboxInput
+                            look="toggle"
+                            modules={[]}
+                            options={[
+                                {
+                                    key: `enabled-${row.id}`,
+                                    value: 'enabled',
+                                },
+                            ]}
+                            value={row.manage_stock ? ['enabled'] : []}
+                            onChange={noop}
+                        />
+                    </div>
+                    {row.manage_stock && (
+                        <>
+                            <div className="nf-cell-line">
+                                <span className="nf-cell-label">
+                                    {__('Qty', 'notifima')}
+                                </span>
+                                <span>{row.stock_quantity ?? 0}</span>
+                            </div>
+                            <div className="nf-cell-line">
+                                <span className="nf-cell-label">
+                                    {__('Backorders', 'notifima')}
+                                </span>
+                                <span>{row.backorders}</span>
+                            </div>
+                        </>
+                    )}
+                </div>
             ),
         },
         status: {
-            label: __('Stock Status', 'notifima'),
+            label: __('Availability', 'notifima'),
             type: 'status',
             statusClass: (row) => `${row.status_class}`
-        },
-        backorders: {
-            label: __('Backorders', 'notifima'),
-        },
-        stock_quantity: {
-            label: __('Stock', 'notifima'),
         },
     };
 
@@ -92,7 +112,7 @@ const Managestock = () => {
         {
             label: __('Download CSV', 'notifima'),
             icon: 'download',
-            onClickWithQuery: () => setOpenPopup(true),
+            onClickWithQuery: noop,
         },
     ];
 
@@ -144,41 +164,47 @@ const Managestock = () => {
         totalRows: dummyProducts.length,
     };
 
-    tableProps = applyFilters(
-        'notifima_manage_stock_table_props',
-        defaultTableProps
+    const previewTable = (
+        <PreviewTable
+            defaultTableProps={defaultTableProps}
+            filterHook="notifima_manage_stock_table_props"
+            sampleRows={SAMPLE_ROWS}
+            proFeature={{
+                title: __('Manage Stock', 'notifima'),
+                description: __(
+                    'Edit stock, prices and backorders for every product and variation in one table, and import or export it as a CSV.',
+                    'notifima'
+                ),
+                icon: 'store-analytics',
+            }}
+            empty={{
+                feature: {
+                    title: __('Manage Stock', 'notifima'),
+                    description: __(
+                        'Every WooCommerce product and variation shows here, with its stock, prices and how many shoppers are waiting for it.',
+                        'notifima'
+                    ),
+                    icon: 'store-analytics',
+                },
+                heading: __('No products yet', 'notifima'),
+                actions: (
+                    <a
+                        className="nf-locked-button"
+                        href={`${appLocalizer.admin_url}post-new.php?post_type=product`}
+                    >
+                        {__('Add a product', 'notifima')}
+                    </a>
+                ),
+                note: __(
+                    'A preview with sample products. Yours show here once you add them.',
+                    'notifima'
+                ),
+            }}
+        />
     );
 
-
-    const renderTableContent = () => {
-        if (!appLocalizer.khali_dabba) {
-            return (
-                <div className="demo-wrapper" onClick={() => setOpenPopup(true)}>
-                    <div className="watermark">{__('This is sample Data', 'notifima')}</div>
-                    <TableCard {...tableProps} />
-                </div>
-            );
-        }
-
-        return (
-            <>
-                <TableCard {...tableProps} />
-            </>
-        );
-    };
     return (
         <>
-            {openPopup && (
-                <PopupComponent
-                    position="lightbox"
-                    open={openPopup}
-                    onClose={() => setOpenPopup(false)}
-                    width={31.25}
-                    height="auto"
-                >
-                    <ShowProPopup />
-                </PopupComponent>
-            )}
             <NavigatorHeaderComponent
                 headerIcon="store-analytics"
                 headerDescription={__(
@@ -189,7 +215,7 @@ const Managestock = () => {
             />
             <ContainerComponent general>
                 <ColumnComponent>
-                    {renderTableContent()}
+                    {previewTable}
                 </ColumnComponent>
             </ContainerComponent>
         </>

@@ -1,114 +1,331 @@
 @use '../config.scss' as *;
 
-// pro popup
-.popup-content:has(.top-section) {
-    overflow: hidden !important; // for overwrite zyra style
-    width: 40rem !important;
+// ---- "Plugin required" popup (Popup.tsx's `plugin` branch) ----
+.popup-wrapper {
+	.popup-header {
+		height: 12rem;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background: $theme-color;
+
+		i {
+			color: #fff;
+			font-size: 6rem;
+		}
+	}
+
+	.popup-body {
+		padding: 2rem;
+	}
+
+	.module-name {
+		margin: 0;
+		font-size: 1.75rem;
+		text-align: center;
+	}
+
+	.module-desc {
+		text-align: center;
+		font-size: 1.063rem;
+		padding: 1rem 0;
+	}
 }
 
-.popup-wrapper {
-    .top-section {
-        padding: 2.5rem 2rem;
-        align-items: center;
-        display: flex;
-        flex-direction: column;
-        gap: 0.625rem;
-        background: $theme-color;
+// Lightbox popups: header, scrolling body, footer - whatever their heights. zyra pins the footer to the popup's bottom
+// edge (`position: fixed`), which laid it over the last ~60px of the body, and caps the body at a fixed 70vh, so a tall
+// form pushed the footer out of view. As a flex column the body takes the room the header and footer leave and is the
+// only part that scrolls; the footer always stays in view.
+.popup .popup-content[data-position='lightbox'] {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden !important;
 
-        .heading {
-            font-size: 2.063rem;
-            font-weight: 600;
-            color: $color-white;
-            text-align: center;
-            line-height: 1.25;
-        }
+	.popup-header,
+	.popup-footer {
+		flex: none;
+	}
 
-        .description {
-            color: $color-white;
-            font-size: 1.063rem;
-            text-align: center;
-            line-height: 1.3;
-            margin-bottom: 1rem;
-        }
+	.popup-body {
+		flex: 1 1 auto;
+		min-height: 0;
+		height: auto;
+		max-height: none;
+		margin-bottom: 0;
+		overflow-y: auto;
+	}
 
-        .price {
-            font-size: 2.4rem;
-            color: $color-white;
-            font-weight: 600;
-        }
+	.popup-footer {
+		position: static;
+		width: auto;
+		border-radius: 0 0 0.45rem 0.45rem;
+	}
+}
 
-        .admin-btn {
-            background: $color-white;
-            margin-top: 1rem;
-            color: $color-black;
-        }
+// ---- The Pro upgrade popup (Popup.tsx's default branch; opened by zyra for locked settings) ----
+// Header with what was asked for, a scrolling grid of everything Pro adds, and a footer that keeps the license picker
+// and buy button in view. Same design as VuloCart's Pro popup.
+.popup-content:has(.nf-pro-popup) {
+	width: 46rem !important; // zyra opens its locked-setting popup at 31.25rem.
+	max-width: calc(100vw - 2rem) !important;
+	height: auto !important;
+	max-height: 88vh !important;
+	padding: 0 !important;
+	overflow: hidden !important;
+	border-radius: 1rem !important;
+}
 
-        .select-wrapper {
-            color: $color-white;
-            font-size: 1.125rem;
-            justify-content: center;
-        }
+.popup-content:has(.nf-pro-popup) .popup-body {
+	padding: 0 !important;
+}
 
-        select {
-            background: transparent;
-            font-size: 1.125rem;
-            border: none;
-            color: $color-white;
-            appearance: none;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><path fill='%23fff' d='M5 7l5 5 5-5z'/></svg>");
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 1rem;
-            margin-bottom: 0.125rem;
+// Doubled class: the popup renders inside the page, whose heading/paragraph colours and zyra's centred popup text
+// would otherwise win.
+.nf-pro-popup.nf-pro-popup {
+	display: flex;
+	flex-direction: column;
+	max-height: 88vh;
+	color: #16151d;
+	text-align: left;
 
-            option {
-                color: #1a1a1aa4;
-            }
+	.nf-pro-popup-head {
+		flex: none;
+		padding: 2rem 2.25rem 1.75rem;
+		background:
+			radial-gradient(120% 140% at 100% 0%, rgb(255 255 255 / 16%) 0, transparent 55%),
+			linear-gradient(135deg, #3d0585 0%, #5007aa 45%, #7c3aed 100%);
+		color: #fff;
 
-            &:focus {
-                box-shadow: none;
-            }
-        }
-    }
+		h2 {
+			margin: 0.875rem 0 0.375rem;
+			color: #fff;
+			font-size: 1.625rem;
+			font-weight: 700;
+			line-height: 1.25;
+			letter-spacing: -0.01em;
+		}
 
-    .popup-details {
-        margin: 1.5rem;
-        margin-right: 0;
-        overflow: auto;
+		p {
+			max-width: 34rem;
+			margin: 0;
+			color: rgb(255 255 255 / 85%);
+			font-size: 0.9375rem;
+			line-height: 1.5;
+		}
+	}
 
-        .heading-text {
-            font-size: 1.25rem;
-            color: #000000e3;
-            font-weight: 600;
-        }
+	.nf-pro-popup-pill {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		padding: 0.25rem 0.75rem;
+		border: 1px solid rgb(255 255 255 / 30%);
+		border-radius: 999px;
+		background: rgb(255 255 255 / 12%);
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
 
-        ul {
-            // max-height: 25vh;
-            padding-right: 2rem;
+	.nf-pro-popup-feature {
+		display: flex;
+		align-items: center;
+		gap: 0.875rem;
+		margin-top: 1.25rem;
+		padding: 0.875rem 1rem;
+		border-radius: 0.75rem;
+		background: #fff;
+		color: #16151d;
+		box-shadow: 0 0.5rem 1.5rem rgb(22 21 29 / 18%);
 
-            li {
-                .title {
-                    font-size: 1.063rem;
-                    font-weight: 600;
-                    color: #000000e0;
-                    padding: 0.313rem 0;
+		> span:nth-child(2) {
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+			gap: 0.125rem;
+			color: #5b5f6e;
+			font-size: 0.8125rem;
+			line-height: 1.45;
+		}
 
-                    i {
-                        padding-right: 0.45rem;
-                        color: $theme-color;
-                        font-size: 1.25rem;
-                    }
-                }
-            }
-        }
-    }
+		strong {
+			color: #16151d;
+			font-size: 0.9375rem;
+		}
+	}
 
-    .admin-btn {
-        font-size: 1.063rem;
-        font-weight: 500;
+	.nf-pro-popup-check {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: none;
+		width: 1.75rem;
+		height: 1.75rem;
+		border-radius: 50%;
+		background: #dcfce7;
+		color: #15803d;
+		font-size: 0.875rem;
+	}
 
-        .arrow-icon {
-            transform: rotate(-45deg);
-        }
-    }
+	.nf-pro-popup-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: none;
+		width: 2.25rem;
+		height: 2.25rem;
+		border-radius: 0.625rem;
+		background: #f3ecfb;
+		color: #5007aa;
+		font-size: 1.125rem;
+	}
+
+	.nf-pro-popup-body {
+		flex: 1 1 auto;
+		min-height: 0;
+		padding: 1.5rem 2.25rem;
+		overflow-y: auto;
+	}
+
+	.nf-pro-popup-label {
+		margin-bottom: 0.875rem;
+		color: #6b6f80;
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+
+	ul {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.5rem 1.25rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	li {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75rem;
+		margin: 0;
+		padding: 0.625rem 0.5rem;
+		border-radius: 0.625rem;
+
+		&:hover {
+			background: #faf9fe;
+		}
+
+		> span:last-child {
+			display: flex;
+			flex-direction: column;
+			gap: 0.125rem;
+			min-width: 0;
+		}
+
+		strong {
+			font-size: 0.875rem;
+			font-weight: 600;
+		}
+
+		span span {
+			display: -webkit-box;
+			overflow: hidden;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 2;
+			color: #6b6f80;
+			font-size: 0.8125rem;
+			line-height: 1.45;
+		}
+	}
+
+	.nf-pro-popup-foot {
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 1rem 2.25rem;
+		border-top: 1px solid #eceef4;
+		background: #fafafd;
+		color: #6b6f80;
+		font-size: 0.8125rem;
+	}
+
+	// "$199 [1 site ▾] license": the price, then the tier picker as a quiet inline select.
+	.nf-pro-popup-license {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+
+		select {
+			min-height: 2rem;
+			padding: 0 1.75rem 0 0.625rem;
+			border: 1px solid #dcdfea;
+			border-radius: 0.5rem;
+			background-color: #fff;
+			color: #16151d;
+			font-size: 0.8125rem;
+			font-weight: 500;
+
+			&:focus {
+				border-color: #5007aa;
+				box-shadow: 0 0 0 3px rgb(80 7 170 / 14%);
+				outline: 0;
+			}
+		}
+	}
+
+	.nf-pro-popup-price {
+		color: #16151d;
+		font-size: 1.375rem;
+		font-weight: 700;
+		letter-spacing: -0.01em;
+	}
+
+	.nf-pro-popup-buy {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		height: 2.75rem;
+		padding: 0 1.375rem;
+		border-radius: 0.625rem;
+		background: #5007aa;
+		color: #fff;
+		font-size: 0.9375rem;
+		font-weight: 600;
+		text-decoration: none;
+		white-space: nowrap;
+		box-shadow: 0 0.375rem 1rem rgb(80 7 170 / 30%);
+
+		&:hover,
+		&:focus-visible {
+			background: #3d0585;
+			color: #fff;
+		}
+	}
+
+	@media (width <= 640px) {
+		ul {
+			grid-template-columns: 1fr;
+		}
+
+		.nf-pro-popup-head,
+		.nf-pro-popup-body,
+		.nf-pro-popup-foot {
+			padding-inline: 1.25rem;
+		}
+
+		.nf-pro-popup-foot {
+			flex-direction: column;
+			align-items: stretch;
+			text-align: center;
+		}
+
+		.nf-pro-popup-license {
+			justify-content: center;
+		}
+	}
 }

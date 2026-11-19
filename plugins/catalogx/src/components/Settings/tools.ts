@@ -11,7 +11,7 @@ export default {
     submitUrl: 'settings',
     modal: [
         {
-            key: 'section',
+            key: 'system_section',
             type: 'section',
             icon: 'desktop-pc-valuation',
             title: __('System', 'catalogx'),
@@ -28,7 +28,7 @@ export default {
             fileName: 'error.txt',
         },
         {
-            key: 'section',
+            key: 'custom_css_section',
             type: 'section',
             icon: 'css',
             title: __('Additional CSS', 'catalogx'),

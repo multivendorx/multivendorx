@@ -255,33 +255,26 @@ const QuoteList = () => {
             });
     }, [formData]);
 
+    // A loading placeholder: three columns, five rows.
     const TableSkeleton = () => (
         <table className="shop_table shop_table_responsive my_account_orders catalogx-skeleton-table">
             <thead>
                 <tr>
-                    <th>
-                        <div className="skeleton skeleton-text" style={{ width: '100%' }}></div>
-                    </th>
-                    <th>
-                        <div className="skeleton skeleton-text" style={{ width: '100%' }}></div>
-                    </th>
-                    <th>
-                        <div className="skeleton skeleton-text" style={{ width: '100%' }}></div>
-                    </th>
+                    {[0, 1, 2].map((column) => (
+                        <th key={column}>
+                            <div className="skeleton skeleton-text" style={{ width: '100%' }}></div>
+                        </th>
+                    ))}
                 </tr>
             </thead>
             <tbody>
-                {[...Array(5)].map((_, index) => (
-                    <tr key={index} className="woocommerce-orders-table__row">
-                        <td className="woocommerce-orders-table__cell">
-                            <div className="skeleton skeleton-text" style={{ width: '100%', height: '2.5rem' }}></div>
-                        </td>
-                        <td className="woocommerce-orders-table__cell">
-                            <div className="skeleton skeleton-text" style={{ width: '100%', height: '2.5rem' }}></div>
-                        </td>
-                        <td className="woocommerce-orders-table__cell">
-                            <div className="skeleton skeleton-text" style={{ width: '100%', height: '2.5rem' }}></div>
-                        </td>
+                {[0, 1, 2, 3, 4].map((row) => (
+                    <tr key={row} className="woocommerce-orders-table__row">
+                        {[0, 1, 2].map((column) => (
+                            <td key={column} className="woocommerce-orders-table__cell">
+                                <div className="skeleton skeleton-text" style={{ width: '100%', height: '2.5rem' }}></div>
+                            </td>
+                        ))}
                     </tr>
                 ))}
             </tbody>
@@ -311,7 +304,7 @@ const QuoteList = () => {
             ) : rows.length === 0 ? (
                 <div className="woocommerce-notices-wrapper">
                     <ul className="woocommerce-error" role="alert">
-                        <li>{__('No products found', 'catalogx-pro')}</li>
+                        <li>{__('No products found', 'catalogx')}</li>
                     </ul>
                 </div>
             ) : (

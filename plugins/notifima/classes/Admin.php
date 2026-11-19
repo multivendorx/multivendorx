@@ -90,10 +90,6 @@ class Admin {
                     'name'   => __( 'Dashboard', 'notifima' ),
                     'subtab' => '',
                 ),
-                'settings'          => array(
-                    'name'   => __( 'Settings', 'notifima' ),
-                    'subtab' => 'automation',
-                ),
                 'subscribers-list'  => array(
                     'name'   => __( 'Subscriber List', 'notifima' ),
                     'subtab' => '',
@@ -102,9 +98,10 @@ class Admin {
                     'name'   => __( 'Inventory Manager', 'notifima' ),
                     'subtab' => '',
                 ),
-                'notifima-email-log' => array(
-                    'name'   => __( 'Email Log', 'notifima' ),
-                    'subtab' => '',
+                // Settings (which also holds License) comes last, after the screens used day to day.
+                'settings'          => array(
+                    'name'   => __( 'Settings', 'notifima' ),
+                    'subtab' => 'automation',
                 ),
             );
 

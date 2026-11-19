@@ -50,22 +50,29 @@ class Promotions {
 
 		$install_url = wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=vulomail' ), 'install-plugin_vulomail' );
 		?>
-		<div class="notice notice-info is-dismissible moowoodle-vulomail-notice" >
-			<h2><?php esc_html_e( 'Track enrollment emails with VuloMail', 'moowoodle' ); ?></h2>
+		<div class="notice notice-info is-dismissible moowoodle-vulomail-notice">
+			<span class="moowoodle-vulomail-icon dashicons dashicons-email-alt" aria-hidden="true"></span>
 
-			<p>
-				<?php esc_html_e( 'See which enrollment emails were sent to students and quickly identify emails that failed to send.', 'moowoodle' ); ?>
-			</p>
+			<div class="moowoodle-vulomail-body">
+				<p class="moowoodle-vulomail-title">
+					<?php esc_html_e( 'Track enrollment emails with VuloMail', 'moowoodle' ); ?>
+					<span class="moowoodle-vulomail-badge"><?php esc_html_e( 'Free', 'moowoodle' ); ?></span>
+				</p>
+				<p class="moowoodle-vulomail-desc">
+					<?php esc_html_e( 'See which enrollment emails were sent to students and quickly identify emails that failed to send.', 'moowoodle' ); ?>
+				</p>
+			</div>
 
-			<p>
-				<a class="button button-secondary" href="<?php echo esc_url( $install_url ); ?>">
+			<div class="moowoodle-vulomail-actions">
+				<a class="button button-primary moowoodle-vulomail-install" href="<?php echo esc_url( $install_url ); ?>">
 					<?php esc_html_e( 'Install VuloMail', 'moowoodle' ); ?>
 				</a>
-
-				<a href="<?php echo esc_url( 'https://vulomail.com/' ); ?>" target="_blank" rel="noopener noreferrer">
+				<a class="moowoodle-vulomail-learn" href="<?php echo esc_url( 'https://vulomail.com/' ); ?>" target="_blank" rel="noopener noreferrer">
 					<?php esc_html_e( 'Learn more', 'moowoodle' ); ?>
+					<span class="screen-reader-text"><?php esc_html_e( '(opens in a new tab)', 'moowoodle' ); ?></span>
+					<span class="dashicons dashicons-external" aria-hidden="true"></span>
 				</a>
-			</p>
+			</div>
 		</div>
 		<?php
 	}
@@ -103,6 +110,12 @@ class Promotions {
 	 */
 	public function enqueue_notice_script() {
 		FrontendScripts::enqueue_script( 'moowoodle-admin-notices' );
+
+		// The VuloMail notice shows on every admin screen, not only MooWoodle's, so its layout ships as an inline
+		// stylesheet here rather than in the admin app's bundle.
+		wp_register_style( 'moowoodle-admin-notices', false, array(), MOOWOODLE_PLUGIN_VERSION );
+		wp_enqueue_style( 'moowoodle-admin-notices' );
+		wp_add_inline_style( 'moowoodle-admin-notices', $this->get_vulomail_notice_css() );
 		FrontendScripts::localize_script(
 			'moowoodle-admin-notices',
 			'moowoodleAdminNotices',
@@ -111,6 +124,37 @@ class Promotions {
 				'nonce'  => wp_create_nonce( 'dismiss_vulomail_notice' ),
 			)
 		);
+	}
+
+	/**
+	 * Layout of the VuloMail notice: an icon tile, the title and description, then the actions, on one row from 783px
+	 * up and stacked below that. `#wpbody` lets it outrank the MooWoodle admin app's own notice restyle, which would
+	 * otherwise recolour the install button's label to match its background.
+	 *
+	 * @return string
+	 */
+	private function get_vulomail_notice_css() {
+		return '
+			#wpbody .moowoodle-vulomail-notice { display: flex; align-items: center; gap: 16px; padding: 16px 48px 16px 16px; border-left-color: #5007aa; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-icon { flex: none; width: 44px; height: 44px; border-radius: 10px; background: #f4eefb; color: #5007aa; font-size: 24px; line-height: 44px; text-align: center; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-body { flex: 1; min-width: 0; }
+			#wpbody .moowoodle-vulomail-notice p { margin: 0; padding: 0; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-title { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; color: #1d2327; font-size: 14px; font-weight: 600; line-height: 1.4; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-badge { padding: 1px 8px; border-radius: 999px; background: #e7f6ec; color: #1a7f37; font-size: 11px; font-weight: 600; line-height: 18px; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-desc { margin-top: 2px; color: #50575e; font-size: 13px; line-height: 1.5; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-actions { display: flex; flex: none; align-items: center; gap: 16px; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-install { margin: 0; border-color: #5007aa; background: #5007aa; color: #fff; font-weight: 600; text-decoration: none; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-install:hover,
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-install:focus { border-color: #3f0588; background: #3f0588; color: #fff; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-learn { display: inline-flex; align-items: center; gap: 2px; color: #5007aa; font-weight: 600; text-decoration: none; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-learn:hover { text-decoration: underline; }
+			#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-learn .dashicons { width: 16px; height: 16px; font-size: 16px; }
+			@media (max-width: 782px) {
+				#wpbody .moowoodle-vulomail-notice { flex-wrap: wrap; align-items: flex-start; }
+				#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-body { flex-basis: calc(100% - 60px); }
+				#wpbody .moowoodle-vulomail-notice .moowoodle-vulomail-actions { flex-basis: 100%; padding-left: 60px; }
+			}
+		';
 	}
 
 	/**

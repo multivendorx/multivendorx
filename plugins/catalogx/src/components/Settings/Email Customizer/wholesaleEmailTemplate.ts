@@ -9,8 +9,20 @@ export default {
         'catalogx'
     ),
     headerIcon: 'wholesale',
+    groupBySections: true,
+    hideSettingHeader: true,
     submitUrl: 'settings',
     modal: [
+        {
+            key: 'wholesale_email_section',
+            type: 'section',
+            icon: 'wholesale',
+            title: __('Wholesale email', 'catalogx'),
+            desc: __(
+                'The emails sent when a wholesale buyer registers or is approved.',
+                'catalogx'
+            ),
+        },
         {
             key: 'notice',
             type: 'notice',

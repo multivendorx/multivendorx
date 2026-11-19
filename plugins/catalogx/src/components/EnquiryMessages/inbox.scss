@@ -1,0 +1,1471 @@
+// Copy of CatalogX Pro's inbox stylesheet (catalogx-pro/src/blocks/enquiry-messages/inbox.scss), for the sample
+// inbox drawn behind the Pro card on free sites. The admin loads both when Pro is active, so keep the two identical:
+// change one, copy it to the other.
+
+// The enquiry inbox (enquiryMessages.tsx): one look in the CatalogX admin, the customer's My Account and the
+// MultiVendorX store dashboard. Everything is scoped under `.cx-inbox`, and buttons/inputs are reset first, so a
+// theme's own button and input styles don't leak in on the storefront.
+
+$cx-primary: #5007aa;
+$cx-primary-soft: #f4eefb;
+$cx-primary-dark: #3f0588;
+$cx-ink: #1f1b3e;
+$cx-text: #374151;
+$cx-muted: #6b7280;
+$cx-border: #e3e6ef;
+$cx-border-soft: #eef0f6;
+$cx-surface: #fff;
+$cx-canvas: #f7f7fb;
+$cx-hover: #faf9fe;
+$cx-good: #15803d;
+$cx-good-bg: #ecfdf3;
+$cx-bad: #b42318;
+$cx-bad-bg: #fef3f2;
+$cx-warn: #b45309;
+$cx-warn-bg: #fffbeb;
+$cx-radius: 0.75rem;
+
+.cx-inbox {
+	--cx-inbox-height: min(48rem, calc(100vh - 13rem));
+
+	position: relative;
+	display: grid;
+	grid-template-columns: 20rem minmax(0, 1fr) 18.5rem;
+	height: var(--cx-inbox-height);
+	min-height: 34rem;
+	overflow: hidden;
+	border: 1px solid $cx-border;
+	border-radius: $cx-radius;
+	background: $cx-surface;
+	color: $cx-text;
+	font-size: 0.875rem;
+	line-height: 1.5;
+	text-align: left;
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	// Reset: themes style bare buttons and inputs (backgrounds, caps, padding, shadows).
+	button {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-radius: 0;
+		background: none;
+		box-shadow: none;
+		color: inherit;
+		font: inherit;
+		letter-spacing: normal;
+		line-height: inherit;
+		text-transform: none;
+		cursor: pointer;
+		min-height: 0;
+		width: auto;
+
+		&:disabled {
+			cursor: not-allowed;
+			opacity: 0.5;
+		}
+
+		&:focus-visible {
+			outline: 2px solid $cx-primary;
+			outline-offset: 2px;
+		}
+	}
+
+	input,
+	textarea {
+		margin: 0;
+		box-shadow: none;
+		font: inherit;
+		color: $cx-ink;
+	}
+
+	a {
+		color: $cx-primary;
+		text-decoration: none;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	h2,
+	h3,
+	p,
+	dl,
+	dd,
+	ul,
+	blockquote {
+		margin: 0;
+		padding: 0;
+	}
+
+	ul {
+		list-style: none;
+	}
+
+	i[class^='adminfont-'],
+	i[class*=' adminfont-'] {
+		line-height: 1;
+	}
+}
+
+// ── Shared bits ──────────────────────────────────────────────────────────────────────────────────────────────────
+
+.cx-inbox .cx-inbox-avatar {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 50%;
+	background: $cx-primary;
+	color: #fff;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+
+	&.is-sm {
+		width: 2rem;
+		height: 2rem;
+		font-size: 0.6875rem;
+	}
+
+	&.is-lg {
+		width: 3.5rem;
+		height: 3.5rem;
+		font-size: 1.125rem;
+	}
+}
+
+.cx-inbox .cx-inbox-icon-btn {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 2.25rem;
+	height: 2.25rem;
+	border-radius: 0.5rem;
+	color: $cx-muted;
+	font-size: 1rem;
+	transition: background 0.15s, color 0.15s;
+
+	&:hover:not(:disabled),
+	&.is-active {
+		background: $cx-primary-soft;
+		color: $cx-primary;
+	}
+
+	&.is-small {
+		width: 1.75rem;
+		height: 1.75rem;
+		font-size: 0.75rem;
+	}
+}
+
+.cx-inbox .cx-inbox-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	min-height: 2.375rem;
+	padding: 0.5rem 0.875rem;
+	border: 1px solid $cx-border;
+	border-radius: 0.5rem;
+	background: $cx-surface;
+	color: $cx-ink;
+	font-weight: 600;
+	text-decoration: none;
+	transition: background 0.15s, border-color 0.15s;
+
+	&:hover:not(:disabled) {
+		border-color: #cfd3e1;
+		background: $cx-hover;
+		text-decoration: none;
+	}
+
+	&.is-primary {
+		border-color: $cx-primary;
+		background: $cx-primary;
+		color: #fff;
+
+		&:hover:not(:disabled) {
+			border-color: $cx-primary-dark;
+			background: $cx-primary-dark;
+			color: #fff;
+		}
+	}
+
+	&.is-danger {
+		border-color: $cx-bad;
+		background: $cx-bad;
+		color: #fff;
+
+		&:hover:not(:disabled) {
+			background: #912018;
+		}
+	}
+
+	&.is-danger-text {
+		border-color: transparent;
+		color: $cx-bad;
+
+		&:hover:not(:disabled) {
+			border-color: transparent;
+			background: $cx-bad-bg;
+		}
+	}
+
+	&.is-block {
+		width: 100%;
+	}
+}
+
+.cx-inbox .cx-inbox-count {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 1.375rem;
+	height: 1.375rem;
+	padding: 0 0.375rem;
+	border-radius: 999px;
+	background: $cx-border-soft;
+	color: $cx-muted;
+	font-size: 0.75rem;
+	font-weight: 600;
+}
+
+.cx-inbox .cx-inbox-muted {
+	color: $cx-muted;
+}
+
+.cx-inbox .cx-inbox-center {
+	margin: auto;
+	text-align: center;
+}
+
+.cx-inbox .cx-inbox-link {
+	color: $cx-primary;
+	font-weight: 600;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+.cx-inbox .cx-inbox-search {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	height: 2.375rem;
+	padding: 0 0.75rem;
+	border: 1px solid $cx-border;
+	border-radius: 0.5rem;
+	background: $cx-surface;
+	color: $cx-muted;
+
+	&:focus-within {
+		border-color: $cx-primary;
+		box-shadow: 0 0 0 3px rgba(80, 7, 170, 0.12);
+	}
+
+	input {
+		flex: 1;
+		min-width: 0;
+		height: 100%;
+		padding: 0;
+		border: 0;
+		outline: 0;
+		background: transparent;
+
+		&::-webkit-search-cancel-button {
+			cursor: pointer;
+		}
+	}
+
+	&.is-compact {
+		width: 13rem;
+		height: 2.25rem;
+	}
+}
+
+// ── Conversation list ────────────────────────────────────────────────────────────────────────────────────────────
+
+.cx-inbox .cx-inbox-list {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+	border-right: 1px solid $cx-border;
+	background: $cx-surface;
+}
+
+.cx-inbox .cx-inbox-list-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem;
+	padding: 1rem 1rem 0.75rem;
+}
+
+.cx-inbox .cx-inbox-list-title {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+
+	h2 {
+		color: $cx-ink;
+		font-size: 1rem;
+		font-weight: 600;
+		line-height: 1.3;
+	}
+}
+
+.cx-inbox .cx-inbox-list-tools {
+	display: flex;
+	gap: 0.25rem;
+}
+
+.cx-inbox .cx-inbox-filters {
+	display: flex;
+	flex-direction: column;
+	gap: 0.625rem;
+	padding: 0 1rem 0.75rem;
+	border-bottom: 1px solid $cx-border-soft;
+}
+
+.cx-inbox .cx-inbox-filter-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem;
+}
+
+.cx-inbox .cx-inbox-tabs {
+	display: inline-flex;
+	padding: 0.1875rem;
+	border-radius: 0.5rem;
+	background: $cx-border-soft;
+
+	button {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		padding: 0.25rem 0.75rem;
+		border-radius: 0.375rem;
+		color: $cx-muted;
+		font-size: 0.8125rem;
+		font-weight: 600;
+
+		&.is-active {
+			background: $cx-surface;
+			box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+			color: $cx-ink;
+		}
+	}
+}
+
+.cx-inbox .cx-inbox-tab-badge {
+	min-width: 1.125rem;
+	padding: 0 0.3125rem;
+	border-radius: 999px;
+	background: $cx-primary;
+	color: #fff;
+	font-size: 0.6875rem;
+	line-height: 1.125rem;
+	text-align: center;
+}
+
+// zyra's date-range input, kept compact beside the tabs.
+.cx-inbox .cx-inbox-date {
+	flex: 0 1 9.5rem;
+	min-width: 0;
+
+	input {
+		width: 100%;
+		height: 2rem;
+		padding: 0 0.5rem;
+		border: 1px solid $cx-border;
+		border-radius: 0.375rem;
+		font-size: 0.75rem;
+	}
+}
+
+.cx-inbox .cx-inbox-conversations {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	padding: 0.375rem;
+}
+
+.cx-inbox .cx-inbox-row {
+	position: relative;
+	display: flex;
+	gap: 0.75rem;
+	width: 100%;
+	padding: 0.75rem;
+	border-radius: 0.625rem;
+	text-align: left;
+	transition: background 0.15s;
+
+	&:hover {
+		background: $cx-hover;
+	}
+
+	&.is-active {
+		background: $cx-primary-soft;
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0.75rem;
+			bottom: 0.75rem;
+			left: 0;
+			width: 3px;
+			border-radius: 0 3px 3px 0;
+			background: $cx-primary;
+		}
+	}
+
+	&.is-unread .cx-inbox-row-name,
+	&.is-unread .cx-inbox-row-preview {
+		color: $cx-ink;
+		font-weight: 600;
+	}
+
+	&.is-skeleton {
+		pointer-events: none;
+
+		.cx-inbox-avatar,
+		.cx-inbox-line {
+			background: $cx-border-soft;
+			animation: cx-inbox-pulse 1.2s ease-in-out infinite;
+		}
+	}
+}
+
+.cx-inbox .cx-inbox-line {
+	display: block;
+	height: 0.625rem;
+	margin: 0.375rem 0;
+	border-radius: 999px;
+
+	&.is-short {
+		width: 55%;
+	}
+}
+
+@keyframes cx-inbox-pulse {
+	50% {
+		opacity: 0.5;
+	}
+}
+
+.cx-inbox .cx-inbox-row-body {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 0.125rem;
+	min-width: 0;
+}
+
+.cx-inbox .cx-inbox-row-top,
+.cx-inbox .cx-inbox-row-bottom {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem;
+}
+
+.cx-inbox .cx-inbox-row-name {
+	overflow: hidden;
+	color: $cx-ink;
+	font-weight: 500;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.cx-inbox .cx-inbox-row-date {
+	flex: none;
+	color: $cx-muted;
+	font-size: 0.75rem;
+}
+
+.cx-inbox .cx-inbox-row-product {
+	overflow: hidden;
+	color: $cx-primary;
+	font-size: 0.75rem;
+	font-weight: 500;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.cx-inbox .cx-inbox-row-preview {
+	overflow: hidden;
+	color: $cx-muted;
+	font-size: 0.8125rem;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.cx-inbox .cx-inbox-unread {
+	flex: none;
+	min-width: 1.25rem;
+	padding: 0 0.375rem;
+	border-radius: 999px;
+	background: $cx-primary;
+	color: #fff;
+	font-size: 0.6875rem;
+	font-weight: 600;
+	line-height: 1.25rem;
+	text-align: center;
+}
+
+.cx-inbox .cx-inbox-list-empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 2.5rem 1rem;
+	color: $cx-muted;
+	text-align: center;
+
+	> i {
+		font-size: 1.75rem;
+		color: #c4c8d6;
+	}
+}
+
+// Starred messages popover.
+.cx-inbox .cx-inbox-popover-anchor {
+	position: relative;
+}
+
+.cx-inbox .cx-inbox-popover {
+	position: absolute;
+	top: calc(100% + 0.375rem);
+	right: 0;
+	z-index: 20;
+	width: 18rem;
+	max-height: 20rem;
+	overflow-y: auto;
+	padding: 0.75rem;
+	border: 1px solid $cx-border;
+	border-radius: $cx-radius;
+	background: $cx-surface;
+	box-shadow: 0 12px 32px rgba(16, 24, 40, 0.14);
+
+	ul {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	li {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.25rem;
+	}
+}
+
+.cx-inbox .cx-inbox-popover-title {
+	margin-bottom: 0.5rem;
+	color: $cx-ink;
+	font-weight: 600;
+}
+
+.cx-inbox .cx-inbox-starred-open {
+	display: -webkit-box;
+	flex: 1;
+	padding: 0.5rem;
+	overflow: hidden;
+	border-radius: 0.5rem;
+	font-size: 0.8125rem;
+	text-align: left;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+
+	&:hover {
+		background: $cx-hover;
+	}
+}
+
+// ── Thread ───────────────────────────────────────────────────────────────────────────────────────────────────────
+
+.cx-inbox .cx-inbox-thread {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	min-height: 0;
+	background: $cx-canvas;
+}
+
+.cx-inbox .cx-inbox-thread-head {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	min-height: 4.25rem;
+	padding: 0.75rem 1rem;
+	border-bottom: 1px solid $cx-border;
+	background: $cx-surface;
+}
+
+.cx-inbox .cx-inbox-back {
+	display: none;
+}
+
+.cx-inbox .cx-inbox-thread-who {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-width: 0;
+
+	strong {
+		overflow: hidden;
+		color: $cx-ink;
+		font-size: 0.9375rem;
+		font-weight: 600;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	span {
+		overflow: hidden;
+		color: $cx-muted;
+		font-size: 0.8125rem;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+}
+
+.cx-inbox .cx-inbox-thread-tools {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+}
+
+// The details toggle only matters when the side panel is not always shown.
+.cx-inbox .cx-inbox-details-toggle {
+	display: none;
+}
+
+.cx-inbox .cx-inbox-pinned {
+	display: flex;
+	align-items: center;
+	gap: 0.625rem;
+	padding: 0.5rem 1rem;
+	border-bottom: 1px solid #f3e8c7;
+	background: #fffbeb;
+	color: #78350f;
+	font-size: 0.8125rem;
+
+	> i {
+		color: $cx-warn;
+	}
+}
+
+.cx-inbox .cx-inbox-pinned-text {
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.cx-inbox .cx-inbox-messages {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 0.875rem;
+	min-height: 0;
+	overflow-y: auto;
+	padding: 1.25rem 1.5rem;
+}
+
+.cx-inbox .cx-inbox-loading {
+	margin: auto;
+	color: $cx-muted;
+}
+
+.cx-inbox .cx-inbox-day {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	color: $cx-muted;
+	font-size: 0.75rem;
+	font-weight: 500;
+
+	&::before,
+	&::after {
+		content: '';
+		flex: 1;
+		height: 1px;
+		background: $cx-border;
+	}
+}
+
+// The enquiry form the customer submitted: a card, not a chat bubble.
+.cx-inbox .cx-inbox-form-card {
+	align-self: center;
+	width: min(100%, 34rem);
+	padding: 1rem 1.125rem;
+	border: 1px solid $cx-border;
+	border-radius: $cx-radius;
+	background: $cx-surface;
+
+	header {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		margin-bottom: 0.75rem;
+
+		> i {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 2rem;
+			height: 2rem;
+			border-radius: 0.5rem;
+			background: $cx-primary-soft;
+			color: $cx-primary;
+		}
+
+		span {
+			display: flex;
+			flex-direction: column;
+		}
+
+		strong {
+			color: $cx-ink;
+		}
+
+		time {
+			color: $cx-muted;
+			font-size: 0.75rem;
+		}
+	}
+
+	dl {
+		display: grid;
+		grid-template-columns: minmax(6rem, max-content) 1fr;
+		gap: 0.375rem 1rem;
+
+		div {
+			display: contents;
+		}
+
+		dt {
+			color: $cx-muted;
+		}
+
+		dd {
+			color: $cx-ink;
+			overflow-wrap: anywhere;
+			white-space: pre-line;
+		}
+	}
+}
+
+.cx-inbox .cx-inbox-msg {
+	position: relative;
+	display: flex;
+	align-items: flex-end;
+	gap: 0.5rem;
+	max-width: min(80%, 36rem);
+
+	&.is-own {
+		align-self: flex-end;
+		flex-direction: row-reverse;
+
+		.cx-inbox-msg-body {
+			align-items: flex-end;
+		}
+
+		.cx-inbox-bubble {
+			border-color: $cx-primary;
+			border-radius: 1rem 1rem 0.25rem 1rem;
+			background: $cx-primary;
+			color: #fff;
+
+			a {
+				color: #fff;
+				text-decoration: underline;
+			}
+		}
+
+		.cx-inbox-quoted {
+			border-left-color: rgba(255, 255, 255, 0.6);
+			background: rgba(255, 255, 255, 0.14);
+			color: rgba(255, 255, 255, 0.9);
+		}
+
+		.cx-inbox-msg-actions {
+			right: auto;
+			left: 0;
+			transform: translateX(-100%);
+		}
+	}
+
+	&:hover .cx-inbox-msg-actions,
+	&:focus-within .cx-inbox-msg-actions,
+	.cx-inbox-msg-actions.is-open {
+		opacity: 1;
+		pointer-events: auto;
+	}
+}
+
+.cx-inbox .cx-inbox-msg-body {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	min-width: 0;
+}
+
+.cx-inbox .cx-inbox-msg-meta {
+	display: flex;
+	align-items: center;
+	gap: 0.375rem;
+	padding: 0 0.25rem;
+	color: $cx-muted;
+	font-size: 0.75rem;
+}
+
+.cx-inbox .cx-inbox-msg-author {
+	color: $cx-text;
+	font-weight: 600;
+}
+
+.cx-inbox .cx-inbox-flag {
+	color: $cx-warn;
+	font-size: 0.75rem;
+}
+
+.cx-inbox .cx-inbox-bubble {
+	position: relative;
+	padding: 0.625rem 0.875rem;
+	border: 1px solid $cx-border;
+	border-radius: 1rem 1rem 1rem 0.25rem;
+	background: $cx-surface;
+	color: $cx-ink;
+	overflow-wrap: anywhere;
+}
+
+.cx-inbox .cx-inbox-text {
+	white-space: pre-line;
+}
+
+.cx-inbox .cx-inbox-quoted {
+	display: -webkit-box;
+	margin-bottom: 0.375rem;
+	padding: 0.25rem 0.5rem;
+	overflow: hidden;
+	border-left: 3px solid $cx-primary;
+	border-radius: 0.25rem;
+	background: $cx-primary-soft;
+	color: $cx-text;
+	font-size: 0.8125rem;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+}
+
+.cx-inbox .cx-inbox-reaction {
+	position: absolute;
+	right: 0.5rem;
+	bottom: -0.75rem;
+	padding: 0 0.3125rem;
+	border: 1px solid $cx-border;
+	border-radius: 999px;
+	background: $cx-surface;
+	font-size: 0.8125rem;
+	line-height: 1.375rem;
+}
+
+.cx-inbox .cx-inbox-attachment {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	margin-top: 0.5rem;
+	padding: 0.375rem 0.625rem;
+	border-radius: 0.5rem;
+	background: rgba(0, 0, 0, 0.05);
+	color: inherit;
+	font-size: 0.8125rem;
+	font-weight: 500;
+
+	&.is-image {
+		display: block;
+		padding: 0;
+		background: none;
+
+		img {
+			display: block;
+			max-width: 100%;
+			max-height: 14rem;
+			border-radius: 0.5rem;
+		}
+	}
+}
+
+.cx-inbox .cx-inbox-msg-actions {
+	position: absolute;
+	top: 1.25rem;
+	right: 0;
+	z-index: 5;
+	display: flex;
+	gap: 0.125rem;
+	padding: 0.1875rem;
+	border: 1px solid $cx-border;
+	border-radius: 0.5rem;
+	background: $cx-surface;
+	box-shadow: 0 4px 12px rgba(16, 24, 40, 0.1);
+	opacity: 0;
+	pointer-events: none;
+	transform: translateX(100%);
+	transition: opacity 0.12s;
+
+	> button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.875rem;
+		height: 1.875rem;
+		border-radius: 0.375rem;
+		color: $cx-muted;
+		font-size: 0.875rem;
+
+		&:hover {
+			background: $cx-primary-soft;
+			color: $cx-primary;
+		}
+
+		&.is-danger:hover {
+			background: $cx-bad-bg;
+			color: $cx-bad;
+		}
+	}
+}
+
+.cx-inbox .cx-inbox-reaction-picker {
+	position: absolute;
+	top: calc(100% + 0.25rem);
+	right: 0;
+	z-index: 30;
+}
+
+// ── Composer ─────────────────────────────────────────────────────────────────────────────────────────────────────
+
+.cx-inbox .cx-inbox-composer {
+	padding: 0.75rem 1rem 1rem;
+	border-top: 1px solid $cx-border;
+	background: $cx-surface;
+}
+
+.cx-inbox .cx-inbox-replying,
+.cx-inbox .cx-inbox-file-chip {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-bottom: 0.5rem;
+	padding: 0.375rem 0.5rem 0.375rem 0.75rem;
+	border-radius: 0.5rem;
+	background: $cx-primary-soft;
+	font-size: 0.8125rem;
+
+	> i {
+		color: $cx-primary;
+	}
+
+	> span {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	strong {
+		margin-right: 0.375rem;
+		color: $cx-ink;
+	}
+}
+
+.cx-inbox .cx-inbox-compose-box {
+	position: relative;
+	border: 1px solid $cx-border;
+	border-radius: $cx-radius;
+	background: $cx-surface;
+	transition: border-color 0.15s, box-shadow 0.15s;
+
+	&:focus-within {
+		border-color: $cx-primary;
+		box-shadow: 0 0 0 3px rgba(80, 7, 170, 0.12);
+	}
+
+	textarea {
+		display: block;
+		width: 100%;
+		min-height: 2.75rem;
+		max-height: 10rem;
+		padding: 0.75rem 0.875rem 0.25rem;
+		border: 0;
+		outline: 0;
+		background: transparent;
+		resize: none;
+	}
+}
+
+.cx-inbox .cx-inbox-compose-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem;
+	padding: 0.375rem 0.5rem 0.5rem;
+}
+
+.cx-inbox .cx-inbox-compose-tools {
+	display: flex;
+	align-items: center;
+	gap: 0.125rem;
+	min-width: 0;
+}
+
+.cx-inbox .cx-inbox-hint {
+	margin-left: 0.5rem;
+	overflow: hidden;
+	color: #9ca3af;
+	font-size: 0.75rem;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.cx-inbox .cx-inbox-emoji {
+	position: relative;
+}
+
+.cx-inbox .cx-inbox-emoji-picker {
+	position: absolute;
+	bottom: calc(100% + 0.5rem);
+	left: 0;
+	z-index: 30;
+}
+
+.cx-inbox .cx-inbox-send {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	gap: 0.5rem;
+	height: 2.25rem;
+	padding: 0 0.875rem;
+	border-radius: 0.5rem;
+	background: $cx-primary;
+	color: #fff;
+	font-weight: 600;
+
+	&:hover:not(:disabled) {
+		background: $cx-primary-dark;
+	}
+
+	&:disabled {
+		background: #c9b6e6;
+		opacity: 1;
+	}
+}
+
+.cx-inbox .cx-inbox-mentions {
+	position: absolute;
+	bottom: calc(100% + 0.375rem);
+	left: 0;
+	z-index: 25;
+	min-width: 14rem;
+	max-height: 14rem;
+	overflow-y: auto;
+	padding: 0.25rem;
+	border: 1px solid $cx-border;
+	border-radius: 0.5rem;
+	background: $cx-surface;
+	box-shadow: 0 8px 24px rgba(16, 24, 40, 0.12);
+
+	button {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		width: 100%;
+		padding: 0.5rem 0.625rem;
+		border-radius: 0.375rem;
+		text-align: left;
+
+		&:hover,
+		&:focus-visible {
+			background: $cx-primary-soft;
+			color: $cx-primary;
+		}
+	}
+}
+
+// ── Customer panel ───────────────────────────────────────────────────────────────────────────────────────────────
+
+.cx-inbox .cx-inbox-side {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	min-height: 0;
+	overflow-y: auto;
+	border-left: 1px solid $cx-border;
+	background: $cx-surface;
+}
+
+.cx-inbox .cx-inbox-side-head {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.25rem;
+	padding: 1.5rem 1rem 1rem;
+	text-align: center;
+
+	strong {
+		margin-top: 0.5rem;
+		color: $cx-ink;
+		font-size: 0.9375rem;
+	}
+
+	a {
+		max-width: 100%;
+		overflow: hidden;
+		font-size: 0.8125rem;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+}
+
+.cx-inbox .cx-inbox-side-close {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	display: none;
+}
+
+.cx-inbox .cx-inbox-quote {
+	padding: 0 1rem 1rem;
+}
+
+.cx-inbox .cx-inbox-quote-confirm,
+.cx-inbox .cx-inbox-confirm {
+	display: flex;
+	flex-direction: column;
+	gap: 0.625rem;
+	padding: 0.75rem;
+	border: 1px solid $cx-border;
+	border-radius: 0.625rem;
+	background: $cx-hover;
+	font-size: 0.8125rem;
+}
+
+.cx-inbox .cx-inbox-confirm {
+	border-color: #fecdca;
+	background: $cx-bad-bg;
+	color: #7a271a;
+}
+
+.cx-inbox .cx-inbox-actions-row {
+	display: flex;
+	gap: 0.5rem;
+}
+
+.cx-inbox .cx-inbox-quote-done {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	gap: 0.625rem;
+	padding: 0.75rem;
+	border-radius: 0.625rem;
+	background: $cx-good-bg;
+	color: #14532d;
+	font-size: 0.8125rem;
+
+	> i {
+		color: $cx-good;
+		font-size: 1rem;
+	}
+
+	> span {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+	}
+
+	.cx-inbox-btn {
+		width: 100%;
+	}
+}
+
+.cx-inbox .cx-inbox-side-section {
+	display: flex;
+	flex-direction: column;
+	gap: 0.625rem;
+	padding: 1rem;
+	border-top: 1px solid $cx-border-soft;
+
+	h3 {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: $cx-muted;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
+}
+
+.cx-inbox .cx-inbox-products {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.cx-inbox .cx-inbox-product {
+	display: flex;
+	align-items: center;
+	gap: 0.625rem;
+
+	img {
+		flex: none;
+		width: 2.5rem;
+		height: 2.5rem;
+		border: 1px solid $cx-border-soft;
+		border-radius: 0.5rem;
+		object-fit: cover;
+	}
+}
+
+.cx-inbox .cx-inbox-product-text {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-width: 0;
+
+	a {
+		overflow: hidden;
+		color: $cx-ink;
+		font-weight: 500;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+}
+
+.cx-inbox .cx-inbox-product-meta {
+	display: flex;
+	gap: 0.25rem;
+	color: $cx-muted;
+	font-size: 0.75rem;
+
+	del {
+		opacity: 0.6;
+	}
+}
+
+.cx-inbox .cx-inbox-stock {
+	flex: none;
+	padding: 0.0625rem 0.5rem;
+	border-radius: 999px;
+	font-size: 0.6875rem;
+	font-weight: 600;
+
+	&.is-good {
+		background: $cx-good-bg;
+		color: $cx-good;
+	}
+
+	&.is-bad {
+		background: $cx-bad-bg;
+		color: $cx-bad;
+	}
+
+	&.is-warn {
+		background: $cx-warn-bg;
+		color: $cx-warn;
+	}
+}
+
+.cx-inbox .cx-inbox-facts {
+	display: flex;
+	flex-direction: column;
+	gap: 0.375rem;
+
+	div {
+		display: flex;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+
+	dt {
+		color: $cx-muted;
+	}
+
+	dd {
+		color: $cx-ink;
+		font-weight: 500;
+	}
+}
+
+.cx-inbox .cx-inbox-side-actions {
+	margin-top: auto;
+}
+
+// ── Nothing open ─────────────────────────────────────────────────────────────────────────────────────────────────
+
+.cx-inbox .cx-inbox-empty {
+	display: flex;
+	grid-column: 2 / -1;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 2rem;
+	background: $cx-canvas;
+	text-align: center;
+
+	h3 {
+		color: $cx-ink;
+		font-size: 1.0625rem;
+		font-weight: 600;
+	}
+
+	p {
+		max-width: 26rem;
+		color: $cx-muted;
+	}
+}
+
+.cx-inbox .cx-inbox-empty-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 3.5rem;
+	height: 3.5rem;
+	margin-bottom: 0.5rem;
+	border-radius: 1rem;
+	background: $cx-primary-soft;
+	color: $cx-primary;
+	font-size: 1.5rem;
+}
+
+// ── Narrower screens ─────────────────────────────────────────────────────────────────────────────────────────────
+
+// The customer panel slides over the conversation instead of taking a column.
+@media (max-width: 1279px) {
+	.cx-inbox {
+		grid-template-columns: 18rem minmax(0, 1fr);
+	}
+
+	.cx-inbox .cx-inbox-details-toggle {
+		display: inline-flex;
+	}
+
+	.cx-inbox .cx-inbox-side {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 40;
+		width: min(20rem, 100%);
+		box-shadow: -12px 0 32px rgba(16, 24, 40, 0.12);
+		transform: translateX(100%);
+		visibility: hidden;
+		transition: transform 0.2s ease, visibility 0.2s;
+
+		&.is-open {
+			transform: none;
+			visibility: visible;
+		}
+	}
+
+	.cx-inbox .cx-inbox-side-close {
+		display: inline-flex;
+	}
+
+	.cx-inbox .cx-inbox-hint {
+		display: none;
+	}
+}
+
+// One pane at a time: the list, or the open conversation with a back button.
+@media (max-width: 782px) {
+	.cx-inbox {
+		--cx-inbox-height: calc(100vh - 8rem);
+
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.cx-inbox .cx-inbox-thread,
+	.cx-inbox .cx-inbox-empty {
+		display: none;
+	}
+
+	.cx-inbox.is-thread-open {
+		.cx-inbox-list {
+			display: none;
+		}
+
+		.cx-inbox-thread {
+			display: flex;
+		}
+	}
+
+	.cx-inbox .cx-inbox-list {
+		border-right: 0;
+	}
+
+	.cx-inbox .cx-inbox-back {
+		display: inline-flex;
+	}
+
+	.cx-inbox .cx-inbox-search.is-compact {
+		width: 9rem;
+	}
+
+	.cx-inbox .cx-inbox-messages {
+		padding: 1rem;
+	}
+
+	.cx-inbox .cx-inbox-msg {
+		max-width: 92%;
+	}
+
+	// Touch screens have no hover: tapping a message (which focuses it) shows its actions under the bubble.
+	.cx-inbox .cx-inbox-msg {
+		flex-wrap: wrap;
+	}
+
+	.cx-inbox .cx-inbox-msg-actions {
+		position: static;
+		display: none;
+		flex-basis: 100%;
+		justify-content: flex-end;
+		box-shadow: none;
+		transform: none;
+	}
+
+	.cx-inbox .cx-inbox-msg:focus-within .cx-inbox-msg-actions,
+	.cx-inbox .cx-inbox-msg .cx-inbox-msg-actions.is-open {
+		display: flex;
+	}
+
+	.cx-inbox .cx-inbox-msg.is-own .cx-inbox-msg-actions {
+		justify-content: flex-start;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.cx-inbox *,
+	.cx-inbox *::before,
+	.cx-inbox *::after {
+		animation: none !important;
+		transition: none !important;
+	}
+}
