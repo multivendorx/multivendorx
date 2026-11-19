@@ -4,6 +4,7 @@ import axios from 'axios';
 import { getApiLink } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
+import logo from '../../assets/images/brand-logo.png';
 
 interface SubscribeFormProps {
     productId: number;
@@ -237,6 +238,12 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
                                 >
                                     ×
                                 </button>
+
+                                <img
+                                    src={logo}
+                                    alt=""
+                                    className="notifima-popup-logo"
+                                />
 
                                 {formContent}
                             </div>

@@ -179,8 +179,8 @@ class Frontend {
                 break;
 
             case 'nearby_location':
-                $user_lat = isset( $_COOKIE['user_lat'] ) ? (float) $_COOKIE['user_lat'] : 0;
-                $user_lng = isset( $_COOKIE['user_lng'] ) ? (float) $_COOKIE['user_lng'] : 0;
+                $user_lat = (float) ( filter_input( INPUT_COOKIE, 'user_lat', FILTER_VALIDATE_FLOAT ) ?: 0 );
+                $user_lng = (float) ( filter_input( INPUT_COOKIE, 'user_lng', FILTER_VALIDATE_FLOAT ) ?: 0 );
 
                 // Fallback if user location not available.
                 if ( ! $user_lat || ! $user_lng ) {

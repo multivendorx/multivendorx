@@ -4,6 +4,12 @@ import { PopupComponent } from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 import './Popup.scss';
 import { UTM } from '../../services/links';
+import notifimaLogo from '../../assets/images/plugin-logos/notifima.png';
+
+/** Brand logo for a plugin the "Plugin required" popup can ask for, keyed by its display `name`. Falls back to an adminfont icon when a plugin isn't listed here. */
+const REQUIRED_PLUGIN_LOGOS: Record<string, string> = {
+	Notifima: notifimaLogo,
+};
 
 /** The page or feature the upgrade was asked from, shown first in the Pro popup. */
 export interface ProFeature {
@@ -221,11 +227,18 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 			'string' === typeof props.plugin
 				? { plugin: props.plugin, name: props.plugin }
 				: props.plugin;
+		const logo = REQUIRED_PLUGIN_LOGOS[required.name];
 
 		return (
 			<div className="popup-wrapper">
 				<div className="popup-header">
-					<i className={`adminfont-${required.plugin ?? 'download'}`} />
+					{logo ? (
+						<span className="popup-header-logo">
+							<img src={logo} alt={required.name} />
+						</span>
+					) : (
+						<i className={`adminfont-${required.plugin ?? 'download'}`} />
+					)}
 				</div>
 				<div className="popup-body">
 					<div className="module-name">

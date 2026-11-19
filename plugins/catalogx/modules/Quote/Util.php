@@ -23,7 +23,7 @@ class Util {
      */
     public static function is_available() {
         // Get the current user.
-        $current_user = wp_get_current_user();
+        $current_user = CatalogX()->current_user;
 
         // Get exclusion setting.
         $quote_exclusion_setting = CatalogX()->setting->get_option(
