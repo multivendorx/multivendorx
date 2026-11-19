@@ -1,96 +1,14 @@
-/* global appLocalizer */
-import React, { useEffect, useState, JSX } from 'react';
+import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { getTemplateData } from '../../services/templateService';
-
-import { InputRenderer } from '@zyra/inputs';
-import {
-	getAvailableSettings,
-	getSettingById,
-	useModules,
-	SettingProvider,
-	useSetting,
-} from '@zyra/core';
-import { NavigatorComponent, type SaveStatus } from '@zyra/components';
-import ShowProPopup from '../Popup/Popup';
-import SubscriptionFormPreview from './CustomerExperience/SubscriptionFormPreview';
-import { useLocation, Link } from 'react-router-dom';
+import SettingsNavigator from '../SettingsNavigator/SettingsNavigator';
 
 interface SettingsProps {
-    id: string;
+	id: string;
 }
 
-const Settings: React.FC<SettingsProps> = () => {
-    const settingsArray = getAvailableSettings(getTemplateData('settings'), []);
-    const location = new URLSearchParams(useLocation().hash.substring(1));
-    const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
-
-    // Render the dynamic form
-    const GetForm = (currentTab: string | null): JSX.Element | null => {
-        // get the setting context
-        const { setting, settingName, setSetting, updateSetting } =
-            useSetting();
-        const { modules } = useModules();
-
-        if (!currentTab) {
-            return null;
-        }
-
-        const settingModal = getSettingById(settingsArray, currentTab);
-
-        // Ensure settings context is initialized
-        if (settingName !== currentTab) {
-            setSetting(
-                currentTab,
-                appLocalizer.settings_databases_value[currentTab] || {}
-            );
-        }
-
-        useEffect(() => {
-            if (settingName === currentTab) {
-                appLocalizer.settings_databases_value[settingName] = setting;
-            }
-        }, [setting, settingName, currentTab]);
-
-        return (
-            <>
-                {currentTab === 'subscription-form-designer' ? (
-                    <SubscriptionFormPreview />
-                ) : settingName === currentTab ? (
-                    <InputRenderer
-                        settings={settingModal}
-                        setting={setting}
-                        updateSetting={updateSetting}
-                        appLocalizer={appLocalizer}
-                        modules={modules}
-                        Popup={ShowProPopup}
-                        groupBySections={settingModal?.groupBySections}
-                        onSaveStatusChange={setSaveStatus}
-                    />
-                ) : (
-                    <>{__('Loading...', 'notifima')}</>
-                )}
-            </>
-        );
-    };
-
-    return (
-        <SettingProvider>
-            <NavigatorComponent
-                settingContent={settingsArray}
-                currentSetting={location.get('subtab') as string}
-                getForm={GetForm}
-                prepareUrl={(subTab: string) =>
-                    `?page=notifima#&tab=settings&subtab=${subTab}`
-                }
-                appLocalizer={appLocalizer}
-                Link={Link}
-                settingName={'Settings'}
-                className="admin-settings"
-                saveStatus={saveStatus}
-            />
-        </SettingProvider>
-    );
-};
+/** Settings screen. The tabs are the `*.ts` files in this folder (collected by services/templateService.ts). */
+const Settings: React.FC<SettingsProps> = () => (
+	<SettingsNavigator type="settings" title={__('Settings', 'notifima')} />
+);
 
 export default Settings;

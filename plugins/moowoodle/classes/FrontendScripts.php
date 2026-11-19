@@ -337,6 +337,8 @@ class FrontendScripts {
 							7 => __( 'Authenticated user', 'moowoodle' ),
 						),
 						'date_format'     => Util::wp_to_react_date_format( get_option( 'date_format' ) ),
+						// The dashboard greets the admin by name ("Good morning, Ana"); empty when no one is logged in.
+						'user_first_name' => self::current_user_first_name(),
 					),
 				),
 				'moowoodle-my-courses'                => array(
@@ -403,5 +405,22 @@ class FrontendScripts {
 	 */
 	public static function enqueue_style( $handle ) {
 		wp_enqueue_style( $handle );
+	}
+
+	/**
+	 * The logged-in user's first name, or their display name when no first name is set.
+	 *
+	 * @return string Empty when no user is logged in.
+	 */
+	public static function current_user_first_name() {
+		$user = wp_get_current_user();
+
+		if ( ! $user->exists() ) {
+			return '';
+		}
+
+		$first_name = trim( (string) $user->first_name );
+
+		return '' !== $first_name ? $first_name : (string) $user->display_name;
 	}
 }

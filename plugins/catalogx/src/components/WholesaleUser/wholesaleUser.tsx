@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import '../common.scss';
 
@@ -10,13 +10,12 @@ import { defaultCategoryCounts, dummyWholesalecustomer } from './WholesaleUserUt
 import {
 	ColumnComponent,
 	ContainerComponent,
-	PopupComponent,
-	ModuleGuardComponent,
 	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 
-import ShowProPopup from '../Popup/Popup';
+import ListGate from '../Popup/ListGate';
+import useNoRecordsYet from '../Popup/useNoRecordsYet';
 import { formatDate } from '../../services/commonFunction';
 
 export interface WholesaleUserRow {
@@ -30,8 +29,7 @@ export interface WholesaleUserRow {
 }
 
 const WholesaleUser = () => {
-	const [openPopup, setopenPopup] = useState(false);
-	let tableProps: any = {};
+	let tableProps: any;
 
 	const headers = {
 		customer: {
@@ -86,13 +84,9 @@ const WholesaleUser = () => {
 		totalRows: dummyWholesalecustomer.length,
 	};
 
-	tableProps = applyFilters(
-		'catalogx_wholesale_user_table_component',
-		defaultTableProps
-	);
-	tableProps = {
-		...tableProps,
-		rows: (tableProps.rows || []).map((row: WholesaleUserRow) => ({
+	/** Adds what the user column draws (icon, email line, status and date badges) to each row. */
+	const withUserColumn = (rows: WholesaleUserRow[]) =>
+		rows.map((row) => ({
 			...row,
 			info_icon: 'person',
 			info_descriptions: [
@@ -109,72 +103,88 @@ const WholesaleUser = () => {
 				},
 				{ text: formatDate(row.date), color: 'blue' },
 			],
-		})),
+		}));
+
+	const { props: filteredProps, hasNoRecords } = useNoRecordsYet(
+		applyFilters(
+			'catalogx_wholesale_user_table_component',
+			defaultTableProps
+		) as typeof defaultTableProps & Record<string, any>
+	);
+	tableProps = {
+		...filteredProps,
+		rows: withUserColumn(filteredProps.rows || []),
 	};
 
-	const renderTableContent = () => {
-		if (!appLocalizer.khali_dabba) {
-			return (
-				<div className="demo-wrapper" onClick={() => setopenPopup(true)}>
-					<div className="watermark">{__('This is sample Data', 'catalogx')}</div>
-					<TableCard {...tableProps} />
-				</div>
-			);
-		}
-
-		if (!appLocalizer.active_modules.includes('wholesale')) {
-			return (
-				<ModuleGuardComponent
-					title={__(
-						'Looks like wholesale pricing isn’t set up yet!',
-						'catalogx'
-					)}
-					desc={__(
-						'Enable the Wholesale module to create wholesale pricing and offer special rates to your business customers.',
-						'catalogx'
-					)}
-					buttonText={__('Enable Now', 'catalogx')}
-					buttonLink={`${appLocalizer.admin_url}#&tab=modules&module=wholesale`}
-				/>
-			);
-		}
-
-		return (
-			<>
-				<TableCard {...tableProps} />
-				{tableProps.selectedRow && tableProps.viewWholesaleDetails}
-			</>
-		);
-	};
+	/** The sample rows drawn behind every card: the plugin's own, never the filtered (real) props. */
+	const sampleRows = withUserColumn(dummyWholesalecustomer.slice(0, 4));
+	const sampleTable = (
+		<TableCard
+			{...defaultTableProps}
+			rows={sampleRows}
+			totalRows={sampleRows.length}
+		/>
+	);
 
 	return (
 		<>
-			{openPopup && (
-				<PopupComponent
-					position="lightbox"
-					open={openPopup}
-					onClose={() => setopenPopup(false)}
-					width={31.25}
-					height="auto"
-				>
-					<ShowProPopup />
-				</PopupComponent>
-			)}
 			<NavigatorHeaderComponent
 				headerIcon="wholesale"
 				headerDescription={__(
 					'Wholesale users are displayed with account details and statuses to help manage approvals and customer access.',
 					'catalogx'
 				)}
-				headerTitle={__(
-					'Wholesale Users',
-					'catalogx'
-				)}
+				headerTitle={__('Wholesale Users', 'catalogx')}
 			/>
 
 			<ContainerComponent general>
 				<ColumnComponent>
-					{renderTableContent()}
+					<ListGate
+						feature={{
+							title: __('Wholesale Users', 'catalogx'),
+							description: __(
+								'Approve wholesale applications and give each buyer their own prices, minimums and order form.',
+								'catalogx'
+							),
+							icon: 'wholesale',
+						}}
+						module={{
+							id: 'wholesale',
+							name: __('Wholesale', 'catalogx'),
+						}}
+						sample={sampleTable}
+						isEmpty={hasNoRecords}
+						empty={{
+							heading: __('No wholesale buyers yet', 'catalogx'),
+							description: __(
+								'Buyers apply through the wholesale registration form. Each application lands here for you to approve or reject.',
+								'catalogx'
+							),
+							actions: (
+								<>
+									<a
+										className="cx-locked-button"
+										href="#&tab=settings&subtab=wholesale"
+									>
+										{__('Wholesale settings', 'catalogx')}
+									</a>
+									<a
+										className="cx-locked-link"
+										href="#&tab=settings&subtab=pages-shortcodes"
+									>
+										{__('Registration page', 'catalogx')}
+									</a>
+								</>
+							),
+							note: __(
+								'A preview with sample buyers. Yours show here once they apply.',
+								'catalogx'
+							),
+						}}
+					>
+						<TableCard {...tableProps} />
+						{tableProps.selectedRow && tableProps.viewWholesaleDetails}
+					</ListGate>
 				</ColumnComponent>
 			</ContainerComponent>
 		</>

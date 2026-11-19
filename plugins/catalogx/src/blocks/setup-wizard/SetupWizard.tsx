@@ -203,7 +203,7 @@ const SetupWizard: React.FC = () => {
 		},
 	];
 
-	const updateSetting = (key: string, data) => {
+	const updateSetting = (_key: string, data) => {
 		setValue(data);
 	};
 

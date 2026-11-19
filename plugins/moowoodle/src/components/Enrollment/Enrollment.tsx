@@ -1,16 +1,16 @@
 /* global appLocalizer */
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
 	ColumnComponent,
 	ContainerComponent,
 	InformationItemComponent,
-	PopupComponent,
 	NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
 import { __ } from '@wordpress/i18n';
-import ShowProPopup from '../Popup/Popup';
+import LockedPreview from '../Popup/LockedPreview';
+import useNoRecordsYet from '../Popup/useNoRecordsYet';
 import { applyFilters } from '@wordpress/hooks';
 import { dummyEnrollments } from './EnrollmentUtil';
 
@@ -35,10 +35,13 @@ interface EnrollmentRow {
 	learners_hub_id?: number;
 }
 
-const Enrollment: React.FC = () => {
-	const [openPopup, setOpenPopup] = useState(false);
-	let tableProps: any = {};
+/** No-op handler for the sample rows' actions: LockedPreview makes the sample inert. */
+const noop = () => undefined;
 
+/** The sample rows drawn behind the unlock card: a few, as the preview fades out below them. */
+const SAMPLE_ROWS = dummyEnrollments.slice(0, 4);
+
+const Enrollment: React.FC = () => {
 	// Define table headers
 	const headers = {
 		learning_unit: {
@@ -104,10 +107,7 @@ const Enrollment: React.FC = () => {
 							? __('Unenroll Now', 'moowoodle')
 							: __('Enroll Now', 'moowoodle');
 					},
-					// eslint-disable-next-line no-unused-vars -- row param required by the action button's callback signature.
-					onClick: (row: EnrollmentRow) => {
-						setOpenPopup(true);
-					},
+					onClick: noop,
 					color: (row: EnrollmentRow) => {
 						return row.status === 'enrolled'
 							? __('text-red', 'moowoodle')
@@ -139,28 +139,26 @@ const Enrollment: React.FC = () => {
 		},
 	};
 
-	tableProps = applyFilters(
-		'moowoodle_enrollment_table_props',
-		defaultTableProps
+	const { props: tableProps, hasNoRecords } = useNoRecordsYet(
+		applyFilters(
+			'moowoodle_enrollment_table_props',
+			defaultTableProps
+			// MooWoodle Pro's props add the confirm dialog it renders beside the table.
+		) as typeof defaultTableProps & { popup?: React.ReactNode }
 	);
-	const handleTableWrapperClick = () => {
-		if (!appLocalizer.khali_dabba) {
-			setOpenPopup(true);
-		}
-	};
+
+	/** The sample rows behind a card: for the Pro card (Pro off) and the "none yet" card (Pro on, nothing yet). */
+	const sampleTable = (
+		// The plugin's own sample rows, not the filtered props: MooWoodle Pro may be installed without a license, and
+		// its filter would swap the samples for real (empty) data.
+		<TableCard
+			{...defaultTableProps}
+			rows={SAMPLE_ROWS}
+			totalRows={SAMPLE_ROWS.length}
+		/>
+	);
 	return (
 		<>
-			{openPopup && (
-				<PopupComponent
-					position="lightbox"
-					open={openPopup}
-					onClose={() => setOpenPopup(false)}
-					width={31.25}
-					height="auto"
-				>
-					<ShowProPopup />
-				</PopupComponent>
-			)}
 			<NavigatorHeaderComponent
 				headerIcon="form"
 				headerTitle={__('All Enrollments', 'moowoodle')}
@@ -171,18 +169,64 @@ const Enrollment: React.FC = () => {
 			/>
 			<ContainerComponent general>
 				<ColumnComponent>
-					<div
-						className="demo-wrapper"
-						onClick={handleTableWrapperClick}
-					>
-						{!appLocalizer.khali_dabba && (
-							<div className="watermark">
-								{__('This is sample Data', 'moowoodle')}
-							</div>
-						)}
-						<TableCard {...tableProps} />
-						{tableProps.popup}
-					</div>
+					{appLocalizer.khali_dabba ? (
+						hasNoRecords ? (
+							<LockedPreview
+								feature={{
+									title: __('Enrollments', 'moowoodle'),
+									description: __(
+										'A student is enrolled in Moodle™ when they buy a course product. Link your courses to products, and every enrollment shows here.',
+										'moowoodle'
+									),
+									icon: 'classroom-enrollment',
+								}}
+								heading={__('No enrollments yet', 'moowoodle')}
+								actions={
+									<>
+										<a
+											className="mw-locked-button"
+											href="#&tab=courses"
+										>
+											{__('Go to courses', 'moowoodle')}
+										</a>
+										<a
+											className="mw-locked-link"
+											href="#&tab=settings&subtab=course-enrollment"
+										>
+											{__(
+												'Enrollment settings',
+												'moowoodle'
+											)}
+										</a>
+									</>
+								}
+								note={__(
+									'A preview with sample enrollments. Yours show here after the first purchase.',
+									'moowoodle'
+								)}
+							>
+								{sampleTable}
+							</LockedPreview>
+						) : (
+							<>
+								<TableCard {...tableProps} />
+								{tableProps.popup}
+							</>
+						)
+					) : (
+						<LockedPreview
+							feature={{
+								title: __('Enrollments', 'moowoodle'),
+								description: __(
+									'Every student enrollment in one place: enroll or unenroll students, by course, group or cohort.',
+									'moowoodle'
+								),
+								icon: 'classroom-enrollment',
+							}}
+						>
+							{sampleTable}
+						</LockedPreview>
+					)}
 				</ColumnComponent>
 			</ContainerComponent>
 		</>

@@ -1,0 +1,24 @@
+// Entry stylesheet for the MooWoodle admin app (imported once, from src/app.tsx).
+
+// design-system.scss restyles zyra's building blocks; _table-and-controls.scss fixes the table, select and page
+// container spacing. The rules below cover what only MooWoodle renders.
+@use './design-system';
+@use './table-and-controls';
+
+// Settings → System & Logs and Synchronization: a log viewer (zyra's `log` field) takes the full width of its card
+// instead of the control column of the two-column row.
+.admin-main-wrapper.admin-main-wrapper .moowoodle-settings .settings-right-section .form-group:has(.section-log-container, .log-container-wrapper) {
+	grid-template-columns: minmax(0, 1fr);
+
+	.section-log-container,
+	.log-container-wrapper {
+		width: 100%;
+		max-width: none;
+	}
+}
+
+// A sequential task (Test connection, Synchronize now) shows its progress list under the button; keep that list
+// inside the control column rather than letting it run under the label.
+.admin-main-wrapper.admin-main-wrapper .moowoodle-settings .settings-right-section .form-group.row .settings-input-content {
+	overflow-wrap: anywhere;
+}

@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import ShowProPopup from '../Popup/Popup';
+import LockedPreview from '../Popup/LockedPreview';
+import { sampleCourses } from './CourseUtil';
 import { applyFilters } from '@wordpress/hooks';
 import { getApiLink } from '@zyra/core';
 
@@ -15,7 +17,7 @@ import {
 } from '@zyra/components';
 import { TableCard, QueryProps } from '@zyra/table';
 
-interface CourseRow {
+export interface CourseRow {
 	id?: number;
 	moodle_course_id?: number;
 	course_name?: string;
@@ -41,7 +43,9 @@ const Course: React.FC = () => {
 	const [category, setCategory] = useState([]);
 	const [error, setError] = useState<string | null>(null);
 	const [rowIds, setRowIds] = useState<number[]>([]);
-	let tableProps: any = {};
+	// True once an unfiltered first page comes back empty: nothing synced from Moodle™ yet, so the screen shows
+	// sample courses and how to sync instead of an empty table. A search or filter with no match stays a table.
+	const [hasNoCourses, setHasNoCourses] = useState(false);
 
 	// Fetch categories on mount
 	useEffect(() => {
@@ -136,8 +140,7 @@ const Course: React.FC = () => {
 				{
 					label: __('Sync Course Data', 'moowoodle'),
 					icon: 'refresh',
-					// eslint-disable-next-line no-unused-vars -- row param required by the action button's callback signature.
-					onClick: (row) => {
+					onClick: (_row: CourseRow) => {
 						setopenPopup(true);
 					},
 				},
@@ -156,8 +159,7 @@ const Course: React.FC = () => {
 							? 'update-product'
 							: 'add-product';
 					},
-					// eslint-disable-next-line no-unused-vars -- row param required by the action button's callback signature.
-					onClick: (row) => {
+					onClick: (_row: CourseRow) => {
 						setopenPopup(true);
 					},
 				},
@@ -206,6 +208,12 @@ const Course: React.FC = () => {
 					.filter((course: CourseRow) => course?.id != null)
 					.map((course: CourseRow) => course.id);
 
+				const isUnfiltered =
+					!query.searchValue &&
+					!query.filter?.category &&
+					(query.paged || 1) === 1;
+
+				setHasNoCourses(isUnfiltered && 0 === items.length);
 				setRowIds(ids);
 				setRows(items);
 				setTotalRows(response.headers['x-wp-total'] || 0);
@@ -248,7 +256,7 @@ const Course: React.FC = () => {
 		},
 	};
 
-	tableProps = applyFilters(
+	const tableProps = applyFilters(
 		'moowoodle_course_table_props',
 		defaultTableProps
 	);
@@ -282,7 +290,51 @@ const Course: React.FC = () => {
 			)}
 			<ContainerComponent general>
 				<ColumnComponent>
-					<TableCard {...tableProps} />
+					{hasNoCourses ? (
+						<LockedPreview
+							feature={{
+								title: __('Courses', 'moowoodle'),
+								description: __(
+									'Courses come from your Moodle™ site. Connect it, then sync to list every course here and sell it as a WooCommerce product.',
+									'moowoodle'
+								),
+								icon: 'subscription-courses',
+							}}
+							heading={__('No courses synced yet', 'moowoodle')}
+							actions={
+								<>
+									<a
+										className="mw-locked-button"
+										href="#&tab=synchronization&subtab=synchronize-course"
+									>
+										{__('Sync courses', 'moowoodle')}
+									</a>
+									<a
+										className="mw-locked-link"
+										href="#&tab=settings&subtab=connection-access"
+									>
+										{__('Connect Moodle™', 'moowoodle')}
+									</a>
+								</>
+							}
+							note={__(
+								'A preview with sample courses. Yours show here after the first sync.',
+								'moowoodle'
+							)}
+						>
+							<TableCard
+								headers={headers}
+								rows={sampleCourses}
+								totalRows={sampleCourses.length}
+								ids={sampleCourses.map((course) => course.id)}
+								isLoading={false}
+								search={defaultTableProps.search}
+								bulkActions={bulkActions}
+							/>
+						</LockedPreview>
+					) : (
+						<TableCard {...tableProps} />
+					)}
 				</ColumnComponent>
 			</ContainerComponent>
 		</>

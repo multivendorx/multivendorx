@@ -86,22 +86,22 @@ export const dummyWholesalecustomer = [
 export const defaultCategoryCounts = [
     {
         value: 'all',
-        label: __('All', 'catalogx-pro'),
+        label: __('All', 'catalogx'),
         count: 10,
     },
     {
         value: 'pending',
-        label: __('Pending', 'catalogx-pro'),
+        label: __('Pending', 'catalogx'),
         count: 2,
     },
     {
         value: 'approve',
-        label: __('Approved', 'catalogx-pro'),
+        label: __('Approved', 'catalogx'),
         count: 5,
     },
     {
         value: 'reject',
-        label: __('Rejected', 'catalogx-pro'),
+        label: __('Rejected', 'catalogx'),
         count: 3,
     },
 ];

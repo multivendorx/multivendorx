@@ -1,16 +1,44 @@
 /* global appLocalizer */
-import { render } from '@wordpress/element';
+import { createRoot } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import App from './app';
-
 import { configureZyra, initializeModules } from '@zyra/core';
 
 configureZyra(appLocalizer);
 initializeModules('catalogx', 'free', 'modules');
 
-render(
-    <BrowserRouter>
-        <App />
-    </BrowserRouter>,
-    document.getElementById( 'admin-main-wrapper' )
-);
+/**
+ * Mounts the admin app into `#admin-main-wrapper` (printed by Admin::create_setting_page()).
+ *
+ * Runs as a jQuery ready handler, not when the script is evaluated, so CatalogX Pro's bundle has always registered its
+ * `addFilter()` calls (table props, the enquiry inbox) before the first render reads them with `applyFilters()`,
+ * whatever order WordPress prints the two scripts in.
+ *
+ * It must be a jQuery ready handler (queued after wp-admin/js/common.js's), not a plain `DOMContentLoaded` listener:
+ * common.js moves every `.notice` after the first `.wrap h1, .wrap h2` on ready. zyra's HeaderComponent moves the
+ * notices into its `.notice-wrapper.wrap`, so if React mounts first, that heading can be one inside a notice. jQuery
+ * then throws a HierarchyRequestError and every notice is lost from the page.
+ */
+function mount() {
+	const root = document.getElementById('admin-main-wrapper');
+
+	if (root) {
+		createRoot(root).render(
+			<BrowserRouter>
+				<App />
+			</BrowserRouter>
+		);
+	}
+}
+
+const { jQuery } = window as Window & {
+	jQuery?: (callback: () => void) => unknown;
+};
+
+if (jQuery) {
+	jQuery(mount);
+} else if ('loading' === document.readyState) {
+	document.addEventListener('DOMContentLoaded', mount);
+} else {
+	mount();
+}

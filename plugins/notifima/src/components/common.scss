@@ -33,3 +33,30 @@
         font-weight: 600;
     }
 }
+// Manage Stock: related fields stacked in one cell (Stock: track / qty / backorders; Availability: status / restock).
+.admin-table-wrapper .admin-table .admin-column .nf-cell-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.375rem;
+
+    .nf-cell-line {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-height: 1.5rem;
+    }
+
+    .nf-cell-label {
+        min-width: 4.75rem;
+        color: #6b7280;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    // zyra's toggle carries its own row spacing; inside a line it should sit flush.
+    .nf-cell-line .checkbox-list-side-by-side,
+    .nf-cell-line .toggle-checkbox-wrapper {
+        margin: 0;
+    }
+}

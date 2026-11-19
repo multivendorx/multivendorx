@@ -9,9 +9,21 @@ export default {
 		'moowoodle'
 	),
 	headerIcon: 'cohort',
+	groupBySections: true,
+	hideSettingHeader: true,
 	submitUrl: 'settings',
 	proDependent: true,
 	modal: [
+		{
+			key: 'synchronize-cohort-section',
+			type: 'section',
+			icon: 'cohort',
+			title: __('Cohort synchronization', 'moowoodle'),
+			desc: __(
+				'Choose how Moodle cohorts become products, then run the synchronization.',
+				'moowoodle'
+			),
+		},
 		{
 			key: 'cohort_sync_option',
 			type: 'checkbox',
