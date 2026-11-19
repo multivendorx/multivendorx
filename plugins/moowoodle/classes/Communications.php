@@ -10,12 +10,12 @@ namespace MooWoodle;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Admin notices promoting MooWoodle Pro and VuloMail.
+ * Admin notices communications MooWoodle Pro and VuloMail.
  *
  * @version     3.4.0
  * @package     MooWoodle
  */
-class Promotions {
+class Communications {
 
 	/**
 	 * MooWoodle Pro shop URL used in upgrade links.
@@ -25,15 +25,25 @@ class Promotions {
 	private string $pro_upgrade_url;
 
 	/**
-	 * Promotions constructor. Registers notice, AJAX and script hooks.
+	 * Communications constructor. Registers notice, AJAX and script hooks.
 	 */
 	public function __construct() {
 		$this->pro_upgrade_url = MOOWOODLE_PRO_SHOP_URL;
-		add_action( 'admin_notices', array( $this, 'display_unsupported_extension_notice' ) );
-		add_action( 'admin_notices', array( $this, 'display_vulomail_promotion_notice' ) );
-		add_action( 'wp_ajax_moowoodle_admin_notice_action', array( $this, 'dismiss_vulomail_notice' ) );
+		add_action( 'admin_notices', array( $this, 'display_admin_notices' ) );
+		add_action( 'wp_ajax_moowoodle_admin_notice_action', array( $this, 'moowoodle_dismiss_notice' ) );
 		add_filter( 'moowoodle_admin_scripts', array( $this, 'register_notice_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_notice_script' ) );
+	}
+
+	/**
+	 * Display all MooWoodle admin notices.
+	 *
+	 * @return void
+	 */
+	public function display_admin_notices() {
+		$this->display_unsupported_extension_notice();
+		$this->display_vulomail_promotion_notice();
+		$this->display_pro_update_notice();
 	}
 
 	/**
@@ -44,7 +54,7 @@ class Promotions {
 	 * @return void
 	 */
 	public function display_vulomail_promotion_notice() {
-		if ( $this->is_vulomail_active() || ! $this->should_display_vulomail_notice() ) {
+		if ( $this->is_vulomail_active() || ! $this->should_display_notice('vulomail_notice') ) {
 			return;
 		}
 
@@ -81,12 +91,49 @@ class Promotions {
 	 *
 	 * @return void
 	 */
-	public function dismiss_vulomail_notice() {
-		check_ajax_referer( 'dismiss_vulomail_notice', 'nonce' );
+	public function moowoodle_dismiss_notice() {
+		check_ajax_referer( 'moowoodle_dismiss_notice', 'nonce' );
 
-		update_option( Util::MOOWOODLE_OTHER_SETTINGS['vulomail_notice'], time(), false );
+		$notice_type = isset( $_POST['notice_type'] ) ? sanitize_text_field( $_POST['notice_type'] ) : '';
+
+		if ( 'vulomail' === $notice_type ) {
+			update_option( Util::MOOWOODLE_OTHER_SETTINGS['vulomail_notice'], time(), false );
+		} elseif ( 'pro_update' === $notice_type ) {
+			update_option( Util::MOOWOODLE_OTHER_SETTINGS['pro_update_notice'], time(), false );
+		}
 
 		wp_send_json_success();
+	}
+
+	/**
+	 * Display an admin notice reminding administrators to keep MooWoodle Pro updated.
+	 *
+	 * Using an outdated version of MooWoodle Pro may cause unexpected student unenrollment.
+	 *
+	 * @return void
+	 */
+	public function display_pro_update_notice() {
+		if ( ! Util::is_khali_dabba() || ! $this->should_display_notice('pro_update_notice') ) {
+			return;
+		}
+
+		?>
+		<div class="notice notice-error is-dismissible moowoodle-pro-update-notice">
+			<p>
+				<strong>
+					<?php esc_html_e( 'Important: Ensure MooWoodle Pro Is Up to Date!', 'moowoodle' ); ?>
+				</strong>
+			</p>
+			<p>
+				<?php
+				esc_html_e(
+					'Please ensure that you are using the latest version of MooWoodle Pro. Using an outdated version may cause unexpected student unenrollment. Keeping MooWoodle Pro updated helps prevent such issues.',
+					'moowoodle'
+				);
+				?>
+			</p>
+		</div>
+		<?php
 	}
 
 	/**
@@ -121,12 +168,12 @@ class Promotions {
 			'moowoodleAdminNotices',
 			array(
 				'action' => 'moowoodle_admin_notice_action',
-				'nonce'  => wp_create_nonce( 'dismiss_vulomail_notice' ),
+				'nonce'  => wp_create_nonce( 'moowoodle_dismiss_notice' ),
 			)
 		);
 	}
 
-	/**
+		/**
 	 * Layout of the VuloMail notice: an icon tile, the title and description, then the actions, on one row from 783px
 	 * up and stacked below that. `#wpbody` lets it outrank the MooWoodle admin app's own notice restyle, which would
 	 * otherwise recolour the install button's label to match its background.
@@ -158,12 +205,13 @@ class Promotions {
 	}
 
 	/**
-	 * Check whether the VuloMail notice should be displayed.
+	 * Check whether the admin notice should be displayed.
 	 *
+	 * @param string $notice_type Notice type.
 	 * @return bool
 	 */
-	private function should_display_vulomail_notice() {
-		$dismissed_at = (int) get_option( Util::MOOWOODLE_OTHER_SETTINGS['vulomail_notice'], 0 );
+	private function should_display_notice( $notice_type ) {
+		$dismissed_at = (int) get_option( Util::MOOWOODLE_OTHER_SETTINGS[ $notice_type ], 0 );
 
 		return ! $dismissed_at || ( time() - $dismissed_at ) >= YEAR_IN_SECONDS;
 	}

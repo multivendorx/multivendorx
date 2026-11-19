@@ -92,7 +92,7 @@ const LEARN: HelpLink[] = [
 			'Watch the setup, from the Moodle™ token to the first enrollment.',
 			'moowoodle'
 		),
-		link: 'https://www.youtube.com/@moowoodle/videos',
+		link: 'https://www.youtube.com/@dualcube_official/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
 	},
 	{
 		icon: 'forum',

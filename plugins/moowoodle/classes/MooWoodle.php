@@ -152,8 +152,8 @@ final class MooWoodle {
         $this->services['block']            = new Block();
         $this->services['frontendscripts']  = new FrontendScripts();
         $this->services['endpoint']         = new Endpoint();
-        $this->services['promotions']       = new Promotions();
-        $this->services['corn']             = new Cron();
+        $this->services['communications']       = new Communications();
+        $this->services['cron']             = new Cron();
         $this->initialize_moowoodle_log();
     }
 
