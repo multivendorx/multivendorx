@@ -51,7 +51,7 @@ export default {
             key: 'set_wholesale_products_page',
             type: 'select',
             size: 20,
-            label: __('Set Wholesale Products Page', 'catalogx'),
+            label: __('Set wholesale products page', 'catalogx'),
             settingDescription: __(
                 'Select the page on which you have inserted <code>[catalogx_wholesale_products]</code> shortcode.',
                 'catalogx'
@@ -74,10 +74,10 @@ export default {
             type: 'shortcode-table',
             classes: "full-width",
             optionLabel: [
-                __('Shortcodes and block', 'catalogx'),
+                __('Argument', 'catalogx'),
                 __('Description', 'catalogx'),
-                __('Arguments', 'catalogx'),
-                __('Example usage', 'catalogx'),
+                __('Accepted values', 'catalogx'),
+                __('Example', 'catalogx'),
             ],
             options: [
                 {

@@ -53,7 +53,7 @@ export default {
         {
             key: 'redirect_cart_page',
             type: 'select',
-            label: __('Cart / Checkout Redirect Page', 'catalogx'),
+            label: __('Cart and checkout redirect page', 'catalogx'),
             size: 15,
             options: [
                 {
@@ -158,7 +158,7 @@ export default {
         {
             key: 'notify_me_button',
             type: 'checkbox',
-            label: __('In-Stock notify me button', 'catalogx'),
+            label: __('In-stock notify me button', 'catalogx'),
             settingDescription: __(
                 'Allow customers to receive notifications when out-of-stock products become available.',
                 'catalogx'
@@ -415,10 +415,10 @@ export default {
             key: 'pdf_delivery_section',
             type: 'section',
             icon: 'customer-support',
-            desc: __('Configure how customers receive PDF documents for enquiries and quotations, including whether they can download them, receive them by email, or both.',
+            desc: __('Whether customers can download enquiry and quote PDFs, get them by email, or both.',
                 'catalogx'
             ),
-            title: __('How customers receives PDF documents?', 'catalogx'),
+            title: __('PDF documents', 'catalogx'),
         },
         {
             key: 'display_pdf',
