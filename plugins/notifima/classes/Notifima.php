@@ -192,6 +192,7 @@ class Notifima {
         $this->container['block']           = new Block();
         $this->container['frontendScripts'] = new FrontendScripts();
         $this->container['communications']    = new Communications();
+        $this->container['vuloform']        = new VuloForm\Integration();
     }
 
     /**

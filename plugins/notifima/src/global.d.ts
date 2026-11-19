@@ -60,6 +60,10 @@ declare global {
         lead_time?: string;
         khali_dabba?: boolean;
         email?: string;
+        /** The configured VuloForm form id, 0 when none is set. */
+        vuloform_form_id?: number;
+        /** VuloForm's REST namespace, e.g. `vuloform/v1`. */
+        vuloform_rest_namespace?: string;
     }
 
     var appLocalizer: AppLocalizer;

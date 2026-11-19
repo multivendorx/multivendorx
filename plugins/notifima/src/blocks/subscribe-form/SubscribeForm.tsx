@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { getApiLink } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
-import { applyFilters } from '@wordpress/hooks';
 import logo from '../../assets/images/brand-logo.png';
+import VuloFormEmbed from './VuloFormEmbed';
 
 interface SubscribeFormProps {
     productId: number;
@@ -28,9 +28,6 @@ interface ApiResponse {
 
 const SubscribeForm: React.FC<SubscribeFormProps> = ({
     productId,
-    variationId,
-    productTitle,
-    userEmail,
     shownInterest,
 }) => {
     const [loading, setLoading] = useState(false);
@@ -38,56 +35,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
     const [showPopup, setShowPopup] = useState(false);
 
     const isPopup = subscription.display_type === 'popup';
-
-    /**
-     * Subscribe
-     */
-    const onSubmit = (
-        submittedFormData: Record<string, string | number | boolean>
-    ) => {
-        setLoading(true);
-
-        let data = {
-            action: 'subscribe',
-            customer_email: submittedFormData.email,
-            product_id: productId,
-            variation_id: variationId,
-            product_title: productTitle,
-        };
-
-        data = applyFilters(
-            'notifima_subscribe_request_data',
-            data,
-            submittedFormData
-        ) as typeof data;
-        axios({
-            method: 'POST',
-            url: getApiLink(subscription, `subscribers/${productId}`),
-            headers: {
-                'X-WP-Nonce': subscription.nonce,
-            },
-            data,
-        })
-            .then(({ data }: { data: ApiResponse }) => {
-                setResponse(data);
-
-                if (data.status) {
-                    setShowPopup(false);
-                }
-            })
-            .catch(() => {
-                setResponse({
-                    status: false,
-                    message: __(
-                        'Something went wrong. Please try again.',
-                        'notifima'
-                    ),
-                });
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    };
+    const vuloformFormId = subscription.vuloform_form_id ?? 0;
 
     /**
      * Unsubscribe
@@ -151,46 +99,12 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
                 </div>
             )}
 
-            {showForm && (
-                !subscription.khali_dabba ? (
-                    <>
-                        <form className="woocommerce-form woocommerce-form-login login">
-                            <label className="woocommerce-form__label woocommerce-form__label-for-checkbox" >
-                                <input
-                                    type="email"
-                                    defaultValue={userEmail}
-                                    placeholder={__('Enter Your Email', 'notifima')}
-                                    className="woocommerce-form__input woocommerce-form__input-checkbox"
-                                    onChange={(e) => {
-                                        subscription.email = e.target.value;
-                                    }}
-                                />
-                            </label>
-
-                            <button
-                                type="button"
-                                disabled={loading}
-                                className='woocommerce-button button wp-element-button wp-block-button__link'
-                                onClick={() =>
-                                    onSubmit({
-                                        email: subscription.email || userEmail,
-                                    })
-                                }
-                            >
-                                {__('Notify Me', 'notifima')}
-                            </button>
-                        </form>
-                    </>
-                ) : (
-                    applyFilters(
-                        'notifima_pro_subscribe_form',
-                        <></>,
-                        {
-                            userEmail,
-                            onSubmit,
-                        }
-                    )
-                )
+            {showForm && vuloformFormId > 0 && (
+                <VuloFormEmbed
+                    formId={vuloformFormId}
+                    apiUrl={subscription.apiUrl}
+                    productId={productId}
+                />
             )}
 
             {response?.already_subscribed && (
