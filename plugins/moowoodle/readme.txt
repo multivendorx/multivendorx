@@ -3,7 +3,7 @@ Contributors: dualcube
 Tags: moodle, lms, sell course, moodle wordpress connect, LMS integration
 Donate link: https://dualcube.com/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=moowoodlewporg
 Requires at least: 6.0.0
-Tested up to: 7.1.4
+Tested up to: 7.1.5
 Requires PHP: 8.0
 Stable tag: 3.4.15
 License: GPLv2 or later
@@ -231,7 +231,8 @@ This project might have bugs and may be lacking certain features. If you'd like 
 
 == Changelog ==
 
-= 3.4.15 - 2026-11-18 =
+= 3.4.15 - 2026-11-19 =
+* Added     - Compatibility with WordPress 7.1.5.
 * Added     - Compatibility of WooCommerce 11.3.0.
 * Added     - UI/UX improvements.
 * Updated   - Language file.
