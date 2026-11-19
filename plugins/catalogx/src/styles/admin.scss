@@ -103,13 +103,14 @@
 	}
 }
 
-// zyra repeats a Pro field's badge above its table; the field label already carries one.
-.admin-main-wrapper.admin-main-wrapper .form-group .settings-input-content > .admin-tag.pro-tag:has(+ .multi-input-table) {
+// zyra repeats a Pro field's badge above its table; the field label already carries one. `#wpbody` matches the
+// design system's badge rule, which sets its display.
+#wpbody .settings-input-content > .admin-tag.pro-tag:has(+ .multi-input-table) {
 	display: none;
 }
 
 // PDF delivery mode: a narrow two-checkbox table, so its labels get the room the checkbox columns don't need.
-.admin-main-wrapper.admin-main-wrapper .gridTable .multi-input-table {
+.admin-main-wrapper.admin-main-wrapper [class~='gridTable'] .multi-input-table {
 	th:first-child,
 	td:first-child {
 		flex-basis: 12rem;
