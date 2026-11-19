@@ -110,13 +110,12 @@ const expandSubTabs = (nodes: SettingsNode[]): SettingsNode[] =>
 	});
 
 /**
- * The screen a `subtab=` value opens. A tab that became a folder opens its first sub-tab, or the one named by the
- * `view=` param links made before the folder used, so old links keep working.
+ * The screen a `subtab=` value opens. A tab drawn as a folder opens its first sub-tab, so links to the tab itself
+ * (`subtab=connection-access`, `subtab=system-logs`) keep working.
  */
 const resolveOpenTab = (
 	tabs: SettingsNode[],
-	openTab: string | null,
-	view: string | null
+	openTab: string | null
 ): string | null => {
 	for (const node of tabs) {
 		if ('folder' === node.type) {
@@ -124,12 +123,10 @@ const resolveOpenTab = (
 			const subTabs = children.map((child) => child.content as TabConfig);
 
 			if (openTab && subTabs[0]?.storageId === openTab) {
-				return (
-					subTabs.find((subTab) => subTab.id === view) ?? subTabs[0]
-				).id;
+				return subTabs[0].id;
 			}
 
-			const nested = resolveOpenTab(children, openTab, view);
+			const nested = resolveOpenTab(children, openTab);
 
 			if (nested !== openTab) {
 				return nested;
@@ -174,10 +171,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
 
 	useEffect(() => {
 		if (settingName !== storageId) {
-			setSetting(
-				storageId,
-				appLocalizer.admin_settings[storageId] || {}
-			);
+			setSetting(storageId, appLocalizer.admin_settings[storageId] || {});
 		}
 	}, [storageId, settingName, setSetting]);
 
@@ -187,7 +181,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
 		}
 	}, [setting, settingName, storageId]);
 
-	// A tab with no fields of its own and a `PanelComponent` (Help & Support, License) draws that panel instead of
+	// A tab with no fields of its own and a `PanelComponent` (License) draws that panel instead of
 	// the declarative field form.
 	const PanelComponent = settingModal?.PanelComponent;
 
@@ -242,10 +236,9 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 	const openTab = resolveOpenTab(
 		settingsArray as unknown as SettingsNode[],
-		location.get('subtab'),
-		location.get('view')
+		location.get('subtab')
 	);
-	// A panel tab (Help & Support, License) saves nothing by itself, so the header shows no "Changes save
+	// A panel tab (License) saves nothing by itself, so the header shows no "Changes save
 	// automatically" status there.
 	const isPanelTab = !!(
 		openTab &&

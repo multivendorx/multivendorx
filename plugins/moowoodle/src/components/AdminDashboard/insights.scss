@@ -9,10 +9,20 @@ $mw-critical-bg: #fef2f2;
 $mw-info: #1d4ed8;
 $mw-info-bg: #eff6ff;
 
-.admin-main-wrapper .mw-insights {
+// Soft tints for the checklist's icon circles (ActivityListComponent takes any CSS colour).
+.admin-main-wrapper .mw-dash {
+	--mw-primary-soft: #f1ebfb;
+	--mw-good-soft: #{$mw-good-bg};
+}
+
+.admin-main-wrapper .mw-insights,
+.admin-main-wrapper .mw-insights-stack {
 	display: flex;
 	flex-direction: column;
 	gap: 1.25rem;
+}
+
+.admin-main-wrapper .mw-insights {
 	margin-bottom: 1.25rem;
 
 	h2 {
@@ -46,236 +56,39 @@ $mw-info-bg: #eff6ff;
 	}
 }
 
-// ---- Connection alert ----
-// Shown until Moodle™ is connected and tested. A plain card with a thin accent: it is the next step, not an error.
-.admin-main-wrapper .mw-insights-alert {
-	display: flex;
-	align-items: center;
-	gap: 1rem;
-	padding: 1rem 1.25rem;
-	border: 1px solid var(--mw-border, #e3e6ef);
-	border-left: 3px solid $mw-warning;
-	border-radius: 0;
-	background: var(--mw-surface, #fff);
-
-	h2 {
-		color: var(--mw-ink, #1f1b3e);
-		font-size: 0.9375rem;
-	}
-
-	@media (width <= 782px) {
-		flex-wrap: wrap;
-		align-items: flex-start;
-	}
-}
-
-.admin-main-wrapper .mw-insights-alert-icon {
-	display: inline-flex;
-	flex: none;
-	align-items: center;
-	justify-content: center;
-	width: 2.25rem;
-	height: 2.25rem;
-	border-radius: 0.5rem;
-	background: $mw-warning-bg;
-	color: $mw-warning;
-	font-size: 1.125rem;
-}
-
-.admin-main-wrapper .mw-insights-alert-body {
-	flex: 1;
-	min-width: 0;
-
-	p {
-		margin-top: 0.25rem;
-		color: #5b5f6e;
-		font-size: 0.875rem;
-		line-height: 1.55;
-	}
-
-	@media (width <= 782px) {
-		flex-basis: calc(100% - 4rem);
-	}
-}
-
-.admin-main-wrapper .mw-insights-alert-actions {
-	display: flex;
-	flex: none;
-	align-items: center;
-	gap: 1rem;
-
-	@media (width <= 782px) {
-		box-sizing: border-box;
-		flex-wrap: wrap;
-		flex-basis: 100%;
-		padding-left: 4rem;
-	}
-}
-
-// ---- Status line ----
-.admin-main-wrapper .mw-insights-status {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: space-between;
-	gap: 0.75rem;
-}
-
-.admin-main-wrapper .mw-insights-pill {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.375rem;
-	padding: 0.25rem 0.75rem;
-	border-radius: 999px;
-	font-size: 0.8125rem;
-	font-weight: 600;
-	text-decoration: none;
-
-	&.is-good {
-		background: $mw-good-bg;
-		color: $mw-good;
-	}
-
-}
-
-.admin-main-wrapper .mw-insights-period {
-	color: var(--mw-muted, #6b7280);
-	font-size: 0.8125rem;
-}
-
-// ---- Panels ----
-.admin-main-wrapper .mw-insights-panel {
-	box-sizing: border-box;
-	min-width: 0;
-	padding: 1.25rem 1.5rem;
-	border: 1px solid var(--mw-border, #e3e6ef);
-	border-radius: 0.75rem;
-	background: var(--mw-surface, #fff);
-}
-
-.admin-main-wrapper .mw-insights-panel-head {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: baseline;
-	justify-content: space-between;
-	gap: 0.5rem;
-	margin-bottom: 1rem;
-
-	> span,
-	> a {
-		color: var(--mw-muted, #6b7280);
-		font-size: 0.8125rem;
-	}
-
-	> a {
-		color: var(--mw-primary, #5007aa);
-		font-weight: 600;
-		text-decoration: none;
-	}
-}
-
-.admin-main-wrapper .mw-insights-row {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 1.25rem;
-
-	&.is-wide-left {
-		grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-	}
-
-	@media (width <= 960px) {
-		&,
-		&.is-wide-left {
-			grid-template-columns: minmax(0, 1fr);
-		}
-	}
-}
-
 .admin-main-wrapper .mw-insights-empty {
 	color: var(--mw-muted, #6b7280);
 	font-size: 0.875rem;
 	line-height: 1.5;
 }
 
-.admin-main-wrapper .mw-insights-button {
-	display: inline-flex;
-	flex: none;
-	align-items: center;
-	min-height: 2.25rem;
-	padding: 0 1rem;
-	border-radius: 0.5rem;
-	background: var(--mw-primary, #5007aa);
-	color: #fff;
-	font-size: 0.8125rem;
-	font-weight: 600;
-	text-decoration: none;
-
-	&:hover,
-	&:focus {
-		background: #3f0588;
-		color: #fff;
-	}
-}
-
-.admin-main-wrapper .mw-insights-link {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.25rem;
-	color: var(--mw-primary, #5007aa);
-	font-size: 0.8125rem;
-	font-weight: 600;
-	text-decoration: none;
-
-	&:hover {
-		text-decoration: underline;
-	}
-}
-
-// ---- Setup checklist ----
-.admin-main-wrapper .mw-insights-setup-head {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: space-between;
-	gap: 1rem;
-	margin-bottom: 1rem;
-
-	p {
-		margin-top: 0.125rem;
-		color: var(--mw-muted, #6b7280);
-		font-size: 0.8125rem;
-	}
-}
-
-.admin-main-wrapper .mw-insights-progress {
-	overflow: hidden;
-	width: 12rem;
-	height: 0.5rem;
-	border-radius: 999px;
-	background: #efe9f8;
-
-	span {
-		display: block;
-		height: 100%;
-		border-radius: 999px;
-		background: var(--mw-primary, #5007aa);
-	}
-}
-
+// ---- Setup ----
+// One vertical list: done steps are a checked line, the step to do now is the only one with text and a button, later
+// steps wait in grey. It replaces a separate "not connected" banner: the first step is the connection.
 .admin-main-wrapper .mw-insights-steps {
-	li {
-		display: flex;
-		align-items: center;
-		gap: 0.875rem;
-		padding: 0.75rem 0;
+	margin: 0;
+	padding: 0;
+	list-style: none;
 
-		+ li {
-			border-top: 1px solid var(--mw-border-soft, #eef0f6);
+	> li {
+		position: relative;
+		display: flex;
+		gap: 0.875rem;
+		padding: 0 0 1.25rem;
+
+		&:last-child {
+			padding-bottom: 0;
 		}
 
-		&.is-done .mw-insights-step-text strong {
-			color: var(--mw-muted, #6b7280);
-			text-decoration: line-through;
+		// The rail between markers.
+		&:not(:last-child)::before {
+			content: "";
+			position: absolute;
+			top: 1.75rem;
+			bottom: 0.25rem;
+			left: 0.8125rem;
+			width: 1px;
+			background: var(--mw-border, #e3e6ef);
 		}
 	}
 }
@@ -285,137 +98,81 @@ $mw-info-bg: #eff6ff;
 	flex: none;
 	align-items: center;
 	justify-content: center;
-	width: 1.75rem;
-	height: 1.75rem;
+	width: 1.625rem;
+	height: 1.625rem;
 	border: 1px solid var(--mw-border, #e3e6ef);
 	border-radius: 50%;
+	background: var(--mw-surface, #fff);
 	color: var(--mw-muted, #6b7280);
-	font-size: 0.8125rem;
+	font-size: 0.75rem;
 	font-weight: 600;
-
-	.is-done & {
-		border-color: $mw-good;
-		background: $mw-good;
-		color: #fff;
-	}
-
-	.is-next & {
-		border-color: var(--mw-primary, #5007aa);
-		color: var(--mw-primary, #5007aa);
-	}
 }
 
-.admin-main-wrapper .mw-insights-step-text {
-	display: flex;
+.admin-main-wrapper .mw-insights-step-body {
 	flex: 1;
-	flex-direction: column;
-	gap: 0.125rem;
 	min-width: 0;
+	padding-top: 0.1875rem;
 
 	strong {
+		display: block;
 		color: var(--mw-ink, #1f1b3e);
 		font-size: 0.875rem;
 		font-weight: 600;
+		line-height: 1.4;
 	}
 
-	span {
+	p {
+		max-width: 36rem;
+		margin-top: 0.25rem;
 		color: var(--mw-muted, #6b7280);
 		font-size: 0.8125rem;
-		line-height: 1.5;
+		line-height: 1.55;
 	}
 }
 
-// ---- KPI tiles ----
-.admin-main-wrapper .mw-insights-kpis {
-	display: grid;
-	grid-template-columns: repeat(4, minmax(0, 1fr));
-	gap: 1.25rem;
-
-	@media (width <= 1100px) {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	@media (width <= 600px) {
-		grid-template-columns: minmax(0, 1fr);
-	}
+.admin-main-wrapper .mw-insights-steps > li.is-current .mw-insights-step-marker {
+	border-color: var(--mw-primary, #5007aa);
+	color: var(--mw-primary, #5007aa);
 }
 
-.admin-main-wrapper .mw-insights-kpi {
+.admin-main-wrapper .mw-insights-steps > li.is-done .mw-insights-step-marker {
+	border-color: transparent;
+	background: $mw-good-bg;
+	color: $mw-good;
+}
+
+.admin-main-wrapper .mw-insights-steps > li:is(.is-todo, .is-done) .mw-insights-step-body strong {
+	color: var(--mw-muted, #6b7280);
+	font-weight: 500;
+}
+
+.admin-main-wrapper .mw-insights-step-actions {
 	display: flex;
-	flex-direction: column;
-	gap: 0.375rem;
-	min-width: 0;
-	padding: 1rem 1.25rem;
-	border: 1px solid var(--mw-border, #e3e6ef);
-	border-radius: 0.75rem;
-	background: var(--mw-surface, #fff);
-
-	> strong {
-		margin-top: 0.125rem;
-		color: var(--mw-ink, #1f1b3e);
-		font-size: 1.75rem;
-		font-weight: 700;
-		line-height: 1.2;
-		letter-spacing: -0.01em;
-
-		small {
-			margin-left: 0.375rem;
-			color: var(--mw-muted, #6b7280);
-			font-size: 0.875rem;
-			font-weight: 500;
-			letter-spacing: 0;
-		}
-	}
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 1rem;
+	margin-top: 0.75rem;
 }
 
-.admin-main-wrapper .mw-insights-kpi-label {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.5rem;
-	color: #4b4f5c;
-	font-size: 0.8125rem;
-	font-weight: 500;
+.admin-main-wrapper .mw-insights-progress {
+	overflow: hidden;
+	width: 8rem;
+	height: 0.25rem;
+	border-radius: 999px;
+	background: var(--mw-border-soft, #eef0f6);
 
-	i {
-		color: #8a8fa0;
-		font-size: 1rem;
-	}
-}
-
-.admin-main-wrapper .mw-insights-change {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.25rem;
-	font-size: 0.75rem;
-	font-weight: 500;
-
-	&.is-good {
-		color: $mw-good;
-	}
-
-	&.is-bad {
-		color: $mw-critical;
-	}
-
-	&.is-neutral {
-		color: var(--mw-muted, #6b7280);
-	}
-
-	&.is-link {
-		color: var(--mw-primary, #5007aa);
-		font-weight: 600;
-		text-decoration: none;
-
-		&:hover {
-			text-decoration: underline;
-		}
+	span {
+		display: block;
+		height: 100%;
+		border-radius: 999px;
+		background: var(--mw-primary, #5007aa);
 	}
 }
 
 // ---- Enrollment trend ----
 .admin-main-wrapper .mw-insights-chart-plot {
 	position: relative;
-	height: 11rem;
+	height: 8rem;
 	margin-left: 2rem;
 }
 
@@ -468,20 +225,21 @@ $mw-info-bg: #eff6ff;
 
 	&.is-hovered {
 		background: rgb(80 7 170 / 6%);
+
+		.mw-insights-chart-bar {
+			opacity: 1;
+		}
 	}
 }
 
 .admin-main-wrapper .mw-insights-chart-bar {
 	display: block;
-	width: min(100%, 0.875rem);
+	width: min(100%, 0.625rem);
 	min-height: 0;
-	border-radius: 4px 4px 0 0;
+	border-radius: 3px 3px 0 0;
 	background: var(--mw-primary, #5007aa);
-	opacity: 0.85;
+	opacity: 0.35;
 
-	.is-hovered & {
-		opacity: 1;
-	}
 }
 
 .admin-main-wrapper .mw-insights-chart-tooltip {
@@ -519,7 +277,7 @@ $mw-info-bg: #eff6ff;
 	align-items: center;
 	justify-content: center;
 	gap: 0.5rem;
-	min-height: 11rem;
+	min-height: 8rem;
 	padding: 1rem;
 	border: 1px dashed var(--mw-border, #e3e6ef);
 	border-radius: 0.5rem;
@@ -538,31 +296,18 @@ $mw-info-bg: #eff6ff;
 }
 
 // ---- Needs your attention ----
-.admin-main-wrapper .mw-insights-count {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	min-width: 1.5rem;
-	padding: 0 0.375rem;
-	border-radius: 999px;
-	background: #f4eefb;
-	color: var(--mw-primary, #5007aa);
-	font-size: 0.75rem;
-	font-weight: 700;
-	line-height: 1.5rem;
-}
-
 .admin-main-wrapper .mw-insights-list {
-	margin: 0 -1.5rem -1.25rem;
-
 	// One task per row: severity, what and why, then the action, level on every row.
 	li {
 		display: grid;
-		grid-template-columns: 6.5rem minmax(0, 1fr) auto;
+		grid-template-columns: 2rem minmax(0, 1fr) auto;
 		align-items: center;
 		gap: 1rem;
-		padding: 0.875rem 1.5rem;
-		border-top: 1px solid var(--mw-border-soft, #eef0f6);
+		padding: 0.875rem 0;
+
+		+ li {
+			border-top: 1px solid var(--mw-border-soft, #eef0f6);
+		}
 
 		@media (width <= 782px) {
 			grid-template-columns: minmax(0, 1fr);
@@ -628,94 +373,93 @@ $mw-info-bg: #eff6ff;
 	}
 }
 
+// Severity as a small tinted icon; its name is in the tooltip and for screen readers.
+.admin-main-wrapper .mw-insights-list li.is-critical .mw-insights-severity {
+	background: $mw-critical-bg;
+	color: $mw-critical;
+}
+
+.admin-main-wrapper .mw-insights-list li.is-warning .mw-insights-severity {
+	background: $mw-warning-bg;
+	color: $mw-warning;
+}
+
+.admin-main-wrapper .mw-insights-list li.is-info .mw-insights-severity {
+	background: $mw-info-bg;
+	color: $mw-info;
+}
+
 .admin-main-wrapper .mw-insights-severity {
 	display: inline-flex;
-	justify-self: start;
 	align-items: center;
-	gap: 0.25rem;
-	padding: 0.0625rem 0.5rem;
-	border-radius: 999px;
-	font-size: 0.6875rem;
-	font-weight: 600;
-	letter-spacing: 0.02em;
-	text-transform: uppercase;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	border-radius: 0.5rem;
+	font-size: 1rem;
 
-	.is-critical & {
-		background: $mw-critical-bg;
-		color: $mw-critical;
-	}
 
-	.is-warning & {
-		background: $mw-warning-bg;
-		color: $mw-warning;
-	}
 
-	.is-info & {
-		background: $mw-info-bg;
-		color: $mw-info;
-	}
 }
 
 .admin-main-wrapper .mw-insights-clear {
 	display: flex;
-	flex-direction: column;
 	align-items: center;
-	gap: 0.375rem;
-	padding: 1.5rem 1rem;
-	text-align: center;
+	gap: 0.5rem;
+	color: var(--mw-muted, #6b7280);
+	font-size: 0.875rem;
 
 	i {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 2.5rem;
-		height: 2.5rem;
-		border-radius: 50%;
-		background: $mw-good-bg;
 		color: $mw-good;
-		font-size: 1.25rem;
-	}
-
-	strong {
-		color: var(--mw-ink, #1f1b3e);
-		font-size: 0.9375rem;
-	}
-
-	span {
-		color: var(--mw-muted, #6b7280);
-		font-size: 0.8125rem;
-		line-height: 1.5;
 	}
 }
 
 // ---- Top courses ----
-.admin-main-wrapper .mw-insights-ranking li {
-	display: grid;
-	grid-template-columns: minmax(0, 2fr) minmax(0, 1.5fr) 2.5rem;
-	align-items: center;
-	gap: 0.75rem;
-	padding: 0.625rem 0;
+.admin-main-wrapper .mw-insights-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.875rem;
 
-	+ li {
+	th {
+		padding: 0 0 0.5rem;
+		border-bottom: 1px solid var(--mw-border, #e3e6ef);
+		color: var(--mw-muted, #6b7280);
+		font-size: 0.75rem;
+		font-weight: 500;
+		text-align: left;
+	}
+
+	td {
+		padding: 0.75rem 0;
+		color: var(--mw-text, #374151);
+		vertical-align: middle;
+	}
+
+	tr + tr td {
 		border-top: 1px solid var(--mw-border-soft, #eef0f6);
+	}
+
+	th:nth-child(2),
+	td:nth-child(2) {
+		width: 40%;
+		padding-left: 1rem;
 	}
 }
 
-.admin-main-wrapper .mw-insights-ranking-name {
-	display: flex;
-	flex-direction: column;
-	gap: 0.125rem;
-	min-width: 0;
-	overflow: hidden;
+.admin-main-wrapper .mw-insights-table-title {
 	color: var(--mw-ink, #1f1b3e);
-	font-size: 0.875rem;
 	font-weight: 600;
-	text-overflow: ellipsis;
+}
+
+.admin-main-wrapper .mw-insights-table td.mw-insights-table-action {
+	width: 1%;
+	padding-left: 1.5rem;
+	white-space: nowrap;
+	text-align: right;
 
 	a {
 		color: var(--mw-primary, #5007aa);
-		font-size: 0.75rem;
-		font-weight: 500;
+		font-size: 0.8125rem;
 		text-decoration: none;
 
 		&:hover {
@@ -724,24 +468,99 @@ $mw-info-bg: #eff6ff;
 	}
 }
 
-.admin-main-wrapper .mw-insights-ranking-bar {
-	height: 0.5rem;
+.admin-main-wrapper .mw-insights-meter {
+	display: flex;
+	align-items: center;
+	gap: 0.625rem;
+	font-variant-numeric: tabular-nums;
+}
+
+.admin-main-wrapper .mw-insights-meter-bar {
+	flex: 1;
+
+	// On a phone the number alone is enough; the bar crowds the course name.
+	@media (width <= 600px) {
+		display: none;
+	}
+
+	max-width: 8rem;
+	height: 0.375rem;
 	border-radius: 999px;
-	background: #f2eff8;
+	background: var(--mw-border-soft, #eef0f6);
+	overflow: hidden;
 
 	span {
 		display: block;
 		height: 100%;
-		border-radius: 999px;
+		border-radius: inherit;
 		background: var(--mw-primary, #5007aa);
 	}
 }
 
-.admin-main-wrapper .mw-insights-ranking-value {
-	color: var(--mw-ink, #1f1b3e);
-	font-size: 0.875rem;
-	font-weight: 600;
-	text-align: right;
+// "All courses →" in a card's header.
+.admin-main-wrapper .mw-insights-more {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	color: var(--mw-primary, #5007aa);
+	font-size: 0.8125rem;
+	font-weight: 500;
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+// ---- Moodle™ connection ----
+.admin-main-wrapper .mw-insights-pulse {
+	margin: 0;
+
+	> div {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.625rem 0;
+
+		+ div {
+			border-top: 1px solid var(--mw-border-soft, #eef0f6);
+		}
+	}
+
+	dt {
+		color: var(--mw-muted, #6b7280);
+		font-size: 0.8125rem;
+	}
+
+	dd {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		margin: 0;
+		color: var(--mw-ink, #1f1b3e);
+		font-size: 0.875rem;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+
+		a {
+			color: var(--mw-primary, #5007aa);
+		}
+	}
+}
+
+.admin-main-wrapper .mw-insights-dot {
+	width: 0.5rem;
+	height: 0.5rem;
+	border-radius: 50%;
+
+	&.is-good {
+		background: $mw-good;
+	}
+
+	&.is-off {
+		background: #9ca3af;
+	}
 }
 
 // ---- Latest enrollments ----
@@ -830,33 +649,6 @@ $mw-info-bg: #eff6ff;
 	}
 }
 
-// ---- Loading / failed ----
-.admin-main-wrapper .mw-insights-skeleton {
-	min-height: 7rem;
-	border-color: transparent;
-	background: linear-gradient(90deg, #f1f0f5 0%, #f8f7fb 50%, #f1f0f5 100%);
-	background-size: 200% 100%;
-	animation: mw-insights-shimmer 1.2s ease-in-out infinite;
-
-	&.is-tall {
-		min-height: 16rem;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		animation: none;
-	}
-}
-
-@keyframes mw-insights-shimmer {
-	from {
-		background-position: 100% 0;
-	}
-
-	to {
-		background-position: -100% 0;
-	}
-}
-
 .admin-main-wrapper .mw-insights-failed {
 	display: flex;
 	align-items: center;
@@ -872,57 +664,20 @@ $mw-info-bg: #eff6ff;
 }
 
 // ---- Pro panel (free sites) ----
-.admin-main-wrapper .mw-dash-pro {
-	padding: 0;
-	overflow: hidden;
-}
-
-.admin-main-wrapper .mw-dash-pro-head {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: space-between;
-	gap: 1.25rem;
-	padding: 1.5rem;
-	background: linear-gradient(120deg, #f6f0fd 0%, var(--mw-surface, #fff) 70%);
-
-	h2 {
-		margin-top: 0.625rem;
-		font-size: 1.125rem;
-	}
-
-	p {
-		max-width: 40rem;
-		margin-top: 0.25rem;
-		color: #5b5f6e;
-		font-size: 0.875rem;
-		line-height: 1.55;
-	}
-}
-
-.admin-main-wrapper .mw-dash-pro-pill {
+.admin-main-wrapper .mw-dash-pro-cta {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.375rem;
-	padding: 0.1875rem 0.625rem;
-	border-radius: 999px;
-	background: linear-gradient(135deg, #5007aa, #8b3fd9);
-	color: #fff;
-	font-size: 0.6875rem;
-	font-weight: 700;
-	letter-spacing: 0.04em;
-	text-transform: uppercase;
-}
-
-.admin-main-wrapper .mw-dash-pro-cta {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 0.375rem;
+	gap: 1rem;
 
 	> span {
 		color: var(--mw-muted, #6b7280);
 		font-size: 0.75rem;
+	}
+
+	@media (width <= 600px) {
+		flex-direction: column-reverse;
+		align-items: flex-start;
+		gap: 0.375rem;
 	}
 }
 
@@ -930,8 +685,6 @@ $mw-info-bg: #eff6ff;
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 	gap: 1.25rem 1.5rem;
-	padding: 1.25rem 1.5rem 1.5rem;
-	border-top: 1px solid var(--mw-border-soft, #eef0f6);
 
 	@media (width <= 1100px) {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -976,14 +729,15 @@ $mw-info-bg: #eff6ff;
 	justify-content: center;
 	width: 2.25rem;
 	height: 2.25rem;
-	border-radius: 0.625rem;
-	background: #f4eefb;
-	color: var(--mw-primary, #5007aa);
-	font-size: 1.125rem;
+	border: 1px solid var(--mw-border, #e3e6ef);
+	border-radius: 0.5rem;
+	background: var(--mw-surface, #fff);
+	color: var(--mw-ink, #1f1b3e);
+	font-size: 1rem;
 }
 
 .admin-main-wrapper .mw-dash-list {
-	margin: -0.25rem -0.75rem -0.5rem;
+	margin: 0 -0.75rem;
 
 	> li + li {
 		border-top: 1px solid var(--mw-border-soft, #eef0f6);
@@ -1061,4 +815,207 @@ $mw-info-bg: #eff6ff;
 		background: $mw-good-bg;
 		color: $mw-good;
 	}
+}
+
+// ---- Grid ----
+// zyra's 12-column grid (ContainerComponent/ColumnComponent), without its own outer padding: the page already has it.
+.admin-main-wrapper .mw-insights-grid {
+	padding: 0;
+}
+
+// Two cards side by side (setup and help, Pro and the team's plugins) end on the same line.
+.admin-main-wrapper .mw-insights-grid.is-equal > .card-wrapper > .card-content {
+	height: 100%;
+	box-sizing: border-box;
+}
+
+// The Pro card beside the team's plugins is two-thirds wide: its features go two to a row.
+.admin-main-wrapper .mw-insights-grid.is-equal > .card-wrapper .mw-dash-pro-features {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+
+	@media (width <= 600px) {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+// …and the guarantee sits under its button, so the card's title keeps the width.
+.admin-main-wrapper .mw-insights-grid.is-equal > .card-wrapper .mw-dash-pro-cta {
+	flex-direction: column-reverse;
+	align-items: flex-end;
+	gap: 0.25rem;
+	white-space: nowrap;
+}
+
+// Help & Support: troubleshooting and the ways to reach the team, side by side.
+.admin-main-wrapper .mw-dash-help-groups {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0.5rem 2rem;
+
+	@media (width <= 782px) {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	h3 {
+		margin: 0 0 0.25rem;
+		padding: 0;
+		color: var(--mw-muted, #6b7280);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
+}
+
+// ---- Header: Upgrade to Pro (free sites) ----
+// The dashboard's one prominent button: the Pro gradient, white label and a soft lift, so it reads as the upgrade and
+// not as another page action. `#wpbody` outranks the design system's plain `.admin-btn` styles.
+#wpbody .admin-btn.mw-upgrade-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	box-sizing: border-box;
+	height: 2.5rem;
+	min-height: 2.5rem;
+	padding: 0 1.25rem;
+	border: 0;
+	border-radius: 0.5rem;
+	background: linear-gradient(135deg, #5007aa 0%, #7b2ff0 100%);
+	box-shadow: 0 0.5rem 1.25rem -0.5rem rgb(80 7 170 / 55%);
+	color: #fff;
+	font-size: 0.875rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: box-shadow 0.15s ease, transform 0.15s ease, filter 0.15s ease;
+
+	i {
+		color: #fff;
+		font-size: 1rem;
+	}
+
+	&:hover {
+		box-shadow: 0 0.75rem 1.5rem -0.5rem rgb(80 7 170 / 65%);
+		filter: brightness(1.08);
+		transform: translateY(-1px);
+	}
+
+	&:focus-visible {
+		outline: 2px solid #5007aa;
+		outline-offset: 2px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+
+		&:hover {
+			transform: none;
+		}
+	}
+}
+
+// ---- Toolbar: which Moodle™ site, which period, and the range switch ----
+.admin-main-wrapper .mw-insights-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+
+	p {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem 1rem;
+		color: var(--mw-muted, #6b7280);
+		font-size: 0.8125rem;
+	}
+}
+
+.admin-main-wrapper .mw-insights-connected {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	color: var(--mw-ink, #1f1b3e);
+	font-weight: 500;
+}
+
+// A segmented control: the range switch, and the chart's Enrollments / Revenue.
+.admin-main-wrapper .mw-insights-range {
+	display: inline-flex;
+	padding: 0.1875rem;
+	border: 1px solid var(--mw-border, #e3e6ef);
+	border-radius: 0.5rem;
+	background: var(--mw-surface, #fff);
+
+	button {
+		min-height: 1.75rem;
+		margin: 0;
+		padding: 0 0.75rem;
+		border: 0;
+		border-radius: 0.375rem;
+		background: transparent;
+		color: var(--mw-muted, #6b7280);
+		font: inherit;
+		font-size: 0.8125rem;
+		font-weight: 500;
+		cursor: pointer;
+
+		&:hover:not(:disabled) {
+			color: var(--mw-ink, #1f1b3e);
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--mw-primary, #5007aa);
+			outline-offset: 1px;
+		}
+
+		&.is-active {
+			background: var(--mw-primary-soft, #f1ebfb);
+			color: var(--mw-primary, #5007aa);
+			font-weight: 600;
+		}
+
+		&:disabled {
+			cursor: progress;
+		}
+	}
+}
+
+// New figures on their way: keep the old ones, dimmed.
+.admin-main-wrapper .mw-insights-refreshing {
+	opacity: 0.55;
+	transition: opacity 0.15s;
+	pointer-events: none;
+}
+
+// Scoped like the table's own `td` rule, so this padding wins over its `padding: 0.75rem 0`.
+.admin-main-wrapper .mw-insights-table :is(th, td).is-number {
+	padding-left: 1rem;
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+// "Show all 6" under the attention list.
+.admin-main-wrapper .mw-insights-toggle {
+	margin: 0.75rem 0 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	font: inherit;
+	font-size: 0.8125rem;
+	font-weight: 500;
+	cursor: pointer;
+}
+
+// The setup row: "Get MooWoodle ready" 60%, the team's plugins 40%. Between zyra's 12 columns (7/5 is 58/42), so
+// set here; on a phone zyra's own full-width rule (!important) still stacks them.
+.admin-main-wrapper .mw-insights-grid > .mw-col-60 {
+	flex: 0 0 calc(60% - 0.5rem);
+	max-width: calc(60% - 0.5rem);
+}
+
+.admin-main-wrapper .mw-insights-grid > .mw-col-40 {
+	flex: 0 0 calc(40% - 0.5rem);
+	max-width: calc(40% - 0.5rem);
 }

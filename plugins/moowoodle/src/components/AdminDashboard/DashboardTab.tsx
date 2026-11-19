@@ -1,20 +1,18 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
-import { NoticeManager, PopupComponent } from '@zyra/components';
+import { CardComponent, NoticeManager, PopupComponent } from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 import axios from 'axios';
 import catalogx from '../../assets/images/catalogx.png';
 import notifima from '../../assets/images/notifima.png';
 import ShowProPopup from '../Popup/Popup';
 import Insights from './Insights';
+import { ACCOUNT_URL, CONTACT_URL, DOCS_URL, UTM } from '../../services/links';
 
 interface WPPlugin {
 	plugin?: string;
 	status?: string;
 }
-
-const UTM =
-	'utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle';
 
 /** The Pro features the dashboard's Pro panel lists (free sites only). */
 const PRO_FEATURES = [
@@ -68,8 +66,16 @@ const PRO_FEATURES = [
 	},
 ];
 
-/** Self-serve help: the docs, the videos and this plugin's own Help & Support screen. */
-const RESOURCES = [
+interface HelpLink {
+	icon: string;
+	title: string;
+	desc: string;
+	/** Absolute URL (opens in a new tab), or `#&tab=…` for a screen of this admin page. */
+	link: string;
+}
+
+/** Learning MooWoodle on your own: the docs, the videos and the community forum. */
+const LEARN: HelpLink[] = [
 	{
 		icon: 'knowledgebase',
 		title: __('Documentation', 'moowoodle'),
@@ -77,7 +83,7 @@ const RESOURCES = [
 			'Guides for connecting Moodle™, syncing courses and selling them.',
 			'moowoodle'
 		),
-		link: `https://moowoodle.com/docs/knowledgebase/?${UTM}`,
+		link: DOCS_URL,
 	},
 	{
 		icon: 'youtube',
@@ -89,14 +95,71 @@ const RESOURCES = [
 		link: 'https://www.youtube.com/@moowoodle/videos',
 	},
 	{
-		icon: 'customer-support',
-		title: __('Help & Support', 'moowoodle'),
+		icon: 'forum',
+		title: __('Community forum', 'moowoodle'),
 		desc: __(
-			'Troubleshooting, the community forum and our team.',
+			'Ask on WordPress.org and get answers from our team and other users.',
 			'moowoodle'
 		),
-		link: '#&tab=help-support',
+		link: 'https://wordpress.org/support/plugin/moowoodle/',
 	},
+];
+
+/** Most problems are a broken connection or a failed sync: the two screens that show which. */
+const TROUBLESHOOT: HelpLink[] = [
+	{
+		icon: 'centralized-connections',
+		title: __('Test the Moodle™ connection', 'moowoodle'),
+		desc: __(
+			'Checks the site URL, the token and each web service function MooWoodle needs.',
+			'moowoodle'
+		),
+		link: '#&tab=settings&subtab=connection-access',
+	},
+	{
+		icon: 'report',
+		title: __('Check the logs', 'moowoodle'),
+		desc: __(
+			'Every request to Moodle™ and its error. Attach them when you contact support.',
+			'moowoodle'
+		),
+		link: '#&tab=settings&subtab=logs',
+	},
+];
+
+/** Ways to reach the team. Manage plan only applies once there is a plan. */
+const CONTACT: HelpLink[] = [
+	{
+		icon: 'customer-support',
+		title: __('Contact support', 'moowoodle'),
+		desc: __(
+			'Send our team a ticket and get a reply by email.',
+			'moowoodle'
+		),
+		link: CONTACT_URL,
+	},
+	{
+		icon: 'coding',
+		title: __('Custom development', 'moowoodle'),
+		desc: __(
+			'We build tailored features for eLearning sites.',
+			'moowoodle'
+		),
+		link: `https://dualcube.com/custom-development/?${UTM}`,
+	},
+	...(appLocalizer.khali_dabba
+		? [
+				{
+					icon: 'person',
+					title: __('Manage plan', 'moowoodle'),
+					desc: __(
+						'Download MooWoodle Pro, manage license keys and renew.',
+						'moowoodle'
+					),
+					link: ACCOUNT_URL,
+				},
+			]
+		: []),
 ];
 
 /** The team's other WooCommerce plugins: the wordpress.org slug decides installed/active, the Pro link replaces Install once active. */
@@ -125,9 +188,39 @@ const COMPANION_PLUGINS = [
 
 const isExternal = (link: string) => !link.startsWith('#');
 
+/** One help row: icon, title and description, the whole row a link (external ones open in a new tab). */
+const LinkRow = ({ item }: { item: HelpLink }) => (
+	<li>
+		<a
+			className="mw-dash-row"
+			href={item.link}
+			{...(isExternal(item.link)
+				? { target: '_blank', rel: 'noopener noreferrer' }
+				: {})}
+		>
+			<span className="mw-dash-icon" aria-hidden="true">
+				<i className={`adminfont-${item.icon}`} />
+			</span>
+			<span className="mw-dash-row-text">
+				<strong>{item.title}</strong>
+				<span>{item.desc}</span>
+			</span>
+			<i
+				className={`mw-dash-row-arrow adminfont-${isExternal(item.link) ? 'external' : 'arrow-right'}`}
+				aria-hidden="true"
+			/>
+			{isExternal(item.link) && (
+				<span className="screen-reader-text">
+					{__('(opens in a new tab)', 'moowoodle')}
+				</span>
+			)}
+		</a>
+	</li>
+);
+
 /**
- * The Dashboard tab: the data-driven insights (Insights.tsx), then — for free sites — what Pro adds, and the help and
- * companion-plugin panels. Every panel uses the same card style as the insights above it.
+ * The Overview tab: builds the Learn, Help & Support, companion-plugin and (free sites) Pro cards, and hands them to
+ * Insights.tsx, which places them around the setup card or the figures.
  */
 const DashboardTab: React.FC<object> = () => {
 	const [installing, setInstalling] = useState<string>('');
@@ -213,203 +306,179 @@ const DashboardTab: React.FC<object> = () => {
 			.finally(() => setInstalling(''));
 	};
 
-	return (
-		<>
-			<Insights />
-
-			{!isPro && (
-				<section className="mw-insights-panel mw-dash-pro">
-					<div className="mw-dash-pro-head">
-						<div>
-							<span className="mw-dash-pro-pill">
-								<i
-									className="adminfont-pro-tag"
-									aria-hidden="true"
-								/>
-								{__('MooWoodle Pro', 'moowoodle')}
-							</span>
-							<h2>
-								{__(
-									'Do more with your Moodle™ courses',
-									'moowoodle'
-								)}
-							</h2>
-							<p>
-								{__(
-									'Group and classroom sales, single sign-on, gifting and subscriptions, in the admin you already use.',
-									'moowoodle'
-								)}
-							</p>
-						</div>
-						<div className="mw-dash-pro-cta">
-							<button
-								type="button"
-								className="mw-insights-button"
-								onClick={() => setProPopupOpen(true)}
-							>
-								{__('Upgrade to Pro', 'moowoodle')}
-							</button>
-							<span>
-								{__('15-day money-back guarantee', 'moowoodle')}
-							</span>
-						</div>
-					</div>
-					<ul className="mw-dash-pro-features">
-						{PRO_FEATURES.map((feature) => (
-							<li key={feature.title}>
-								<span
-									className="mw-dash-icon"
-									aria-hidden="true"
-								>
-									<i
-										className={`adminfont-${feature.icon}`}
-									/>
-								</span>
-								<span>
-									<strong>{feature.title}</strong>
-									<span>{feature.desc}</span>
-								</span>
-							</li>
-						))}
-					</ul>
-					{proPopupOpen && (
-						<PopupComponent
-							position="lightbox"
-							open
-							onClose={() => setProPopupOpen(false)}
-							width={46}
-							height="auto"
-						>
-							<ShowProPopup />
-						</PopupComponent>
-					)}
-				</section>
+	const proCard = isPro ? null : (
+		<CardComponent
+			title={__('Do more with MooWoodle Pro', 'moowoodle')}
+			desc={__(
+				'Group and classroom sales, single sign-on, gifting and subscriptions, in the admin you already use.',
+				'moowoodle'
 			)}
+			className="mw-dash-pro"
+			action={
+				<span className="mw-dash-pro-cta">
+					<span>
+						{__('15-day money-back guarantee', 'moowoodle')}
+					</span>
+					<button
+						type="button"
+						className="admin-btn btn-purple-bg"
+						onClick={() => setProPopupOpen(true)}
+					>
+						<i className="adminfont-pro-tag" aria-hidden="true" />
+						{__('Upgrade to Pro', 'moowoodle')}
+					</button>
+				</span>
+			}
+		>
+			<ul className="mw-dash-pro-features">
+				{PRO_FEATURES.map((feature) => (
+					<li key={feature.title}>
+						<span className="mw-dash-icon" aria-hidden="true">
+							<i className={`adminfont-${feature.icon}`} />
+						</span>
+						<span>
+							<strong>{feature.title}</strong>
+							<span>{feature.desc}</span>
+						</span>
+					</li>
+				))}
+			</ul>
+			{proPopupOpen && (
+				<PopupComponent
+					position="lightbox"
+					open
+					onClose={() => setProPopupOpen(false)}
+					width={46}
+					height="auto"
+				>
+					<ShowProPopup />
+				</PopupComponent>
+			)}
+		</CardComponent>
+	);
 
-			<div className="mw-insights-row">
-				<section className="mw-insights-panel">
-					<div className="mw-insights-panel-head">
-						<h2>{__('Help and resources', 'moowoodle')}</h2>
-					</div>
+	const learnCard = (
+		<CardComponent
+			title={__('Learn MooWoodle', 'moowoodle')}
+			desc={__('Guides, videos and the community', 'moowoodle')}
+		>
+			<ul className="mw-dash-list">
+				{LEARN.map((item) => (
+					<LinkRow key={item.title} item={item} />
+				))}
+			</ul>
+		</CardComponent>
+	);
+
+	// Old Help & Support links (`#&tab=dashboard&view=help-support`) scroll to this card.
+	const helpCard = (
+		<CardComponent
+			id="moowoodle-help-support"
+			title={__('Help & Support', 'moowoodle')}
+			desc={__(
+				'Most problems are a broken connection or a failed sync. Still stuck? We are a message away.',
+				'moowoodle'
+			)}
+		>
+			<div className="mw-dash-help-groups">
+				<section>
+					<h3>{__('Troubleshoot first', 'moowoodle')}</h3>
 					<ul className="mw-dash-list">
-						{RESOURCES.map((resource) => (
-							<li key={resource.title}>
-								<a
-									className="mw-dash-row"
-									href={resource.link}
-									{...(isExternal(resource.link)
-										? {
-												target: '_blank',
-												rel: 'noopener noreferrer',
-											}
-										: {})}
-								>
-									<span
-										className="mw-dash-icon"
-										aria-hidden="true"
-									>
-										<i
-											className={`adminfont-${resource.icon}`}
-										/>
-									</span>
-									<span className="mw-dash-row-text">
-										<strong>{resource.title}</strong>
-										<span>{resource.desc}</span>
-									</span>
-									<i
-										className={`mw-dash-row-arrow adminfont-${isExternal(resource.link) ? 'external' : 'arrow-right'}`}
-										aria-hidden="true"
-									/>
-									{isExternal(resource.link) && (
-										<span className="screen-reader-text">
-											{__(
-												'(opens in a new tab)',
-												'moowoodle'
-											)}
-										</span>
-									)}
-								</a>
-							</li>
+						{TROUBLESHOOT.map((item) => (
+							<LinkRow key={item.title} item={item} />
 						))}
 					</ul>
 				</section>
-
-				<section className="mw-insights-panel">
-					<div className="mw-insights-panel-head">
-						<h2>
-							{__('More from the MooWoodle team', 'moowoodle')}
-						</h2>
-					</div>
+				<section>
+					<h3>{__('Talk to our team', 'moowoodle')}</h3>
 					<ul className="mw-dash-list">
-						{COMPANION_PLUGINS.map((companion) => {
-							const isActive = !!pluginStatus[companion.slug];
-							const isBusy = installing === companion.slug;
-
-							return (
-								<li
-									key={companion.slug}
-									className="mw-dash-row"
-								>
-									<img
-										className="mw-dash-logo"
-										src={companion.logo}
-										alt=""
-									/>
-									<span className="mw-dash-row-text">
-										<strong>
-											{companion.name}
-											<span
-												className={`mw-dash-tag ${isActive ? 'is-active' : 'is-free'}`}
-											>
-												{isActive
-													? __('Active', 'moowoodle')
-													: __('Free', 'moowoodle')}
-											</span>
-										</strong>
-										<span>{companion.desc}</span>
-									</span>
-									{isActive ? (
-										<a
-											className="mw-dash-action"
-											href={companion.proUrl}
-											target="_blank"
-											rel="noopener noreferrer"
-										>
-											{sprintf(
-												/* translators: %s: plugin name. */
-												__('Get %s Pro', 'moowoodle'),
-												companion.name
-											)}
-											<span className="screen-reader-text">
-												{__(
-													'(opens in a new tab)',
-													'moowoodle'
-												)}
-											</span>
-										</a>
-									) : (
-										<button
-											type="button"
-											className="mw-dash-action"
-											disabled={!!installing}
-											onClick={() =>
-												installOrActivatePlugin(
-													companion.slug
-												)
-											}
-										>
-											{isBusy
-												? __('Installing…', 'moowoodle')
-												: __('Install', 'moowoodle')}
-										</button>
-									)}
-								</li>
-							);
-						})}
+						{CONTACT.map((item) => (
+							<LinkRow key={item.title} item={item} />
+						))}
 					</ul>
 				</section>
 			</div>
-		</>
+		</CardComponent>
+	);
+
+	const teamCard = (
+		<CardComponent
+			title={__('More from the MooWoodle team', 'moowoodle')}
+			desc={__('Free plugins for your WooCommerce store', 'moowoodle')}
+		>
+			<ul className="mw-dash-list">
+				{COMPANION_PLUGINS.map((companion) => {
+					const isActive = !!pluginStatus[companion.slug];
+					const isBusy = installing === companion.slug;
+
+					return (
+						<li key={companion.slug} className="mw-dash-row">
+							<img
+								className="mw-dash-logo"
+								src={companion.logo}
+								alt=""
+							/>
+							<span className="mw-dash-row-text">
+								<strong>
+									{companion.name}
+									<span
+										className={`mw-dash-tag ${isActive ? 'is-active' : 'is-free'}`}
+									>
+										{isActive
+											? __('Active', 'moowoodle')
+											: __('Free', 'moowoodle')}
+									</span>
+								</strong>
+								<span>{companion.desc}</span>
+							</span>
+							{isActive ? (
+								<a
+									className="mw-dash-action"
+									href={companion.proUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									{sprintf(
+										/* translators: %s: plugin name. */
+										__('Get %s Pro', 'moowoodle'),
+										companion.name
+									)}
+									<span className="screen-reader-text">
+										{__(
+											'(opens in a new tab)',
+											'moowoodle'
+										)}
+									</span>
+								</a>
+							) : (
+								<button
+									type="button"
+									className="mw-dash-action"
+									disabled={!!installing}
+									onClick={() =>
+										installOrActivatePlugin(companion.slug)
+									}
+								>
+									{isBusy
+										? __('Installing…', 'moowoodle')
+										: __('Install', 'moowoodle')}
+								</button>
+							)}
+						</li>
+					);
+				})}
+			</ul>
+		</CardComponent>
+	);
+
+	// Insights decides where these sit: beside the setup card on a new site, under the figures once there are some.
+	return (
+		<Insights
+			pro={proCard}
+			learn={learnCard}
+			help={helpCard}
+			team={teamCard}
+		/>
 	);
 };
 

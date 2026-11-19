@@ -96,17 +96,14 @@
         }
     },
     "dependencies": {
-        "@wordpress/data": "wp-6.6",
+        "@multivendorx/zyra": "^1.0.65",
         "@wordpress/element": "wp-6.6",
         "@wordpress/hooks": "^4.46.0",
         "@wordpress/i18n": "wp-6.6",
-        "@wordpress/react-i18n": "wp-6.6",
         "axios": "^1.16.1",
-        "body-scroll-lock": "4.0.0-beta.0",
         "react": "19.2.6",
         "react-dom": "19.2.6",
-        "react-router-dom": "^7.15.1",
-        "@multivendorx/zyra": "^1.0.65"
+        "react-router-dom": "^7.15.1"
     },
     "devDependencies": {
         "wireit": "^0.14.12"
