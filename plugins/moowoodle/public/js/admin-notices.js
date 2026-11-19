@@ -9,7 +9,23 @@ jQuery(function ($) {
                 type: 'POST',
                 data: {
                     action: moowoodleAdminNotices.action,
-                    nonce: moowoodleAdminNotices.nonce
+                    nonce: moowoodleAdminNotices.nonce,
+                    notice_type: 'vulomail'
+                }
+            });
+        }
+    );
+    $(document).on(
+        'click',
+        '.moowoodle-pro-update-notice',
+        function () {
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: moowoodleAdminNotices.action,
+                    nonce: moowoodleAdminNotices.nonce,
+                    notice_type: 'pro_update'
                 }
             });
         }

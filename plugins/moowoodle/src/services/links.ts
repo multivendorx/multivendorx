@@ -8,8 +8,7 @@ export const UTM =
 	'utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle';
 
 /** MooWoodle's documentation. */
-export const DOCS_URL = `https://dualcube.com/docs/knowledgebase/?${UTM}`;
-
+export const DOCS_URL = `https://dualcube.com/knowledgebase/?${UTM}`;
 /** The customer account: downloads, license keys, renewals. */
 export const ACCOUNT_URL = `https://dualcube.com/my-account/?${UTM}`;
 
