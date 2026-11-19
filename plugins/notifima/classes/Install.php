@@ -243,6 +243,85 @@ class Install {
 			update_option( Utill::NOTIFIMA_SETTINGS['automation'], $automation_settings );
             delete_option( 'notifima_cron_start' );
         }
+
+        if ( version_compare( $previous_version, '3.2.0', '<' ) ) {
+            self::migrate_subscription_form_to_vuloform();
+        }
+    }
+
+    /**
+     * Migrate the old block-builder subscription form fields into a VuloForm form, so a site
+     * that already customized its form keeps those fields instead of starting over from the
+     * starter template. Safe to call more than once -- it's a no-op once a form id is stored.
+     *
+     * @return void
+     */
+    public static function migrate_subscription_form_to_vuloform() {
+        $settings = get_option( Utill::NOTIFIMA_SETTINGS['subscription-form-designer'], array() );
+
+        if ( ! empty( $settings['vuloform_subscription_form_id'] ) ) {
+            return;
+        }
+
+        $old_fields = $settings['form_tabs']['personalize_layout_template']['formfieldlist'] ?? array();
+
+        if ( ! $old_fields ) {
+            return;
+        }
+
+        // VuloForm isn't active yet on this request (e.g. it's still being auto-installed) --
+        // retry once it is, instead of silently dropping the migration.
+        if ( ! class_exists( '\VuloForm\VuloForm' ) || ! class_exists( '\VuloForm\Forms\Schema' ) ) {
+            add_action( 'admin_init', array( __CLASS__, 'migrate_subscription_form_to_vuloform' ) );
+            return;
+        }
+
+        $fields       = array();
+        $submit_label = Notifima()->default_value['subscribe_button_text'];
+
+        foreach ( $old_fields as $old_field ) {
+            if ( 'button' === ( $old_field['type'] ?? '' ) ) {
+                if ( ! empty( $old_field['label'] ) ) {
+                    $submit_label = $old_field['label'];
+                }
+                continue;
+            }
+
+            $fields[] = array(
+                'type'        => $old_field['type'] ?? 'text',
+                'key'         => sanitize_key( $old_field['name'] ?? $old_field['id'] ),
+                'label'       => $old_field['label'] ?? '',
+                'placeholder' => $old_field['placeholder'] ?? '',
+                'required'    => ! empty( $old_field['required'] ),
+                'default'     => 'email' === ( $old_field['type'] ?? '' ) ? '{user:email}' : '',
+            );
+        }
+
+        // The embed call always needs a hidden product id field to link the submission back.
+        $fields[] = array(
+            'type'    => 'hidden',
+            'key'     => 'product_id',
+            'label'   => __( 'Product', 'notifima' ),
+            'default' => '{query:product_id}',
+        );
+
+        $form_settings                    = \VuloForm\Forms\Schema::default_settings();
+        $form_settings['submit_label']    = $submit_label;
+        $form_settings['notifications'][] = \VuloForm\Forms\Templates::admin_notification( 'email' );
+
+        $schema = \VuloForm\Forms\Schema::sanitize(
+            array(
+                'fields'   => $fields,
+                'settings' => $form_settings,
+            )
+        );
+
+        $form_id = (int) VuloForm()->forms->create( __( 'Subscription form', 'notifima' ), $schema, 'published' );
+
+        if ( $form_id ) {
+            $settings['vuloform_subscription_form_id'] = $form_id;
+            update_option( Utill::NOTIFIMA_SETTINGS['subscription-form-designer'], $settings );
+        }
     }
 
     /**
