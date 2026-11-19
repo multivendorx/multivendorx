@@ -62,6 +62,7 @@ class SetupWizard {
             FrontendScripts::enqueue_script( 'catalogx-vendor-script' );
             wp_enqueue_script( 'setup-wizard-script', FrontendScripts::get_asset_path() . 'js/block/setup-wizard/view.js', array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ), Catalogx()->version, true );
             wp_set_script_translations( 'setup-wizard-script', 'catalogx' );
+            wp_enqueue_style( 'setup-wizard-style', FrontendScripts::get_asset_path() . 'styles/block/setup-wizard/view.css', array(), Catalogx()->version );
             wp_localize_script(
                 'setup-wizard-script',
                 'appLocalizer',

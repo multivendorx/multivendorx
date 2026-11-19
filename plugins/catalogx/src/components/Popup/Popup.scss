@@ -23,6 +23,23 @@
 			color: #fff;
 			font-size: 6rem;
 		}
+
+		.popup-header-logo {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: #fff;
+			border-radius: 0.75rem;
+			padding: 1rem 1.5rem;
+
+			img {
+				display: block;
+				max-width: 12rem;
+				max-height: 4rem;
+				width: auto;
+				height: auto;
+			}
+		}
 	}
 
 	.popup-body {

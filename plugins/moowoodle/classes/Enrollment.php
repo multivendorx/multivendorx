@@ -96,9 +96,23 @@ class Enrollment {
 		}
 
 		if ( ! empty( $enrollment_args['start_date'] ) && ! empty( $enrollment_args['end_date'] ) ) {
-			$where[]      = 'enrollment_date BETWEEN %s AND %s';
-			$where_args[] = $enrollment_args['start_date'];
-			$where_args[] = $enrollment_args['end_date'];
+			$start_date = $enrollment_args['start_date'];
+			$end_date   = $enrollment_args['end_date'];
+
+			if ( ! empty( $enrollment_args['status'] ) ) {
+				$date_column = 'enrolled' === $enrollment_args['status']? 'enrollment_date': 'unenrollment_date';
+
+				$where[]      = "$date_column BETWEEN %s AND %s";
+				$where_args[] = $start_date;
+				$where_args[] = $end_date;
+			} else {
+				$where[] = '(enrollment_date BETWEEN %s AND %s OR unenrollment_date BETWEEN %s AND %s)';
+
+				$where_args[] = $start_date;
+				$where_args[] = $end_date;
+				$where_args[] = $start_date;
+				$where_args[] = $end_date;
+			}
 		}
 
 		$query_parts = apply_filters(
@@ -131,9 +145,13 @@ class Enrollment {
 			$query_template .= ' WHERE ' . implode( ' AND ', $where );
 		}
 
-		if ( isset( $enrollment_args['limit'] ) && isset( $enrollment_args['offset'] ) ) {
-			$query_template .= ' LIMIT %d OFFSET %d';
+		if ( isset( $enrollment_args['limit'] ) ) {
+			$query_template .= ' LIMIT %d';
 			$prepare_args[]  = intval( $enrollment_args['limit'] );
+		}
+
+		if ( isset( $enrollment_args['offset'] ) ) {
+			$query_template .= ' OFFSET %d';
 			$prepare_args[]  = intval( $enrollment_args['offset'] );
 		}
 
@@ -154,6 +172,13 @@ class Enrollment {
 	 * @return int|false Enrollment ID on success, false on failure.
 	 */
 	public static function update_enrollment( $enrollment_args ) {
+		/**
+		 * Filter enrollment arguments before inserting or updating an enrollment.
+		 *
+		 * @param array $enrollment_args Enrollment data.
+		 */
+		$enrollment_args = apply_filters( 'moowoodle_before_update_enrollment', $enrollment_args);
+
 		global $wpdb;
 
 		$table = $wpdb->prefix . Util::TABLES['enrollment'];

@@ -151,7 +151,7 @@ class Promotions {
                 $body['status']           = 'Deactivated';
                 $body['deactivated_date'] = time();
                 MultiVendorX()->tracker->send_data( $body );
-                $current_user = wp_get_current_user();
+                $current_user = MultiVendorX()->current_user;
                 $this->create_coupon_for_discount(
                     array(
 						'name'  => sanitize_text_field( $current_user->display_name ),
