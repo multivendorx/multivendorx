@@ -63,6 +63,8 @@ export default {
                     value: 'allowed',
                 },
             ],
+            proSetting: true,
+            moduleEnabled: 'wholesale',
         },
         {
             key: 'show_wholesale_price',
