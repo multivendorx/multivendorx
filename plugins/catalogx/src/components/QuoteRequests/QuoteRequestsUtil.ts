@@ -97,32 +97,32 @@ export const dummyQuotes: QuoteRow[] = [
 export const defaultCategoryCounts = [
     {
         value: 'all',
-        label: __('All', 'catalogx-pro'),
+        label: __('All', 'catalogx'),
         count: 10,
     },
     {
         value: 'wc-quote-new',
-        label: __('New', 'catalogx-pro'),
+        label: __('New', 'catalogx'),
         count: 2,
     },
     {
         value: 'wc-quote-pending',
-        label: __('Pending', 'catalogx-pro'),
+        label: __('Pending', 'catalogx'),
         count: 2,
     },
     {
         value: 'wc-quote-accepted',
-        label: __('Accepted', 'catalogx-pro'),
+        label: __('Accepted', 'catalogx'),
         count: 1,
     },
     {
         value: 'wc-quote-rejected',
-        label: __('Rejected', 'catalogx-pro'),
+        label: __('Rejected', 'catalogx'),
         count: 2,
     },
     {
         value: 'wc-quote-expired',
-        label: __('Expired', 'catalogx-pro'),
+        label: __('Expired', 'catalogx'),
         count: 3,
     },
 ];

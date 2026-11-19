@@ -1,11 +1,11 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
-import { CardComponent, NoticeManager, PopupComponent } from '@zyra/components';
+import { CardComponent, NoticeManager } from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 import axios from 'axios';
 import multivendorxIcon from '../../assets/images/multivendorx-icon.png';
 import notifimaIcon from '../../assets/images/notifima-icon.png';
-import ShowProPopup from '../Popup/Popup';
+import { ProPopupDialog } from '../Popup/Popup';
 import Insights from './Insights';
 import {
 	ACCOUNT_URL,
@@ -357,15 +357,7 @@ const DashboardTab: React.FC<object> = () => {
 				))}
 			</ul>
 			{proPopupOpen && (
-				<PopupComponent
-					position="lightbox"
-					open
-					onClose={() => setProPopupOpen(false)}
-					width={46}
-					height="auto"
-				>
-					<ShowProPopup />
-				</PopupComponent>
+				<ProPopupDialog onClose={() => setProPopupOpen(false)} />
 			)}
 		</CardComponent>
 	);

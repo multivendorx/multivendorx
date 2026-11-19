@@ -17,7 +17,7 @@ export default {
     modal: [
         //shopping
         {
-            key: 'section',
+            key: 'enquiry_access_section',
             type: 'section',
             icon: 'question',
             title: __('Who can enquire', 'catalogx'),
@@ -181,7 +181,7 @@ export default {
             ]
         },
         {
-            key: 'section',
+            key: 'enquiry_form_section',
             type: 'section',
             icon: 'form',
             title: __('Form behaviour', 'catalogx'),
@@ -248,7 +248,7 @@ export default {
             moduleEnabled: 'enquiry'
         },
         {
-            key: 'section',
+            key: 'enquiry_recipients_section',
             type: 'section',
             icon: 'enquiry',
             title: __('Where enquiries are sent', 'catalogx'),
@@ -334,7 +334,7 @@ export default {
         },
         //quote
         {
-            key: 'section',
+            key: 'quote_access_section',
             type: 'section',
             icon: 'quote',
             desc: __('Who can ask for a quote, and how long it stays valid.',
@@ -412,7 +412,7 @@ export default {
         },
         //extra
         {
-            key: 'section',
+            key: 'pdf_delivery_section',
             type: 'section',
             icon: 'customer-support',
             desc: __('Configure how customers receive PDF documents for enquiries and quotations, including whether they can download them, receive them by email, or both.',

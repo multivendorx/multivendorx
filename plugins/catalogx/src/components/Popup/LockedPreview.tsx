@@ -1,8 +1,7 @@
 /* global appLocalizer */
 import { useState, type ReactNode } from 'react';
 import { __, sprintf } from '@wordpress/i18n';
-import { PopupComponent } from '@zyra/components';
-import ShowProPopup, { type ProFeature } from './Popup';
+import { type ProFeature, ProPopupDialog } from './Popup';
 import './locked-preview.scss';
 
 interface LockedPreviewProps {
@@ -110,15 +109,7 @@ export function LockedPreview({
 			</div>
 
 			{open && (
-				<PopupComponent
-					position="lightbox"
-					open
-					onClose={() => setOpen(false)}
-					width={46}
-					height="auto"
-				>
-					<ShowProPopup feature={feature} />
-				</PopupComponent>
+				<ProPopupDialog onClose={() => setOpen(false)} feature={feature} />
 			)}
 		</div>
 	);

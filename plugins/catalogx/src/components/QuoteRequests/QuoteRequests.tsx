@@ -1,14 +1,12 @@
 import { useState } from 'react';
-
 import {
     ColumnComponent,
     ContainerComponent,
     InformationItemComponent,
-    PopupComponent,
     NavigatorHeaderComponent,
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
-import ShowProPopup, { type ProFeature } from '../Popup/Popup';
+import { type ProFeature, ProPopupDialog } from '../Popup/Popup';
 import ListGate from '../Popup/ListGate';
 import useNoRecordsYet from '../Popup/useNoRecordsYet';
 import { __ } from '@wordpress/i18n';
@@ -75,16 +73,16 @@ const QuoteRequests = () => {
             statusClass: (row: QuoteRow) => `${row.status}`
         },
         action: {
-            label: __('Action', 'catalogx-pro'),
+            label: __('Action', 'catalogx'),
             type: 'action',
             actions: [
                 {
-                    label: __('View', 'catalogx-pro'),
+                    label: __('View', 'catalogx'),
                     icon: 'eye',
                     onClick: (_row: any) => setopenPopup(true),
                 },
                 {
-                    label: __('Send Mail', 'catalogx-pro'),
+                    label: __('Send Mail', 'catalogx'),
                     icon: 'mail',
                     onClick: (_row: any) => setopenPopup(true),
                 },
@@ -167,19 +165,7 @@ const QuoteRequests = () => {
     return (
         <>
             {openPopup && (
-                <PopupComponent
-                    position="lightbox"
-                    open={openPopup}
-                    onClose={() => setopenPopup(false)}
-                    width={46}
-                    height="auto"
-                >
-                    {!appLocalizer.khali_dabba ? (
-                        <ShowProPopup feature={FEATURE} />
-                    ) : (
-                        <ShowProPopup moduleName="quote" />
-                    )}
-                </PopupComponent>
+                <ProPopupDialog onClose={() => setopenPopup(false)} feature={FEATURE} moduleName="quote" />
             )}
             <NavigatorHeaderComponent
                 headerIcon="quote"

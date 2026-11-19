@@ -424,6 +424,20 @@ class FrontendScripts {
             'price_decimals'     => wc_get_price_decimals(),
             'currency_position'  => get_option( 'woocommerce_currency_pos' ),
         );
+        // The quote cart block gets the same data in the editor and on the page.
+        $quote_cart_data = array(
+            'object_name' => 'quoteCart',
+            'data'        => array_merge(
+                $base_rest,
+                array(
+                    'name'                 => $current_user->display_name,
+                    'email'                => $current_user->user_email,
+                    'quote_my_account_url' => site_url( '/my-account/all-quotes/' ),
+                    'khali_dabba'          => Utill::is_khali_dabba(),
+                )
+            ),
+        );
+
         $localize_scripts = apply_filters(
             'catalogx_localize_scripts',
             array(
@@ -524,30 +538,8 @@ class FrontendScripts {
                     'object_name' => 'quoteButton',
                     'data'        => $base_rest,
                 ),
-                'catalogx-quote-cart-editor-script'      => array(
-                    'object_name' => 'quoteCart',
-                    'data'        => array_merge(
-                        $base_rest,
-                        array(
-                            'name'                 => $current_user->display_name,
-                            'email'                => $current_user->user_email,
-                            'quote_my_account_url' => site_url( '/my-account/all-quotes/' ),
-                            'khali_dabba'          => Utill::is_khali_dabba(),
-                        )
-                    ),
-                ),
-                'catalogx-quote-cart-view-script'        => array(
-                    'object_name' => 'quoteCart',
-                    'data'        => array_merge(
-                        $base_rest,
-                        array(
-                            'name'                 => $current_user->display_name,
-                            'email'                => $current_user->user_email,
-                            'quote_my_account_url' => site_url( '/my-account/all-quotes/' ),
-                            'khali_dabba'          => Utill::is_khali_dabba(),
-                        )
-                    ),
-                ),
+                'catalogx-quote-cart-editor-script'      => $quote_cart_data,
+                'catalogx-quote-cart-view-script'        => $quote_cart_data,
                 'catalogx-excluded-products-view-script' => array(
                     'object_name' => 'excludedProducts',
                     'data'        => $base_rest,

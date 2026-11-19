@@ -306,6 +306,48 @@ class Utill {
     }
 
     /**
+     * Whether Settings → Access Rules excludes a product from one feature: the product itself, or one of its
+     * categories, tags or brands, is on that feature's exclusion lists.
+     *
+     * @param int    $product_id Product id.
+     * @param string $feature    Feature whose lists apply: 'catalog', 'enquiry' or 'quote'.
+     * @return bool
+     */
+    public static function is_product_excluded( $product_id, $feature ) {
+        $settings  = CatalogX()->setting->get_option( 'catalogx_enquiry_quote_exclusion_settings', array() );
+        $exclusion = $settings['exclusion'] ?? array();
+
+        $excluded_ids = static function ( $list ) use ( $exclusion, $feature ) {
+            return array_map( 'intval', (array) ( $exclusion[ "{$feature}_exclusion_value_{$list}_list" ] ?? array() ) );
+        };
+
+        if ( in_array( (int) $product_id, $excluded_ids( 'product' ), true ) ) {
+            return true;
+        }
+
+        $taxonomies = array(
+            'category' => 'product_cat',
+            'tag'      => 'product_tag',
+            'brand'    => 'product_brand',
+        );
+
+        foreach ( $taxonomies as $list => $taxonomy ) {
+            $excluded = $excluded_ids( $list );
+            if ( empty( $excluded ) ) {
+                continue;
+            }
+
+            // A store without the taxonomy (brands came with WooCommerce 9.6) has nothing to exclude by it.
+            $terms = wp_get_post_terms( $product_id, $taxonomy, array( 'fields' => 'ids' ) );
+            if ( ! is_wp_error( $terms ) && array_intersect( $excluded, $terms ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Check the plugin is active or not
      *
      * @param string $name Optional. Plugin name to check. Supported: 'notifima', 'multivendorx'.

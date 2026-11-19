@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ButtonInput } from '@zyra/inputs';
+import { PopupComponent } from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 import './Popup.scss';
 import { UTM } from '../../services/links';
@@ -368,5 +369,29 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 		</div>
 	);
 };
+
+/**
+ * The Pro popup in its lightbox, as every "comes with Pro" button opens it. Without Pro it pitches the upgrade (led by
+ * `feature` when given); with Pro active and a `moduleName`, it asks to switch that module on instead.
+ */
+export const ProPopupDialog: React.FC<{
+	onClose: () => void;
+	feature?: ProFeature;
+	moduleName?: string;
+}> = ({ onClose, feature, moduleName }) => (
+	<PopupComponent
+		position="lightbox"
+		open
+		onClose={onClose}
+		width={46}
+		height="auto"
+	>
+		{moduleName && appLocalizer.khali_dabba ? (
+			<ShowProPopup moduleName={moduleName} />
+		) : (
+			<ShowProPopup feature={feature} />
+		)}
+	</PopupComponent>
+);
 
 export default ShowProPopup;

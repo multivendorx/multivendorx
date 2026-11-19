@@ -1,8 +1,7 @@
 /* global appLocalizer */
 import React, { useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import { PopupComponent } from '@zyra/components';
-import ShowProPopup, { LICENSES, PRO_FEATURES } from '../Popup/Popup';
+import { LICENSES, PRO_FEATURES, ProPopupDialog } from '../Popup/Popup';
 import './pro-pitch.scss';
 import { ACCOUNT_URL } from '../../services/links';
 
@@ -193,15 +192,7 @@ const ProPitch: React.FC = () => {
 			</section>
 
 			{open && (
-				<PopupComponent
-					position="lightbox"
-					open
-					onClose={() => setOpen(false)}
-					width={46}
-					height="auto"
-				>
-					<ShowProPopup />
-				</PopupComponent>
+				<ProPopupDialog onClose={() => setOpen(false)} />
 			)}
 		</div>
 	);

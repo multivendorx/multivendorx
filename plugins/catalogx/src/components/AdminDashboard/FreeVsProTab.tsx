@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { PopupComponent } from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
-import ShowProPopup, { LICENSES } from '../Popup/Popup';
+import { LICENSES, ProPopupDialog } from '../Popup/Popup';
 import './free-vs-pro.scss';
 
 interface Feature {
@@ -569,15 +568,7 @@ const FreeVsProTab: React.FC = () => {
 			</section>
 
 			{open && (
-				<PopupComponent
-					position="lightbox"
-					open
-					onClose={() => setOpen(false)}
-					width={46}
-					height="auto"
-				>
-					<ShowProPopup />
-				</PopupComponent>
+				<ProPopupDialog onClose={() => setOpen(false)} />
 			)}
 		</div>
 	);

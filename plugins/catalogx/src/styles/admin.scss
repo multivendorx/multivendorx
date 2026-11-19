@@ -16,3 +16,20 @@
 		max-width: none;
 	}
 }
+
+// Guided tour (components/Tour/Tours.tsx): the popover has no slide (POPOVER_STYLES), so fade it in briefly to hide
+// the frame before it is placed at its target. Moving between steps of one screen reuses the popover, so this runs
+// only when the tour starts or resumes on a new screen.
+.tour-content {
+	animation: catalogx-tour-arrive 0.15s ease-out 0.1s both;
+}
+
+@keyframes catalogx-tour-arrive {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}

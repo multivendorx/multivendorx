@@ -1,14 +1,12 @@
 import { useState } from 'react';
-
 import {
     ColumnComponent,
     ContainerComponent,
-    PopupComponent,
     NavigatorHeaderComponent,
     InformationItemComponent
 } from '@zyra/components';
 import { TableCard } from '@zyra/table';
-import ShowProPopup, { type ProFeature } from '../Popup/Popup';
+import { type ProFeature, ProPopupDialog } from '../Popup/Popup';
 import ListGate from '../Popup/ListGate';
 import useNoRecordsYet from '../Popup/useNoRecordsYet';
 import { __ } from '@wordpress/i18n';
@@ -217,19 +215,7 @@ const Rules = () => {
     return (
         <>
             {openPopup && (
-                <PopupComponent
-                    position="lightbox"
-                    open={openPopup}
-                    onClose={() => setopenPopup(false)}
-                    width={46}
-                    height="auto"
-                >
-                    {!appLocalizer.khali_dabba ? (
-                        <ShowProPopup feature={FEATURE} />
-                    ) : (
-                        <ShowProPopup moduleName="rules" />
-                    )}
-                </PopupComponent>
+                <ProPopupDialog onClose={() => setopenPopup(false)} feature={FEATURE} moduleName="rules" />
             )}
             <NavigatorHeaderComponent
                 headerIcon="rules"

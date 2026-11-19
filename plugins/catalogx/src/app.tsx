@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
-import { NoticeComponent, TourComponent } from '@zyra/components';
+import { NoticeComponent } from '@zyra/components';
 
 import Settings from './components/Settings/Settings';
 import EnquiryMessages from './components/EnquiryMessages/enquiryMessages';
@@ -11,7 +11,7 @@ import Rules from './components/Rules/Rules';
 import QuoteRequests from './components/QuoteRequests/QuoteRequests';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import SearchHeader from './components/Header/SearchHeader';
-import { getTourSteps } from './components/Tour/Tours';
+import GuidedTour from './components/Tour/Tours';
 import './styles/admin.scss';
 
 localStorage.setItem('force_catalogx_context_reload', 'true');
@@ -157,10 +157,7 @@ const App = () => (
 				}}
 			/>
 		)}
-		<TourComponent
-			appLocalizer={appLocalizer}
-			steps={getTourSteps(appLocalizer)}
-		/>
+		<GuidedTour />
 		<Route />
 	</>
 );

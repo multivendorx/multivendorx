@@ -14,7 +14,7 @@ export default {
     submitUrl: 'settings',
     modal: [
         {
-            key: 'section',
+            key: 'pages_section',
             type: 'section',
             icon: 'web-page-website',
             title: __('Pages', 'catalogx'),
@@ -60,7 +60,7 @@ export default {
             proSetting: true,
         },
         {
-            key: 'section',
+            key: 'shortcode_library_section',
             type: 'section',
             icon: 'shortcode',
             title: __('Shortcode library', 'catalogx'),

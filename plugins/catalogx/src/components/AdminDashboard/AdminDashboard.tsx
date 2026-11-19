@@ -1,15 +1,13 @@
-/* global appLocalizer */
-import {
+/* global appLocalizer */import {
 	ColumnComponent,
 	ContainerComponent,
 	NavigatorHeaderComponent,
-	PopupComponent,
 	TabsComponent,
 } from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import ShowProPopup from '../Popup/Popup';
+import { ProPopupDialog } from '../Popup/Popup';
 import FreeVsProTab from './FreeVsProTab';
 import DashboardTab from './DashboardTab';
 
@@ -133,15 +131,7 @@ const AdminDashboard = () => {
 				</ColumnComponent>
 			</ContainerComponent>
 			{proPopupOpen && (
-				<PopupComponent
-					position="lightbox"
-					open
-					onClose={() => setProPopupOpen(false)}
-					width={46}
-					height="auto"
-				>
-					<ShowProPopup />
-				</PopupComponent>
+				<ProPopupDialog onClose={() => setProPopupOpen(false)} />
 			)}
 		</>
 	);
