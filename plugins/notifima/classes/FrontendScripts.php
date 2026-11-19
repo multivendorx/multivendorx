@@ -282,7 +282,6 @@ class FrontendScripts {
 								'manage_plan_url' => NOTIFIMA_PRO_SHOP_URL,
                             )
                         ),
-                        'vulomail_active' => Notifima()->communications->is_vulomail_active(),
 					),
                 ),
                 'notifima-subscribe-form' => array(

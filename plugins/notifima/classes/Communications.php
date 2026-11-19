@@ -167,7 +167,7 @@ class Communications {
 	 *
 	 * @return bool
 	 */
-	public function is_vulomail_active() {
+	private function is_vulomail_active() {
 		$active_plugins = (array) get_option( 'active_plugins', array() );
 
 		if ( is_multisite() ) {
