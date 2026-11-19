@@ -5,9 +5,11 @@ export default {
 	priority: 12,
 	headerTitle: __('Modules', 'catalogx'),
 	headerDescription: __(
-		'Manage marketplace features by enabling or disabling modules. Turning a module on activates its settings and workflows, while turning it off hides them from admin and stores.',
+		'Turn on only the features your store uses. A module’s settings and pages appear once it is on; turning it off hides them again.',
 		'catalogx'
 	),
+	// Modules.tsx draws its own header (as VuloCart's Modules tab does), so the settings tab header is skipped.
+	hideSettingHeader: true,
 	headerIcon: 'module',
 	submitUrl: 'settings',
 	modal: [],

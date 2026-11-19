@@ -1,19 +1,21 @@
-/* global appLocalizer */
-import React from 'react';
-import { CardComponent, ColumnComponent, ContainerComponent } from '@zyra/components';
-import { __ } from '@wordpress/i18n';
-import freePro from '../../assets/images/notifima-brand.png';
+import React, { useState } from 'react';
+import { PopupComponent } from '@zyra/components';
+import { __, sprintf } from '@wordpress/i18n';
+import ShowProPopup, { LICENSES } from '../Popup/Popup';
+import './free-vs-pro.scss';
+
 interface Feature {
 	name: string;
 	free: boolean | string;
 	pro: boolean | string;
+	/** Planned for Pro but not released yet: tagged "Coming soon" rather than "Pro only". */
+	comingSoon?: boolean;
 }
 
 interface Section {
 	title: string;
 	features: Feature[];
 }
-
 const sections: Section[] = [
 	{
 		title: __('Never Miss a Sale Opportunity', 'notifima'),
@@ -238,128 +240,227 @@ const sections: Section[] = [
 	},
 ];
 
-const FreeVsProTab: React.FC<object> = () => {
-	const renderCell = (value: string | boolean) => {
-		if (typeof value === 'boolean') {
-			return value ? (
-				<i className="check-icon adminfont-check"></i>
-			) : (
-				<i className="close-icon adminfont-close"></i>
-			);
-		}
-		return value;
-	};
+/** Counts, for the hero: what Free includes, and how many more Pro adds on top. */
+const allFeatures = sections.flatMap((section) => section.features);
+const freeCount = allFeatures.filter((feature) => feature.free).length;
+const proOnlyCount = allFeatures.length - freeCount;
+
+/** A Free/Pro cell: a mark for sighted readers, and the words for screen readers. */
+const Cell: React.FC<{ value: boolean | string; pro?: boolean }> = ({
+	value,
+	pro = false,
+}) => {
+	if ('string' === typeof value) {
+		return <>{value}</>;
+	}
+
+	return value ? (
+		<span className={`nf-fvp-yes${pro ? ' is-pro' : ''}`}>
+			<i className="adminfont-check" aria-hidden="true" />
+			<span className="screen-reader-text">
+				{__('Included', 'notifima')}
+			</span>
+		</span>
+	) : (
+		<span className="nf-fvp-no">
+			<span aria-hidden="true">—</span>
+			<span className="screen-reader-text">
+				{__('Not included', 'notifima')}
+			</span>
+		</span>
+	);
+};
+
+/**
+ * Dashboard → Free vs Pro (free sites only): what Pro adds, feature by feature. One upgrade button at the top and one
+ * at the end, both opening the Pro popup (features, plans, buy) like every other upgrade button in Notifima.
+ */
+const FreeVsProTab: React.FC = () => {
+	const [open, setOpen] = useState(false);
+	const lowestPrice = LICENSES[0]?.price;
+
+	const upgradeButton = (className = '') => (
+		<button
+			type="button"
+			className={`admin-btn nf-upgrade-btn nf-fvp-upgrade ${className}`.trim()}
+			onClick={() => setOpen(true)}
+		>
+			<i className="adminfont-pro-tag" aria-hidden="true" />
+			{__('Upgrade to Pro', 'notifima')}
+		</button>
+	);
 
 	return (
-		<ContainerComponent>
-			<ColumnComponent grid={8}>
-				<CardComponent
-					title={__('Free vs Pro comparison', 'notifima')}
-					titleIcon="pro-tag"
-					desc={__(
-						'See what you get with notifima Pro',
-						'notifima'
-					)}
-					action={
-						<a
-							href= {appLocalizer.pro_url}
-							className="admin-btn btn-purple"
-						>
-							{__('Get Pro Access Today!', 'notifima')}
-							<i className="adminfont-arrow-right icon-pro-btn"></i>
-						</a>
-					}
-				>
-					<div id="free-vs-pro" className="free-vs-pro">
-						{sections.map((section, idx) => (
-							<table key={idx}>
-								<thead>
-									<tr>
-										<td>
-											{__(section.title, 'notifima')}
-										</td>
-										<td>{__('Free', 'notifima')}</td>
-										<td>{__('Pro', 'notifima')}</td>
-									</tr>
-								</thead>
-								<tbody>
-									{section.features.map((feature, i) => (
-										<tr key={i}>
-											<td>
-												{__(
-													feature.name,
-													'notifima'
+		<div className="nf-fvp">
+			<section className="nf-fvp-hero">
+				<div className="nf-fvp-hero-text">
+					<span className="nf-fvp-pill">
+						<i className="adminfont-pro-tag" aria-hidden="true" />
+						{__('Notifima Pro', 'notifima')}
+					</span>
+					<h2>
+						{__(
+							'Everything in Free, plus the tools to keep waitlists clean and act on demand',
+							'notifima'
+						)}
+					</h2>
+					<p>
+						{__(
+							'Keep every subscriber, email and setting you have today. Pro adds double opt-in, spam protection, Mailchimp, a full subscriber list and an inventory manager on top.',
+							'notifima'
+						)}
+					</p>
+					<div className="nf-fvp-hero-actions">
+						{upgradeButton('is-large')}
+						{lowestPrice && (
+							<span className="nf-fvp-price">
+								{sprintf(
+									/* translators: %s: lowest Pro license price, e.g. $199. */
+									__('Plans from %s', 'notifima'),
+									lowestPrice
+								)}
+							</span>
+						)}
+					</div>
+					<p className="nf-fvp-guarantee">
+						<i className="adminfont-security" aria-hidden="true" />
+						{__('15-day money-back guarantee', 'notifima')}
+					</p>
+				</div>
+				<dl className="nf-fvp-stats">
+					<div>
+						<dt>{__('Included in Free', 'notifima')}</dt>
+						<dd>{freeCount}</dd>
+					</div>
+					<div className="is-pro">
+						<dt>{__('More with Pro', 'notifima')}</dt>
+						<dd>+{proOnlyCount}</dd>
+					</div>
+				</dl>
+			</section>
+
+			<section
+				className="nf-fvp-compare"
+				aria-labelledby="nf-fvp-compare-title"
+			>
+				<header className="nf-fvp-compare-head">
+					<h3 id="nf-fvp-compare-title">
+						{__('Compare feature by feature', 'notifima')}
+					</h3>
+					<p>
+						{__(
+							'Pro includes every Free feature. Rows marked Pro only are what you unlock.',
+							'notifima'
+						)}
+					</p>
+				</header>
+				<table className="nf-fvp-table">
+					<thead>
+						<tr>
+							<th scope="col">
+								<span className="screen-reader-text">
+									{__('Feature', 'notifima')}
+								</span>
+							</th>
+							<th scope="col">{__('Free', 'notifima')}</th>
+							<th scope="col" className="is-pro">
+								{__('Pro', 'notifima')}
+							</th>
+						</tr>
+					</thead>
+					{sections.map((section) => {
+						const added = section.features.filter(
+							(feature) => !feature.free
+						).length;
+
+						return (
+							<tbody key={section.title}>
+								<tr className="nf-fvp-group">
+									<th scope="rowgroup" colSpan={2}>
+										{section.title}
+										{added > 0 && (
+											<span className="nf-fvp-added">
+												{sprintf(
+													/* translators: %d: number of features only in Pro. */
+													__(
+														'+%d with Pro',
+														'notifima'
+													),
+													added
 												)}
-											</td>
-											<td>{renderCell(feature.free)}</td>
-											<td>{renderCell(feature.pro)}</td>
-										</tr>
-									))}
-								</tbody>
-							</table>
-						))}
-					</div>
-				</CardComponent>
-			</ColumnComponent>
+											</span>
+										)}
+									</th>
+									<td className="is-pro" aria-hidden="true" />
+								</tr>
+								{section.features.map((feature) => (
+									<tr
+										key={feature.name}
+										className={
+											feature.free ? '' : 'is-pro-only'
+										}
+									>
+										<th scope="row">
+											{feature.name}
+											{!feature.free && (
+												<span className="nf-fvp-tag">
+													{feature.comingSoon
+														? __(
+																'Coming soon',
+																'notifima'
+															)
+														: __(
+																'Pro only',
+																'notifima'
+															)}
+												</span>
+											)}
+										</th>
+										<td>
+											<Cell value={feature.free} />
+										</td>
+										<td className="is-pro">
+											<Cell value={feature.pro} pro />
+										</td>
+									</tr>
+								))}
+							</tbody>
+						);
+					})}
+				</table>
+			</section>
 
-			<ColumnComponent grid={4}>
-				<CardComponent>
-					<div className="right-pro-banner">
-						<div className="image-wrapper">
-							<img src={freePro} alt="" />
-						</div>
+			<section className="nf-fvp-cta">
+				<div>
+					<h3>
+						{sprintf(
+							/* translators: %d: number of features only in Pro. */
+							__('Unlock all %d Pro features today', 'notifima'),
+							proOnlyCount
+						)}
+					</h3>
+					<p>
+						{__(
+							'Every plan includes every Pro feature. Plans differ only in how many sites you activate.',
+							'notifima'
+						)}
+					</p>
+				</div>
+				{upgradeButton('is-light')}
+			</section>
 
-						<div className="title">
-							{__(
-								'Never Miss Another Sale',
-								'notifima'
-							)}
-						</div>
-
-						<div className="des">
-							{__(
-								'Upgrade to Notifima Pro and turn out-of-stock products into future sales with advanced subscriber management, automation, and inventory tools.',
-								'notifima'
-							)}
-						</div>
-
-						<ul>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Advanced subscriber management', 'notifima')}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Mailchimp integration', 'notifima')}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Inventory management dashboard', 'notifima')}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Double opt-in & spam protection', 'notifima')}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Advanced exports & reporting', 'notifima')}
-							</li>
-						</ul>
-
-						<div className="button-wrapper">
-							<a
-								href={appLocalizer.pro_url}
-								className="admin-btn btn-purple"
-							>
-								<i className="adminfont-pro-tag"></i>
-								{__('Upgrade Now', 'notifima')}
-								<i className="adminfont-arrow-right icon-pro-btn"></i>
-							</a>
-						</div>
-					</div>
-				</CardComponent>
-			</ColumnComponent>
-		</ContainerComponent>
+			{open && (
+				<PopupComponent
+					position="lightbox"
+					open
+					onClose={() => setOpen(false)}
+					width={46}
+					height="auto"
+				>
+					<ShowProPopup />
+				</PopupComponent>
+			)}
+		</div>
 	);
 };
 
