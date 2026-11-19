@@ -2,6 +2,7 @@
 import { createRoot } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import App from './app';
+import EmailLogs from './components/EmailLogs/EmailLogs';
 import { configureZyra } from '@zyra/core';
 
 configureZyra(appLocalizer);
@@ -27,6 +28,12 @@ function mount() {
 				<App />
 			</BrowserRouter>
 		);
+	}
+
+	const emailLogsRoot = document.getElementById('notifima-email-logs');
+
+	if (emailLogsRoot) {
+		createRoot(emailLogsRoot).render(<EmailLogs />);
 	}
 }
 

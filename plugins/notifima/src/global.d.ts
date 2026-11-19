@@ -66,8 +66,15 @@ declare global {
         vuloform_rest_namespace?: string;
     }
 
+    interface VuloMailLocalizer {
+        is_vulomail_active: boolean;
+        install_url: string;
+        email_logs_url: string;
+    }
+
     var appLocalizer: AppLocalizer;
     var subscription: Subscription;
+    var vuloMailLocalizer: VuloMailLocalizer;
 
     module '*.png';
     module '*.jpg';
