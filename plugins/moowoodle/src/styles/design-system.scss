@@ -6,6 +6,13 @@
 // hairline rows, a sticky section menu with one card per settings section. It is scoped to `.admin-main-wrapper`
 // (doubled, to outrank zyra's own selectors), so it only reaches the MooWoodle admin page.
 
+// zyra makes the app at least a screen tall (`#admin-main-wrapper { min-height: 100vh }`), but WordPress's 32px admin
+// bar and 65px footer sit outside it, so every page scrolled and short pages ended in blank space. WordPress already
+// keeps its footer at the bottom of the window, so the app only needs to be as tall as its content.
+#admin-main-wrapper.admin-main-wrapper {
+	min-height: 0;
+}
+
 .admin-main-wrapper.admin-main-wrapper {
 	--mw-primary: var(--color-primary, #5007aa);
 	--mw-ink: #1f1b3e;
@@ -745,7 +752,7 @@
 	box-sizing: border-box;
 	max-width: 80rem;
 	padding-inline: 1.25rem;
-	padding-bottom: 3rem;
+	padding-bottom: 1.5rem;
 
 	// Starts 24px under the top bar (or under a notice), like every other screen's title.
 	> .title-section {

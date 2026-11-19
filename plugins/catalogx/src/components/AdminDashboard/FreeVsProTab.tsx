@@ -1,7 +1,8 @@
-import React from 'react';
-import { CardComponent, ColumnComponent, ContainerComponent } from '@zyra/components';
-import { __ } from '@wordpress/i18n';
-import CatalogxBrand from '../../assets/images/catalogx-brand.png';
+import React, { useState } from 'react';
+import { __, sprintf } from '@wordpress/i18n';
+import { LICENSES, ProPopupDialog } from '../Popup/Popup';
+import './free-vs-pro.scss';
+
 interface Feature {
 	name: string;
 	free: boolean | string;
@@ -23,7 +24,7 @@ const sections: Section[] = [
 			},
 			{
 				name: __('Catalog mode', 'catalogx'),
-				free: true,
+				free: false,
 				pro: true,
 			},
 			{
@@ -355,141 +356,221 @@ const sections: Section[] = [
 	},
 ];
 
-const FreeVsProTab: React.FC<object> = () => {
-	const renderCell = (value: string | boolean) => {
-		if (typeof value === 'boolean') {
-			return value ? (
-				<i className="check-icon adminfont-check"></i>
-			) : (
-				<i className="close-icon adminfont-close"></i>
-			);
-		}
-		return value;
-	};
+/** Counts, for the hero: what Free includes, and how many more Pro adds on top. */
+// A feature can be listed under more than one section (Form builder, Enquiry cart…); count it once.
+const allFeatures = [
+	...new Map(
+		sections
+			.flatMap((section) => section.features)
+			.map((feature): [string, Feature] => [feature.name, feature])
+	).values(),
+];
+const freeCount = allFeatures.filter((feature) => feature.free).length;
+const proOnlyCount = allFeatures.length - freeCount;
+
+/** A Free/Pro cell: a mark for sighted readers, and the words for screen readers. */
+const Cell: React.FC<{ value: boolean | string; pro?: boolean }> = ({
+	value,
+	pro = false,
+}) => {
+	if ('string' === typeof value) {
+		return <>{value}</>;
+	}
+
+	return value ? (
+		<span className={`cx-fvp-yes${pro ? ' is-pro' : ''}`}>
+			<i className="adminfont-check" aria-hidden="true" />
+			<span className="screen-reader-text">
+				{__('Included', 'catalogx')}
+			</span>
+		</span>
+	) : (
+		<span className="cx-fvp-no">
+			<span aria-hidden="true">—</span>
+			<span className="screen-reader-text">
+				{__('Not included', 'catalogx')}
+			</span>
+		</span>
+	);
+};
+
+/**
+ * Dashboard → Free vs Pro (free sites only): what Pro adds, feature by feature. One upgrade button at the top and one
+ * at the end, both opening the Pro popup (features, plans, buy) like every other upgrade button in CatalogX.
+ */
+const FreeVsProTab: React.FC = () => {
+	const [open, setOpen] = useState(false);
+	const lowestPrice = LICENSES[0]?.price;
+
+	const upgradeButton = (className = '') => (
+		<button
+			type="button"
+			className={`admin-btn cx-upgrade-btn cx-fvp-upgrade ${className}`.trim()}
+			onClick={() => setOpen(true)}
+		>
+			<i className="adminfont-pro-tag" aria-hidden="true" />
+			{__('Upgrade to Pro', 'catalogx')}
+		</button>
+	);
 
 	return (
-		<ContainerComponent>
-			<ColumnComponent grid={8}>
-				<CardComponent
-					title={__('Free vs Pro comparison', 'catalogx')}
-					titleIcon="pro-tag"
-					desc={__(
-						'See what you get with catalogx Pro',
-						'catalogx'
-					)}
-					action={
-						<a
-							href="https://catalogx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx"
-							className="admin-btn btn-purple"
-						>
-							{__('Get Pro Access Today!', 'catalogx')}
-							<i className="adminfont-arrow-right icon-pro-btn"></i>
-						</a>
-					}
-				>
-					<div id="free-vs-pro" className="free-vs-pro">
-						{sections.map((section, idx) => (
-							<table key={idx}>
-								<thead>
-									<tr>
-										<td>
-											{__(section.title, 'catalogx')}
-										</td>
-										<td>{__('Free', 'catalogx')}</td>
-										<td>{__('Pro', 'catalogx')}</td>
-									</tr>
-								</thead>
-								<tbody>
-									{section.features.map((feature, i) => (
-										<tr key={i}>
-											<td>
-												{__(
-													feature.name,
-													'catalogx'
-												)}
-											</td>
-											<td>{renderCell(feature.free)}</td>
-											<td>{renderCell(feature.pro)}</td>
-										</tr>
-									))}
-								</tbody>
-							</table>
-						))}
-					</div>
-				</CardComponent>
-			</ColumnComponent>
-
-			<ColumnComponent grid={4}>
-				<CardComponent>
-					<div className="right-pro-banner">
-						<div className="image-wrapper">
-							<img src={CatalogxBrand} alt="" />
-						</div>
-
-						<div className="title">
-							{__(
-								'Join 5,000+ stores closing more deals with CatalogX',
-								'catalogx'
-							)}
-						</div>
-
-						<div className="des">
-							{__(
-								'Capture leads, manage enquiries, and grow your sales with confidence. Trusted by thousands of businesses worldwide.',
-								'catalogx'
-							)}
-						</div>
-
-						<ul>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Flexible selling models', 'catalogx')}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__(
-									'Effortless inventory control',
-									'catalogx'
+		<div className="cx-fvp">
+			<section className="cx-fvp-hero">
+				<div className="cx-fvp-hero-text">
+					<span className="cx-fvp-pill">
+						<i className="adminfont-pro-tag" aria-hidden="true" />
+						{__('CatalogX Pro', 'catalogx')}
+					</span>
+					<h2>
+						{__(
+							'Everything in Free, plus quotations, wholesale selling and pricing rules',
+							'catalogx'
+						)}
+					</h2>
+					<p>
+						{__(
+							'Keep every product, enquiry and setting you have today. Pro adds an enquiry inbox, professional quotes and B2B selling on top.',
+							'catalogx'
+						)}
+					</p>
+					<div className="cx-fvp-hero-actions">
+						{upgradeButton('is-large')}
+						{lowestPrice && (
+							<span className="cx-fvp-price">
+								{sprintf(
+									/* translators: %s: lowest Pro license price, e.g. $129. */
+									__('Plans from %s', 'catalogx'),
+									lowestPrice
 								)}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Intelligent alert system', 'catalogx')}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Secure seller onboarding', 'catalogx')}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Recurring revenue tools', 'catalogx')}
-							</li>
-						</ul>
-
-						<div className="button-wrapper">
-							<a
-								href="https://catalogx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx"
-								className="admin-btn btn-purple"
-							>
-								<i className="adminfont-pro-tag"></i>
-								{__('Upgrade Now', 'catalogx')}
-								<i className="adminfont-arrow-right icon-pro-btn"></i>
-							</a>
-
-							<div
-								onClick={() =>
-									(window.location.href = `?page=catalogx-setup`)
-								}
-								className="admin-btn"
-							>
-								{__('Launch Setup Wizard', 'catalogx')}
-								<i className="adminfont-import"></i>
-							</div>
-						</div>
+							</span>
+						)}
 					</div>
-				</CardComponent>
-			</ColumnComponent>
-		</ContainerComponent>
+					<p className="cx-fvp-guarantee">
+						<i className="adminfont-security" aria-hidden="true" />
+						{__('15-day money-back guarantee', 'catalogx')}
+					</p>
+				</div>
+				<dl className="cx-fvp-stats">
+					<div>
+						<dt>{__('Included in Free', 'catalogx')}</dt>
+						<dd>{freeCount}</dd>
+					</div>
+					<div className="is-pro">
+						<dt>{__('More with Pro', 'catalogx')}</dt>
+						<dd>+{proOnlyCount}</dd>
+					</div>
+				</dl>
+			</section>
+
+			<section
+				className="cx-fvp-compare"
+				aria-labelledby="cx-fvp-compare-title"
+			>
+				<header className="cx-fvp-compare-head">
+					<h3 id="cx-fvp-compare-title">
+						{__('Compare feature by feature', 'catalogx')}
+					</h3>
+					<p>
+						{__(
+							'Pro includes every Free feature. Rows marked Pro only are what you unlock.',
+							'catalogx'
+						)}
+					</p>
+				</header>
+				<table className="cx-fvp-table">
+					<thead>
+						<tr>
+							<th scope="col">
+								<span className="screen-reader-text">
+									{__('Feature', 'catalogx')}
+								</span>
+							</th>
+							<th scope="col">{__('Free', 'catalogx')}</th>
+							<th scope="col" className="is-pro">
+								{__('Pro', 'catalogx')}
+							</th>
+						</tr>
+					</thead>
+					{sections.map((section) => {
+						const added = section.features.filter(
+							(feature) => !feature.free
+						).length;
+
+						return (
+							<tbody key={section.title}>
+								<tr className="cx-fvp-group">
+									<th scope="rowgroup" colSpan={2}>
+										{section.title}
+										{added > 0 && (
+											<span className="cx-fvp-added">
+												{sprintf(
+													/* translators: %d: number of features only in Pro. */
+													__(
+														'+%d with Pro',
+														'catalogx'
+													),
+													added
+												)}
+											</span>
+										)}
+									</th>
+									<td className="is-pro" aria-hidden="true" />
+								</tr>
+								{section.features.map((feature) => (
+									<tr
+										key={feature.name}
+										className={
+											feature.free ? '' : 'is-pro-only'
+										}
+									>
+										<th scope="row">
+											{feature.name}
+											{!feature.free && (
+												<span className="cx-fvp-tag">
+													{__(
+														'Pro only',
+														'catalogx'
+													)}
+												</span>
+											)}
+										</th>
+										<td>
+											<Cell value={feature.free} />
+										</td>
+										<td className="is-pro">
+											<Cell value={feature.pro} pro />
+										</td>
+									</tr>
+								))}
+							</tbody>
+						);
+					})}
+				</table>
+			</section>
+
+			<section className="cx-fvp-cta">
+				<div>
+					<h3>
+						{sprintf(
+							/* translators: %d: number of features only in Pro. */
+							__('Unlock all %d Pro features today', 'catalogx'),
+							proOnlyCount
+						)}
+					</h3>
+					<p>
+						{__(
+							'Every plan includes every Pro feature. Plans differ only in how many sites you activate.',
+							'catalogx'
+						)}
+					</p>
+				</div>
+				{upgradeButton('is-light')}
+			</section>
+
+			{open && (
+				<ProPopupDialog onClose={() => setOpen(false)} />
+			)}
+		</div>
 	);
 };
 

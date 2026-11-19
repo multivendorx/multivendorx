@@ -1,13 +1,30 @@
-/* global appLocalizer */
 import React, { useState } from 'react';
 import { ButtonInput } from '@zyra/inputs';
+import { PopupComponent } from '@zyra/components';
 import { __, sprintf } from '@wordpress/i18n';
-import '../Popup/Popup.scss';
+import './Popup.scss';
+import { UTM } from '../../services/links';
+
+/** The page or feature the upgrade was asked from, shown first in the Pro popup. */
+export interface ProFeature {
+	title: string;
+	description: string;
+	icon?: string;
+}
+
+/** What zyra passes for a field whose `dependentPlugin` is missing. */
+interface RequiredPlugin {
+	plugin?: string;
+	name: string;
+	link?: string;
+}
 
 interface PopupProps {
+	/** A module that has to be switched on first: the popup links to it on Settings → Modules. */
 	moduleName?: string;
-	wooSetting?: string;
-	wooLink?: string;
+	plugin?: RequiredPlugin | string;
+	feature?: ProFeature;
+	/** A yes/no confirmation instead of an upgrade prompt (used by CatalogX Pro's list screens). */
 	confirmMode?: boolean;
 	title?: string;
 	confirmMessage?: string;
@@ -15,273 +32,366 @@ interface PopupProps {
 	confirmNoText?: string;
 	onConfirm?: () => void;
 	onCancel?: () => void;
-	plugin?: string;
+	[key: string]: unknown;
 }
 
-const formatModuleName = (name: string): string => {
-	return name
+/** Everything CatalogX Pro adds, in the order the popup lists it. Also listed by Settings → License (ProPitch). */
+export const PRO_FEATURES = [
+	{
+		icon: 'quote',
+		name: __('Professional quotations', 'catalogx'),
+		desc: __(
+			'Create, send and approve quotes with expiry dates and PDF downloads.',
+			'catalogx'
+		),
+	},
+	{
+		icon: 'wholesale',
+		name: __('Wholesale selling', 'catalogx'),
+		desc: __(
+			'Wholesale roles, pricing and order forms for your B2B buyers.',
+			'catalogx'
+		),
+	},
+	{
+		icon: 'rules',
+		name: __('Dynamic pricing rules', 'catalogx'),
+		desc: __(
+			'Prices by role, customer, product, category or quantity.',
+			'catalogx'
+		),
+	},
+	{
+		icon: 'multi-product',
+		name: __('Multi-product enquiries', 'catalogx'),
+		desc: __(
+			'One enquiry cart for several products, so one request covers them all.',
+			'catalogx'
+		),
+	},
+	{
+		icon: 'enquiry',
+		name: __('Enquiry conversations', 'catalogx'),
+		desc: __(
+			'Reply to every enquiry from one inbox, with files, tags and quotes.',
+			'catalogx'
+		),
+	},
+	{
+		icon: 'form-email',
+		name: __('Form builder', 'catalogx'),
+		desc: __(
+			'Enquiry, quote and wholesale forms that ask exactly what you need.',
+			'catalogx'
+		),
+	},
+	{
+		icon: 'catalog',
+		name: __('Catalog Showcase', 'catalogx'),
+		desc: __(
+			'Hide prices and Add to cart, or show buying and enquiring side by side.',
+			'catalogx'
+		),
+	},
+	{
+		icon: 'mail',
+		name: __('Email templates', 'catalogx'),
+		desc: __(
+			'Design the enquiry, quote and wholesale emails your customers get.',
+			'catalogx'
+		),
+	},
+];
+
+/** License tiers: how many sites, the price, and the add-to-cart link. */
+export const LICENSES = [
+	{
+		id: 'one',
+		label: __('1 site', 'catalogx'),
+		price: '$129',
+		link: `https://catalogx.com/cart/?add-to-cart=329&variation_id=3380&${UTM}`,
+	},
+	{
+		id: 'three',
+		label: __('3 sites', 'catalogx'),
+		price: '$199',
+		link: `https://catalogx.com/cart/?add-to-cart=329&variation_id=3381&${UTM}`,
+	},
+	{
+		id: 'ten',
+		label: __('10 sites', 'catalogx'),
+		price: '$299',
+		link: `https://catalogx.com/cart/?add-to-cart=329&variation_id=3382&${UTM}`,
+	},
+];
+
+/** "wholesale" → "Wholesale", "customer-engagement" → "Customer Engagement". */
+const formatModuleName = (name: string): string =>
+	name
 		.split('-')
 		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 		.join(' ');
-};
 
-const proPopupContent = {
-	messages: [
-		{
-			icon: 'dollar',
-			text: __('Personalized quote requests', 'catalogx'),
-			des: __(
-				'Let customers request custom quotes and negotiate pricing to convert high-intent visitors.',
-				'catalogx'
-			),
-		},
-		{
-			icon: 'wholesale',
-			text: __('Wholesale pricing & order forms', 'catalogx'),
-			des: __(
-				'Offer bulk pricing and dedicated order forms to attract B2B buyers and grow large-volume sales.',
-				'catalogx'
-			),
-		},
-		{
-			icon: 'multi-product',
-			text: __('Multi-product enquiries', 'catalogx'),
-			des: __(
-				'Let customers enquire about multiple products in a single request for better engagement.',
-				'catalogx'
-			),
-		},
-		{
-			icon: 'cloud-upload',
-			text: __('Advanced enquiry management', 'catalogx'),
-			des: __(
-				'Use file attachments, internal tagging, and organized workflows for a smoother sales process.',
-				'catalogx'
-			),
-		},
-		{
-			icon: 'person',
-			text: __('Role-based pricing', 'catalogx'),
-			des: __(
-				'Show different prices to wholesalers, members, or VIP customers with personalized offers.',
-				'catalogx'
-			),
-		},
-		{
-			icon: 'category',
-			text: __('Category-based pricing rules', 'catalogx'),
-			des: __(
-				'Set custom pricing at the category level to run targeted promotions across your catalog.',
-				'catalogx'
-			),
-		},
-	],
-	btnLink: [
-		{
-			site: 'one',
-			price: '$129',
-			link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3380&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
-		},
-		{
-			site: 'three',
-			price: '$199',
-			link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3381&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
-		},
-		{
-			site: 'ten',
-			price: '$299',
-			link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3382&utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx',
-		},
-	],
-};
-
+/**
+ * The popup zyra's InputRenderer opens when a locked field (`proSetting`, `moduleEnabled`, `dependentPlugin`) is
+ * clicked, passed as the `Popup` prop of `<InputRenderer>` (components/SettingsNavigator). Also the module grid's Pro
+ * popup, and the upgrade prompt of every Pro-only page.
+ *
+ * The `confirmMode` branch is a yes/no dialog. The `moduleName` branch says which module to switch on, and the
+ * `plugin` branch which plugin is required. The default branch is the upgrade prompt: what was asked for first, then
+ * everything Pro adds, with the license picker and buy button always in view.
+ */
 const ShowProPopup: React.FC<PopupProps> = (props) => {
-	const [selectedBtn, setSelectedBtn] = useState(proPopupContent.btnLink[0]);
-	return (
-		<>
-			{props.confirmMode ? (
-				<div className="popup-confirm">
-					<i className="popup-icon adminfont-suspended admin-badge red"></i>
-					<div className="title">{props.title || 'Confirmation'}</div>
-					<div className="desc">{props.confirmMessage}</div>
+	const [license, setLicense] = useState(LICENSES[0]);
+
+	if (props.confirmMode) {
+		return (
+			<div className="popup-confirm">
+				<i className="popup-icon adminfont-suspended admin-badge red"></i>
+				<div className="title">
+					{props.title || __('Confirmation', 'catalogx')}
+				</div>
+				<div className="desc">{props.confirmMessage}</div>
+				<ButtonInput
+					position="center"
+					buttons={[
+						{
+							icon: 'close',
+							text: props.confirmNoText || __('Cancel', 'catalogx'),
+							color: 'red',
+							onClick: props.onCancel,
+						},
+						{
+							icon: 'delete',
+							text:
+								props.confirmYesText || __('Confirm', 'catalogx'),
+							onClick: props.onConfirm,
+						},
+					]}
+				/>
+			</div>
+		);
+	}
+
+	if (props.moduleName) {
+		const moduleLabel = formatModuleName(props.moduleName);
+
+		return (
+			<div className="popup-wrapper">
+				<div className="popup-header">
+					<i className={`adminfont-${props.moduleName}`} />
+				</div>
+				<div className="popup-body">
+					<div className="module-name">
+						{sprintf(
+							/* translators: %s: module name, e.g. "Wholesale". */
+							__('Turn on %s', 'catalogx'),
+							moduleLabel
+						)}
+					</div>
+					<div className="module-desc">
+						{sprintf(
+							/* translators: %s: module name, e.g. "Wholesale". */
+							__(
+								'This needs the %s module. Switch it on under Settings → Modules, then come back.',
+								'catalogx'
+							),
+							moduleLabel
+						)}
+					</div>
 					<ButtonInput
 						position="center"
 						buttons={[
 							{
-								icon: 'close',
-								text: props.confirmNoText || 'Cancel',
-								color: 'red',
-								onClick: props.onCancel,
-							},
-							{
-								icon: 'delete',
-								text: props.confirmYesText || 'Confirm',
-								onClick: props.onConfirm,
+								icon: 'eye',
+								text: __('Open Modules', 'catalogx'),
+								onClick: () => {
+									window.location.hash = `&tab=settings&subtab=modules&module=${props.moduleName}`;
+								},
 							},
 						]}
 					/>
 				</div>
-			) : props.moduleName ? (
-				<div className="popup-wrapper">
-					<div className="popup-header">
-						<i className={`adminfont-${props.moduleName}`} />
-					</div>
-					<div className="popup-body">
-						<div className="module-name">
-							{sprintf(
-								__('Activate %s', 'catalogx'),
-								formatModuleName(props.moduleName)
-							)}
-						</div>
-						<div className="module-desc">
-							{sprintf(
-								__(
-									'This feature is currently unavailable. To activate it, please enable the %s',
-									'catalogx'
-								),
-								formatModuleName(props.moduleName)
-							)}
-						</div>
+			</div>
+		);
+	}
 
-						<ButtonInput
-							position="center"
-							buttons={[
-								{
-									icon: 'eye',
-									text: __('Enable Now', 'catalogx'),
-									onClick: () => {
-										window.open(
-											`${appLocalizer.admin_url}#&tab=modules&module=${props.moduleName}`
-										);
-									},
+	if (props.plugin) {
+		const required: RequiredPlugin =
+			'string' === typeof props.plugin
+				? { plugin: props.plugin, name: props.plugin }
+				: props.plugin;
+
+		return (
+			<div className="popup-wrapper">
+				<div className="popup-header">
+					<i className={`adminfont-${required.plugin ?? 'download'}`} />
+				</div>
+				<div className="popup-body">
+					<div className="module-name">
+						{sprintf(
+							/* translators: %s: Plugin name. */
+							__('Plugin required: %s', 'catalogx'),
+							required.name
+						)}
+					</div>
+					<div className="module-desc">
+						{sprintf(
+							/* translators: %s: Plugin name. */
+							__(
+								'This feature requires the "%s" plugin to be active.',
+								'catalogx'
+							),
+							required.name
+						)}
+					</div>
+					<ButtonInput
+						position="center"
+						buttons={[
+							{
+								icon: 'download',
+								text: required.link
+									? __('Get the plugin', 'catalogx')
+									: __('Manage plugins', 'catalogx'),
+								onClick: () => {
+									// Every admin page lives under /wp-admin/, so `plugins.php` resolves to its plugins screen.
+									window.open(
+										required.link || 'plugins.php',
+										'_blank',
+										'noopener,noreferrer'
+									);
 								},
-							]}
+							},
+						]}
+					/>
+				</div>
+			</div>
+		);
+	}
+
+	return (
+		<div className="cx-pro-popup">
+			<div className="cx-pro-popup-head">
+				<span className="cx-pro-popup-pill">
+					<i className="adminfont-pro-tag" aria-hidden="true" />
+					{__('CatalogX Pro', 'catalogx')}
+				</span>
+				<h2>{__('Turn product interest into sales', 'catalogx')}</h2>
+				<p>
+					{__(
+						'Quotations, wholesale selling, dynamic pricing and a real enquiry inbox, in the admin you already use.',
+						'catalogx'
+					)}
+				</p>
+				{props.feature && (
+					<div className="cx-pro-popup-feature">
+						<span className="cx-pro-popup-icon">
+							<i
+								className={`adminfont-${props.feature.icon ?? 'pro-tag'}`}
+								aria-hidden="true"
+							/>
+						</span>
+						<span>
+							<strong>
+								{sprintf(
+									/* translators: %s: feature name, e.g. "Wholesale Users". */
+									__('%s is included', 'catalogx'),
+									props.feature.title
+								)}
+							</strong>
+							{props.feature.description}
+						</span>
+						<i
+							className="adminfont-check cx-pro-popup-check"
+							aria-hidden="true"
 						/>
 					</div>
+				)}
+			</div>
+			<div className="cx-pro-popup-body">
+				<div className="cx-pro-popup-label">
+					{__('Everything in Pro', 'catalogx')}
 				</div>
-			) : props.plugin ? (
-				<div className="popup-wrapper">
-					<div className="popup-header">
-						<i className="adminfont-plugin" />
-					</div>
+				<ul>
+					{PRO_FEATURES.map((feature) => (
+						<li key={feature.name}>
+							<span className="cx-pro-popup-icon">
+								<i
+									className={`adminfont-${feature.icon}`}
+									aria-hidden="true"
+								/>
+							</span>
+							<span>
+								<strong>{feature.name}</strong>
+								<span>{feature.desc}</span>
+							</span>
+						</li>
+					))}
+				</ul>
+			</div>
+			<div className="cx-pro-popup-foot">
+				<label className="cx-pro-popup-license">
+					<span className="cx-pro-popup-price">{license.price}</span>
+					<select
+						value={license.id}
+						aria-label={__('License size', 'catalogx')}
+						onChange={(event) => {
+							const chosen = LICENSES.find(
+								(item) => item.id === event.target.value
+							);
 
-					<div className="popup-body">
-						<div className="module-name">
-							{sprintf(
-								__('Install %s', 'catalogx'),
-								props.plugin.name
-							)}
-						</div>
-
-						<div className="module-desc">
-							{sprintf(
-								__(
-									'This feature requires the %s plugin. Please install and activate it to continue.',
-									'catalogx'
-								),
-								props.plugin.name
-							)}
-						</div>
-
-						<ButtonInput
-							position="center"
-							buttons={[
-								{
-									icon: 'download',
-									text: __('Install Plugin', 'catalogx'),
-									onClick: () => {
-										if (props.plugin?.link) {
-											window.open(
-												props.plugin.link,
-												'_blank',
-												'noopener,noreferrer'
-											);
-										}
-									},
-								},
-							]}
-						/>
-					</div>
-				</div>
-			) : (
-				<>
-					{/* pro */}
-					<div className="popup-wrapper">
-						<div className="top-section">
-							<div className="heading">
-								{__(
-									'Upgrade to CatalogX Pro & turn product interest into more sales',
-									'catalogx'
-								)}
-							</div>
-							<div className="description">
-								{__(
-									'Unlock powerful tools that help you generate more enquiries, close deals faster, and increase revenue with flexible pricing and quotation features.',
-									'catalogx'
-								)}{' '}
-							</div>
-							<div className="price">{selectedBtn.price}</div>
-							<div className="select-wrapper">
-								{__('For website with', 'catalogx')}
-								<select
-									value={selectedBtn.link}
-									onChange={(e) => {
-										const found =
-											proPopupContent.btnLink.find(
-												(b) => b.link === e.target.value
-											);
-										if (found) {
-											setSelectedBtn(found);
-										}
-									}}
-								>
-									{proPopupContent.btnLink.map((b, idx) => (
-										<option key={idx} value={b.link}>
-											{b.site}
-										</option>
-									))}
-								</select>
-								{__('site license', 'catalogx')}
-							</div>
-							<a
-								className="admin-btn"
-								href={selectedBtn.link}
-								target="_blank"
-								rel="noreferrer"
-							>
-								{__('Yes, Upgrade Me!', 'catalogx')}
-								<i className="adminfont-arrow-right arrow-icon"></i>
-							</a>
-						</div>
-						<div className="popup-details">
-							<div className="heading-text">
-								{__('Why should you upgrade?', 'catalogx')}
-							</div>
-
-							<ul>
-								{proPopupContent.messages.map(
-									(message, index) => (
-										<li key={index}>
-											<div className="title">
-												<i
-													className={`adminfont-${message.icon}`}
-												/>
-												{message.text}
-											</div>
-											<div className="desc">
-												{' '}
-												{message.des}
-											</div>
-										</li>
-									)
-								)}
-							</ul>
-						</div>
-					</div>
-				</>
-			)}
-		</>
+							if (chosen) {
+								setLicense(chosen);
+							}
+						}}
+					>
+						{LICENSES.map((item) => (
+							<option key={item.id} value={item.id}>
+								{item.label}
+							</option>
+						))}
+					</select>
+					<span>{__('license', 'catalogx')}</span>
+				</label>
+				<a
+					className="cx-pro-popup-buy"
+					href={license.link}
+					target="_blank"
+					rel="noreferrer"
+				>
+					{__('Upgrade to Pro', 'catalogx')}
+					<i className="adminfont-arrow-right" aria-hidden="true" />
+					<span className="screen-reader-text">
+						{__('(opens in a new tab)', 'catalogx')}
+					</span>
+				</a>
+			</div>
+		</div>
 	);
 };
+
+/**
+ * The Pro popup in its lightbox, as every "comes with Pro" button opens it. Without Pro it pitches the upgrade (led by
+ * `feature` when given); with Pro active and a `moduleName`, it asks to switch that module on instead.
+ */
+export const ProPopupDialog: React.FC<{
+	onClose: () => void;
+	feature?: ProFeature;
+	moduleName?: string;
+}> = ({ onClose, feature, moduleName }) => (
+	<PopupComponent
+		position="lightbox"
+		open
+		onClose={onClose}
+		width={46}
+		height="auto"
+	>
+		{moduleName && appLocalizer.khali_dabba ? (
+			<ShowProPopup moduleName={moduleName} />
+		) : (
+			<ShowProPopup feature={feature} />
+		)}
+	</PopupComponent>
+);
 
 export default ShowProPopup;
