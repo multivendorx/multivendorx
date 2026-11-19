@@ -65,13 +65,25 @@ export default {
         'catalogx'
     ),
     headerIcon: 'enquiry',
+    groupBySections: true,
+    hideSettingHeader: true,
     submitUrl: 'settings',
     modal: [
+        {
+            key: 'enquiry_email_section',
+            type: 'section',
+            icon: 'enquiry',
+            title: __('Enquiry email', 'catalogx'),
+            desc: __(
+                'The email sent for each new enquiry. Start from a template, then edit its blocks.',
+                'catalogx'
+            ),
+        },
         {
             key: 'notice',
             type: 'notice',
             message: __(
-                "Use personalization tags to make your emails more engaging - for example, use <b>{user_name}</b> to display the subscriber's name and <b>{email_tag}</b> to display their email address automatically.",
+                'Start from one of the templates below, then change its text, colours and layout block by block.',
                 'catalogx'
             ),
             noticeType: 'info',

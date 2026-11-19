@@ -179,9 +179,21 @@ export default {
         'catalogx'
     ),
     headerIcon: 'contact-form',
+    groupBySections: true,
+    hideSettingHeader: true,
     submitUrl: 'settings',
 
     modal: [
+        {
+            key: 'enquiry_form_section',
+            type: 'section',
+            icon: 'contact-form',
+            title: __('Enquiry form', 'catalogx'),
+            desc: __(
+                'The fields a customer fills in to send an enquiry.',
+                'catalogx'
+            ),
+        },
         {
             key: 'enquiry_form_tabs',
             type: 'tab',
@@ -212,7 +224,7 @@ export default {
                             blockGroups: REGISTRATION_BLOCK_GROUPS,
                             visibleGroups: ['registration', 'store'],
                             classes: 'full-width',
-                            desc: __('Customise personalised enquiry form.', 'catalogx'),
+                            desc: __('Add, remove and reorder the fields on the enquiry form.', 'catalogx'),
                             context: 'form',
                             moduleEnabled: 'enquiry',
                             proSetting: true,

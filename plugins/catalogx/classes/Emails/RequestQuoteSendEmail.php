@@ -127,7 +127,7 @@ if ( ! class_exists( 'RequestQuoteSendEmail' ) ) {
 		 */
 		public function get_content_html() {
 			ob_start();
-			CatalogX()->util->get_template( $this->template_html, $this->get_template_args() );
+			CatalogX()->util->get_template( $this->template_html, $this->get_template_args( false ) );
 			return ob_get_clean();
 		}
 
@@ -139,14 +139,17 @@ if ( ! class_exists( 'RequestQuoteSendEmail' ) ) {
 		 */
 		public function get_content_plain() {
 			ob_start();
-			CatalogX()->util->get_template( $this->template_plain, $this->get_template_args() );
+			CatalogX()->util->get_template( $this->template_plain, $this->get_template_args( true ) );
 			return ob_get_clean();
 		}
 
 		/**
-		 * Get template arguments.
+		 * The variables the email's templates read.
+		 *
+		 * @param bool $plain_text Whether the plain-text template is being rendered.
+		 * @return array
 		 */
-		protected function get_template_args() {
+		protected function get_template_args( $plain_text = false ) {
 			return array(
 				'email_heading'  => $this->get_heading(),
 				'products'       => $this->products,
@@ -154,7 +157,7 @@ if ( ! class_exists( 'RequestQuoteSendEmail' ) ) {
 				'customer_data'  => $this->customer_data,
 				'admin'          => $this->admin,
 				'sent_to_admin'  => false,
-				'plain_text'     => true,
+				'plain_text'     => $plain_text,
 				'email'          => $this,
 			);
 		}
