@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
-
 import { getApiLink, useModules } from '@zyra/core';
 import {
 	ContainerComponent,
@@ -13,6 +12,9 @@ import {
 } from '@zyra/components';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import ViewCommission from './ViewCommission';
+import ListGate from '../Popup/ListGate';
+import useNoRecordsYet from '../Popup/useNoRecordsYet';
+import { SAMPLE_COMMISSIONS, sampleCategoryCounts } from '../Popup/sampleRows';
 import {
 	downloadCSV,
 	formatCurrency,
@@ -190,7 +192,7 @@ const Commission: React.FC = () => {
 					},
 				},
 			],
-		}
+		},
 	};
 
 	const headers = Object.fromEntries(
@@ -298,7 +300,7 @@ const Commission: React.FC = () => {
 						count:
 							Number(
 								response.headers[
-								'x-wp-status-partially-refunded'
+									'x-wp-status-partially-refunded'
 								]
 							) || 0,
 					},
@@ -412,7 +414,8 @@ const Commission: React.FC = () => {
 		},
 	];
 
-	const infoRows = rows.map((row: any) => ({
+	/** A `/commissions` record as a table row; the sample commissions go through it too. */
+	const toInfoRow = (row: any) => ({
 		...row,
 		order_info: `#${row.order_id} - ${row.store_name || '-'}`,
 		order_link: getUrl(row.order_id, 'order'),
@@ -443,7 +446,29 @@ const Commission: React.FC = () => {
 				value: formatCurrency(row.marketplace_payable),
 			},
 		],
-	}));
+	});
+	const infoRows = rows.map(toInfoRow);
+
+	const { props: gatedProps, hasNoRecords } = useNoRecordsYet({
+		rows: infoRows,
+		isLoading,
+		onQueryUpdate: doRefreshTableData,
+	});
+
+	const tableProps = {
+		headers,
+		hideHeader: true,
+		search: {},
+		filters,
+		format: appLocalizer.date_format,
+		currency: {
+			currencySymbol: appLocalizer.currency_symbol,
+			priceDecimals: appLocalizer.price_decimals,
+			decimalSeparator: appLocalizer.decimal_separator,
+			thousandSeparator: appLocalizer.thousand_separator,
+			currencyPosition: appLocalizer.currency_position,
+		},
+	};
 
 	return (
 		<>
@@ -457,29 +482,76 @@ const Commission: React.FC = () => {
 			/>
 			<ContainerComponent general>
 				<ColumnComponent>
-					<TableCard
-						headers={headers}
-						rows={infoRows}
-						hideHeader
-						totalRows={totalRows}
-						isLoading={isLoading}
-						onQueryUpdate={doRefreshTableData}
-						ids={rowIds}
-						categoryCounts={categoryCounts}
-						search={{}}
-						filters={filters}
-						buttonActions={buttonActions}
-						bulkActions={[]}
-						onSelectCsvDownloadApply={downloadCommissionsCSV}
-						format={appLocalizer.date_format}
-						currency={{
-							currencySymbol: appLocalizer.currency_symbol,
-							priceDecimals: appLocalizer.price_decimals,
-							decimalSeparator: appLocalizer.decimal_separator,
-							thousandSeparator: appLocalizer.thousand_separator,
-							currencyPosition: appLocalizer.currency_position,
+					<ListGate
+						feature={{
+							title: __('Commissions', 'multivendorx'),
+							description: '',
+							icon: 'commission',
 						}}
-					/>
+						sample={
+							<TableCard
+								{...tableProps}
+								rows={SAMPLE_COMMISSIONS.map(toInfoRow)}
+								totalRows={SAMPLE_COMMISSIONS.length}
+								categoryCounts={sampleCategoryCounts(
+									SAMPLE_COMMISSIONS,
+									{
+										paid: __('Paid', 'multivendorx'),
+										unpaid: __('Unpaid', 'multivendorx'),
+										refunded: __(
+											'Refunded',
+											'multivendorx'
+										),
+									},
+									__('All', 'multivendorx')
+								)}
+							/>
+						}
+						isEmpty={hasNoRecords}
+						empty={{
+							heading: __('No commissions yet', 'multivendorx'),
+							description: __(
+								'Every order a store fulfils records a commission: the store’s earning and your marketplace’s share. They show here after the first sale.',
+								'multivendorx'
+							),
+							actions: (
+								<>
+									<a
+										className="mvx-locked-button"
+										href="#&tab=settings&subtab=commissions"
+									>
+										{__(
+											'Set commission rates',
+											'multivendorx'
+										)}
+									</a>
+									<a
+										className="mvx-locked-link"
+										href="#&tab=stores"
+									>
+										{__('View stores', 'multivendorx')}
+									</a>
+								</>
+							),
+							note: __(
+								'A preview with sample commissions. Yours show here once stores make sales.',
+								'multivendorx'
+							),
+						}}
+					>
+						<TableCard
+							{...tableProps}
+							rows={infoRows}
+							totalRows={totalRows}
+							isLoading={isLoading}
+							onQueryUpdate={gatedProps.onQueryUpdate}
+							ids={rowIds}
+							categoryCounts={categoryCounts}
+							buttonActions={buttonActions}
+							bulkActions={[]}
+							onSelectCsvDownloadApply={downloadCommissionsCSV}
+						/>
+					</ListGate>
 				</ColumnComponent>
 			</ContainerComponent>
 			<ViewCommission

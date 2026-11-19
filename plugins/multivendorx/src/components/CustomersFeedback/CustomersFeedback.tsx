@@ -9,8 +9,8 @@ import {
 } from '@zyra/components';
 import '../AdminDashboard/AdminDashboard.scss';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { applyFilters } from '@wordpress/hooks';
+import { fetchQueueCounts } from '../../services/queueCounts';
 import { useLocation, Link } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 
@@ -60,21 +60,7 @@ const CustomersFeedback = () => {
 			{ appLocalizer }
 		);
 
-		// execute all APIs
-		apiConfigs.forEach((config: any) => {
-			axios({
-				method: config.method || 'GET',
-				url: config.url,
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: config.params || {},
-			}).then((res) => {
-				const count = config.transform
-					? config.transform(res)
-					: Number(res.headers[config.header || 'x-wp-total']) || 0;
-
-				store.setCount(config.id, count);
-			});
-		});
+		fetchQueueCounts(apiConfigs, (id, count) => store.setCount(id, count));
 	}, []);
 
 	const { modules } = useModules();

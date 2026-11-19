@@ -15,10 +15,14 @@ export default {
 	submitUrl: 'settings',
 	modal: [
 		{
-			key: 'section',
+			key: 'section_ai_provider_api_keys',
 			type: 'section',
 			icon: 'intelligence',
 			title: __('AI provider API keys', 'multivendorx'),
+			desc: __(
+				'Connect the AI services that write and improve content for you and your stores.',
+				'multivendorx'
+			),
 		},
 		// --- Gemini API Key Section ---
 		{
@@ -66,7 +70,7 @@ export default {
 		},
 		// --- AI Provider Choice ---
 		{
-			key: 'section',
+			key: 'section_product_ai',
 			type: 'section',
 			icon: 'ai',
 			title: __('Product AI', 'multivendorx'),
@@ -148,7 +152,7 @@ export default {
 		},
 		// --- Image Enhancement Provider ---
 		{
-			key: 'section',
+			key: 'section_image_ai',
 			type: 'section',
 			icon: 'image',
 			title: __('Image AI', 'multivendorx'),

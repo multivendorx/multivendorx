@@ -414,7 +414,7 @@ const Stores = () => {
 							</FormGroupWrapperComponent>
 						</PopupComponent>
 					)}
-					<StoreTable />
+					<StoreTable onAddStore={() => setAddStore(true)} />
 				</>
 			)}
 		</>

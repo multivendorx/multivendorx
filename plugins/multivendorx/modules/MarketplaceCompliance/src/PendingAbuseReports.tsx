@@ -6,7 +6,14 @@ import { getApiLink } from '@zyra/core';
 import { PopupComponent } from '@zyra/components';
 import { TableCard, TableRow, QueryProps } from '@zyra/table';
 import Popup from '../../../src/components/Popup/Popup';
-import { formatDate, getUrl, truncateText } from '../../../src/services/commonFunction';
+import {
+	formatDate,
+	getUrl,
+	truncateText,
+} from '../../../src/services/commonFunction';
+import ListGate from '../../../src/components/Popup/ListGate';
+import useNoRecordsYet from '../../../src/components/Popup/useNoRecordsYet';
+import { SAMPLE_ABUSE_REPORTS } from '../../../src/components/Popup/sampleRows';
 
 interface StoreOption {
 	label: string;
@@ -43,9 +50,12 @@ const PendingReportAbuse: React.FC<object> = () => {
 		}
 
 		axios
-			.delete(getApiLink(appLocalizer, `compliance/report-abuse/${deleteId}`), {
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			})
+			.delete(
+				getApiLink(appLocalizer, `compliance/report-abuse/${deleteId}`),
+				{
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				}
+			)
 			.then(() => {
 				doRefreshTableData({});
 			})
@@ -109,7 +119,8 @@ const PendingReportAbuse: React.FC<object> = () => {
 		},
 	};
 
-	const infoRows = rows.map((row: any) => ({
+	/** A record as a table row; the sample rows go through it too, so they look like real ones. */
+	const toInfoRow = (row: any) => ({
 		...row,
 		product_name: row.product?.name || '—',
 		info_icon: 'single-product',
@@ -137,7 +148,8 @@ const PendingReportAbuse: React.FC<object> = () => {
 			},
 		],
 		info_badges: [{ text: formatDate(row.created_at), color: 'blue' }],
-	}));
+	});
+	const infoRows = rows.map(toInfoRow);
 
 	const filters = [
 		{
@@ -198,19 +210,68 @@ const PendingReportAbuse: React.FC<object> = () => {
 			});
 	};
 
+	const sampleRowsData = SAMPLE_ABUSE_REPORTS;
+	const { props: gatedProps, hasNoRecords } = useNoRecordsYet({
+		rows: infoRows,
+		isLoading,
+		onQueryUpdate: doRefreshTableData,
+	});
+
 	return (
 		<>
-			<TableCard
-				headers={headers}
-				variant="transparent"
-				rows={infoRows}
-				totalRows={totalRows}
-				isLoading={isLoading}
-				onQueryUpdate={doRefreshTableData}
-				ids={rowIds}
-				filters={filters}
-				format={appLocalizer.date_format}
-			/>
+			<ListGate
+				feature={{
+					title: __('Reported products', 'multivendorx'),
+					description: '',
+					icon: 'report-abuse',
+				}}
+				sample={
+					<TableCard
+						headers={headers}
+						variant="transparent"
+						filters={filters}
+						format={appLocalizer.date_format}
+						rows={sampleRowsData.map(toInfoRow)}
+						totalRows={sampleRowsData.length}
+					/>
+				}
+				isEmpty={hasNoRecords}
+				empty={{
+					heading: __('No reported products', 'multivendorx'),
+					description: __(
+						'Shoppers can report a listing from its product page. Each report waits here with who sent it and why.',
+						'multivendorx'
+					),
+					actions: (
+						<>
+							<a
+								className="mvx-locked-button"
+								href={
+									'#&tab=settings&subtab=product-compliance'
+								}
+							>
+								{__('Compliance settings', 'multivendorx')}
+							</a>
+						</>
+					),
+					note: __(
+						'A preview with sample reports. Real ones show here.',
+						'multivendorx'
+					),
+				}}
+			>
+				<TableCard
+					headers={headers}
+					variant="transparent"
+					rows={infoRows}
+					totalRows={totalRows}
+					isLoading={isLoading}
+					onQueryUpdate={gatedProps.onQueryUpdate}
+					ids={rowIds}
+					filters={filters}
+					format={appLocalizer.date_format}
+				/>
+			</ListGate>
 			<PopupComponent
 				position="lightbox"
 				open={confirmOpen}

@@ -1,4 +1,10 @@
-import React, { createContext, useReducer, useContext, ReactNode } from 'react';
+import React, {
+	createContext,
+	useReducer,
+	useContext,
+	ReactNode,
+	useCallback,
+} from 'react';
 
 // Define types for the state
 type SettingState = {
@@ -62,20 +68,24 @@ type SettingProviderProps = {
 const SettingProvider: React.FC<SettingProviderProps> = ({ children }) => {
 	const [state, dispatch] = useReducer(settingReducer, initialState);
 
-	const setSetting = (
-		settingName: string,
-		setting: Record<string, unknown>
-	) => {
-		dispatch({ type: 'SET_SETTINGS', payload: { settingName, setting } });
-	};
+	// Stable across renders (dispatch is), so an effect can depend on them without re-running each render.
+	const setSetting = useCallback(
+		(settingName: string, setting: Record<string, unknown>) => {
+			dispatch({
+				type: 'SET_SETTINGS',
+				payload: { settingName, setting },
+			});
+		},
+		[]
+	);
 
-	const updateSetting = (key: string, value: unknown) => {
+	const updateSetting = useCallback((key: string, value: unknown) => {
 		dispatch({ type: 'UPDATE_SETTINGS', payload: { key, value } });
-	};
+	}, []);
 
-	const clearSetting = () => {
+	const clearSetting = useCallback(() => {
 		dispatch({ type: 'CLEAR_SETTINGS' });
-	};
+	}, []);
 
 	return (
 		<SettingContext.Provider

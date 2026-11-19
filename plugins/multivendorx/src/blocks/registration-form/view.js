@@ -1,4 +1,4 @@
-import { render } from '@wordpress/element';
+import { createRoot } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import RegistrationForm from './registrationForm';
 
@@ -6,11 +6,10 @@ import RegistrationForm from './registrationForm';
 document.addEventListener('DOMContentLoaded', () => {
 	const element = document.getElementById('multivendorx-registration-form');
 	if (element) {
-		render(
+		createRoot(element).render(
 			<BrowserRouter>
 				<RegistrationForm />
-			</BrowserRouter>,
-			element
+			</BrowserRouter>
 		);
 	}
 });

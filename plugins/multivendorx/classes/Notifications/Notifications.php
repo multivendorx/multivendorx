@@ -7,6 +7,7 @@
 
 namespace MultiVendorX\Notifications;
 
+use MultiVendorX\AdminNotice;
 use MultiVendorX\Utill;
 
 defined( 'ABSPATH' ) || exit;
@@ -2127,20 +2128,29 @@ class Notifications {
 		}
 
 		if ( is_plugin_active( 'vulomail/vulomail.php' ) ) {
-			$message = __( 'MultiVendorX could not send an SMS notification because VuloMail has no SMS gateway connected yet.', 'multivendorx' );
+			$message = __( 'MultiVendorX sends SMS through VuloMail, which has no SMS gateway connected yet.', 'multivendorx' );
 			$url     = admin_url( 'admin.php?page=vulomail' );
 			$cta     = __( 'Set up SMS in VuloMail', 'multivendorx' );
 		} else {
-			$message = __( 'MultiVendorX could not send an SMS notification because VuloMail, the plugin it relies on for SMS delivery, isn\'t installed.', 'multivendorx' );
+			$message = __( 'MultiVendorX sends SMS through VuloMail, which isn\'t installed.', 'multivendorx' );
 			$url     = admin_url( 'plugin-install.php?s=vulomail&tab=search&type=term' );
 			$cta     = __( 'Install VuloMail', 'multivendorx' );
 		}
 
-		printf(
-			'<div class="notice notice-warning is-dismissible"><p>%s</p><p><a href="%s" class="button">%s</a></p></div>',
-			esc_html( $message ),
-			esc_url( $url ),
-			esc_html( $cta )
+		AdminNotice::render(
+			array(
+				'type'        => 'warning',
+				'icon'        => 'smartphone',
+				'dismissible' => true,
+				'title'       => __( 'An SMS notification wasn\'t sent', 'multivendorx' ),
+				'message'     => esc_html( $message ),
+				'actions'     => array(
+					array(
+						'label' => $cta,
+						'url'   => $url,
+					),
+				),
+			)
 		);
 
 		delete_option( self::VULOMAIL_SMS_NOT_READY_OPTION );

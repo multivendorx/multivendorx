@@ -14,6 +14,7 @@ import { NavigatorComponent, type SaveStatus } from '@zyra/components';
 import { getTemplateData } from '../../services/templateService';
 import ShowProPopup from '../Popup/Popup';
 import PluginModules from '../Modules/Modules';
+import useCollapsibleMenu from './useCollapsibleMenu';
 
 type NavigatorType = 'settings';
 
@@ -236,6 +237,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 	title,
 }) => {
 	const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+	const { menuClassName, menuToggle } = useCollapsibleMenu();
 	const settingsArray = expandSubTabs(
 		getAvailableSettings(
 			getTemplateData(type),
@@ -279,7 +281,8 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 				settingName={title}
 				// `admin-settings` is the class zyra scopes its settings spacing under; `catalogx-settings` is the
 				// one styles/design-system.scss draws the section menu and cards with.
-				className="admin-settings catalogx-settings"
+				className={`admin-settings catalogx-settings ${menuClassName}`}
+				customContent={menuToggle}
 				menuIcon
 				saveStatus={isPanelTab ? undefined : saveStatus}
 			/>

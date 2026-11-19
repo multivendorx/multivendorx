@@ -274,6 +274,11 @@ class Install {
             $this->migrate_email_template_customizer_settings();
             $this->migrate_event_rule_email_bodies();
         }
+
+        if ( version_compare( $previous_version, '5.0.23', '<' ) ) {
+            // Store and wholesale registration forms are built and rendered by VuloForm from 5.0.23.
+            update_option( Integrations\VuloFormInstaller::STATUS_OPTION, 'pending' );
+        }
     }
 
     /**
@@ -354,6 +359,8 @@ class Install {
             // "your settings were migrated" one used for sites upgrading from before 5.0.21.
             update_option( 'multivendorx_vulomail_migration_status', 'pending' );
             update_option( 'multivendorx_vulomail_migration_reason', 'install' );
+            // VuloForm builds and renders the store/wholesale registration forms.
+            update_option( Integrations\VuloFormInstaller::STATUS_OPTION, 'pending' );
         } else {
             $this->do_migration();
         }
