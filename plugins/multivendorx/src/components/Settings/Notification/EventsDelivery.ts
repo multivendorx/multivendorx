@@ -19,6 +19,10 @@ export default {
 			type: 'section',
 			icon: 'notification',
 			title: __('Notification recipients', 'multivendorx'),
+			desc: __(
+				'Where admin notifications are sent.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'receiver_email_address',

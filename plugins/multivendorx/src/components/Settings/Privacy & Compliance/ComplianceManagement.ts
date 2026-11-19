@@ -20,6 +20,10 @@ export default {
 			type: 'section',
 			icon: 'compliance',
 			title: __('Store Compliance', 'multivendorx'),
+			desc: __(
+				'What happens when a store is missing documents or breaks the marketplace rules.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'store_compliance_management',

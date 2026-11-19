@@ -7,7 +7,8 @@
 			"@zyra/components": ["./node_modules/@multivendorx/zyra"],
 			"@zyra/inputs": ["./node_modules/@multivendorx/zyra"],
 			"@zyra/table": ["./node_modules/@multivendorx/zyra"],
-			"@zyra/builders": ["./node_modules/@multivendorx/zyra"]
+			"@zyra/builders": ["./node_modules/@multivendorx/zyra"],
+			"@zyra/builderform": ["./node_modules/@multivendorx/zyra"]
 		}
 	},
 	"include": [

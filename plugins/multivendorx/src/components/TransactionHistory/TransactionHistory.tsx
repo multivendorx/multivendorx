@@ -1,13 +1,15 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 
 import { SelectInput } from '@zyra/inputs';
-import { ModuleGuardComponent, NavigatorComponent } from '@zyra/components';
+import { NavigatorComponent } from '@zyra/components';
 import axios from 'axios';
 import WalletTransaction from './WalletTransaction';
+import DirectTransactionPreview from './DirectTransactionPreview';
+import './transaction-history.scss';
 import { applyFilters } from '@wordpress/hooks';
 
 type StoreOption = {
@@ -22,6 +24,8 @@ export const TransactionHistory: React.FC = () => {
 	const [userId, setUserId] = useState<number | null>(null);
 	const [userName, setUserName] = useState<string>('');
 	const [currentTab, setCurrentTab] = useState('wallet-transaction');
+	// True once the store list has loaded and is empty, so the wallet shows its "no stores yet" preview.
+	const [hasNoStores, setHasNoStores] = useState(false);
 
 	// Fetch stores on mount
 	useEffect(() => {
@@ -40,6 +44,8 @@ export const TransactionHistory: React.FC = () => {
 					setAllStores(mappedStores);
 					setSelectedStoreId(mappedStores[0].value);
 					setSelectedStoreLabel(mappedStores[0].label);
+				} else {
+					setHasNoStores(true);
 				}
 			})
 			.catch((error) => {
@@ -64,7 +70,7 @@ export const TransactionHistory: React.FC = () => {
 			type: 'file',
 			content: {
 				id: 'wallet-transaction',
-				headerTitle: __('Wallet Transaction', 'multivendorx'),
+				headerTitle: __('Wallet transactions', 'multivendorx'),
 				headerIcon: 'wallet-in',
 				hideSettingHeader: true,
 			},
@@ -73,7 +79,7 @@ export const TransactionHistory: React.FC = () => {
 			type: 'file',
 			content: {
 				id: 'direct-transaction',
-				headerTitle: __('Direct Transaction', 'multivendorx'),
+				headerTitle: __('Direct transactions', 'multivendorx'),
 				headerIcon: 'direct-transaction',
 				hideSettingHeader: true,
 			},
@@ -94,35 +100,37 @@ export const TransactionHistory: React.FC = () => {
 		setSelectedStoreLabel(getStoreLabelById(newValue));
 	};
 	const defaultNavigatorMeta = {
-		headerTitle: selectedStoreId
-			? __(
-				`Storewise Transaction History - ${selectedStoreLabel}`,
-				'multivendorx'
-			)
-			: __('Storewise Transaction History', 'multivendorx'),
+		headerTitle: __('Transaction history', 'multivendorx'),
 
-		headerDescription: selectedStoreId
-			? __(
-				`View and manage transactions for ${selectedStoreLabel} store`,
-				'multivendorx'
-			)
-			: __('View and manage storewise transactions', 'multivendorx'),
+		headerDescription: selectedStoreLabel
+			? sprintf(
+					/* translators: %s: store name. */
+					__(
+						'Wallet balance, payouts and statements for %s.',
+						'multivendorx'
+					),
+					selectedStoreLabel
+				)
+			: __(
+					'Wallet balance, payouts and statements for each store.',
+					'multivendorx'
+				),
 
+		// Shown in the page header, beside the title it changes. (Pro's Facilitator tab swaps in its own switcher.)
 		customContent: (
-			<>
-				<label>
-					<i className="adminfont-switch-store"></i>
-					{__('Switch Store:', 'multivendorx')}
+			<div className="mvx-store-switcher">
+				<label htmlFor="mvx-transaction-store">
+					{__('Store', 'multivendorx')}
 				</label>
-
 				<SelectInput
 					name="store"
+					id="mvx-transaction-store"
 					value={selectedStoreId || ''}
 					options={allStores}
 					onChange={handleStoreChange}
-					size="12rem"
+					size="14rem"
 				/>
-			</>
+			</div>
 		),
 	};
 
@@ -157,9 +165,11 @@ export const TransactionHistory: React.FC = () => {
 
 		switch (tabId) {
 			case 'wallet-transaction':
-				return selectedStoreId ? (
-					<WalletTransaction storeId={selectedStoreId} />
-				) : null;
+				if (selectedStoreId || hasNoStores) {
+					return <WalletTransaction storeId={selectedStoreId} />;
+				}
+
+				return null;
 
 			case 'direct-transaction':
 				if (appLocalizer.khali_dabba) {
@@ -170,20 +180,7 @@ export const TransactionHistory: React.FC = () => {
 					);
 				}
 
-				return (
-					<ModuleGuardComponent
-						title={__(
-							'Real-time store payments',
-							'multivendorx'
-						)}
-						desc={__(
-							'Track all direct marketplace payments in real time from a single admin dashboard.',
-							'multivendorx'
-						)}
-						buttonText={__('Upgrade to Pro', 'multivendorx')}
-						buttonLink={appLocalizer.shop_url}
-					/>
-				);
+				return <DirectTransactionPreview />;
 			default:
 				return <div></div>;
 		}
@@ -205,7 +202,8 @@ export const TransactionHistory: React.FC = () => {
 				headerIcon="store-reactivated"
 				headerTitle={navigatorMeta.headerTitle}
 				headerDescription={navigatorMeta.headerDescription}
-				customContent={navigatorMeta.customContent}
+				headerCustomContent={navigatorMeta.customContent}
+				className="mvx-transaction-history"
 			/>
 		</>
 	);

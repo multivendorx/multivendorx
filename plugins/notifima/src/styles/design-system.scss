@@ -1190,13 +1190,44 @@
 			font-size: inherit;
 		}
 
-		a {
+		// Text links only: a `.button` keeps its own button colours (below), or a primary button
+		// would get primary-coloured text on a primary fill.
+		a:not(.button) {
 			color: var(--nf-primary);
 			font-weight: 600;
 			text-decoration: none;
 
 			&:hover {
 				text-decoration: underline;
+			}
+		}
+
+		.button {
+			border-color: var(--nf-primary);
+			border-radius: 0.375rem;
+			font-weight: 600;
+			box-shadow: none;
+		}
+
+		.button-primary {
+			background: var(--nf-primary);
+			color: #fff;
+
+			&:hover,
+			&:focus {
+				background: color-mix(in srgb, var(--nf-primary) 85%, #000);
+				color: #fff;
+			}
+		}
+
+		.button-secondary {
+			background: var(--nf-surface);
+			color: var(--nf-primary);
+
+			&:hover,
+			&:focus {
+				background: var(--nf-surface-hover);
+				color: var(--nf-primary);
 			}
 		}
 	}

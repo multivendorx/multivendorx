@@ -1,5 +1,5 @@
 /* global appLocalizer */
-import { render } from '@wordpress/element';
+import { createRoot } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import App from './app';
 import DashboardRoutes from './dashboardRoutes';
@@ -13,11 +13,10 @@ initializeModules('multivendorx', 'free', 'modules');
 // 1. Try to mount admin panel if element is found
 const adminWrapper = document.getElementById('admin-main-wrapper');
 if (adminWrapper) {
-	render(
+	createRoot(adminWrapper).render(
 		<BrowserRouter>
 			<App />
-		</BrowserRouter>,
-		adminWrapper
+		</BrowserRouter>
 	);
 }
 // 2. Try to mount vendor dashboard if element is found
@@ -59,15 +58,14 @@ if (vendorWrapper) {
 	if (appLocalizer.permalink_structure) {
 		// Pretty permalink mode — use BrowserRouter with basename
 		const basename = `${sitePath}/${appLocalizer.dashboard_slug}`;
-		render(
+		createRoot(vendorWrapper).render(
 			<BrowserRouter basename={basename}>
 				<DashboardRoutes />
-			</BrowserRouter>,
-			vendorWrapper
+			</BrowserRouter>
 		);
 	} else {
 		// Plain permalink mode — route state is driven by query params, not URL path.
 		// DashboardRoutes will read segment/element/context_id from window.location.search.
-		render(<DashboardRoutes />, vendorWrapper);
+		createRoot(vendorWrapper).render(<DashboardRoutes />);
 	}
 }

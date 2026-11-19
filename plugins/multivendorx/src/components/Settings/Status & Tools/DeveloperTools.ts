@@ -19,6 +19,10 @@ export default {
 			type: 'section',
 			icon: 'database',
 			title: __('Cache & Database Tools', 'multivendorx'),
+			desc: __(
+				'Clear cached data and reset stored statistics.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'transients',
@@ -48,11 +52,14 @@ export default {
 			method: 'POST',
 		},
 		{
-			key: 'separator_content',
+			key: 'separator_content_maintenance_tools',
 			type: 'section',
 			icon: 'tools',
 			title: __('Maintenance Tools', 'multivendorx'),
-			desc: __('', 'multivendorx'),
+			desc: __(
+				'Recreate the MultiVendorX pages and turn on detailed logging.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'default_pages',
@@ -84,11 +91,14 @@ export default {
 			look: 'toggle',
 		},
 		{
-			key: 'separator_content',
+			key: 'separator_content_version_control',
 			type: 'section',
 			icon: 'version-control',
 			title: __('Version Control', 'multivendorx'),
-			desc: __('', 'multivendorx'),
+			desc: __(
+				'Go back to an earlier MultiVendorX version if an update causes trouble.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'store_registration_page',
@@ -109,11 +119,14 @@ export default {
 			],
 		},
 		{
-			key: 'separator_content',
+			key: 'separator_content_store_dashboard_styling',
 			type: 'section',
 			icon: 'css',
 			title: __('Store dashboard styling', 'multivendorx'),
-			desc: __('', 'multivendorx'),
+			desc: __(
+				'Add your own CSS to change how the store dashboard looks.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'custom_css_product_page',
@@ -125,12 +138,15 @@ export default {
 			label: __('Store dashboard custom CSS', 'multivendorx'),
 		},
 		{
-			key: 'separator_content',
+			key: 'separator_content_notification_events_handling',
 			type: 'section',
 			icon: 'notification',
 			wrapperClass: 'danger',
 			title: __('Notification Events Handling', 'multivendorx'),
-			desc: __('', 'multivendorx'),
+			desc: __(
+				'How long notifications are kept, and which of their fields stores can change.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'clear_notifications',

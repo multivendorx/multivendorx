@@ -22,6 +22,10 @@ declare global {
 		restUrl: string;
 		nonce: string;
 		khali_dabba: string | boolean;
+		/** The admin's first name (or display name), for the dashboard greeting; empty when logged out. */
+		user_first_name?: string;
+		/** Ids of the modules that are on. */
+		active_modules?: string[];
 		tab_name: string;
 		order_statuses?: { label: string; value: string }[];
 		admin_settings: any;
@@ -68,6 +72,8 @@ declare global {
 		pro_data: {
 			version: string | boolean;
 			manage_plan_url: string;
+			/** Settings → License's form, from MultiVendorX Pro (LicenseManager::get_settings_form_data()). */
+			license?: unknown;
 		};
 		shop_url: string;
 		admin_url: string;

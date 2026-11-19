@@ -1,0 +1,199 @@
+// Entry stylesheet for the MultiVendorX admin app (imported once, from src/app.tsx; the store dashboard doesn't load it).
+
+// design-system.scss restyles zyra's building blocks; _table-and-controls.scss fixes the table, select and page
+// container spacing. The rules below restyle zyra's settings tables, shortcode lists and inline notices, as in the other plugins.
+@use './design-system';
+@use './table-and-controls';
+
+// Settings → System: the log viewer (zyra's `log` field) takes the full width of its card instead of the control
+// column of the two-column row.
+#admin-main-wrapper.admin-main-wrapper .multivendorx-settings .settings-right-section .form-group:has(.section-log-container, .log-container-wrapper) {
+	grid-template-columns: minmax(0, 1fr);
+
+	.section-log-container,
+	.log-container-wrapper {
+		width: 100%;
+		max-width: none;
+	}
+}
+
+// Settings → Pages & Shortcodes: zyra's shortcode library draws its names at 20px and its descriptions, notes and
+// argument tables at 14–17px. Bring them onto the settings scale (14px titles, 13px text) used by every other card.
+#admin-main-wrapper.admin-main-wrapper .shortcode-wrapper {
+	.shortcode-title {
+		font-size: 0.875rem;
+		font-weight: 600;
+		line-height: 1.4;
+	}
+
+	.shortcode-title code {
+		font-size: 0.75rem;
+	}
+
+	.des,
+	.no-args-message,
+	th,
+	td {
+		font-size: 0.8125rem;
+		line-height: 1.5;
+	}
+}
+
+// Settings tables (zyra's multi-checkbox-table: Access Rules, PDF delivery mode): zyra draws a narrow label column (so
+// labels wrap), centred 16px headers and purple zebra rows. Lay them out like the rest of the settings cards: a
+// bordered table, one hairline per row, small headers.
+#admin-main-wrapper.admin-main-wrapper .multi-input-table {
+	border: 0.0625rem solid var(--mvx-border);
+	border-radius: var(--mvx-radius);
+	font-size: 0.8125rem;
+
+	thead {
+		position: static;
+		background: var(--mvx-surface-hover);
+		border-bottom: 0.0625rem solid var(--mvx-border);
+		border-radius: var(--mvx-radius) var(--mvx-radius) 0 0;
+	}
+
+	thead tr,
+	tbody tr {
+		padding: 0.625rem 0.75rem;
+	}
+
+	th,
+	td {
+		flex: 1 1 0;
+		padding: 0 0.5rem;
+	}
+
+	th {
+		color: var(--mvx-muted);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
+
+	th:first-child,
+	td:first-child {
+		flex: 0 0 8rem;
+		max-width: none;
+	}
+
+	tbody {
+		border: 0;
+	}
+
+	tbody tr,
+	tbody tr:nth-child(odd) {
+		background: var(--mvx-surface);
+	}
+
+	tbody tr + tr {
+		border-top: 0.0625rem solid var(--mvx-border-soft);
+	}
+
+	tbody tr:last-child {
+		border-radius: 0 0 var(--mvx-radius) var(--mvx-radius);
+	}
+
+	td:first-child {
+		justify-content: flex-start;
+		color: var(--mvx-ink);
+		font-weight: 500;
+	}
+}
+
+// zyra repeats a Pro field's badge above its table; the field label already carries one. `#wpbody` matches the
+// design system's badge rule, which sets its display.
+#wpbody .settings-input-content > .admin-tag.pro-tag:has(+ .multi-input-table) {
+	display: none;
+}
+
+// PDF delivery mode: a narrow two-checkbox table, so its labels get the room the checkbox columns don't need.
+#admin-main-wrapper.admin-main-wrapper [class~='gridTable'] .multi-input-table {
+	th:first-child,
+	td:first-child {
+		flex-basis: 12rem;
+	}
+}
+
+// Access Rules: the table takes the card's full width, with headers and selects left-aligned and each select filling
+// its column.
+#admin-main-wrapper.admin-main-wrapper .access-rules-table {
+	.settings-input-content {
+		overflow: visible;
+	}
+
+	.multi-input-table {
+		th,
+		td {
+			justify-content: flex-start;
+		}
+
+		td:first-child {
+			white-space: nowrap;
+		}
+
+		.multi-field-cell,
+		.form-select-field {
+			width: 100%;
+		}
+	}
+}
+
+// Pages & Shortcodes: the argument table under a shortcode gets the same light header and hairlines as the other
+// settings tables, in place of zyra's purple header band.
+#admin-main-wrapper.admin-main-wrapper .shortcode-wrapper table {
+	overflow: hidden;
+	border: 0.0625rem solid var(--mvx-border);
+	border-radius: var(--mvx-radius);
+	border-collapse: separate;
+	border-spacing: 0;
+
+	th,
+	td {
+		padding: 0.625rem 0.75rem;
+		background: var(--mvx-surface);
+		text-align: left;
+		vertical-align: top;
+	}
+
+	th {
+		background: var(--mvx-surface-hover);
+		border-bottom: 0.0625rem solid var(--mvx-border);
+		color: var(--mvx-muted);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
+
+	td b {
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		font-weight: 500;
+	}
+}
+
+// Inline notices inside settings cards (e.g. "Quote email templates are coming soon"): zyra sets their text at 17px.
+#admin-main-wrapper.admin-main-wrapper .settings-input-content .ui-notice .notice-text,
+#admin-main-wrapper.admin-main-wrapper .settings-input-content .ui-notice .notice-desc {
+	font-size: 0.8125rem;
+	line-height: 1.5;
+}
+
+// Guided tour (components/Tour/Tours.tsx): the popover has no slide (POPOVER_STYLES), so fade it in briefly to hide
+// the frame before it is placed at its target. Moving between steps of one screen reuses the popover, so this runs
+// only when the tour starts or resumes on a new screen.
+.tour-content {
+	animation: multivendorx-tour-arrive 0.15s ease-out 0.1s both;
+}
+
+@keyframes multivendorx-tour-arrive {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}

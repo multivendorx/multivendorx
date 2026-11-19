@@ -158,7 +158,7 @@ export default {
 		},
 
 		{
-			key: 'separator_content',
+			key: 'separator_content_sku_generation',
 			type: 'section',
 			icon: 'product',
 			desc: __(
@@ -231,7 +231,7 @@ export default {
 			],
 		},
 		{
-			key: 'separator_content',
+			key: 'separator_content_related_products_listings_source',
 			type: 'section',
 			icon: 'grouped',
 			desc: __(

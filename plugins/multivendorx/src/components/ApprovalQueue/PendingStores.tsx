@@ -8,6 +8,9 @@ import { ButtonInput, TextAreaInput } from '@zyra/inputs';
 import { TableCard, QueryProps } from '@zyra/table';
 
 import { formatDate, formatLocalDate, getUrl } from '@/services/commonFunction';
+import ListGate from '../Popup/ListGate';
+import useNoRecordsYet from '../Popup/useNoRecordsYet';
+import { SAMPLE_PENDING_STORES } from '../Popup/sampleRows';
 
 const PendingStores: React.FC<object> = () => {
 	const [rows, setRows] = useState([]);
@@ -100,7 +103,7 @@ const PendingStores: React.FC<object> = () => {
 					icon: 'eye',
 					onClick: (row) => {
 						window.location.assign(getUrl(row.id, 'store', 'edit'));
-					}
+					},
 				},
 				{
 					label: __('Approve', 'multivendorx'),
@@ -159,14 +162,15 @@ const PendingStores: React.FC<object> = () => {
 			});
 	};
 
-	const infoRows = rows.map((row: any) => ({
+	/** A record as a table row; the sample rows go through it too, so they look like real ones. */
+	const toInfoRow = (row: any) => ({
 		...row,
 		info_icon: 'store-inventory',
 		info_link: getUrl(row.id, 'store', 'edit'),
 		info_descriptions: row.description
 			? [
 					{
-						label: __('Desc', 'multivendorx'),
+						label: __('About', 'multivendorx'),
 						icon: 'text',
 						value: String(row.description)
 							.replace(/<[^>]*>/g, '')
@@ -176,22 +180,84 @@ const PendingStores: React.FC<object> = () => {
 				]
 			: [],
 		info_badges: [{ text: formatDate(row.applied_on), color: 'blue' }],
-	}));
+	});
+	const infoRows = rows.map(toInfoRow);
+
+	const sampleRowsData = SAMPLE_PENDING_STORES;
+	const { props: gatedProps, hasNoRecords } = useNoRecordsYet({
+		rows: infoRows,
+		isLoading,
+		onQueryUpdate: doRefreshTableData,
+	});
 
 	return (
 		<>
-			<TableCard
-				headers={headers}
-				variant="transparent"
-				rows={infoRows}
-				totalRows={totalRows}
-				isLoading={isLoading}
-				onQueryUpdate={doRefreshTableData}
-				ids={rowIds}
-				search={{}}
-				filters={filters}
-				format={appLocalizer.date_format}
-			/>
+			<ListGate
+				feature={{
+					title: __('Stores awaiting approval', 'multivendorx'),
+					description: '',
+					icon: 'storefront',
+				}}
+				sample={
+					<TableCard
+						headers={headers}
+						variant="transparent"
+						search={{
+							placeholder: __('Search stores…', 'multivendorx'),
+						}}
+						filters={filters}
+						format={appLocalizer.date_format}
+						rows={sampleRowsData.map(toInfoRow)}
+						totalRows={sampleRowsData.length}
+					/>
+				}
+				isEmpty={hasNoRecords}
+				empty={{
+					heading: __(
+						'No stores waiting for approval',
+						'multivendorx'
+					),
+					description: __(
+						'When registration needs your approval, each new store waits here until you approve or reject it.',
+						'multivendorx'
+					),
+					actions: (
+						<>
+							<a
+								className="mvx-locked-button"
+								href={'#&tab=settings&subtab=registration'}
+							>
+								{__('Registration settings', 'multivendorx')}
+							</a>
+							<a
+								className="mvx-locked-link"
+								href={'#&tab=stores'}
+							>
+								{__('View all stores', 'multivendorx')}
+							</a>
+						</>
+					),
+					note: __(
+						'A preview with sample stores. New applications show here.',
+						'multivendorx'
+					),
+				}}
+			>
+				<TableCard
+					headers={headers}
+					variant="transparent"
+					rows={infoRows}
+					totalRows={totalRows}
+					isLoading={isLoading}
+					onQueryUpdate={gatedProps.onQueryUpdate}
+					ids={rowIds}
+					search={{
+						placeholder: __('Search stores…', 'multivendorx'),
+					}}
+					filters={filters}
+					format={appLocalizer.date_format}
+				/>
+			</ListGate>
 
 			{/* Reject Popup */}
 			{rejectPopupOpen && (

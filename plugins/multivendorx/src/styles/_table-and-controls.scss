@@ -1,0 +1,270 @@
+// Scoped to the admin app (`#admin-main-wrapper`): the store dashboard uses the same zyra tables and selects.
+// Table, select and page-container fixes shared with VuloCart's admin (vulocart/src/app/app.scss).
+// zyra gives every page container a 1.5rem (!important) top margin, which left a tall empty band above the page
+// header. The page background already provides the breathing room, so the header starts right under the top bar.
+
+#admin-main-wrapper.admin-main-wrapper .container-wrapper.general-wrapper {
+	margin-top: 0 !important;
+}// Page headers sit flush with the cards under them: zyra gives the title block its own side margins and padding,
+// which pushed the title and the header buttons inside the table's left and right edges.
+
+
+#admin-main-wrapper.admin-main-wrapper .container-wrapper.general-wrapper .title-section {
+	margin: 0;
+
+	// 1rem on top, so every page title starts at the same height.
+	padding: 1rem 0 0.5rem;
+}// The table's filter bar (category, status, bulk actions) shrink-wraps its zyra selects to ~64px, which cuts off the
+// placeholder and the chosen value. Give each one a width that fits its content.
+
+
+#admin-main-wrapper.admin-main-wrapper .table-filter .group-field {
+	flex: 0 0 auto;
+	width: 12rem;
+	min-width: 12rem;
+	max-width: 16rem;
+
+	.form-select-field,
+	.form-select-field .select-wrapper,
+	.form-select-field .select-prefix__control {
+		width: 100% !important;
+		min-width: 0 !important;
+		max-width: none !important;
+	}
+}// react-select (zyra SelectInput) pads its value/input containers and inherits WP's `line-height: 2` on its search
+// input, which made every dropdown taller than the text inputs beside it. Neutralise that once for all pages; each
+// page sets the control's own height.
+
+
+#admin-main-wrapper.admin-main-wrapper .form-select-field {
+	// zyra pins text inputs to 2rem (!important), so dropdowns match: 2rem + the 1px borders of the input wrapper.
+	.select-prefix__control {
+		box-sizing: border-box;
+		min-height: calc(2rem + 2px);
+	}
+
+	.select-prefix__value-container {
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+
+	.select-prefix__input-container {
+		margin: 0;
+		padding: 0;
+	}
+
+	.select-prefix__input-container input,
+	.select-prefix__input {
+		min-height: 0;
+		line-height: 1.5;
+	}
+
+	.select-prefix__indicator {
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+}// zyra sizes header cells (`width: 100%`) and body cells (`flex: 1 0 0`) with different rules, caps the Actions
+// heading at 6rem while the Actions cell beside buttons grows, and pads the two differently - so every column drifts
+// out from under its heading. Same share and padding for both rows; the fixed narrow columns (checkbox, id, drag,
+// expand) already match and keep zyra's sizes. `body` outranks zyra's styles, which are injected after this sheet.
+
+
+#admin-main-wrapper.admin-main-wrapper .admin-table-wrapper .table-wrapper .admin-table {
+	.admin-table-header .header-row .header-col,
+	.admin-table-body .admin-row .admin-column {
+		&:not(.select, .id, .drag, .expand) {
+			flex: 1 1 0;
+			width: auto;
+			min-width: 0;
+			max-width: none;
+			box-sizing: border-box;
+			padding-left: 0.85rem;
+			padding-right: 0.85rem;
+		}
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .admin-table-wrapper .info-item .name {
+	font-size: 0.9rem !important;
+	font-weight: 600 !important;
+}// Row actions in every zyra table (Quotation Requests, Wholesale Users, Rules, and the actions Pro adds). The one place this look
+// is defined.
+// - Plain actions (no `type`) are icons: zyra shows the first two as 32px icon buttons with the label as a tooltip and
+//   the rest in a "more" menu. Pages list navigation/CRUD this way, with Delete last (red in the menu).
+// - `type: 'button'` actions are workflow verbs that need words: compact outlined
+//   buttons, without their icon.
+// Not scoped to `.admin-main-wrapper`, so a table mounted outside it still matches.
+
+
+#admin-main-wrapper.admin-main-wrapper .admin-table-wrapper .table-wrapper .admin-table .admin-column.action .table-action,
+#admin-main-wrapper.admin-main-wrapper .admin-table-wrapper.admin-table-wrapper .table-action {
+	justify-content: flex-end;
+	align-items: center;
+	gap: 0.125rem;
+
+	.inline-actions,
+	.action-icons {
+		gap: 0.125rem;
+		padding: 0;
+	}
+
+	.inline-actions .tooltip-wrapper > i,
+	.action-icons > i {
+		box-sizing: border-box;
+		width: 2rem;
+		height: 2rem;
+		padding: 0;
+		align-items: center;
+		justify-content: center;
+		border-radius: 0.5rem;
+		background: transparent;
+		color: #6b6f80;
+		font-size: 1.0625rem;
+		transition: background-color 0.12s ease, color 0.12s ease;
+
+		&:hover {
+			background: #f1effd;
+			color: var(--mvx-primary, #5007aa);
+		}
+	}
+
+	// A delete icon shown inline warns on hover.
+	.inline-actions .tooltip-wrapper > i.adminfont-delete:hover {
+		background: #fef2f2;
+		color: #dc2626;
+	}
+
+	// Workflow verbs stay as words, as compact outlined buttons without icons.
+	.table-action-buttons {
+		display: flex;
+		align-items: center;
+		gap: 0.375rem;
+		margin-right: 0.25rem;
+
+		.buttons-wrapper {
+			margin: 0;
+		}
+
+		.admin-btn {
+			box-sizing: border-box;
+			height: 2rem;
+			min-height: 0;
+			padding: 0 0.75rem !important; // zyra's .btn-text-* zero the padding with !important.
+			gap: 0;
+			border: 1px solid #dcdfea;
+			border-radius: 0.5rem;
+			background: #fff;
+			color: #2c2b36;
+			font-size: 0.8125rem;
+			font-weight: 500;
+			line-height: 1;
+			white-space: nowrap;
+			text-decoration: none;
+			transition: background-color 0.12s ease, border-color 0.12s ease;
+
+			i {
+				display: none;
+			}
+
+			&:hover {
+				border-color: #c9c3f0;
+				background: #f5f4fb;
+				color: var(--mvx-primary, #5007aa);
+			}
+
+			&.btn-text-green {
+				color: #15803d;
+			}
+
+			&.btn-text-red {
+				color: #dc2626;
+
+				&:hover {
+					border-color: #fecaca;
+					background: #fef2f2;
+				}
+			}
+		}
+	}
+
+	.action-icons:has(.action-dropdown.show) > i {
+		background: #f1effd;
+		color: var(--mvx-primary, #5007aa);
+	}
+
+	.inline-actions .tooltip-name {
+		font-size: 0.75rem;
+		white-space: nowrap;
+	}
+
+	.action-dropdown {
+		top: calc(100% + 0.25rem);
+		right: 0;
+		left: auto;
+		width: auto;
+		min-width: 11rem;
+		border: 1px solid #e4e6ef;
+		border-radius: 0.625rem;
+		box-shadow: 0 0.5rem 1.5rem rgb(22 21 29 / 12%);
+		z-index: 20;
+
+		ul {
+			gap: 0.125rem;
+			padding: 0.3125rem;
+		}
+
+		li {
+			height: 2.125rem;
+			padding: 0 0.625rem;
+			gap: 0.625rem;
+			border-radius: 0.375rem;
+			color: #2c2b36;
+			font-size: 0.875rem;
+			font-weight: 500;
+			white-space: nowrap;
+
+			i {
+				width: 1rem;
+				padding: 0;
+				justify-content: center;
+				color: #6b6f80;
+				font-size: 1rem;
+			}
+
+			span {
+				font-size: inherit;
+				color: inherit;
+			}
+
+			&:hover {
+				background: #f5f4fb;
+			}
+
+			&:has(> .adminfont-delete) {
+				color: #dc2626;
+
+				&:not(:first-child) {
+					position: relative;
+					margin-top: 0.3125rem;
+
+					&::before {
+						content: '';
+						position: absolute;
+						top: -0.25rem;
+						left: -0.3125rem;
+						right: -0.3125rem;
+						border-top: 1px solid #eceef4;
+					}
+				}
+
+				i {
+					color: #dc2626;
+				}
+
+				&:hover {
+					background: #fef2f2;
+				}
+			}
+		}
+	}
+}

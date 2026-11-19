@@ -2,11 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-
 import { EmailInput, TextInput, SelectInput } from '@zyra/inputs';
 import {
-	ContainerComponent,
-	ColumnComponent,
 	CardComponent,
 	FormGroupWrapperComponent,
 	FormGroupComponent,
@@ -16,6 +13,7 @@ import {
 import { getApiLink, CountryCodes, useModules } from '@zyra/core';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
+import type { SetupProgress } from './StoreTabLayout';
 
 // Define proper interfaces
 interface PhoneData {
@@ -107,12 +105,18 @@ interface StoreSettingsProps {
 	id: string | null;
 	data: StoreData | null;
 	onUpdate: (data: Record<string, string>) => void;
+	/** The Store profile card (name, description, logo, banner), built by EditStore, which saves those. */
+	profileCard?: React.ReactNode;
+	/** Tells the page's setup checklist which of its steps this form's last save filled in. */
+	onProgress?: (saved: SetupProgress) => void;
 }
 
 const StoreSettings: React.FC<StoreSettingsProps> = ({
 	id,
 	data,
 	onUpdate,
+	profileCard,
+	onProgress,
 }) => {
 	const [formData, setFormData] = useState<FormData>({});
 	const [stateOptions, setStateOptions] = useState<StateOption[]>([]);
@@ -423,6 +427,12 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 			data: updatedData,
 		})
 			.then(() => {
+				onProgress?.({
+					email: !!(updatedData.store_email as StoreEmail | undefined)
+						?.list?.length,
+					phone: !!updatedData.phone,
+					address: !!(updatedData.address && updatedData.city),
+				});
 				NoticeManager.add({
 					title: __('Success', 'multivendorx'),
 					message: __('Store saved successfully!', 'multivendorx'),
@@ -463,290 +473,303 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({
 		);
 	};
 
+	// One column of cards, as on every settings screen: what decides whether the store sells first (status, its
+	// link), then how to reach it, where it is, and its social links. Each field is a row: label and help on the
+	// left, the control on the right (store-page.scss).
 	return (
-		<>
-			<ContainerComponent>
-				<ColumnComponent grid={8}>
-					{/* Contact Information */}
-					<CardComponent title={__('Contact information', 'multivendorx')} titleIcon="mail" desc="Manage the store’s email addresses and phone number.">
-						<FormGroupWrapperComponent>
+		<div className="mvx-store-form">
+			{profileCard}
+			{/* Manage Store Status */}
+			<CardComponent
+				id="store-status"
+				title={__('Manage store status', 'multivendorx')}
+				titleIcon="storefront"
+				desc={__(
+					'Whether this store can sell, and what it can do in its dashboard.',
+					'multivendorx'
+				)}
+			>
+				<FormGroupWrapperComponent>
+					<FormGroupComponent
+						label={__('Current status', 'multivendorx')}
+						desc={__(
+							'What each status allows is set in Settings → Store status.',
+							'multivendorx'
+						)}
+					>
+						<SelectInput
+							name="status"
+							value={formData.status || ''}
+							options={statusOptions}
+							onChange={(value) => {
+								if (!value || Array.isArray(value)) {
+									return;
+								}
+								const updated = {
+									...formData,
+									status: value,
+								};
+								onUpdate({ status: value });
+								setFormData(updated);
+								autoSave(updated);
+							}}
+						/>
+					</FormGroupComponent>
+				</FormGroupWrapperComponent>
+			</CardComponent>
+			{/* Manage Storefront Link */}
+			<CardComponent
+				id="store-slug"
+				title={__('Manage storefront link', 'multivendorx')}
+				titleIcon="storefront"
+				desc={__(
+					'The web address of this store’s public page.',
+					'multivendorx'
+				)}
+			>
+				<FormGroupWrapperComponent>
+					<FormGroupComponent
+						label={__('Storefront link', 'multivendorx')}
+						desc={__(
+							'Letters, numbers and hyphens. Changing it breaks links shared before.',
+							'multivendorx'
+						)}
+						notice={errorMsg.slug}
+					>
+						<TextInput
+							name="slug"
+							value={formData.slug || ''}
+							onChange={(val) => handleChange('slug', val)}
+						/>
+						<div className="mvx-store-url">
+							{__('Store URL', 'multivendorx')} :{' '}
+							<a
+								className="link-item"
+								target="_blank"
+								rel="noopener noreferrer"
+								href={`${appLocalizer.store_page_url}${formData.slug || ''}`}
+							>
+								{`${appLocalizer.store_page_url}${formData.slug || ''}`}{' '}
+								<i className="adminfont-external"></i>
+							</a>
+						</div>
+					</FormGroupComponent>
+				</FormGroupWrapperComponent>
+			</CardComponent>
+
+			{/* Contact Information */}
+			<CardComponent
+				title={__('Contact information', 'multivendorx')}
+				titleIcon="mail"
+				desc={__(
+					'How customers and the marketplace reach this store.',
+					'multivendorx'
+				)}
+			>
+				<FormGroupWrapperComponent>
+					<FormGroupComponent
+						label={__('Store email(s)', 'multivendorx')}
+						desc={__(
+							'Every address gets the store’s notifications. The starred one is shown on the storefront.',
+							'multivendorx'
+						)}
+					>
+						<EmailInput
+							value={data?.store_email?.list || []}
+							primary={data?.store_email?.primary || ''}
+							enablePrimary={true}
+							onChange={(list, primary) =>
+								saveEmails(list, primary)
+							}
+						/>
+					</FormGroupComponent>
+
+					<FormGroupComponent
+						label={__('Phone', 'multivendorx')}
+						desc={__(
+							'Country code, then the number.',
+							'multivendorx'
+						)}
+						notice={errorMsg.phone}
+					>
+						<div className="mvx-phone-input">
+							<SelectInput
+								type="single-select"
+								name="country_code"
+								size={10}
+								value={formData.country_code || ''}
+								options={CountryCodes}
+								onChange={(selected) =>
+									handleChange(
+										'country_code',
+										selected as string
+									)
+								}
+							/>
+							<TextInput
+								name="phone"
+								type="number"
+								size={12}
+								value={formData.phone || ''}
+								onChange={(value) =>
+									handleChange('phone', value)
+								}
+							/>
+						</div>
+					</FormGroupComponent>
+					{/* Hidden coordinates */}
+					<input
+						type="hidden"
+						name="location_lat"
+						value={addressData.location_lat}
+					/>
+					<input
+						type="hidden"
+						name="location_lng"
+						value={addressData.location_lng}
+					/>
+				</FormGroupWrapperComponent>
+			</CardComponent>
+			{/* Communication Address */}
+			<CardComponent
+				title={__('Communication address', 'multivendorx')}
+				titleIcon="location"
+				desc={__(
+					'The store’s business address, used on invoices and the storefront.',
+					'multivendorx'
+				)}
+			>
+				<FormGroupWrapperComponent>
+					<FormGroupComponent
+						label={__('Street address', 'multivendorx')}
+						htmlFor="address"
+					>
+						<TextInput
+							name="address"
+							value={addressData.address}
+							onChange={(value) =>
+								handleAddressChange('address', value)
+							}
+						/>
+					</FormGroupComponent>
+
+					<FormGroupComponent
+						cols={6}
+						label={__('City', 'multivendorx')}
+						htmlFor="City"
+					>
+						<TextInput
+							name="city"
+							value={addressData.city}
+							onChange={(value) =>
+								handleAddressChange('city', value)
+							}
+						/>
+					</FormGroupComponent>
+					<FormGroupComponent
+						cols={6}
+						label={__('Zip code', 'multivendorx')}
+						htmlFor="zip"
+					>
+						<TextInput
+							name="zip"
+							value={addressData.zip}
+							onChange={(value) =>
+								handleAddressChange('zip', value)
+							}
+						/>
+					</FormGroupComponent>
+
+					{/* Country and State */}
+					<FormGroupComponent
+						cols={6}
+						label={__('Country', 'multivendorx')}
+						htmlFor="country"
+					>
+						<SelectInput
+							name="country"
+							value={formData.country || ''}
+							options={appLocalizer.country_list || []}
+							onChange={handleCountryChange}
+						/>
+					</FormGroupComponent>
+					<FormGroupComponent
+						cols={6}
+						label={__('State', 'multivendorx')}
+						htmlFor="state"
+					>
+						<SelectInput
+							name="state"
+							value={formData.state || ''}
+							options={stateOptions}
+							onChange={handleStateChange}
+						/>
+					</FormGroupComponent>
+					{/* Map Component */}
+					<FormGroupComponent>
+						{renderMapComponent()}
+					</FormGroupComponent>
+				</FormGroupWrapperComponent>
+				{/* Hidden coordinates */}
+				<input
+					type="hidden"
+					name="location_lat"
+					value={addressData.location_lat}
+				/>
+				<input
+					type="hidden"
+					name="location_lng"
+					value={addressData.location_lng}
+				/>
+			</CardComponent>
+			{/* Social Information */}
+			<CardComponent
+				title={__('Social links', 'multivendorx')}
+				titleIcon="social-share"
+				desc={__(
+					'Shown on the storefront so customers can follow the store.',
+					'multivendorx'
+				)}
+			>
+				{(
+					[
+						'facebook',
+						'twitter',
+						'linkedin',
+						'youtube',
+						'instagram',
+						'pinterest',
+					] as const
+				).map((network) => {
+					const iconClass = `${network} ${network}`;
+					const defaultUrl = `https://${network === 'twitter' ? 'x' : network}.com/`;
+
+					return (
+						<FormGroupWrapperComponent key={network}>
 							<FormGroupComponent
-								label={__('Store email(s)', 'multivendorx')}
-								desc={
-									<>
-										<b>{__('Tip:', 'multivendorx')}</b>
-										{__(
-											'You can add multiple email addresses. All added emails will receive notifications.',
-											'multivendorx'
-										)}
-										<br />
-										<b>
-											{__(
-												'Primary email:',
-												'multivendorx'
-											)}
-										</b>
-										{__(
-											'Click the star icon to set an email as primary. This email will appear on your storefront, and all other email IDs will be hidden from display.',
-											'multivendorx'
-										)}
-									</>
+								icon={iconClass}
+								label={
+									network === 'twitter'
+										? 'X'
+										: network.charAt(0).toUpperCase() +
+											network.slice(1)
 								}
 							>
-								<EmailInput
-									value={data?.store_email?.list || []}
-									primary={data?.store_email?.primary || ''}
-									enablePrimary={true}
-									onChange={(list, primary) =>
-										saveEmails(list, primary)
-									}
-								/>
-							</FormGroupComponent>
-
-							<FormGroupComponent
-								label={__('Phone', 'multivendorx')}
-								notice={errorMsg.phone}
-							>
-								<SelectInput
-									type="single-select"
-									name="country_code"
-									size={10}
-									value={formData.country_code || ''}
-									options={CountryCodes}
-									onChange={(selected) =>
-										handleChange(
-											'country_code',
-											selected as string
-										)
-									}
-								/>
 								<TextInput
-									name="phone"
-									type="number"
-									size={12}
-									value={formData.phone || ''}
-									onChange={(value) =>
-										handleChange('phone', value)
+									name={network}
+									value={
+										formData[network]?.trim() || defaultUrl
 									}
-								/>
-							</FormGroupComponent>
-							{/* Hidden coordinates */}
-							<input
-								type="hidden"
-								name="location_lat"
-								value={addressData.location_lat}
-							/>
-							<input
-								type="hidden"
-								name="location_lng"
-								value={addressData.location_lng}
-							/>
-						</FormGroupWrapperComponent>
-					</CardComponent>
-					{/* Communication Address */}
-					<CardComponent title={__('Communication address', 'multivendorx')} titleIcon="location" desc="Set the store’s official business address and location.">
-						<FormGroupWrapperComponent>
-							<FormGroupComponent
-								label={__('Address *', 'multivendorx')}
-								htmlFor="address"
-							>
-								<TextInput
-									name="address"
-									value={addressData.address}
-									onChange={(value) =>
-										handleAddressChange('address', value)
+									onChange={(val: string) =>
+										handleChange(network, val)
 									}
-								/>
-							</FormGroupComponent>
-
-							<FormGroupComponent
-								cols={6}
-								label={__('City', 'multivendorx')}
-								htmlFor="City"
-							>
-								<TextInput
-									name="city"
-									value={addressData.city}
-									onChange={(value) =>
-										handleAddressChange('city', value)
-									}
-								/>
-							</FormGroupComponent>
-							<FormGroupComponent
-								cols={6}
-								label={__('Zip code', 'multivendorx')}
-								htmlFor="zip"
-							>
-								<TextInput
-									name="zip"
-									value={addressData.zip}
-									onChange={(value) =>
-										handleAddressChange('zip', value)
-									}
-								/>
-							</FormGroupComponent>
-
-							{/* Country and State */}
-							<FormGroupComponent
-								cols={6}
-								label={__('Country', 'multivendorx')}
-								htmlFor="country"
-							>
-								<SelectInput
-									name="country"
-									value={formData.country || ''}
-									options={appLocalizer.country_list || []}
-									onChange={handleCountryChange}
-								/>
-							</FormGroupComponent>
-							<FormGroupComponent
-								cols={6}
-								label={__('State', 'multivendorx')}
-								htmlFor="state"
-							>
-								<SelectInput
-									name="state"
-									value={formData.state || ''}
-									options={stateOptions}
-									onChange={handleStateChange}
-								/>
-							</FormGroupComponent>
-							{/* Map Component */}
-							<FormGroupComponent>{renderMapComponent()}</FormGroupComponent>
-						</FormGroupWrapperComponent>
-						{/* Hidden coordinates */}
-						<input
-							type="hidden"
-							name="location_lat"
-							value={addressData.location_lat}
-						/>
-						<input
-							type="hidden"
-							name="location_lng"
-							value={addressData.location_lng}
-						/>
-					</CardComponent>
-				</ColumnComponent>
-				<ColumnComponent grid={4}>
-					{/* Manage Store Status */}
-					<CardComponent
-						id="store-status"
-						title={__('Manage store status', 'multivendorx')}
-						titleIcon="storefront"
-						desc="Set the store’s official business address and location."
-					>
-						<FormGroupWrapperComponent>
-							<FormGroupComponent
-								label={__('Current status', 'multivendorx')}
-								desc={__(
-									'Learn what permissions each status provides, visit Store satus settings',
-									'multivendorx'
-								)}
-							>
-								<SelectInput
-									name="status"
-									value={formData.status || ''}
-									options={statusOptions}
-									onChange={(value) => {
-										if (!value || Array.isArray(value)) {
-											return;
-										}
-										const updated = {
-											...formData,
-											status: value,
-										};
-										onUpdate({ status: value });
-										setFormData(updated);
-										autoSave(updated);
-									}}
 								/>
 							</FormGroupComponent>
 						</FormGroupWrapperComponent>
-					</CardComponent>
-					{/* Manage Storefront Link */}
-					<CardComponent
-						id="store-slug"
-						title={__('Manage storefront link', 'multivendorx')}
-						titleIcon="storefront"
-						desc="View and manage the store’s public storefront URL."
-					>
-						<FormGroupWrapperComponent>
-							<FormGroupComponent
-								label={__(
-									'Current storefront link',
-									'multivendorx'
-								)}
-								notice={errorMsg.slug}
-							>
-								<TextInput
-									name="slug"
-									value={formData.slug || ''}
-									onChange={(val) =>
-										handleChange('slug', val)
-									}
-								/>
-								<div className="settings-metabox-description slug">
-									{__('Store URL', 'multivendorx')} :{' '}
-									<a
-										className="link-item"
-										target="_blank"
-										rel="noopener noreferrer"
-										href={`${appLocalizer.store_page_url}${formData.slug || ''}`}
-									>
-										{`${appLocalizer.store_page_url}${formData.slug || ''}`}{' '}
-										<i className="adminfont-external"></i>
-									</a>
-								</div>
-							</FormGroupComponent>
-						</FormGroupWrapperComponent>
-					</CardComponent>
-
-					{/* Social Information */}
-					<CardComponent title={__('Social information', 'multivendorx')} titleIcon="social-share" desc="Add social media links to connect customers with your store.">
-						{(
-							[
-								'facebook',
-								'twitter',
-								'linkedin',
-								'youtube',
-								'instagram',
-								'pinterest',
-							] as const
-						).map((network) => {
-							const iconClass = `${network} ${network}`;
-							const defaultUrl = `https://${network === 'twitter' ? 'x' : network}.com/`;
-
-							return (
-								<FormGroupWrapperComponent key={network}>
-									<FormGroupComponent
-										icon={iconClass}
-										label={
-											network === 'twitter'
-												? 'X'
-												: network
-														.charAt(0)
-														.toUpperCase() +
-													network.slice(1)
-										}
-									>
-										<TextInput
-											name={network}
-											value={
-												formData[network]?.trim() ||
-												defaultUrl
-											}
-											onChange={(val: string) =>
-												handleChange(network, val)
-											}
-										/>
-									</FormGroupComponent>
-								</FormGroupWrapperComponent>
-							);
-						})}
-					</CardComponent>
-				</ColumnComponent>
-			</ContainerComponent>
-		</>
+					);
+				})}
+			</CardComponent>
+		</div>
 	);
 };
 

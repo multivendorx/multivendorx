@@ -28,10 +28,14 @@ const capabilityOptions = appLocalizer?.capabilities
 
 const staticOptions = [
 	{
-		key: 'section',
+		key: 'section_what_stores_can_change_after_approval',
 		type: 'section',
 		icon: 'wholesale',
 		title: __('What stores can change after approval', 'multivendorx'),
+		desc: __(
+			'Store details that stay editable once a store is live, and which changes need your approval.',
+			'multivendorx'
+		),
 	},
 	{
 		key: 'edit_store_info_activation',
@@ -73,7 +77,7 @@ const staticOptions = [
 ];
 
 const leadingSection = {
-	key: 'section',
+	key: 'section_store_role_capabilities',
 	type: 'section',
 	icon: 'wholesale',
 	title: __('Store role capabilities', 'multivendorx'),

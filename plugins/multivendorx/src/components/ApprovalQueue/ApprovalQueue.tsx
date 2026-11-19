@@ -3,10 +3,11 @@ import { useState, useEffect } from 'react';
 
 import { getApiLink, useModules } from '@zyra/core';
 import { NavigatorComponent } from '@zyra/components';
-import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { useLocation, Link } from 'react-router-dom';
 import { applyFilters } from '@wordpress/hooks';
+import { fetchQueueCounts } from '../../services/queueCounts';
+import '../queue-tabs.scss';
 import PendingStores from './PendingStores';
 import PendingProducts from './PendingProducts';
 import PendingCoupons from './PendingCoupons';
@@ -98,21 +99,7 @@ const ApprovalQueue = () => {
 			{ appLocalizer }
 		);
 
-		// execute all APIs
-		apiConfigs.forEach((config: any) => {
-			axios({
-				method: config.method || 'GET',
-				url: config.url,
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: config.params || {},
-			}).then((res) => {
-				const count = config.transform
-					? config.transform(res)
-					: Number(res.headers[config.header || 'x-wp-total']) || 0;
-
-				store.setCount(config.id, count);
-			});
-		});
+		fetchQueueCounts(apiConfigs, (id, count) => store.setCount(id, count));
 	}, []);
 
 	const { modules } = useModules();
@@ -126,16 +113,13 @@ const ApprovalQueue = () => {
 			content: {
 				id: 'stores',
 				headerTitle: __('Stores', 'multivendorx'),
-				headerDescription: __(
-					'Eager to join the marketplace',
-					'multivendorx'
-				),
-				settingTitle: __('Store in review queue', 'multivendorx'),
+				headerDescription: __('New store applications', 'multivendorx'),
+				settingTitle: __('Stores waiting for approval', 'multivendorx'),
 				settingSubTitle: __(
-					'Next in line! Approve or reject new store join requests.',
+					'Approve a store to open it on your marketplace, or reject it with a reason.',
 					'multivendorx'
 				),
-				headerIcon: 'storefront yellow',
+				headerIcon: 'storefront',
 			},
 		},
 		{
@@ -147,13 +131,16 @@ const ApprovalQueue = () => {
 			content: {
 				id: 'products',
 				headerTitle: __('Products', 'multivendorx'),
-				headerDescription: __('Pending your approval', 'multivendorx'),
-				settingTitle: __('Products awaiting review', 'multivendorx'),
-				settingSubTitle: __(
-					'Approve these listings to start generating sales in your marketplace.',
+				headerDescription: __(
+					'New listings from stores',
 					'multivendorx'
 				),
-				headerIcon: 'multi-product red',
+				settingTitle: __('Products waiting for review', 'multivendorx'),
+				settingSubTitle: __(
+					'Publish a listing to put it on sale, or reject it so the store can fix it.',
+					'multivendorx'
+				),
+				headerIcon: 'multi-product',
 			},
 		},
 		{
@@ -165,13 +152,16 @@ const ApprovalQueue = () => {
 			content: {
 				id: 'coupons',
 				headerTitle: __('Coupons', 'multivendorx'),
-				headerDescription: __('Need a quick review', 'multivendorx'),
-				settingTitle: __('Coupons up for review', 'multivendorx'),
-				settingSubTitle: __(
-					'Approve, decline, or tweak before they go live.',
+				headerDescription: __(
+					'Discounts stores created',
 					'multivendorx'
 				),
-				headerIcon: 'coupon green',
+				settingTitle: __('Coupons waiting for review', 'multivendorx'),
+				settingSubTitle: __(
+					'Publish a coupon so shoppers can use it, or reject it before it goes live.',
+					'multivendorx'
+				),
+				headerIcon: 'coupon',
 			},
 		},
 		{
@@ -181,18 +171,18 @@ const ApprovalQueue = () => {
 				id: 'withdrawal',
 				headerTitle: __('Withdrawals', 'multivendorx'),
 				headerDescription: __(
-					'Queued for disbursement',
+					'Stores asking to be paid',
 					'multivendorx'
 				),
 				settingTitle: __(
-					'Withdrawals awaiting approval',
+					'Withdrawals waiting for approval',
 					'multivendorx'
 				),
 				settingSubTitle: __(
-					'Review and process store payouts.',
+					'Approve a request to pay the store from its wallet.',
 					'multivendorx'
 				),
-				headerIcon: 'bank orange',
+				headerIcon: 'bank',
 			},
 		},
 		{
@@ -200,19 +190,13 @@ const ApprovalQueue = () => {
 			content: {
 				id: 'deactivate-requests',
 				headerTitle: __('Deactivations', 'multivendorx'),
-				headerDescription: __(
-					'Permanent store closure request',
-					'multivendorx'
-				),
-				settingTitle: __(
-					'Stores requesting deactivation',
-					'multivendorx'
-				),
+				headerDescription: __('Stores asking to close', 'multivendorx'),
+				settingTitle: __('Stores asking to close', 'multivendorx'),
 				settingSubTitle: __(
-					'Approve or reject marketplace joiners.',
+					'Approve to close the store for good, or reject to keep it open.',
 					'multivendorx'
 				),
-				headerIcon: 'rejecte teal',
+				headerIcon: 'rejecte',
 			},
 		},
 	];
@@ -233,7 +217,8 @@ const ApprovalQueue = () => {
 		...tab,
 		content: {
 			...tab.content,
-			count: counts[tab.content.id] || 0,
+			// Only a queue with something in it shows a count; zyra skips an empty count, so a clear queue stays quiet.
+			count: counts[tab.content.id] ? String(counts[tab.content.id]) : '',
 		},
 	}));
 
@@ -279,9 +264,10 @@ const ApprovalQueue = () => {
 			headerIcon="approval"
 			headerTitle={__('Approval Queue', 'multivendorx')}
 			headerDescription={__(
-				'Manage all pending administrative actions including approvals, payouts, and notifications.',
+				'Everything stores are waiting on you for: new stores, listings, coupons, payouts and closures.',
 				'multivendorx'
 			)}
+			className="mvx-queue-page"
 		/>
 	);
 };

@@ -969,76 +969,87 @@ class StoreUtil {
     }
 
     /**
+     * What is waiting for the marketplace admin, by kind: stores to approve, store products and coupons
+     * pending review, and stores with a withdrawal or a deactivation request.
+     *
+     * Withdrawals and deactivations are counted with one query each on the store meta table (a store
+     * counts when the meta value is set and not empty or "0"), not by loading every store.
+     *
+     * @return array{stores: int, products: int, coupons: int, withdrawals: int, deactivations: int}
+     */
+    public static function get_approval_queue_counts() {
+        global $wpdb;
+
+        $pending_stores = (int) self::get_store_information(
+            array(
+				'count'  => true,
+				'status' => 'pending',
+            )
+        );
+
+        $product_query = wc_get_products(
+            array(
+				'status'     => 'pending',
+				'limit'      => 1,
+				'paginate'   => true,
+				'meta_query' => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+					array(
+						'key'     => 'multivendorx_store_id',
+						'compare' => 'EXISTS',
+					),
+				),
+            )
+        );
+
+        $coupon_query = new \WP_Query(
+            array(
+				'post_type'      => 'shop_coupon',
+				'post_status'    => 'pending',
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+					array(
+						'key'     => 'multivendorx_store_id',
+						'compare' => 'EXISTS',
+					),
+				),
+            )
+        );
+
+        $store_table = $wpdb->prefix . Utill::TABLES['store'];
+        $meta_table  = $wpdb->prefix . Utill::TABLES['store_meta'];
+
+        $count_stores_with_meta = static function ( $meta_key ) use ( $wpdb, $store_table, $meta_table ) {
+            return (int) $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+                $wpdb->prepare(
+                    "SELECT COUNT( DISTINCT m.store_id ) FROM %i m INNER JOIN %i s ON s.ID = m.store_id
+                    WHERE m.meta_key = %s AND m.meta_value IS NOT NULL AND m.meta_value NOT IN ( '', '0' )",
+                    $meta_table,
+                    $store_table,
+                    $meta_key
+                )
+            );
+        };
+
+        return array(
+            'stores'        => $pending_stores,
+            'products'      => ! empty( $product_query->total ) ? (int) $product_query->total : 0,
+            'coupons'       => (int) $coupon_query->found_posts,
+            'withdrawals'   => $count_stores_with_meta( Utill::STORE_SETTINGS_KEYS['request_withdrawal_amount'] ),
+            'deactivations' => $count_stores_with_meta( Utill::STORE_SETTINGS_KEYS['deactivation_reason'] ),
+        );
+    }
+
+    /**
      * Count pending stores, products, coupons, withdrawal and deactivation requests
      * awaiting marketplace-admin action, for the admin "approval queue" badge.
      *
      * @return int
      */
     public static function get_approval_queue_count() {
-        $pending_stores   = (int) self::get_store_information(
-            array(
-				'count'  => true,
-				'status' => 'pending',
-            )
-        );
-        $product_query    = wc_get_products(
-            array(
-				'status'     => 'pending',
-				'limit'      => 1,
-				'paginate'   => true,
-				'meta_query' => array(
-					array(
-						'key'     => 'multivendorx_store_id',
-						'compare' => 'EXISTS',
-					),
-				),
-            )
-        );
-        $pending_products = ! empty( $product_query->total ) ? (int) $product_query->total : 0;
-
-        $query = new \WP_Query(
-            array(
-				'post_type'      => 'shop_coupon',
-				'post_status'    => 'pending',
-				'posts_per_page' => 1,
-				'fields'         => 'ids',
-				'meta_query'     => array(
-					array(
-						'key'     => 'multivendorx_store_id',
-						'compare' => 'EXISTS',
-					),
-				),
-            )
-        );
-
-        $pending_coupons = (int) $query->found_posts;
-
-        $all_stores                         = self::get_store_information();
-        $pending_withdrawal_count           = 0;
-        $pending_deactivation_request_count = 0;
-
-        foreach ( $all_stores as $store ) {
-            $store_meta = Store::get_store( (int) $store['ID'] );
-
-            if ( ! empty( $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['request_withdrawal_amount'] ] ) ) {
-                ++$pending_withdrawal_count;
-            }
-
-            if ( ! empty( $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['deactivation_reason'] ] ) ) {
-                ++$pending_deactivation_request_count;
-            }
-        }
-
-        $total =
-            $pending_stores +
-            $pending_products +
-            $pending_coupons +
-            $pending_withdrawal_count +
-            $pending_deactivation_request_count;
-
         return apply_filters(
             'multivendorx_approval_queue_count',
-            $total
+            array_sum( self::get_approval_queue_counts() )
         );
     }
 

@@ -1,0 +1,1254 @@
+// Dashboard insights (Insights.tsx), on MultiVendorX's design tokens (styles/design-system.scss). Status colours are kept
+// for state only (good / warning / critical / info) and always sit beside an icon and a text label.
+$mvx-good: #15803d;
+$mvx-good-bg: #ecfdf3;
+$mvx-warning: #b45309;
+$mvx-warning-bg: #fffbeb;
+$mvx-critical: #b91c1c;
+$mvx-critical-bg: #fef2f2;
+$mvx-info: #1d4ed8;
+$mvx-info-bg: #eff6ff;
+
+// Soft tints for the checklist's icon circles (ActivityListComponent takes any CSS colour).
+#admin-main-wrapper.admin-main-wrapper .mvx-dash {
+	--mvx-primary-soft: #f1ebfb;
+	--mvx-good-soft: #{$mvx-good-bg};
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights,
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-stack {
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights {
+	margin-bottom: 1.25rem;
+
+	h2 {
+		margin: 0;
+		padding: 0;
+		color: var(--mvx-ink, #1f1b3e);
+		font-size: 1rem;
+		font-weight: 600;
+		line-height: 1.4;
+	}
+
+	p {
+		margin: 0;
+	}
+
+	ul,
+	ol {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	li {
+		margin: 0;
+	}
+
+	a:focus-visible {
+		outline: 2px solid var(--mvx-primary, #5007aa);
+		outline-offset: 2px;
+		box-shadow: none;
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-empty {
+	color: var(--mvx-muted, #6b7280);
+	font-size: 0.875rem;
+	line-height: 1.5;
+}
+
+// ---- Setup ----
+// One vertical list: done steps are a checked line, the step to do now is the only one with text and a button, later
+// steps wait in grey. It replaces a separate "not connected" banner: the first step is the connection.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-steps {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+
+	> li {
+		position: relative;
+		display: flex;
+		gap: 0.875rem;
+		padding: 0 0 1.25rem;
+
+		&:last-child {
+			padding-bottom: 0;
+		}
+
+		// The rail between markers.
+		&:not(:last-child)::before {
+			content: "";
+			position: absolute;
+			top: 1.75rem;
+			bottom: 0.25rem;
+			left: 0.8125rem;
+			width: 1px;
+			background: var(--mvx-border, #e3e6ef);
+		}
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-step-marker {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 1.625rem;
+	height: 1.625rem;
+	border: 1px solid var(--mvx-border, #e3e6ef);
+	border-radius: 50%;
+	background: var(--mvx-surface, #fff);
+	color: var(--mvx-muted, #6b7280);
+	font-size: 0.75rem;
+	font-weight: 600;
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-step-body {
+	flex: 1;
+	min-width: 0;
+	padding-top: 0.1875rem;
+
+	strong {
+		display: block;
+		color: var(--mvx-ink, #1f1b3e);
+		font-size: 0.875rem;
+		font-weight: 600;
+		line-height: 1.4;
+	}
+
+	p {
+		max-width: 36rem;
+		margin-top: 0.25rem;
+		color: var(--mvx-muted, #6b7280);
+		font-size: 0.8125rem;
+		line-height: 1.55;
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-steps > li.is-current .mvx-insights-step-marker {
+	border-color: var(--mvx-primary, #5007aa);
+	color: var(--mvx-primary, #5007aa);
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-steps > li.is-done .mvx-insights-step-marker {
+	border-color: transparent;
+	background: $mvx-good-bg;
+	color: $mvx-good;
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-steps > li:is(.is-todo, .is-done) .mvx-insights-step-body strong {
+	color: var(--mvx-muted, #6b7280);
+	font-weight: 500;
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-step-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 1rem;
+	margin-top: 0.75rem;
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-progress {
+	overflow: hidden;
+	width: 8rem;
+	height: 0.25rem;
+	border-radius: 999px;
+	background: var(--mvx-border-soft, #eef0f6);
+
+	span {
+		display: block;
+		height: 100%;
+		border-radius: 999px;
+		background: var(--mvx-primary, #5007aa);
+	}
+}
+
+// ---- Enrollment trend ----
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-chart-plot {
+	position: relative;
+	height: 8rem;
+	margin-left: 2rem;
+}
+
+// Three recessive gridlines (max, half, 0) with their values in the left gutter.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-chart-grid {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	pointer-events: none;
+
+	span {
+		position: relative;
+		border-top: 1px solid var(--mvx-border-soft, #eef0f6);
+
+		&:last-child {
+			border-top-color: var(--mvx-border, #e3e6ef);
+		}
+
+		&::before {
+			content: attr(data-value);
+			position: absolute;
+			top: -0.5rem;
+			right: calc(100% + 0.5rem);
+			color: #8a8fa0;
+			font-size: 0.6875rem;
+			line-height: 1;
+		}
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-chart-bars {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: flex-end;
+	gap: 2px;
+}
+
+// The hover target is the full-height slot, wider than the bar itself.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-chart-slot {
+	display: flex;
+	flex: 1;
+	align-items: flex-end;
+	justify-content: center;
+	height: 100%;
+	border-radius: 4px 4px 0 0;
+	cursor: default;
+
+	&.is-hovered {
+		background: rgb(80 7 170 / 6%);
+
+		.mvx-insights-chart-bar {
+			opacity: 1;
+		}
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-chart-bar {
+	display: block;
+	width: min(100%, 0.625rem);
+	min-height: 0;
+	border-radius: 3px 3px 0 0;
+	background: var(--mvx-primary, #5007aa);
+	opacity: 0.35;
+
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-chart-tooltip {
+	position: absolute;
+	top: -0.5rem;
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	gap: 0.125rem;
+	padding: 0.5rem 0.75rem;
+	border-radius: 0.5rem;
+	background: #1f1b3e;
+	color: #fff;
+	font-size: 0.75rem;
+	white-space: nowrap;
+	pointer-events: none;
+	transform: translate(-50%, -100%);
+
+	span {
+		color: #c9c5d9;
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-chart-axis {
+	display: flex;
+	justify-content: space-between;
+	margin: 0.5rem 0 0 2rem;
+	color: #8a8fa0;
+	font-size: 0.6875rem;
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-chart-empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	min-height: 8rem;
+	padding: 1rem;
+	border: 1px dashed var(--mvx-border, #e3e6ef);
+	border-radius: 0.5rem;
+	color: var(--mvx-muted, #6b7280);
+	font-size: 0.875rem;
+	text-align: center;
+
+	i {
+		color: #b7a6d6;
+		font-size: 1.75rem;
+	}
+
+	p {
+		max-width: 24rem;
+	}
+}
+
+// ---- Needs your attention ----
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-list {
+	// One task per row: severity, what and why, then the action, level on every row.
+	li {
+		display: grid;
+		grid-template-columns: 2rem minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 1rem;
+		padding: 0.875rem 0;
+
+		+ li {
+			border-top: 1px solid var(--mvx-border-soft, #eef0f6);
+		}
+
+		@media (width <= 782px) {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 0.5rem;
+		}
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-list-text {
+	display: flex;
+	flex-direction: column;
+	gap: 0.125rem;
+	min-width: 0;
+
+	strong {
+		color: var(--mvx-ink, #1f1b3e);
+		font-size: 0.875rem;
+		font-weight: 600;
+	}
+
+	span {
+		color: var(--mvx-muted, #6b7280);
+		font-size: 0.8125rem;
+		line-height: 1.5;
+	}
+}
+
+// The row's action: an outlined button, so a list of five doesn't become five loud ones.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-action,
+#admin-main-wrapper.admin-main-wrapper .mvx-dash-action {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-self: start;
+	gap: 0.375rem;
+	min-height: 2rem;
+	margin: 0;
+	padding: 0 0.875rem;
+	border: 1px solid var(--mvx-border, #e3e6ef);
+	border-radius: 0.5rem;
+	background: var(--mvx-surface, #fff);
+	color: var(--mvx-ink, #1f1b3e);
+	font: inherit;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	white-space: nowrap;
+	text-decoration: none;
+	cursor: pointer;
+
+	&:hover:not(:disabled),
+	&:focus-visible {
+		border-color: var(--mvx-primary, #5007aa);
+		color: var(--mvx-primary, #5007aa);
+	}
+
+	&:disabled {
+		cursor: default;
+		opacity: 0.6;
+	}
+
+	i {
+		font-size: 0.875rem;
+	}
+}
+
+// Severity as a small tinted icon; its name is in the tooltip and for screen readers.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-list li.is-critical .mvx-insights-severity {
+	background: $mvx-critical-bg;
+	color: $mvx-critical;
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-list li.is-warning .mvx-insights-severity {
+	background: $mvx-warning-bg;
+	color: $mvx-warning;
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-list li.is-info .mvx-insights-severity {
+	background: $mvx-info-bg;
+	color: $mvx-info;
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-severity {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	border-radius: 0.5rem;
+	font-size: 1rem;
+
+
+
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-clear {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	color: var(--mvx-muted, #6b7280);
+	font-size: 0.875rem;
+
+	i {
+		color: $mvx-good;
+	}
+}
+
+// ---- Top courses ----
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.875rem;
+
+	th {
+		padding: 0 0 0.5rem;
+		border-bottom: 1px solid var(--mvx-border, #e3e6ef);
+		color: var(--mvx-muted, #6b7280);
+		font-size: 0.75rem;
+		font-weight: 500;
+		text-align: left;
+	}
+
+	td {
+		padding: 0.75rem 0;
+		color: var(--mvx-text, #374151);
+		vertical-align: middle;
+	}
+
+	tr + tr td {
+		border-top: 1px solid var(--mvx-border-soft, #eef0f6);
+	}
+
+	th:nth-child(2),
+	td:nth-child(2) {
+		width: 40%;
+		padding-left: 1rem;
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-table-title {
+	color: var(--mvx-ink, #1f1b3e);
+	font-weight: 600;
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-table td.mvx-insights-table-action {
+	width: 1%;
+	padding-left: 1.5rem;
+	white-space: nowrap;
+	text-align: right;
+
+	a {
+		color: var(--mvx-primary, #5007aa);
+		font-size: 0.8125rem;
+		text-decoration: none;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-meter {
+	display: flex;
+	align-items: center;
+	gap: 0.625rem;
+	font-variant-numeric: tabular-nums;
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-meter-bar {
+	flex: 1;
+
+	// On a phone the number alone is enough; the bar crowds the course name.
+	@media (width <= 600px) {
+		display: none;
+	}
+
+	max-width: 8rem;
+	height: 0.375rem;
+	border-radius: 999px;
+	background: var(--mvx-border-soft, #eef0f6);
+	overflow: hidden;
+
+	span {
+		display: block;
+		height: 100%;
+		border-radius: inherit;
+		background: var(--mvx-primary, #5007aa);
+	}
+}
+
+// "All courses →" in a card's header.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-more {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	color: var(--mvx-primary, #5007aa);
+	font-size: 0.8125rem;
+	font-weight: 500;
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+// ---- Moodle™ connection ----
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-pulse {
+	margin: 0;
+
+	> div {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.625rem 0;
+
+		+ div {
+			border-top: 1px solid var(--mvx-border-soft, #eef0f6);
+		}
+	}
+
+	dt {
+		color: var(--mvx-muted, #6b7280);
+		font-size: 0.8125rem;
+	}
+
+	dd {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		margin: 0;
+		color: var(--mvx-ink, #1f1b3e);
+		font-size: 0.875rem;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+
+		a {
+			color: var(--mvx-primary, #5007aa);
+		}
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-dot {
+	width: 0.5rem;
+	height: 0.5rem;
+	border-radius: 50%;
+
+	&.is-good {
+		background: $mvx-good;
+	}
+
+	&.is-off {
+		background: #9ca3af;
+	}
+}
+
+// ---- Latest enrollments ----
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-recent li {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 0.625rem 0;
+
+	+ li {
+		border-top: 1px solid var(--mvx-border-soft, #eef0f6);
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-avatar {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	border-radius: 50%;
+	background: #f4eefb;
+	color: var(--mvx-primary, #5007aa);
+	font-size: 0.8125rem;
+	font-weight: 700;
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-recent-text {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-width: 0;
+
+	strong,
+	span {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	strong {
+		color: var(--mvx-ink, #1f1b3e);
+		font-size: 0.875rem;
+		font-weight: 600;
+	}
+
+	span {
+		color: var(--mvx-muted, #6b7280);
+		font-size: 0.8125rem;
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-recent-meta {
+	display: flex;
+	flex: none;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 0.125rem;
+
+	time {
+		color: #8a8fa0;
+		font-size: 0.75rem;
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-status-tag {
+	padding: 0.0625rem 0.5rem;
+	border-radius: 999px;
+	font-size: 0.6875rem;
+	font-weight: 600;
+
+	// Each store status (classes/RestAPI/Controllers/AdminDashboard.php sends the status as the class). The tag
+	// always carries its label too, so colour is never the only signal.
+	&.is-active {
+		background: $mvx-good-bg;
+		color: $mvx-good;
+	}
+
+	&.is-pending,
+	&.is-under_review {
+		background: $mvx-warning-bg;
+		color: $mvx-warning;
+	}
+
+	&.is-rejected,
+	&.is-permanently_rejected,
+	&.is-suspended {
+		background: $mvx-critical-bg;
+		color: $mvx-critical;
+	}
+
+	&.is-deactivated {
+		background: #f3f4f6;
+		color: #4b5563;
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-failed {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-bottom: 1.25rem;
+	border-left: 3px solid $mvx-critical;
+	color: var(--mvx-text, #374151);
+	font-size: 0.875rem;
+
+	i {
+		color: $mvx-critical;
+	}
+}
+
+// ---- Pro panel (free sites) ----
+#admin-main-wrapper.admin-main-wrapper .mvx-dash-pro-cta {
+	display: inline-flex;
+	align-items: center;
+	gap: 1rem;
+
+	> span {
+		color: var(--mvx-muted, #6b7280);
+		font-size: 0.75rem;
+	}
+
+	@media (width <= 600px) {
+		flex-direction: column-reverse;
+		align-items: flex-start;
+		gap: 0.375rem;
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-dash-pro-features {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 1.25rem 1.5rem;
+
+	@media (width <= 1100px) {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	@media (width <= 600px) {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	li {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75rem;
+		min-width: 0;
+
+		> span:last-child {
+			display: flex;
+			flex-direction: column;
+			gap: 0.125rem;
+			min-width: 0;
+		}
+	}
+
+	strong {
+		color: var(--mvx-ink, #1f1b3e);
+		font-size: 0.875rem;
+		font-weight: 600;
+	}
+
+	span span {
+		color: var(--mvx-muted, #6b7280);
+		font-size: 0.8125rem;
+		line-height: 1.5;
+	}
+}
+
+// ---- Help and companion-plugin panels ----
+#admin-main-wrapper.admin-main-wrapper .mvx-dash-icon {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 2.25rem;
+	height: 2.25rem;
+	border: 1px solid var(--mvx-border, #e3e6ef);
+	border-radius: 0.5rem;
+	background: var(--mvx-surface, #fff);
+	color: var(--mvx-ink, #1f1b3e);
+	font-size: 1rem;
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-dash-list {
+	margin: 0 -0.75rem;
+
+	> li + li {
+		border-top: 1px solid var(--mvx-border-soft, #eef0f6);
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-dash-row {
+	display: flex;
+	align-items: center;
+	gap: 0.875rem;
+	padding: 0.75rem;
+	border-radius: 0.5rem;
+	color: inherit;
+	text-decoration: none;
+}
+
+#admin-main-wrapper.admin-main-wrapper a.mvx-dash-row:hover {
+	background: var(--mvx-surface-hover, #faf9fe);
+
+	.mvx-dash-row-arrow {
+		color: var(--mvx-primary, #5007aa);
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-dash-row-text {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 0.125rem;
+	min-width: 0;
+
+	strong {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--mvx-ink, #1f1b3e);
+		font-size: 0.875rem;
+		font-weight: 600;
+	}
+
+	> span {
+		color: var(--mvx-muted, #6b7280);
+		font-size: 0.8125rem;
+		line-height: 1.5;
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-dash-row-arrow {
+	flex: none;
+	color: #9ca3af;
+	font-size: 1rem;
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-dash-logo {
+	flex: none;
+	width: 2.25rem;
+	height: 2.25rem;
+	border-radius: 0.625rem;
+	object-fit: contain;
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-dash-tag {
+	padding: 0 0.4375rem;
+	border-radius: 999px;
+	font-size: 0.6875rem;
+	font-weight: 600;
+	line-height: 1.125rem;
+
+	&.is-free {
+		background: #f3f4f6;
+		color: #4b5563;
+	}
+
+	&.is-active {
+		background: $mvx-good-bg;
+		color: $mvx-good;
+	}
+}
+
+// ---- Grid ----
+// zyra's 12-column grid (ContainerComponent/ColumnComponent), without its own outer padding: the page already has it.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-grid {
+	padding: 0;
+}
+
+// Two cards side by side (setup and help, Pro and the team's plugins) end on the same line.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-grid.is-equal > .card-wrapper > .card-content {
+	height: 100%;
+	box-sizing: border-box;
+}
+
+// The Pro card beside the team's plugins is two-thirds wide: its features go two to a row.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-grid.is-equal > .card-wrapper .mvx-dash-pro-features {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+
+	@media (width <= 600px) {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+// …and the guarantee sits under its button, so the card's title keeps the width.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-grid.is-equal > .card-wrapper .mvx-dash-pro-cta {
+	flex-direction: column-reverse;
+	align-items: flex-end;
+	gap: 0.25rem;
+	white-space: nowrap;
+}
+
+// Help & resources: Learn, Troubleshoot first and Talk to our team as three equal columns (two on a laptop, one on
+// a phone).
+#admin-main-wrapper.admin-main-wrapper .mvx-dash-help-groups {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.5rem 2rem;
+
+	@media (width <= 1200px) {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	@media (width <= 782px) {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	h3 {
+		margin: 0 0 0.25rem;
+		padding: 0;
+		color: var(--mvx-muted, #6b7280);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
+}
+
+// ---- Header: Upgrade to Pro (free sites) ----
+// The dashboard's one prominent button: the Pro gradient, white label and a soft lift, so it reads as the upgrade and
+// not as another page action. `#wpbody` outranks the design system's plain `.admin-btn` styles.
+#wpbody .admin-btn.mvx-upgrade-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	box-sizing: border-box;
+	height: 2.5rem;
+	min-height: 2.5rem;
+	padding: 0 1.25rem;
+	border: 0;
+	border-radius: 0.5rem;
+	background: linear-gradient(135deg, #5007aa 0%, #7b2ff0 100%);
+	box-shadow: 0 0.5rem 1.25rem -0.5rem rgb(80 7 170 / 55%);
+	color: #fff;
+	font-size: 0.875rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: box-shadow 0.15s ease, transform 0.15s ease, filter 0.15s ease;
+
+	i {
+		color: #fff;
+		font-size: 1rem;
+	}
+
+	&:hover {
+		box-shadow: 0 0.75rem 1.5rem -0.5rem rgb(80 7 170 / 65%);
+		filter: brightness(1.08);
+		transform: translateY(-1px);
+	}
+
+	&:focus-visible {
+		outline: 2px solid #5007aa;
+		outline-offset: 2px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+
+		&:hover {
+			transform: none;
+		}
+	}
+}
+
+// ---- Toolbar: which Moodle™ site, which period, and the range switch ----
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+
+	p {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem 1rem;
+		color: var(--mvx-muted, #6b7280);
+		font-size: 0.8125rem;
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-connected {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	color: var(--mvx-ink, #1f1b3e);
+	font-weight: 500;
+}
+
+// A segmented control: the range switch, and the chart's Enrollments / Revenue.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-range {
+	display: inline-flex;
+	padding: 0.1875rem;
+	border: 1px solid var(--mvx-border, #e3e6ef);
+	border-radius: 0.5rem;
+	background: var(--mvx-surface, #fff);
+
+	button {
+		min-height: 1.75rem;
+		margin: 0;
+		padding: 0 0.75rem;
+		border: 0;
+		border-radius: 0.375rem;
+		background: transparent;
+		color: var(--mvx-muted, #6b7280);
+		font: inherit;
+		font-size: 0.8125rem;
+		font-weight: 500;
+		cursor: pointer;
+
+		&:hover:not(:disabled) {
+			color: var(--mvx-ink, #1f1b3e);
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--mvx-primary, #5007aa);
+			outline-offset: 1px;
+		}
+
+		&.is-active {
+			background: var(--mvx-primary-soft, #f1ebfb);
+			color: var(--mvx-primary, #5007aa);
+			font-weight: 600;
+		}
+
+		&:disabled {
+			cursor: progress;
+		}
+	}
+}
+
+// New figures on their way: keep the old ones, dimmed.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-refreshing {
+	opacity: 0.55;
+	transition: opacity 0.15s;
+	pointer-events: none;
+}
+
+// Scoped like the table's own `td` rule, so this padding wins over its `padding: 0.75rem 0`.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-table :is(th, td).is-number {
+	padding-left: 1rem;
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+// "Show all 6" under the attention list.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-toggle {
+	margin: 0.75rem 0 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	font: inherit;
+	font-size: 0.8125rem;
+	font-weight: 500;
+	cursor: pointer;
+}
+
+// The setup row: "Get MultiVendorX ready" 60%, the team's plugins 40%. Between zyra's 12 columns (7/5 is 58/42), so
+// set here; on a phone zyra's own full-width rule (!important) still stacks them.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-grid > .mvx-col-60 {
+	flex: 0 0 calc(60% - 0.5rem);
+	max-width: calc(60% - 0.5rem);
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-grid > .mvx-col-40 {
+	flex: 0 0 calc(40% - 0.5rem);
+	max-width: calc(40% - 0.5rem);
+}
+
+// A store's name in "Newest stores" opens the store; it reads as the name, not as a blue link.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-recent-text a {
+	color: inherit;
+	text-decoration: none;
+
+	&:hover,
+	&:focus-visible {
+		color: var(--mvx-primary);
+		text-decoration: underline;
+	}
+}
+
+// ---- Welcome (DashboardTab.tsx): the mascot beside what MultiVendorX is and where to start ----
+// ---- Welcome: the dashboard's page header ----
+// Not a card: it sits on the page background like the title area of every other MultiVendorX screen (design-system
+// .title-section: a large bold title, one quiet line). The mascot leads at the left, the date sits over the title, and
+// the actions sit at the right like a page header's buttons. The cards start below the tab row.
+#admin-main-wrapper.admin-main-wrapper .mvx-dash-welcome.card-content {
+	margin: 0;
+	padding: 0.5rem 0 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
+
+	.mvx-dash-welcome-body {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+	}
+
+	.mvx-dash-welcome-text {
+		flex: 1;
+		min-width: 0;
+
+		// Today's date, small and quiet over the greeting.
+		.mvx-dash-welcome-date {
+			display: block;
+			margin-bottom: 0.25rem;
+			color: var(--mvx-muted);
+			font-size: 0.8125rem;
+			line-height: 1.4;
+		}
+
+		// The page title, sized like every other screen's.
+		h1 {
+			margin: 0 0 0.25rem;
+			padding: 0;
+			color: var(--mvx-ink);
+			font-size: 1.75rem;
+			font-weight: 700;
+			line-height: 1.2;
+			letter-spacing: -0.02em;
+		}
+
+		p {
+			max-width: 40rem;
+			margin: 0;
+			color: var(--mvx-muted);
+			font-size: 0.875rem;
+			line-height: 1.5;
+		}
+	}
+
+	.mvx-dash-welcome-actions {
+		display: flex;
+		flex: none;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 0.75rem 1rem;
+	}
+
+	// Smaller than in a card: a header carries a mascot, it isn't built around one. The image has a white backdrop,
+	// which `multiply` drops into the grey page.
+	.mvx-dash-welcome-mascot {
+		flex: none;
+		width: auto;
+		height: 5rem;
+		mix-blend-mode: multiply;
+	}
+
+	// A running marketplace: the same header, tighter, so the figures start higher on a page visited every day.
+	&.is-compact {
+		.mvx-dash-welcome-mascot {
+			height: 4.5rem;
+		}
+	}
+
+	// Laptops: the actions drop under the text, still in order, so the greeting keeps its width.
+	@media (width <= 1100px) {
+		.mvx-dash-welcome-body {
+			flex-wrap: wrap;
+		}
+
+		.mvx-dash-welcome-actions {
+			flex-basis: 100%;
+			justify-content: flex-start;
+		}
+	}
+
+	// Phones: no mascot (no room beside the title).
+	@media (width <= 600px) {
+		.mvx-dash-welcome-mascot {
+			display: none;
+		}
+	}
+}
+
+// Upgrade to Pro beside the welcome block's main action: the Pro colour as an outline, so it stays the second choice.
+#wpbody .admin-btn.mvx-upgrade-btn.is-outline {
+	// The same size as the standard button beside it, not the larger Pro button.
+	height: auto;
+	min-height: 0;
+	padding: 0.5625rem 0.875rem;
+	line-height: 1.3;
+	border: 1px solid rgb(80 7 170 / 35%);
+	background: var(--mvx-surface, #fff);
+	box-shadow: none;
+	color: #5007aa;
+
+	i {
+		color: #5007aa;
+	}
+
+	&:hover {
+		border-color: #5007aa;
+		background: rgb(80 7 170 / 5%);
+		box-shadow: none;
+		filter: none;
+	}
+}
+
+// ---- Tabs and period on one line ----
+// The tabs sit on the page, not in a card of their own: an underline under the active tab, one hairline under the
+// row, and the period switch at its right. With Pro (no tabs) the switch keeps that row by itself.
+#admin-main-wrapper.admin-main-wrapper .mvx-dash-tabs.tabs-wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+
+	// The column's own gap spaces it from the tiles, as it spaces the cards.
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-bottom: 1px solid var(--mvx-border, #e3e6ef);
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
+
+	.tabs-item {
+		gap: 0.25rem;
+		border: 0;
+	}
+
+	.tab {
+		margin-bottom: -1px;
+		padding: 0.625rem 0.75rem;
+		border-bottom: 2px solid transparent;
+		background: transparent;
+	}
+
+	.tab.active-tab {
+		border-bottom-color: var(--mvx-primary, #5007aa);
+	}
+
+	.tabs-header-extra {
+		margin-left: auto;
+		padding-bottom: 0.375rem;
+	}
+}
+
+#admin-main-wrapper.admin-main-wrapper .mvx-dash-tabs-row {
+	display: flex;
+	justify-content: flex-end;
+	margin: 0 0 1rem;
+}
+
+// ---- Tiles: one shape for all four ----
+// The badge row keeps its height when a tile has no badge, so every value, caption and line starts at the same place.
+#admin-main-wrapper.admin-main-wrapper .mvx-insights .trend-stat-head {
+	min-height: 1.5rem;
+}
+
+// ---- Nothing waiting: one quiet line instead of a card ----
+#admin-main-wrapper.admin-main-wrapper .mvx-insights-allclear {
+	display: flex;
+	align-items: center;
+	gap: 0.625rem;
+	margin: 0;
+	padding: 0.75rem 1rem;
+	border: 1px solid var(--mvx-border, #e3e6ef);
+	border-radius: 0.625rem;
+	background: var(--mvx-surface, #fff);
+	color: var(--mvx-muted, #6b7280);
+	font-size: 0.875rem;
+	line-height: 1.5;
+
+	i {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: none;
+		width: 1.5rem;
+		height: 1.5rem;
+		border-radius: 50%;
+		background: rgb(22 163 74 / 10%);
+		color: $mvx-good;
+		font-size: 0.875rem;
+	}
+
+	strong {
+		color: var(--mvx-ink, #1f1b3e);
+		font-weight: 600;
+	}
+}

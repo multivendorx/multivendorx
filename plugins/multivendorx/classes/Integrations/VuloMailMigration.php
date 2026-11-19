@@ -16,18 +16,18 @@ defined( 'ABSPATH' ) || exit;
  * eligible, and -- on a site upgrading from before 5.0.21 with prior admin
  * email/SMS settings configured -- migrates those settings into it. A brand
  * new install has nothing to migrate, so it only gets the plugin installed;
- * REASON_OPTION ('install' vs 'migrate') is what render_admin_notice() uses
- * to show the right wording for each case.
+ * REASON_OPTION ('install' vs 'migrate') picks the success notice's wording.
+ * Installing, activating and the notices are CompanionPlugin's.
  *
  * After that, Notifications::trigger_notifications() routes SMS through
  * VuloMail instead of the built-in SMS gateways, falling back to the
  * original path if VuloMail isn't ready for it yet.
  *
- * @class       Module class
+ * @class       VuloMailMigration class
  * @version     5.0.21
  * @author      MultiVendorX
  */
-class VuloMailMigration {
+class VuloMailMigration extends CompanionPlugin {
 
 	/**
 	 * Option storing the current migration status: 'pending', 'done', or 'failed'.
@@ -74,54 +74,91 @@ class VuloMailMigration {
 	const PLUGIN_FILE = 'vulomail/vulomail.php';
 
 	/**
-	 * Constructor.
+	 * {@inheritDoc}
 	 *
-	 * @return void
+	 * @return string
 	 */
-	public function __construct() {
-		add_action( 'admin_menu', array( $this, 'maybe_run_pending_migration' ), 1 );
-		add_action( 'admin_notices', array( $this, 'render_admin_notice' ) );
-		add_action( 'admin_post_multivendorx_retry_vulomail_migration', array( $this, 'handle_retry_request' ) );
+	protected function get_plugin_slug() {
+		return self::PLUGIN_SLUG;
 	}
 
 	/**
-	 * Install/activate VuloMail and migrate settings into it, if eligible.
+	 * {@inheritDoc}
 	 *
-	 * Runs on early admin_menu rather than admin_init: installing a plugin
-	 * needs admin-only includes/capabilities not reliably available during
-	 * the version-bump migration, and admin_menu fires before admin_init,
-	 * so VuloMail's own menu callback can still register in the same request.
-	 *
-	 * @return void
+	 * @return string
 	 */
-	public function maybe_run_pending_migration() {
-		if ( 'pending' !== get_option( self::STATUS_OPTION ) ) {
-			return;
-		}
+	protected function get_plugin_file() {
+		return self::PLUGIN_FILE;
+	}
 
-		if ( ! current_user_can( 'install_plugins' ) || ! current_user_can( 'activate_plugins' ) ) {
-			return;
-		}
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @return string
+	 */
+	protected function get_plugin_name() {
+		return 'VuloMail';
+	}
 
-		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @return string
+	 */
+	protected function get_status_option() {
+		return self::STATUS_OPTION;
+	}
 
-		$installed = $this->install_and_activate_vulomail();
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @return string
+	 */
+	protected function get_error_option() {
+		return self::ERROR_OPTION;
+	}
 
-		if ( is_wp_error( $installed ) ) {
-			$this->mark_failed( $installed );
-			return;
-		}
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @return string
+	 */
+	protected function get_notice_shown_option() {
+		return self::NOTICE_SHOWN_OPTION;
+	}
 
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @return string
+	 */
+	protected function get_retry_action() {
+		return 'multivendorx_retry_vulomail_migration';
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @return string
+	 */
+	protected function get_success_message() {
+		return 'install' === get_option( self::REASON_OPTION )
+			? __( 'MultiVendorX has installed VuloMail, the companion plugin used to deliver marketplace email and SMS notifications. Set up an SMS gateway and/or email connection inside VuloMail to start sending.', 'multivendorx' )
+			: __( 'MultiVendorX has installed VuloMail and migrated your admin notification settings to it. SMS notifications now deliver through VuloMail; email notifications will too once you add an email connection inside VuloMail (MultiVendorX never had its own SMTP credentials to migrate).', 'multivendorx' );
+	}
+
+	/**
+	 * Migrate MultiVendorX's events-delivery settings into the now-active VuloMail.
+	 *
+	 * @return true|\WP_Error
+	 */
+	protected function after_install() {
 		$events_delivery_settings = get_option( Utill::MULTIVENDORX_SETTINGS['events-delivery'], array() );
-		$migrated     = $this->migrate_settings_to_vulomail( $events_delivery_settings );
+		$migrated                 = $this->migrate_settings_to_vulomail( $events_delivery_settings );
 
 		if ( is_wp_error( $migrated ) ) {
-			$this->mark_failed( $migrated );
-			return;
+			return $migrated;
 		}
-
-		update_option( self::STATUS_OPTION, 'done' );
-		delete_option( self::ERROR_OPTION );
 
 		/**
 		 * Fires after MultiVendorX's settings have been migrated into VuloMail.
@@ -131,108 +168,6 @@ class VuloMailMigration {
 		 * @param array $events_delivery_settings The events-delivery settings that were migrated.
 		 */
 		do_action( 'multivendorx_after_vulomail_migration', $events_delivery_settings );
-	}
-
-	/**
-	 * Record a failed install/migration attempt.
-	 *
-	 * @param \WP_Error $error The error to record and log.
-	 * @return void
-	 */
-	private function mark_failed( $error ) {
-		update_option( self::STATUS_OPTION, 'failed' );
-		update_option( self::ERROR_OPTION, $error->get_error_message() );
-		MultiVendorX()->util->log( $error );
-	}
-
-	/**
-	 * Install VuloMail from wordpress.org (if not already present) and activate it.
-	 *
-	 * @return true|\WP_Error
-	 */
-	private function install_and_activate_vulomail() {
-		if ( is_plugin_active( self::PLUGIN_FILE ) ) {
-			return true;
-		}
-
-		if ( ! file_exists( WP_PLUGIN_DIR . '/' . self::PLUGIN_FILE ) ) {
-			$install_result = $this->download_and_install_vulomail();
-
-			if ( is_wp_error( $install_result ) ) {
-				return $install_result;
-			}
-		}
-
-		$activated = activate_plugin( self::PLUGIN_FILE );
-
-		if ( is_wp_error( $activated ) ) {
-			return $activated;
-		}
-
-		$this->ensure_vulomail_booted();
-
-		return true;
-	}
-
-	/**
-	 * Finish booting VuloMail in the current request if it was just activated.
-	 *
-	 * activate_plugin() only includes the main file, not plugins_loaded/init —
-	 * without this, VuloMail's admin menu wouldn't appear until the next page
-	 * load. No-ops if VuloMail was already active before this request.
-	 *
-	 * @return void
-	 */
-	private function ensure_vulomail_booted() {
-		if ( ! function_exists( 'VuloMail' ) || did_action( 'vulomail_loaded' ) ) {
-			return;
-		}
-
-		$vulomail = VuloMail();
-		$vulomail->init_plugin();
-		$vulomail->init_classes();
-	}
-
-	/**
-	 * Download and install VuloMail from the wordpress.org plugin directory.
-	 *
-	 * @return true|\WP_Error
-	 */
-	private function download_and_install_vulomail() {
-		require_once ABSPATH . 'wp-admin/includes/file.php';
-		require_once ABSPATH . 'wp-admin/includes/misc.php';
-		require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-		require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
-
-		$plugin_information = plugins_api(
-			'plugin_information',
-			array(
-				'slug'   => self::PLUGIN_SLUG,
-				'fields' => array( 'sections' => false ),
-			)
-		);
-
-		if ( is_wp_error( $plugin_information ) ) {
-			return $plugin_information;
-		}
-
-		$upgrader_skin = new \Automatic_Upgrader_Skin();
-		$upgrader      = new \Plugin_Upgrader( $upgrader_skin );
-		$installed     = $upgrader->install( $plugin_information->download_link );
-
-		if ( is_wp_error( $installed ) ) {
-			return $installed;
-		}
-
-		if ( ! $installed ) {
-			// WP_Upgrader_Skin has no get_error_messages(); check its $result property instead.
-			$skin_result = $upgrader_skin->result;
-			$message     = ( $skin_result instanceof \WP_Error && $skin_result->has_errors() )
-				? implode( ' ', $skin_result->get_error_messages() )
-				: __( 'VuloMail could not be downloaded or installed.', 'multivendorx' );
-
-			return new \WP_Error( 'vulomail_install_failed', $message );
-		}
 
 		return true;
 	}
@@ -377,71 +312,5 @@ class VuloMailMigration {
 		$vulomail->settings->update( array( 'sms_primary' => $saved['id'] ) );
 
 		return true;
-	}
-
-	/**
-	 * Render a one-time success notice, or a persistent failure notice with a
-	 * manual retry link, in wp-admin.
-	 *
-	 * @return void
-	 */
-	public function render_admin_notice() {
-		if ( ! current_user_can( 'install_plugins' ) ) {
-			return;
-		}
-
-		$status = get_option( self::STATUS_OPTION );
-
-		if ( 'done' === $status && ! get_option( self::NOTICE_SHOWN_OPTION ) ) {
-			$message = 'install' === get_option( self::REASON_OPTION )
-				? __( 'MultiVendorX has installed VuloMail, the companion plugin used to deliver marketplace email and SMS notifications. Set up an SMS gateway and/or email connection inside VuloMail to start sending.', 'multivendorx' )
-				: __( 'MultiVendorX has installed VuloMail and migrated your admin notification settings to it. SMS notifications now deliver through VuloMail; email notifications will too once you add an email connection inside VuloMail (MultiVendorX never had its own SMTP credentials to migrate).', 'multivendorx' );
-
-			printf(
-				'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-				esc_html( $message )
-			);
-			update_option( self::NOTICE_SHOWN_OPTION, 1 );
-			return;
-		}
-
-		if ( 'failed' === $status ) {
-			$message   = get_option( self::ERROR_OPTION, __( 'Unknown error.', 'multivendorx' ) );
-			$retry_url = wp_nonce_url(
-				admin_url( 'admin-post.php?action=multivendorx_retry_vulomail_migration' ),
-				'multivendorx_retry_vulomail_migration'
-			);
-
-			printf(
-				'<div class="notice notice-error"><p>%s</p><p><a href="%s" class="button">%s</a></p></div>',
-				esc_html(
-					sprintf(
-						/* translators: %s: error message. */
-						__( 'MultiVendorX could not automatically install/configure VuloMail: %s', 'multivendorx' ),
-						$message
-					)
-				),
-				esc_url( $retry_url ),
-				esc_html__( 'Retry', 'multivendorx' )
-			);
-		}
-	}
-
-	/**
-	 * Handle the "Retry" link on the failure notice by re-flagging the
-	 * migration as pending; the next admin_init picks it up again.
-	 *
-	 * @return void
-	 */
-	public function handle_retry_request() {
-		if ( ! current_user_can( 'install_plugins' ) || ! check_admin_referer( 'multivendorx_retry_vulomail_migration' ) ) {
-			wp_die( esc_html__( 'You are not allowed to do this.', 'multivendorx' ) );
-		}
-
-		update_option( self::STATUS_OPTION, 'pending' );
-		delete_option( self::ERROR_OPTION );
-
-		wp_safe_redirect( admin_url() );
-		exit;
 	}
 }

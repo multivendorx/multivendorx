@@ -175,9 +175,11 @@ final class MultiVendorX {
         $this->container['widgets']         = new Widgets();
         $this->container['pattern']         = new Pattern();
         $this->container['tracker']         = new Tracker();
+        $this->container['admin_notice']    = new AdminNotice();
         $this->container['promotions']      = new Promotions();
         $this->container['migration']       = new Migration\Cron();
         $this->container['vulomail_migration'] = new Integrations\VuloMailMigration();
+        $this->container['vuloform_installer'] = new Integrations\VuloFormInstaller();
         $this->container['abilities']       = new Abilities();
 
         $this->initialize_multivendorx_log();
