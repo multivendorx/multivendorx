@@ -1,6 +1,6 @@
 /* global describe, it, expect, jest, beforeEach, afterEach */
 import { render, screen } from '@testing-library/react';
-import { downloadCSV, formatLocalDate } from '../SubscribersList';
+import { downloadCSV, formatLocalDate } from '../../../services/csv';
 import SubscribersList from '../SubscribersList';
 
 // SubscribersList reads the WP-localized global directly (no React context),

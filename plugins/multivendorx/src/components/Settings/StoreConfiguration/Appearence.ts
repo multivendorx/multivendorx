@@ -21,10 +21,14 @@ export default {
 	submitUrl: 'settings',
 	modal: [
 		{
-			key: 'section',
+			key: 'section_marketplace_branding',
 			type: 'section',
 			icon: 'appearance',
 			title: __('Marketplace Branding', 'multivendorx'),
+			desc: __(
+				'The logo shown across the store dashboard and marketplace emails.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'store_dashboard_site_logo',
@@ -37,7 +41,7 @@ export default {
 			),
 		},
 		{
-			key: 'section',
+			key: 'section_store_customizer',
 			type: 'section',
 			icon: 'paint-brush',
 			title: __('Store Customizer', 'multivendorx'),

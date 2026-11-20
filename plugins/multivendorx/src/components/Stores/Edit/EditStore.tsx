@@ -1,17 +1,16 @@
 /* global appLocalizer */
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-
-import { ToggleInput, ButtonInput, SelectInput } from '@zyra/inputs';
-import { getApiLink, useOutsideClick, useModules } from '@zyra/core';
+import { ToggleInput, ButtonInput, SelectInput, TextInput } from '@zyra/inputs';
+import { getApiLink, useModules } from '@zyra/core';
 import {
+	CardComponent,
 	FormGroupWrapperComponent,
 	FormGroupComponent,
 	SkeletonComponent,
 	PopupComponent,
 	ListComponent,
-	ContainerComponent,
 	NoticeManager,
 	NavigatorComponent,
 } from '@zyra/components';
@@ -23,40 +22,44 @@ import PolicySettings from './PolicySettings';
 import ShippingSettings from './ShippingSettings';
 import StoreRegistration from './StoreRegistrationForm';
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import type { ReactNode } from 'react';
 import axios from 'axios';
 import Overview from './Overview';
+import StoreTabLayout from './StoreTabLayout';
+import type { SetupProgress } from './StoreTabLayout';
 import '../ViewStore.scss';
+import '../store-page.scss';
 import { applyFilters } from '@wordpress/hooks';
+
+/** A store's status as its pill reads it. */
+const STATUS_LABELS: Record<string, string> = {
+	active: __('Active', 'multivendorx'),
+	pending: __('Pending', 'multivendorx'),
+	rejected: __('Rejected', 'multivendorx'),
+	suspended: __('Suspended', 'multivendorx'),
+	permanently_rejected: __('Permanently rejected', 'multivendorx'),
+	under_review: __('Under review', 'multivendorx'),
+	deactivated: __('Deactivated', 'multivendorx'),
+};
 
 const EditStore = () => {
 	const [data, setData] = useState({});
 	const [deleteModal, setDeleteModal] = useState(false);
 	const [deleteOption, setDeleteOption] = useState('');
-	const [editName, setEditName] = useState(false);
-	const [editDesc, setEditDesc] = useState(false);
-	const [selectedOwner, setSelectedOwner] = useState(null);
 	const [orderCount, setOrderCount] = useState(0);
 	const [productCount, setProductCount] = useState(0);
+	const [selectedOwner, setSelectedOwner] = useState(null);
+	// What the forms saved since the store loaded, for the setup checklist (kept apart from `data`, which feeds the
+	// forms their initial values).
+	const [setupProgress, setSetupProgress] = useState<SetupProgress>({});
+	const reportProgress = useCallback(
+		(saved: SetupProgress) =>
+			setSetupProgress((previous) => ({ ...previous, ...saved })),
+		[]
+	);
 	const location = useLocation();
-	const [prevName, setPrevName] = useState('');
-	const [prevDesc, setPrevDesc] = useState('');
-	const storeRef = useRef<HTMLDivElement>(null);
-	useEffect(() => {
-		if (editName) {
-			setPrevName(data?.name || '');
-		}
-		if (editDesc) {
-			setPrevDesc(data?.description || '');
-		}
-	}, [editName, editDesc]);
-
-	useOutsideClick(storeRef, () => {
-		if (editName || editDesc) {
-			autoSave({ name: data.name, description: data.description });
-		}
-		setEditName(false);
-		setEditDesc(false);
-	});
+	// Name and description save when typing pauses, like every settings field (no Save button).
+	const profileSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	const hash = location.hash.replace(/^#/, '');
 
@@ -288,18 +291,18 @@ const EditStore = () => {
 		const updatedTabs = settingContent.map((tab) =>
 			tab.content.id === 'compliance-records'
 				? {
-					...tab,
-					content: {
-						...tab.content,
-						name:
-							data?.status === 'pending' ||
+						...tab,
+						content: {
+							...tab.content,
+							name:
+								data?.status === 'pending' ||
 								data?.status === 'rejected' ||
 								data?.status === 'permanently_rejected'
-								? // data?.status === 'active'
-								'Application Details'
-								: 'Archive Data',
-					},
-				}
+									? // data?.status === 'active'
+										'Application Details'
+									: 'Archive Data',
+						},
+					}
 				: tab
 		);
 
@@ -316,56 +319,287 @@ const EditStore = () => {
 		return updatedTabs;
 	}, [settingContent, data?.status]);
 
-	const [expanded, setExpanded] = useState(false);
-
-	const words = data?.description?.split(' ') || [];
-	const shouldTruncate = words.length > 50;
-	const displayText = expanded
-		? data?.description
-		: words.slice(0, 50).join(' ');
-	const getForm = useCallback(
-		(tabId: string) => {
-			switch (tabId) {
-				case 'store-overview':
-					return <Overview id={editId} storeData={data} onUpdate={handleUpdateData} />;
-				case 'store':
-					return (
-						<StoreSettings
-							id={editId}
-							data={data}
-							onUpdate={handleUpdateData}
-						/>
-					);
-				case 'staff':
-					return <StoreSquad id={editId} />;
-				case 'payment':
-					return <PaymentSettings id={editId} data={data} />;
-				case 'shipping':
-					return <ShippingSettings id={editId} data={data} />;
-				case 'store-policy':
-					return <PolicySettings id={editId} data={data} />;
-				case 'compliance-records':
-					return <StoreRegistration id={editId} />;
-				case 'store-facilitator':
-					return applyFilters(
-						'multivendorx_add_facilitator_content',
-						null,
-						editId,
-						data
-					);
-				default:
-					return <div></div>;
+	/** Name or description changed in the Store profile card: shown at once, saved once typing pauses. */
+	const updateProfileText = (key: 'name' | 'description', value: string) => {
+		setData((previous) => ({ ...previous, [key]: value }));
+		if (profileSaveTimer.current) {
+			clearTimeout(profileSaveTimer.current);
+		}
+		profileSaveTimer.current = setTimeout(() => {
+			if ('name' === key && !value.trim()) {
+				return; // A store keeps a name: an emptied field isn't saved.
 			}
-		},
-		[editId, data, handleUpdateData]
+			autoSave({ [key]: value });
+		}, 800);
+	};
+
+	const removeImage = (key: 'image' | 'banner') => {
+		const updated = { ...data, [key]: '' };
+		setData(updated);
+		autoSave(updated);
+	};
+
+	/** One image row of the Store profile card: a preview, then Upload/Replace and Remove. */
+	const imageRow = (key: 'image' | 'banner', label: string, help: string) => (
+		<FormGroupComponent label={label} desc={help}>
+			<div className={`mvx-upload-row is-${key}`}>
+				<span className="mvx-upload-preview">
+					{data?.[key] ? (
+						<img src={data[key]} alt="" />
+					) : (
+						<i className="adminfont-image" aria-hidden="true" />
+					)}
+				</span>
+				<span className="mvx-upload-state">
+					{data?.[key]
+						? __('Uploaded', 'multivendorx')
+						: __('None', 'multivendorx')}
+				</span>
+				<span className="mvx-upload-actions">
+					<button
+						type="button"
+						className="admin-btn btn-purple"
+						onClick={() => runUploader(key)}
+					>
+						{data?.[key]
+							? __('Replace', 'multivendorx')
+							: __('Upload', 'multivendorx')}
+					</button>
+					{data?.[key] && (
+						<button
+							type="button"
+							className="mvx-store-more is-danger"
+							onClick={() => removeImage(key)}
+						>
+							{__('Remove', 'multivendorx')}
+						</button>
+					)}
+				</span>
+			</div>
+		</FormGroupComponent>
 	);
-	const actionItems = [
-		data.status === 'active' && {
-			title: __('View Storefront', 'multivendorx'),
-			icon: 'storefront',
-			link: `${appLocalizer.store_page_url}${data.slug}`,
-			targetBlank: true,
+
+	// General → Store profile: what customers see first. Edited here, not by clicking the header.
+	const profileCard = (
+		<CardComponent
+			id="store-profile"
+			title={__('Store profile', 'multivendorx')}
+			desc={__(
+				'The name, description and images customers see on the storefront.',
+				'multivendorx'
+			)}
+		>
+			<FormGroupWrapperComponent>
+				<FormGroupComponent
+					label={__('Store name', 'multivendorx')}
+					htmlFor="store-name"
+				>
+					<TextInput
+						name="store-name"
+						value={data?.name || ''}
+						onChange={(value: string) =>
+							updateProfileText('name', value)
+						}
+					/>
+				</FormGroupComponent>
+				<FormGroupComponent
+					label={__('Description', 'multivendorx')}
+					desc={__(
+						'A sentence or two about what the store sells.',
+						'multivendorx'
+					)}
+					htmlFor="store-description"
+				>
+					<textarea
+						id="store-description"
+						className="textarea-input"
+						rows={3}
+						value={data?.description || ''}
+						onChange={(event) =>
+							updateProfileText('description', event.target.value)
+						}
+					/>
+				</FormGroupComponent>
+				{imageRow(
+					'image',
+					__('Logo', 'multivendorx'),
+					__('Square, at least 200 × 200 px.', 'multivendorx')
+				)}
+				{imageRow(
+					'banner',
+					__('Banner', 'multivendorx'),
+					__(
+						'The wide image across the top of the storefront, e.g. 1500 × 900 px.',
+						'multivendorx'
+					)
+				)}
+			</FormGroupWrapperComponent>
+		</CardComponent>
+	);
+
+	const renderTab = (tabId: string) => {
+		switch (tabId) {
+			case 'store-overview':
+				return (
+					<Overview
+						id={editId}
+						storeData={data}
+						onUpdate={handleUpdateData}
+					/>
+				);
+			case 'store':
+				return (
+					<StoreSettings
+						id={editId}
+						data={data}
+						onUpdate={handleUpdateData}
+						profileCard={profileCard}
+						onProgress={reportProgress}
+					/>
+				);
+			case 'staff':
+				return <StoreSquad id={editId} />;
+			case 'payment':
+				return (
+					<PaymentSettings
+						id={editId}
+						data={data}
+						onProgress={reportProgress}
+					/>
+				);
+			case 'shipping':
+				return <ShippingSettings id={editId} data={data} />;
+			case 'store-policy':
+				return <PolicySettings id={editId} data={data} />;
+			case 'compliance-records':
+				return <StoreRegistration id={editId} />;
+			case 'store-facilitator':
+				return applyFilters(
+					'multivendorx_add_facilitator_content',
+					null,
+					editId,
+					data
+				);
+			default:
+				return <div></div>;
+		}
+	};
+
+	// Every tab but the Overview (which has its own side column) gets the sections and setup checklist at its right.
+	const getForm = (tabId: string) =>
+		'store-overview' === tabId ? (
+			renderTab(tabId)
+		) : (
+			<StoreTabLayout
+				tabId={tabId}
+				data={data}
+				progress={setupProgress}
+				openTab={(next) => navigate(prepareUrl(next))}
+			>
+				{renderTab(tabId)}
+			</StoreTabLayout>
+		);
+	const joinedAt = data?.create_time
+		? new Date(data.create_time.replace(' ', 'T'))
+		: null;
+
+	/** "Today", "3 days ago", "2 months ago": how long the store has been on the marketplace. */
+	const sinceJoined = (() => {
+		if (!joinedAt || Number.isNaN(joinedAt.getTime())) {
+			return '';
+		}
+		const days = Math.max(
+			0,
+			Math.floor((Date.now() - joinedAt.getTime()) / 86400000)
+		);
+		if (days < 1) {
+			return __('Today', 'multivendorx');
+		}
+		if (days < 31) {
+			return sprintf(
+				/* translators: %s: number of days. */
+				_n('%s day ago', '%s days ago', days, 'multivendorx'),
+				days
+			);
+		}
+		const months = Math.floor(days / 30.44);
+		if (months < 12) {
+			return sprintf(
+				/* translators: %s: number of months. */
+				_n('%s month ago', '%s months ago', months, 'multivendorx'),
+				months
+			);
+		}
+		const years = Math.floor(months / 12);
+		return sprintf(
+			/* translators: %s: number of years. */
+			_n('%s year ago', '%s years ago', years, 'multivendorx'),
+			years
+		);
+	})();
+
+	/** The store's figures at the header's right: a count and what it counts; a figure with a list behind it opens it. */
+	const heroFigures: {
+		key: string;
+		/** An icon beside the label, so each figure is told apart at a glance (the rating has its star instead). */
+		icon?: string;
+		value: ReactNode;
+		label: string;
+		href?: string;
+		onClick?: () => void;
+	}[] = [
+		{
+			key: 'products',
+			icon: 'single-product',
+			value: productCount.toLocaleString(),
+			label: _n('Product', 'Products', productCount, 'multivendorx'),
+			href: data?.id
+				? `${appLocalizer.admin_url}edit.php?post_type=product&multivendorx_store_id=${data.id}`
+				: undefined,
 		},
+		{
+			key: 'orders',
+			icon: 'cart',
+			value: orderCount.toLocaleString(),
+			label: _n('Order', 'Orders', orderCount, 'multivendorx'),
+			onClick: () =>
+				navigate('?page=multivendorx#&tab=reports&subtab=store-orders'),
+		},
+		...(modules.includes('store-review')
+			? [
+					{
+						key: 'rating',
+						value:
+							data?.total_reviews > 0 ? (
+								<>
+									<i
+										className="adminfont-star"
+										aria-hidden="true"
+									/>
+									{Number(data.overall_reviews).toFixed(1)}
+								</>
+							) : (
+								'—'
+							),
+						label:
+							data?.total_reviews > 0
+								? sprintf(
+										/* translators: %s: number of reviews. */
+										_n(
+											'%s review',
+											'%s reviews',
+											data.total_reviews,
+											'multivendorx'
+										),
+										data.total_reviews
+									)
+								: __('No reviews yet', 'multivendorx'),
+					},
+				]
+			: []),
+	];
+
+	const actionItems = [
 		data.status != 'pending' && {
 			title: __('Manage status', 'multivendorx'),
 			icon: 'form-multi-select',
@@ -414,603 +648,301 @@ const EditStore = () => {
 				getForm={getForm}
 				prepareUrl={prepareUrl}
 				appLocalizer={appLocalizer}
-				className="without-border"
+				className="without-border mvx-store-page"
 				settingTitleSection={
 					<>
-						<ContainerComponent general>
-							<div className="store-header">
-								<div
-									className="banner"
-									style={{
-										background:
-											data?.banner &&
-											`url("${data.banner}")`,
-									}}
+						{/* The page's own breadcrumb: back to the store list, then this store. */}
+						<nav
+							className="mvx-store-breadcrumb"
+							aria-label={__('Breadcrumb', 'multivendorx')}
+						>
+							<a href="?page=multivendorx#&tab=stores">
+								{__('Stores', 'multivendorx')}
+							</a>
+							<span aria-hidden="true">/</span>
+							<span aria-current="page">
+								{data?.name || __('Store', 'multivendorx')}
+							</span>
+						</nav>
+						{/* The store at a glance: who it is, its state, the actions, and its key figures. Its name,
+						    description and images are edited under General → Store profile. */}
+						<header className="mvx-store-hero">
+							{/* The store's cover: its banner, or a brand gradient until it has one. */}
+							<div
+								className={`mvx-store-cover${data?.banner ? '' : ' is-empty'}`}
+								style={
+									data?.banner
+										? {
+												backgroundImage: `url("${data.banner}")`,
+											}
+										: undefined
+								}
+							>
+								<button
+									type="button"
+									className="mvx-store-cover-edit"
+									onClick={() => runUploader('banner')}
 								>
-									{Object.keys(data).length === 0 ? (
-										<SkeletonComponent
-											variant="rectangular"
-											width="100%"
-											height={12}
-										/>
-									) : !data.banner ? (
-										<div className="default-img-1500x900" />
-									) : null}
-
-									<PopupComponent
-										position="menu-dropdown"
-										tooltipName={__(
-											'Banner',
-											'multivendorx'
-										)}
-										tooltipPosition="bottom-right"
-										toggleIcon="edit theme-background"
+									<i
+										className="adminfont-image"
+										aria-hidden="true"
+									/>
+									{data?.banner
+										? __('Change cover', 'multivendorx')
+										: __('Add cover', 'multivendorx')}
+								</button>
+							</div>
+							<div className="mvx-store-hero-main">
+								<span className="mvx-store-hero-logo">
+									{data?.image ? (
+										<img src={data.image} alt="" />
+									) : (
+										<span aria-hidden="true">
+											{(data?.name || '?')
+												.charAt(0)
+												.toUpperCase()}
+										</span>
+									)}
+									<button
+										type="button"
+										className="mvx-store-logo-edit"
+										onClick={() => runUploader('image')}
+										aria-label={
+											data?.image
+												? __(
+														'Change logo',
+														'multivendorx'
+													)
+												: __('Add logo', 'multivendorx')
+										}
+										title={
+											data?.image
+												? __(
+														'Change logo',
+														'multivendorx'
+													)
+												: __('Add logo', 'multivendorx')
+										}
 									>
-										<ListComponent
-											items={[
-												{
-													id: 'upload',
-													title: __(
-														'Upload',
-														'multivendorx'
-													),
-													icon: 'cloud-upload',
-													action: (item, e) => {
-														e?.stopPropagation();
-														runUploader('banner');
-													},
-												},
-												{
-													id: 'delete',
-													title: __(
-														'Delete',
-														'multivendorx'
-													),
-													icon: 'delete',
-													className: 'delete',
-													action: (item, e) => {
-														e?.stopPropagation();
-														const updated = {
-															...data,
-															banner: '',
-														};
-														setData(updated);
-														autoSave(updated);
-													},
-												},
-											]}
+										<i
+											className="adminfont-edit"
+											aria-hidden="true"
 										/>
-									</PopupComponent>
-								</div>
-
-								<div className="logo-wrapper">
-									<div className="store-logo">
-										{data?.image ? (
-											<img
-												src={data?.image}
-												alt=""
-											/>
-										) : (
-											<div className="placeholder-400x400" />
+									</button>
+								</span>
+								<div className="mvx-store-hero-text">
+									<div className="mvx-store-hero-title">
+										<h1>
+											{data?.name || (
+												<SkeletonComponent width={12} />
+											)}
+										</h1>
+										{data?.status && (
+											<span
+												className={`mvx-status-pill is-${data.status.replace(/_/g, '-')}`}
+											>
+												{STATUS_LABELS[data.status] ??
+													data.status}
+											</span>
 										)}
+									</div>
+									{data?.description && (
+										<p className="mvx-store-hero-desc">
+											{data.description}
+										</p>
+									)}
+									<ul className="mvx-store-hero-meta">
+										{data?.slug && (
+											<li>
+												<i
+													className="adminfont-storefront"
+													aria-hidden="true"
+												/>
+												<a
+													href={`${appLocalizer.store_page_url}${data.slug}`}
+													target="_blank"
+													rel="noopener noreferrer"
+												>
+													{`${appLocalizer.store_page_url}${data.slug}`.replace(
+														/^https?:\/\//,
+														''
+													)}
+												</a>
+											</li>
+										)}
+										{data?.store_email?.primary && (
+											<li>
+												<i
+													className="adminfont-mail"
+													aria-hidden="true"
+												/>
+												{data.store_email.primary}
+											</li>
+										)}
+										{/* A phone object can arrive with empty fields: show it only with a number. */}
+										{data?.phone?.phone && (
+											<li>
+												<i
+													className="adminfont-form-phone"
+													aria-hidden="true"
+												/>
+												{[
+													data.phone.country_code,
+													data.phone.phone,
+												]
+													.filter(Boolean)
+													.join(' ')}
+											</li>
+										)}
+										{data?.primary_owner_info
+											?.display_name && (
+											<li>
+												<i
+													className="adminfont-person"
+													aria-hidden="true"
+												/>
+												<span>
+													{__(
+														'Owned by',
+														'multivendorx'
+													)}{' '}
+													<button
+														type="button"
+														className="mvx-store-hero-link"
+														onClick={() =>
+															navigate(
+																prepareUrl(
+																	'staff'
+																)
+															)
+														}
+													>
+														{
+															data
+																.primary_owner_info
+																.display_name
+														}
+													</button>
+												</span>
+											</li>
+										)}
+										{joinedAt && sinceJoined && (
+											<li title={sinceJoined}>
+												<i
+													className="adminfont-calendar"
+													aria-hidden="true"
+												/>
+												{sprintf(
+													/* translators: %s: the date the store joined, e.g. "Nov 19, 2026". */
+													__(
+														'Member since %s',
+														'multivendorx'
+													),
+													joinedAt.toLocaleDateString(
+														undefined,
+														{
+															month: 'short',
+															day: 'numeric',
+															year: 'numeric',
+														}
+													)
+												)}
+											</li>
+										)}
+									</ul>
+								</div>
+								<div className="mvx-store-hero-side">
+									<div className="mvx-store-hero-actions">
+										{data?.status === 'active' &&
+											data?.slug && (
+												<a
+													className="admin-btn btn-purple"
+													href={`${appLocalizer.store_page_url}${data.slug}`}
+													target="_blank"
+													rel="noopener noreferrer"
+												>
+													<i
+														className="adminfont-external"
+														aria-hidden="true"
+													/>
+													{__(
+														'View storefront',
+														'multivendorx'
+													)}
+												</a>
+											)}
 										<PopupComponent
 											position="menu-dropdown"
+											toggleIcon="more-vertical"
 											tooltipName={__(
-												'Logo',
+												'More actions',
 												'multivendorx'
 											)}
-											tooltipPosition="top"
-											toggleIcon="edit theme-background"
+											tooltipPosition="bottom-right"
 										>
 											<ListComponent
-												items={[
-													{
-														id: 'upload',
-														title: __(
-															'Upload',
-															'multivendorx'
-														),
-														icon: 'cloud-upload',
-														action: (item, e) => {
-															e?.stopPropagation();
-															runUploader(
-																'image'
-															);
-														},
-													},
-													{
-														id: 'delete',
-														title: __(
-															'Delete',
-															'multivendorx'
-														),
-														icon: 'delete',
-														className: 'delete',
-														action: (item, e) => {
-															e?.stopPropagation();
-															const updated = {
-																...data,
-																image: '',
-															};
-															setData(updated);
-															autoSave(updated);
-														},
-													},
-												]}
+												items={actionItems}
 											/>
 										</PopupComponent>
 									</div>
-
-									<div className="tag-wrapper">
-										{data.status === 'active' ? (
-											<span className="status admin-badge green">
-												{__('Active', 'multivendorx')}
-											</span>
-										) : data.status === 'pending' ? (
-											<span className="status admin-badge yellow">
-												{__('Pending', 'multivendorx')}
-											</span>
-										) : data.status === 'rejected' ? (
-											<span className="status admin-badge red">
-												{__('Rejected', 'multivendorx')}
-											</span>
-										) : data.status === 'suspended' ? (
-											<span className="status admin-badge blue">
-												{__(
-													'Suspended',
-													'multivendorx'
-												)}
-											</span>
-										) : data.status ===
-											'permanently_rejected' ? (
-											<span className="status admin-badge red">
-												{__(
-													'Permanently Rejected',
-													'multivendorx'
-												)}
-											</span>
-										) : data.status === 'under_review' ? (
-											<span className="status admin-badge yellow">
-												{__(
-													'Under Review',
-													'multivendorx'
-												)}
-											</span>
-										) : data.status === 'deactivated' ? (
-											<span className="status admin-badge red">
-												{__(
-													'Permanently Deactivated',
-													'multivendorx'
-												)}
-											</span>
-										) : (
-											<SkeletonComponent width={6.25} />
-										)}
-
-										{/* {modules.includes(
-											'marketplace-compliance'
-										) && (
-											<>
-												<div className="admin-badge green">
-													<i className="adminfont-store-inventory"></i>
-													{__(
-														'Gold Plan',
-														'multivendorx'
-													)}
-												</div>
-												<div className="admin-badge blue">
-													<i className="adminfont-geo-my-wp"></i>
-													{__(
-														'On Vacation',
-														'multivendorx'
-													)}
-												</div>
-												<div className="admin-badge yellow">
-													<i className="adminfont-staff-manager"></i>
-													{__(
-														'Closed',
-														'multivendorx'
-													)}
-												</div>
-												<div className="admin-badge yellow">
-													<i className="adminfont-staff-manager"></i>
-													{__(
-														'Complained',
-														'multivendorx'
-													)}
-												</div>
-											</>
-										)} */}
-									</div>
-								</div>
-								<div className="store-details-wrapper">
-									<div className="left-section">
-										<div className="details">
-											<div className="heading">
-												<div
-													className="name"
-													ref={storeRef}
-												>
-													<div
-														className="store-name"
-														onClick={() =>
-															setEditName(true)
-														}
-													>
-														{editName ? (
-															<input
-																type="text"
-																value={
-																	data?.name ||
-																	''
-																}
-																onChange={(e) =>
-																	setData({
-																		...data,
-																		name: e
-																			.target
-																			.value,
-																	})
-																}
-																onBlur={() => {
-																	if (
-																		!data?.name?.trim()
-																	) {
-																		setData(
-																			{
-																				...data,
-																				name: prevName,
-																			}
-																		);
-																	}
-																	setEditName(
-																		false
-																	);
-																}}
-																className="basic-input"
-																autoFocus
-															/>
-														) : data?.name ? (
-															data.name
-														) : (
-															<SkeletonComponent
-																width={9.375}
+									{/* The figures under the actions, as on a profile: big numbers, what they count, hairlines between. */}
+									<ul className="mvx-store-hero-figures">
+										{heroFigures.map((figure) => {
+											const inner = (
+												<>
+													<span className="mvx-figure-value">
+														{figure.value}
+													</span>
+													<span className="mvx-figure-label">
+														{figure.icon && (
+															<i
+																className={`adminfont-${figure.icon}`}
+																aria-hidden="true"
 															/>
 														)}
-
-														<span
-															className={`edit-icon  ${editName
-																	? ''
-																	: 'blue-color'
-																}`}
-															onClick={(e) => {
-																e.stopPropagation();
-																if (
-																	editName &&
-																	!data?.name?.trim()
-																) {
-																	setData({
-																		...data,
-																		name: prevName,
-																	});
-																}
-																setEditName(
-																	!editName
-																);
-															}}
+														{figure.label}
+													</span>
+												</>
+											);
+											return (
+												<li key={figure.key}>
+													{figure.href && (
+														<a
+															className="mvx-figure is-link"
+															href={figure.href}
 														>
-															<i
-																className={
-																	editName
-																		? ''
-																		: 'adminfont-edit'
-																}
-															></i>
-														</span>
-													</div>
-												</div>
-												<div className="storefront-link">
-													<i className="adminfont-storefront"></i>
-													<a
-														href={`${appLocalizer.store_page_url}${data.slug}`}
-														className="link-item"
-														target="blank"
-													>
-														<b>
-															{__(
-																'Storefront link',
-																'multivendorx'
-															)}
-														</b>
-													</a>
-													{/* {appLocalizer.store_page_url} */}
-													{data?.slug ? (
-														<>
-															{/* {data.slug}{' '} */}
-															{data?.status !=
-																'pending' &&
-																data?.status !=
-																'rejected' &&
-																data?.status !=
-																'permanently_rejected' && (
-																	<span
-																		className="edit-icon blue-color"
-																		onClick={() => {
-																			navigate(
-																				`?page=multivendorx#&tab=stores&edit/${data.id}/&subtab=store`,
-																				{
-																					state: {
-																						highlightTarget:
-																							'store-slug',
-																					},
-																				}
-																			);
-
-																			setTimeout(
-																				() => {
-																					navigate(
-																						`?page=multivendorx#&tab=stores&edit/${data.id}/&subtab=store`,
-																						{
-																							replace: true,
-																						}
-																					);
-																				},
-																				500
-																			);
-																		}}
-																	>
-																		<i className="adminfont-edit"></i>
-																	</span>
-																)}
-														</>
-													) : (
-														<SkeletonComponent
-															width={6.25}
-														/>
+															{inner}
+														</a>
 													)}
-												</div>
-											</div>
-
-											<div
-												className="des"
-												// onClick={() =>
-												// 	setEditDesc(true)
-												// }
-												ref={storeRef}
-											>
-												{editDesc ? (
-													<textarea
-														value={
-															data.description ||
-															''
-														}
-														onChange={(e) =>
-															setData({
-																...data,
-																description:
-																	e.target
-																		.value,
-															})
-														}
-														onBlur={() => {
-															if (
-																!data?.description?.trim()
-															) {
-																setData({
-																	...data,
-																	description:
-																		prevDesc,
-																});
-															}
-															// setEditDesc(false);
-														}}
-														className="textarea-input"
-														autoFocus
-													/>
-												) : Object.keys(data).length ===
-													0 ? (
-													<SkeletonComponent width={9.375} />
-												) : data?.description ? (
-													<div>
-														<span>
-															<span>
-																{displayText}
-															</span>
-															{shouldTruncate &&
-																!expanded
-																? '...'
-																: ''}
-														</span>
-														{shouldTruncate && (
+													{!figure.href &&
+														figure.onClick && (
 															<button
-																onClick={() =>
-																	setExpanded(
-																		!expanded
-																	)
+																type="button"
+																className="mvx-figure is-link"
+																onClick={
+																	figure.onClick
 																}
-																className="read-more-btn"
 															>
-																{expanded
-																	? __(
-																		'Read less',
-																		'multivendorx'
-																	)
-																	: __(
-																		'Read more',
-																		'multivendorx'
-																	)}
+																{inner}
 															</button>
 														)}
-													</div>
-												) : (
-													<span>
-														{__(
-															'Enter your description',
-															'multivendorx'
+													{!figure.href &&
+														!figure.onClick && (
+															<div className="mvx-figure">
+																{inner}
+															</div>
 														)}
-													</span>
-												)}
-
-												<span
-													className={`edit-icon ${editDesc
-															? ''
-															: 'blue-color'
-														}`}
-													onClick={(e) => {
-														e.stopPropagation();
-														if (
-															editDesc &&
-															!data?.description?.trim()
-														) {
-															setData({
-																...data,
-																description:
-																	prevDesc,
-															});
-														}
-														setEditDesc(!editDesc);
-													}}
-												>
-													<i
-														className={
-															editDesc
-																? ''
-																: 'adminfont-edit'
-														}
-													></i>
-												</span>
-											</div>
-
-											<div className="contact-info">
-												<div className="desc store-info">
-													<i className="adminfont-clock"></i>
-													<b>
-														{__(
-															'Registered since: ',
-															'multivendorx'
-														)}
-													</b>
-													{
-														data?.create_time?.split(
-															'-'
-														)[0]
-													}
-												</div>
-												{data.phone && (
-													<div className="desc store-info">
-														<i className="adminfont-form-phone"></i>
-														{`${data.phone.country_code} ${data.phone.phone}`}
-													</div>
-												)}
-												{data.store_email?.primary && (
-													<div className="desc store-info">
-														<i className="adminfont-mail"></i>
-														{data?.store_email?.primary}
-													</div>
-												)}
-											</div>
-
-											<div className="desc store-info">
-												<i className="adminfont-user-circle"></i>
-												<b>
-													{' '}
-													{__(
-														'Primary Owner:',
-														'multivendorx'
-													)}{' '}
-												</b>{' '}
-												{
-													data.primary_owner_info
-														?.display_name
-												}
-											</div>
-										</div>
-									</div>
-									<div className="right-section">
-										{modules.includes('store-review') && (
-											<div className="reviews-wrapper">
-												{[...Array(5)].map((_, i) => (
-													<i
-														key={i}
-														className={`review adminfont-star${data.total_reviews >
-																0 &&
-																i <
-																Math.round(
-																	data.overall_reviews
-																)
-																? ''
-																: '-o'
-															}`}
-													></i>
-												))}
-
-												<span>
-													{data.total_reviews > 0
-														? `${data.overall_reviews
-														} (${data.total_reviews
-														} ${data.total_reviews ===
-															1
-															? __(
-																'Review',
-																'multivendorx'
-															)
-															: __(
-																'Reviews',
-																'multivendorx'
-															)
-														})`
-														: `(${__(
-															'0 Review',
-															'multivendorx'
-														)})`}
-												</span>
-											</div>
-										)}
-
-										<div className="details-box">
-											<div className="details">
-												<div className="number">
-													<i className="adminfont-single-product blue"></i>{' '}
-													{productCount}
-												</div>
-												<div className="desc">
-													{__(
-														'Products',
-														'multivendorx'
-													)}
-												</div>
-											</div>
-											<div className="details">
-												<div className="number">
-													<i className="adminfont-order pink"></i>{' '}
-													{orderCount}
-												</div>
-												<div className="desc">
-													{__(
-														'Orders',
-														'multivendorx'
-													)}
-												</div>
-											</div>
-										</div>
-									</div>
+												</li>
+											);
+										})}
+									</ul>
 								</div>
 							</div>
-						</ContainerComponent>
+						</header>
 					</>
 				}
 				Link={Link}
 				settingName={'Store'}
-				action={
-					<PopupComponent
-						position="menu-dropdown"
-						toggleIcon="more-vertical"
-						tooltipName={__('Settings', 'multivendorx')}
-						tooltipPosition="bottom-right"
-					>
-						<ListComponent items={actionItems} />
-					</PopupComponent>
-				}
 			/>
 			<PopupComponent
 				open={deleteModal}

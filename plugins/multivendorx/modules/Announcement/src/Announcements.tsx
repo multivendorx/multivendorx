@@ -25,6 +25,12 @@ import {
 	formatDate,
 	formatLocalDate,
 } from '../../../src/services/commonFunction';
+import ListGate from '../../../src/components/Popup/ListGate';
+import useNoRecordsYet from '../../../src/components/Popup/useNoRecordsYet';
+import {
+	SAMPLE_ANNOUNCEMENTS,
+	sampleCategoryCounts,
+} from '../../../src/components/Popup/sampleRows';
 type AnnouncementForm = {
 	title: string;
 	url: string;
@@ -214,7 +220,12 @@ export const Announcements: React.FC = () => {
 			})
 			.catch((err) => {
 				console.error('Failed to load announcement for editing', err);
-				setError(__('Failed to load announcement for editing', 'multivendorx'));
+				setError(
+					__(
+						'Failed to load announcement for editing',
+						'multivendorx'
+					)
+				);
 			});
 	};
 
@@ -311,7 +322,8 @@ export const Announcements: React.FC = () => {
 		return plain.length > limit ? `${plain.slice(0, limit)}...` : plain;
 	};
 
-	const infoRows = rows.map((row: any) => ({
+	/** A record as a table row; the sample rows go through it too, so they look like real ones. */
+	const toInfoRow = (row: any) => ({
 		...row,
 		title: truncateChars(row.title, 15),
 		info_icon: 'announcement',
@@ -330,7 +342,8 @@ export const Announcements: React.FC = () => {
 			{ text: row.status_label, color: `badge-${row.status}` },
 			{ text: formatDate(row.date_created), color: 'blue' },
 		],
-	}));
+	});
+	const infoRows = rows.map(toInfoRow);
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -417,6 +430,13 @@ export const Announcements: React.FC = () => {
 			type: 'date',
 		},
 	];
+	const sampleRowsData = SAMPLE_ANNOUNCEMENTS;
+	const { props: gatedProps, hasNoRecords } = useNoRecordsYet({
+		rows: infoRows,
+		isLoading,
+		onQueryUpdate: doRefreshTableData,
+	});
+
 	return (
 		<>
 			<PopupComponent
@@ -431,7 +451,10 @@ export const Announcements: React.FC = () => {
 					title={__('Are you sure', 'multivendorx')}
 					confirmMessage={
 						selectedAn
-							? __('Are you sure you want to delete this announcement?', 'multivendorx')
+							? __(
+									'Are you sure you want to delete this announcement?',
+									'multivendorx'
+								)
 							: ''
 					}
 					confirmYesText={__('Delete', 'multivendorx')}
@@ -524,9 +547,9 @@ export const Announcements: React.FC = () => {
 							}
 							usePlainText={false}
 							tinymceApiKey={
-								appLocalizer.admin_settings[
-								'overview'
-								]['tinymce_api_section'] ?? ''
+								appLocalizer.admin_settings['overview'][
+									'tinymce_api_section'
+								] ?? ''
 							}
 							msg={{
 								type: 'error',
@@ -623,26 +646,92 @@ export const Announcements: React.FC = () => {
 
 			<ContainerComponent general>
 				<ColumnComponent>
-					<TableCard
-						headers={headers}
-						variant="transparent"
-						rows={infoRows}
-						totalRows={totalRows}
-						isLoading={isLoading}
-						onQueryUpdate={doRefreshTableData}
-						ids={rowIds}
-						categoryCounts={categoryCounts}
-						search={{}}
-						filters={filters}
-						bulkActions={bulkActions}
-						onBulkActionApply={(
-							action: string,
-							selectedIds: []
-						) => {
-							handleBulkAction(action, selectedIds);
+					<ListGate
+						feature={{
+							title: __('Announcements', 'multivendorx'),
+							description: '',
+							icon: 'announcement',
 						}}
-						format={appLocalizer.date_format}
-					/>
+						sample={
+							<TableCard
+								headers={headers}
+								variant="transparent"
+								search={{}}
+								filters={filters}
+								onBulkActionApply={(
+									action: string,
+									selectedIds: []
+								) => {
+									handleBulkAction(action, selectedIds);
+								}}
+								format={appLocalizer.date_format}
+								rows={sampleRowsData.map(toInfoRow)}
+								totalRows={sampleRowsData.length}
+								categoryCounts={sampleCategoryCounts(
+									sampleRowsData,
+									{
+										publish: __(
+											'Published',
+											'multivendorx'
+										),
+										pending: __('Pending', 'multivendorx'),
+										draft: __('Draft', 'multivendorx'),
+									},
+									__('All', 'multivendorx')
+								)}
+							/>
+						}
+						isEmpty={hasNoRecords}
+						empty={{
+							heading: __('No announcements yet', 'multivendorx'),
+							description: __(
+								'Send news and updates to every store, or just a few. They read them on their store dashboard.',
+								'multivendorx'
+							),
+							actions: (
+								<>
+									<button
+										type="button"
+										className="mvx-locked-button"
+										onClick={() => {
+											setValidationErrors({});
+											setAddAnnouncements(true);
+										}}
+									>
+										{__(
+											'Add an announcement',
+											'multivendorx'
+										)}
+									</button>
+								</>
+							),
+							note: __(
+								'A preview with sample announcements. Yours show here.',
+								'multivendorx'
+							),
+						}}
+					>
+						<TableCard
+							headers={headers}
+							variant="transparent"
+							rows={infoRows}
+							totalRows={totalRows}
+							isLoading={isLoading}
+							onQueryUpdate={gatedProps.onQueryUpdate}
+							ids={rowIds}
+							categoryCounts={categoryCounts}
+							search={{}}
+							filters={filters}
+							bulkActions={bulkActions}
+							onBulkActionApply={(
+								action: string,
+								selectedIds: []
+							) => {
+								handleBulkAction(action, selectedIds);
+							}}
+							format={appLocalizer.date_format}
+						/>
+					</ListGate>
 				</ColumnComponent>
 			</ContainerComponent>
 		</>

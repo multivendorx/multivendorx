@@ -125,17 +125,8 @@ class Admin {
                     'settings'            => array(
                         'name'     => __( 'Settings', 'multivendorx' ),
                         'subtab'   => 'overview',
-                        'priority' => 80,
-                    ),
-                    'status-tools'        => array(
-                        'name'     => __( 'Status & Tools', 'multivendorx' ),
-                        'subtab'   => 'system-status',
-                        'priority' => 100,
-                    ),
-                    'help-support'        => array(
-                        'name'     => __( 'Help & Support', 'multivendorx' ),
-                        'subtab'   => '',
-                        'priority' => 110,
+                        // Always the last item, just above Upgrade to Pro: module submenus (Knowledgebase, Announcements, ...) sort before it.
+                        'priority' => 1000,
                     ),
                 )
             );

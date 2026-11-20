@@ -430,6 +430,8 @@ class FrontendScripts {
 							'admin_url'              => admin_url(),
 							'shop_url'               => MULTIVENDORX_PRO_SHOP_URL,
 							'admin_dashboard_url'    => admin_url( 'admin.php?page=multivendorx' ),
+							// The dashboard greets the admin by name ("Good morning, Ana"); empty when no one is logged in.
+							'user_first_name'        => self::current_user_first_name(),
                             'store_page_url'         => MultiVendorX()->store->storeutil->get_store_url( null, '', true ),
 							'shipping_methods'       => apply_filters( 'multivendorx_store_shipping_options', array() ),
 							'order_meta'             => Utill::ORDER_META_SETTINGS,
@@ -670,4 +672,21 @@ class FrontendScripts {
     public static function enqueue_style( $handle ) {
 		wp_enqueue_style( $handle );
 	}
+
+    /**
+     * The logged-in user's first name, or their display name when no first name is set.
+     *
+     * @return string Empty when no user is logged in.
+     */
+    public static function current_user_first_name() {
+        $user = wp_get_current_user();
+
+        if ( ! $user->exists() ) {
+            return '';
+        }
+
+        $first_name = trim( (string) $user->first_name );
+
+        return '' !== $first_name ? $first_name : (string) $user->display_name;
+    }
 }

@@ -16,10 +16,14 @@ export default {
 	submitUrl: 'settings',
 	modal: [
 		{
-			key: 'section',
+			key: 'section_marketplace_pages',
 			type: 'section',
 			icon: 'view-files',
 			title: __('Marketplace pages', 'multivendorx'),
+			desc: __(
+				'The pages stores use to sign up and run their store, and the web address of every storefront.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'store_registration_page',
@@ -64,21 +68,23 @@ export default {
 			},
 		},
 		{
-			key: 'section',
+			key: 'section_orders_shown_to_customers',
 			type: 'section',
 			icon: 'invoice',
 			title: __(
 				'Orders shown to customers',
 				'multivendorx'
 			),
-			desc: __('','multivendorx'),
+			desc: __(
+				'Choose whether customers see one combined order, one order per store, or both.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'display_customer_order',
 			type: 'choice-toggle',
-			label: __('', 'multivendorx'),
+			label: __('Customer orders', 'multivendorx'),
 			custom: true,
-			classes: 'full-width',
 			desc: __(
 				'In a multivendor setup, a <b>Main Order</b> is the parent order placed by the customer, while <b>Sub-orders</b> are created for each store.<br/><b>Enabling the Main Order is recommended</b>, as it allows you to send a single email that includes the Main Order and all related Sub-orders. Alternatively, you can send separate emails for the Main Order and each Sub-order.',
 				'multivendorx'
@@ -129,25 +135,33 @@ export default {
 			],
 		},
 		{
-			key: 'section',
+			key: 'section_enable_store_content_styling_with_tinymc',
 			type: 'section',
 			icon: 'editor-list',
 			title: __('Enable store content styling with TinyMCE','multivendorx'),
+			desc: __(
+				'Give admins and stores a visual editor for descriptions, announcements and other long text.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'tinymce_api_section',
 			type: 'text',
-			label: __('', 'multivendorx'),
+			label: __('TinyMCE API key', 'multivendorx'),
 			desc: __(
 				'Get your <a href= "https://www.tiny.cloud/blog/how-to-get-tinymce-cloud-up-in-less-than-5-minutes/" target= "_blank">TinyMCE API key <i class="adminfont-external"></i></a> and paste it here, to unlock visual editing tools across the marketplace. Admin and stores can easily format text, add links, lists, and other styling to their store descriptions, announcements, knowledge base posts, and product/listing details-no coding needed.',
 				'multivendorx'
 			),
 		},
 		{
-			key: 'section',
+			key: 'section_shortcode_library',
 			type: 'section',
 			icon: 'shortcode',
 			title: __('Shortcode library', 'multivendorx'),
+			desc: __(
+				'Every shortcode and block MultiVendorX adds, with what it shows and the arguments it takes.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'available_shortcodes',

@@ -1,5 +1,5 @@
 /* global moowoodleProduct */
-import { render, useEffect, useState } from '@wordpress/element';
+import { createRoot, useEffect, useState } from '@wordpress/element';
 import {
 	RadioControl,
 	SelectControl,
@@ -330,6 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	const container = document.getElementById('moodle-enrollment-mapping-tab');
 
 	if (container) {
-		render(<ProductTab />, container);
+		createRoot(container).render(<ProductTab />);
 	}
 });

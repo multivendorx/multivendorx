@@ -101,8 +101,8 @@ class Frontend {
             return;
         }
 
-        $quote_btn_text      = Utill::get_translated_string( 'catalogx', 'add_to_quote', 'Add to Quote' );
-        $view_quote_btn_text = Utill::get_translated_string( 'catalogx', 'view_quote', 'View Quote' );
+        $quote_btn_text      = Utill::get_translated_string( 'catalogx', 'add_to_quote', __( 'Add to Quote', 'catalogx' ) );
+        $view_quote_btn_text = Utill::get_translated_string( 'catalogx', 'view_quote', __( 'View Quote', 'catalogx' ) );
 
         $button_settings = CatalogX()->setting->get_setting( 'quote_button' );
 

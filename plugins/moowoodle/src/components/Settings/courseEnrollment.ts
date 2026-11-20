@@ -15,11 +15,11 @@ export default {
 	submitUrl: 'settings',
 	modal: [
 		{
-			key: 'section',
+			key: 'course-enrollment-section-courses',
 			type: 'section',
 			icon: 'subscription-courses',
 			title: __('Courses', 'moowoodle'),
-			settingDescription: __(
+			desc: __(
 				'Control how course information appears to customers',
 				'moowoodle'
 			),
@@ -61,11 +61,11 @@ export default {
 			),
 		},
 		{
-			key: 'section',
+			key: 'course-enrollment-section-enrollment',
 			type: 'section',
 			icon: 'classroom-enrollment',
 			title: __('Enrollment & seat management', 'moowoodle'),
-			settingDescription: __(
+			desc: __(
 				'Configure how buyers enroll and manage course seats',
 				'moowoodle'
 			),
@@ -122,11 +122,11 @@ export default {
 			look: 'toggle',
 		},
 		{
-			key: 'section',
+			key: 'course-enrollment-section-notifications',
 			type: 'section',
 			icon: 'notification',
 			title: __('Notifications', 'moowoodle'),
-			settingDescription: __(
+			desc: __(
 				'Emails sent to new and existing users when they get course access.',
 				'moowoodle'
 			),
@@ -150,6 +150,49 @@ export default {
 				},
 			],
 			look: 'toggle',
+		},
+		{
+			key: 'section',
+			type: 'section',
+			icon: 'clock',
+			title: __('Expiry processing', 'moowoodle'),
+			settingDescription: __(
+				'Control automatic course expiry and unenrollment processing.',
+				'moowoodle'
+			),
+		},
+		{
+			key: 'expiry_processing_disable',
+			type: 'checkbox',
+			settingDescription: __(
+				'When enabled, users will not be automatically unenrolled from courses after their enrolment or access period expires. When disabled, expired users will be automatically unenrolled by the scheduled task.',
+				'moowoodle'
+			),
+			label: __('Disable Automatic Course Unenrolment', 'moowoodle'),
+			options: [
+				{
+					key: 'expiry_processing_disable',
+					value: 'expiry_processing_disable',
+				},
+			],
+			look: 'toggle',
+			proSetting: true,
+		},
+		{
+			key: 'expiry_unenroll_limit',
+			type: 'number',
+			size: 5,
+			settingDescription: __(
+				'Set the maximum number of users to unenroll during each expiry-processing run. This helps control server load when processing expired enrollments.',
+				'moowoodle'
+			),
+			label: __('Unenrollment limit per run', 'moowoodle'),
+			dependent: {
+				key: 'expiry_processing_disable',
+				set: true,
+				value: 'expiry_processing_disable',
+			},
+			proSetting: true,
 		},
 	],
 };

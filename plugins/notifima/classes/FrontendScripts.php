@@ -259,6 +259,9 @@ class FrontendScripts {
             'settings_databases_value' => self::get_admin_settings(),
         );
 
+        $current_user      = Notifima()->current_user;
+        $first_name = ! empty( $current_user->first_name ) ? $current_user->first_name : $current_user->display_name;
+
         $localize_scripts =
             array(
                 'notifima-admin-script'   => array(
@@ -267,11 +270,11 @@ class FrontendScripts {
                     'use_settings' => true,
 					'data'         => array(
                         'admin_url'     => admin_url(),
-						'export_button' => wp_nonce_url( admin_url( 'admin-ajax.php?action=export_subscribers' ), 'export_subscribers_nonce' ),
 						'khali_dabba'   => Utill::is_khali_dabba(),
-						'tab_name'      => __( 'Notifima', 'notifima' ),
 						'pro_url'       => esc_url( NOTIFIMA_PRO_SHOP_URL ),
 						'free_version'  => Notifima()->version,
+						// The dashboard greets the admin by name ("Good morning, Ana"); empty when no one is logged in.
+						'user_first_name' => $first_name,
                         'pro_data'      => apply_filters(
                             'notifima_update_pro_data',
                             array(

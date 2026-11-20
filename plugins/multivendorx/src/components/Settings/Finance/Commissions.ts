@@ -85,6 +85,10 @@ export default {
 			type: 'section',
 			icon: 'commission',
 			title: __('Marketplace commission', 'multivendorx'),
+			desc: __(
+				'How much the marketplace keeps from each sale, and how it is worked out.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'commission_migration_notice',
@@ -302,7 +306,7 @@ export default {
 			},
 		},
 		{
-			key: 'separator_content',
+			key: 'separator_content_shipping_tax_distribution_in_store_earni',
 			type: 'section',
 			icon: 'delivery',
 			title: __(
@@ -377,7 +381,7 @@ export default {
 			look: 'toggle',
 		},
 		{
-			key: 'separator_content',
+			key: 'separator_content_fees_deducted_from_store_earnings',
 			type: 'section',
 			icon: 'wallet',
 			title: __('Fees deducted from store earnings', 'multivendorx'),

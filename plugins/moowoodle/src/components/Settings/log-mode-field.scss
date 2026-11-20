@@ -1,0 +1,68 @@
+// Settings → System & Logs → Logs: the Advance log toggle (systemAndLogs.ts), placed at the right of the Logs card
+// header, reading "Basic" when off and "Advanced" when on. zyra renders the header and the fields as siblings, so
+// the field's row is lifted into the header's corner.
+#wpbody .settings-section-group:has(.mw-log-mode-row) {
+	position: relative;
+
+	> .settings-left-section {
+		padding-right: 11rem;
+	}
+
+	.form-group.mw-log-mode-row {
+		position: absolute;
+		top: 1.375rem;
+		right: 1.375rem;
+		left: auto;
+		display: block;
+		width: auto;
+		margin: 0;
+		padding-top: 0;
+		padding-bottom: 0;
+		padding-left: 0;
+		border: 0;
+	}
+
+	// The log viewer is now the first row: no hairline above it, the header's space is enough.
+	.form-group.mw-log-mode-row + .form-group {
+		border-top: 0;
+	}
+
+	@media (width <= 600px) {
+		> .settings-left-section {
+			padding-right: 0;
+		}
+
+		.form-group.mw-log-mode-row {
+			position: static;
+			margin-bottom: 1rem;
+		}
+	}
+}
+
+// One toggle label, two words: the one for the toggle's current state shows. zyra draws the switch on the label
+// itself, so the word is placed just to the right of it, in space the row keeps free.
+#wpbody .form-group.mw-log-mode-row {
+	padding-right: 5.25rem;
+}
+
+#wpbody .mw-log-mode-row .checkbox-label {
+	position: relative;
+
+	.mw-log-mode-off,
+	.mw-log-mode-on {
+		position: absolute;
+		top: 50%;
+		left: calc(100% + 0.625rem);
+		color: var(--mw-ink, #1f1b3e);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		line-height: 1;
+		white-space: nowrap;
+		transform: translateY(-50%);
+	}
+}
+
+#wpbody .mw-log-mode-row input:checked + .checkbox-label .mw-log-mode-off,
+#wpbody .mw-log-mode-row input:not(:checked) + .checkbox-label .mw-log-mode-on {
+	display: none;
+}

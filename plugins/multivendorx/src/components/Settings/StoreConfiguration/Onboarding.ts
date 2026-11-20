@@ -16,10 +16,14 @@ export default {
 	submitUrl: 'settings',
 	modal: [
 		{
-			key: 'section',
+			key: 'section_store_registration',
 			type: 'section',
 			icon: 'onboarding',
 			title: __('Store registration', 'multivendorx'),
+			desc: __(
+				'How new store applications are approved.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'approve_store',
@@ -43,10 +47,14 @@ export default {
 			],
 		},
 		{
-			key: 'section',
+			key: 'section_setup_wizard_for_stores',
 			type: 'section',
 			icon: 'setup',
 			title: __('Setup wizard for stores', 'multivendorx'),
+			desc: __(
+				'The guided steps a new store follows to get ready to sell.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'disable_setup_wizard',
@@ -159,10 +167,14 @@ export default {
 			},
 		},
 		{
-			key: 'section',
+			key: 'section_how_stores_sell_products_listings',
 			type: 'section',
 			icon: 'marketplace',
 			title: __('How stores sell products/listings', 'multivendorx'),
+			desc: __(
+				'Whether stores list their own products/listings, share them, or sell as franchises.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'store_selling_mode',

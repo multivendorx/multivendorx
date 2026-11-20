@@ -9,6 +9,7 @@ addFilter(
 	(configs, { appLocalizer }) => {
 		configs.push({
 			id: 'customer-queries',
+			module: 'customer-queries',
 			url: getApiLink(appLocalizer, 'customer-queries'),
 			params: {
 				page: 1,

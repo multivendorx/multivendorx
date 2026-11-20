@@ -3,7 +3,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { FormGroupComponent, FormGroupWrapperComponent, PopupComponent } from '@zyra/components';
+import {
+	FormGroupComponent,
+	FormGroupWrapperComponent,
+	PopupComponent,
+} from '@zyra/components';
 import { ButtonInput, TextAreaInput } from '@zyra/inputs';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
 import {
@@ -13,6 +17,9 @@ import {
 	getUrl,
 	toWcIsoDate,
 } from '../../../src/services/commonFunction';
+import ListGate from '../../../src/components/Popup/ListGate';
+import useNoRecordsYet from '../../../src/components/Popup/useNoRecordsYet';
+import { sampleRefunds } from '../../../src/components/Popup/sampleRows';
 
 interface OrderMeta {
 	key: string;
@@ -260,7 +267,8 @@ const PendingRefund: React.FC<object> = () => {
 			});
 	};
 
-	const infoRows = rows.map((row: OrderRow) => ({
+	/** A record as a table row; the sample rows go through it too, so they look like real ones. */
+	const toInfoRow = (row: OrderRow) => ({
 		...row,
 		order_title: `#${row.id}`,
 		refund_reason:
@@ -303,29 +311,87 @@ const PendingRefund: React.FC<object> = () => {
 			},
 			{ text: formatDate(row.date_created), color: 'blue' },
 		],
-	}));
+	});
+	const infoRows = rows.map(toInfoRow);
+
+	const sampleRowsData = sampleRefunds(
+		appLocalizer.order_meta?.customer_refund_reason ?? ''
+	);
+	const { props: gatedProps, hasNoRecords } = useNoRecordsYet({
+		rows: infoRows,
+		isLoading,
+		onQueryUpdate: doRefreshTableData,
+	});
 
 	return (
 		<>
-			<TableCard
-				headers={headers}
-				variant="transparent"
-				rows={infoRows}
-				totalRows={totalRows}
-				isLoading={isLoading}
-				onQueryUpdate={doRefreshTableData}
-				ids={rowIds}
-				search={{}}
-				filters={filters}
-				format={appLocalizer.date_format}
-				currency={{
-					currencySymbol: appLocalizer.currency_symbol,
-					priceDecimals: appLocalizer.price_decimals,
-					decimalSeparator: appLocalizer.decimal_separator,
-					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition: appLocalizer.currency_position,
+			<ListGate
+				feature={{
+					title: __('Refund requests', 'multivendorx'),
+					description: '',
+					icon: 'marketplace-refund',
 				}}
-			/>
+				sample={
+					<TableCard
+						headers={headers}
+						variant="transparent"
+						search={{}}
+						filters={filters}
+						format={appLocalizer.date_format}
+						currency={{
+							currencySymbol: appLocalizer.currency_symbol,
+							priceDecimals: appLocalizer.price_decimals,
+							decimalSeparator: appLocalizer.decimal_separator,
+							thousandSeparator: appLocalizer.thousand_separator,
+							currencyPosition: appLocalizer.currency_position,
+						}}
+						rows={sampleRowsData.map(toInfoRow)}
+						totalRows={sampleRowsData.length}
+					/>
+				}
+				isEmpty={hasNoRecords}
+				empty={{
+					heading: __('No refund requests', 'multivendorx'),
+					description: __(
+						'Customers ask for a refund from their order page. Each request waits here, with their reason, for you to review.',
+						'multivendorx'
+					),
+					actions: (
+						<>
+							<a
+								className="mvx-locked-button"
+								href={'#&tab=settings&subtab=refunds'}
+							>
+								{__('Refund settings', 'multivendorx')}
+							</a>
+						</>
+					),
+					note: __(
+						'A preview with sample requests. Real ones show here.',
+						'multivendorx'
+					),
+				}}
+			>
+				<TableCard
+					headers={headers}
+					variant="transparent"
+					rows={infoRows}
+					totalRows={totalRows}
+					isLoading={isLoading}
+					onQueryUpdate={gatedProps.onQueryUpdate}
+					ids={rowIds}
+					search={{}}
+					filters={filters}
+					format={appLocalizer.date_format}
+					currency={{
+						currencySymbol: appLocalizer.currency_symbol,
+						priceDecimals: appLocalizer.price_decimals,
+						decimalSeparator: appLocalizer.decimal_separator,
+						thousandSeparator: appLocalizer.thousand_separator,
+						currencyPosition: appLocalizer.currency_position,
+					}}
+				/>
+			</ListGate>
 			<PopupComponent
 				open={popupOpen}
 				onClose={handleCloseForm}
@@ -383,7 +449,9 @@ const PendingRefund: React.FC<object> = () => {
 			>
 				{viewOrder && (
 					<FormGroupWrapperComponent>
-						<FormGroupComponent label={__('Refund Reason', 'multivendorx')}>
+						<FormGroupComponent
+							label={__('Refund Reason', 'multivendorx')}
+						>
 							<div className="refund-reason-box">
 								{getMetaValue(
 									viewOrder.meta_data,
@@ -455,9 +523,9 @@ const PendingRefund: React.FC<object> = () => {
 								}
 								usePlainText={false}
 								tinymceApiKey={
-									appLocalizer.admin_settings[
-										'overview'
-									]['tinymce_api_section'] ?? ''
+									appLocalizer.admin_settings['overview'][
+										'tinymce_api_section'
+									] ?? ''
 								}
 							/>
 						</FormGroupComponent>

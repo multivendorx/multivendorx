@@ -3,7 +3,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
-import { FormGroupWrapperComponent, FormGroupComponent, PopupComponent } from '@zyra/components';
+import {
+	FormGroupWrapperComponent,
+	FormGroupComponent,
+	PopupComponent,
+} from '@zyra/components';
 import { ButtonInput, ToggleInput, TextAreaInput } from '@zyra/inputs';
 import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import Popup from '../../../src/components/Popup/Popup';
@@ -13,6 +17,12 @@ import {
 	formatStatusLabel,
 	truncateText,
 } from '../../../src/services/commonFunction';
+import ListGate from '../../../src/components/Popup/ListGate';
+import useNoRecordsYet from '../../../src/components/Popup/useNoRecordsYet';
+import {
+	SAMPLE_REVIEWS,
+	sampleCategoryCounts,
+} from '../../../src/components/Popup/sampleRows';
 
 type Review = {
 	id: number;
@@ -168,7 +178,8 @@ const StoreReviews: React.FC = () => {
 		},
 	};
 
-	const infoRows = rows.map((row: any) => {
+	/** A record as a table row; the sample rows go through it too, so they look like real ones. */
+	const toInfoRow = (row: any) => {
 		const rating = Math.round(row.overall_rating || 0);
 		return {
 			...row,
@@ -217,7 +228,8 @@ const StoreReviews: React.FC = () => {
 				{ text: formatDate(row.date_created), color: 'blue' },
 			],
 		};
-	});
+	};
+	const infoRows = rows.map(toInfoRow);
 
 	const filters = [
 		{
@@ -322,6 +334,13 @@ const StoreReviews: React.FC = () => {
 			});
 	};
 
+	const sampleRowsData = SAMPLE_REVIEWS;
+	const { props: gatedProps, hasNoRecords } = useNoRecordsYet({
+		rows: infoRows,
+		isLoading,
+		onQueryUpdate: doRefreshTableData,
+	});
+
 	return (
 		<>
 			<PopupComponent
@@ -350,19 +369,68 @@ const StoreReviews: React.FC = () => {
 					}}
 				/>
 			</PopupComponent>
-			<TableCard
-				headers={headers}
-				variant="transparent"
-				rows={infoRows}
-				totalRows={totalRows}
-				isLoading={isLoading}
-				onQueryUpdate={doRefreshTableData}
-				ids={rowIds}
-				categoryCounts={categoryCounts}
-				search={{}}
-				filters={filters}
-				format={appLocalizer.date_format}
-			/>
+			<ListGate
+				feature={{
+					title: __('Store reviews', 'multivendorx'),
+					description: '',
+					icon: 'store-review',
+				}}
+				sample={
+					<TableCard
+						headers={headers}
+						variant="transparent"
+						search={{}}
+						filters={filters}
+						format={appLocalizer.date_format}
+						rows={sampleRowsData.map(toInfoRow)}
+						totalRows={sampleRowsData.length}
+						categoryCounts={sampleCategoryCounts(
+							sampleRowsData,
+							{
+								approved: __('Approved', 'multivendorx'),
+								pending: __('Pending', 'multivendorx'),
+							},
+							__('All', 'multivendorx')
+						)}
+					/>
+				}
+				isEmpty={hasNoRecords}
+				empty={{
+					heading: __('No store reviews yet', 'multivendorx'),
+					description: __(
+						'Customers rate a store after they buy from it. Reviews show here, and you can approve or reject each one.',
+						'multivendorx'
+					),
+					actions: (
+						<>
+							<a
+								className="mvx-locked-button"
+								href={'#&tab=settings&subtab=store-reviews'}
+							>
+								{__('Review settings', 'multivendorx')}
+							</a>
+						</>
+					),
+					note: __(
+						'A preview with sample reviews. Real ones show here.',
+						'multivendorx'
+					),
+				}}
+			>
+				<TableCard
+					headers={headers}
+					variant="transparent"
+					rows={infoRows}
+					totalRows={totalRows}
+					isLoading={isLoading}
+					onQueryUpdate={gatedProps.onQueryUpdate}
+					ids={rowIds}
+					categoryCounts={categoryCounts}
+					search={{}}
+					filters={filters}
+					format={appLocalizer.date_format}
+				/>
+			</ListGate>
 
 			{selectedReview && (
 				<PopupComponent

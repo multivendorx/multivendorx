@@ -11,8 +11,9 @@ import {
 	NoticeComponent,
 	NoticeManager,
 } from '@zyra/components';
-import { TextInput, DecoratedInput, ExpandablePanelInput } from '@zyra/inputs';
+import { TextInput, ExpandablePanelInput } from '@zyra/inputs';
 import { __, sprintf } from '@wordpress/i18n';
+import type { SetupProgress } from './StoreTabLayout';
 
 interface PaymentField {
 	key: string;
@@ -44,6 +45,8 @@ interface StoreData {
 interface PaymentSettingsProps {
 	id: string | null;
 	data: StoreData | null;
+	/** Tells the page's setup checklist whether the store now has a withdrawal method. */
+	onProgress?: (saved: SetupProgress) => void;
 }
 
 const toPanelFields = (provider: PaymentProvider): PaymentField[] =>
@@ -52,14 +55,17 @@ const toPanelFields = (provider: PaymentProvider): PaymentField[] =>
 		key: `${field.key}`,
 	}));
 
-const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
+const PaymentSettings: React.FC<PaymentSettingsProps> = ({
+	id,
+	data,
+	onProgress,
+}) => {
 	const [formData, setFormData] = useState<StoreData>({});
 
 	const storePayment: StorePaymentConfig =
 		(appLocalizer.store_payment_settings as StorePaymentConfig) || {};
 
 	const filteredStorePayment = Object.fromEntries(
-		 
 		Object.entries(storePayment).filter(([_, value]) => value !== null)
 	);
 
@@ -104,9 +110,17 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 		})
 			.then((res) => {
 				if (res.data.success) {
+					onProgress?.({
+						payout:
+							Object.keys(updatedData.payment_methods || {})
+								.length > 0,
+					});
 					NoticeManager.add({
 						title: __('Success', 'multivendorx'),
-						message: __('Store saved successfully!', 'multivendorx'),
+						message: __(
+							'Store saved successfully!',
+							'multivendorx'
+						),
 						type: 'success',
 						position: 'float',
 					});
@@ -115,7 +129,10 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 			.catch(() => {
 				NoticeManager.add({
 					title: __('Error', 'multivendorx'),
-					message: __('Failed to save store settings. Please try again.', 'multivendorx'),
+					message: __(
+						'Failed to save store settings. Please try again.',
+						'multivendorx'
+					),
 					type: 'error',
 					position: 'float',
 				});
@@ -125,7 +142,25 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 		<>
 			<ContainerComponent>
 				<ColumnComponent grid={8}>
-					<CardComponent title={__('Withdrawal methods', 'multivendorx')} titleIcon="withdraw" desc="Manage the payment methods available for store payouts.">
+					<CardComponent
+						title={__('Withdrawal methods', 'multivendorx')}
+						titleIcon="withdraw"
+						desc={__(
+							'Where this store’s earnings are paid out. The primary method is used first.',
+							'multivendorx'
+						)}
+					>
+						{paymentAddNewOptions.length > 0 &&
+							0 ===
+								Object.keys(formData.payment_methods || {})
+									.length && (
+								<p className="mvx-store-empty">
+									{__(
+										'No withdrawal methods yet. Add one so the store can be paid.',
+										'multivendorx'
+									)}
+								</p>
+							)}
 						{paymentAddNewOptions.length === 0 && (
 							<NoticeComponent
 								type="info"
@@ -165,58 +200,59 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ id, data }) => {
 					<CardComponent
 						title={__('Store-specific commission', 'multivendorx')}
 						titleIcon="commission"
-						desc="Set a custom commission rate for this store or use the global default."
+						desc={__(
+							'A rate for this store only, in place of the marketplace’s.',
+							'multivendorx'
+						)}
 					>
-						<NoticeComponent
-							type="info"
-							displayPosition="inline-notice"
-							message={sprintf(
-								/* translators: %s: URL to the global commission settings page. */
-								__(
-									'Set the commission the <b>marketplace earns</b> from each store sale. If not set, the <a href="%s">global commission</a> will automatically apply.',
-									'multivendorx'
-								),
-								`${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=store-commissions`
-							)}
-						/>
+						{/* One setting, one row: what the marketplace keeps from each sale, as a fixed amount plus a percentage. */}
 						<FormGroupWrapperComponent>
 							<FormGroupComponent
-								cols={6}
-								label={__('Fixed', 'multivendorx')}
-								htmlFor="Fixed"
-								className="commission-input-group"
+								label={__('Commission', 'multivendorx')}
+								htmlFor="commission_fixed"
+								desc={
+									<>
+										{__(
+											'What the marketplace keeps from each sale. Empty: the ',
+											'multivendorx'
+										)}
+										<a
+											href={`${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=store-commissions`}
+										>
+											{__(
+												'global commission',
+												'multivendorx'
+											)}
+										</a>
+										{__(' applies.', 'multivendorx')}
+									</>
+								}
 							>
-								<TextInput
-									preText={appLocalizer.currency_symbol}
-									name="commission_fixed"
-									value={formData.commission_fixed}
-									onChange={(value) =>
-										handleChange('commission_fixed', value)
-									}
-								/>
-								<DecoratedInput
-									type="preposttext"
-									textType="post"
-									preText={undefined}
-									postText="+"
-								/>
-							</FormGroupComponent>
-							<FormGroupComponent
-								cols={6}
-								label={__('Percentage', 'multivendorx')}
-								htmlFor="Percentage"
-							>
-								<TextInput
-									postText="%"
-									name="commission_percentage"
-									value={formData.commission_percentage}
-									onChange={(value) =>
-										handleChange(
-											'commission_percentage',
-											value
-										)
-									}
-								/>
+								<div className="mvx-commission-input">
+									<TextInput
+										preText={appLocalizer.currency_symbol}
+										name="commission_fixed"
+										value={formData.commission_fixed}
+										onChange={(value) =>
+											handleChange(
+												'commission_fixed',
+												value
+											)
+										}
+									/>
+									<span aria-hidden="true">+</span>
+									<TextInput
+										postText="%"
+										name="commission_percentage"
+										value={formData.commission_percentage}
+										onChange={(value) =>
+											handleChange(
+												'commission_percentage',
+												value
+											)
+										}
+									/>
+								</div>
 							</FormGroupComponent>
 						</FormGroupWrapperComponent>
 					</CardComponent>

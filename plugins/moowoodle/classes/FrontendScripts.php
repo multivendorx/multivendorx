@@ -306,6 +306,9 @@ class FrontendScripts {
 			'admin_settings' => self::get_admin_settings(),
 		);
 
+		$current_user      = MooWoodle()->current_user;
+        $first_name = ! empty( $current_user->first_name ) ? $current_user->first_name : $current_user->display_name;
+
 		$localize_scripts =
 			array(
 				'moowoodle-admin'                     => array(
@@ -337,6 +340,8 @@ class FrontendScripts {
 							7 => __( 'Authenticated user', 'moowoodle' ),
 						),
 						'date_format'     => Util::wp_to_react_date_format( get_option( 'date_format' ) ),
+						// The dashboard greets the admin by name ("Good morning, Ana"); empty when no one is logged in.
+						'user_first_name' => $first_name,
 					),
 				),
 				'moowoodle-my-courses'                => array(
@@ -404,4 +409,5 @@ class FrontendScripts {
 	public static function enqueue_style( $handle ) {
 		wp_enqueue_style( $handle );
 	}
+
 }

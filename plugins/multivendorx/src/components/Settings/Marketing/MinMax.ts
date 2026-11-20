@@ -16,10 +16,14 @@ export default {
 	submitUrl: 'settings',
 	modal: [
 		{
-			key: 'section',
+			key: 'section_product_purchase_limits',
 			type: 'section',
 			icon: 'min-max',
 			title: __('Product Purchase Limits', 'multivendorx'),
+			desc: __(
+				'The smallest and largest quantity or amount a customer can buy of a product/listing.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'product_quantity_rules',
@@ -83,7 +87,7 @@ export default {
 			],
 		},
 		{
-			key: 'section',
+			key: 'section_order_purchase_limits',
 			type: 'section',
 			icon: 'cart',
 			title: __('Order Purchase Limits', 'multivendorx'),

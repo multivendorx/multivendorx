@@ -483,6 +483,10 @@ module.exports = function createWebpackConfig(
 				// upstream in the zyra repo) — BlockBuilder, CanvasEditor,
 				// SettingMetaBox, FormViewer, FreeFormCustomizer, FIELD_REGISTRY.
 				'@zyra/builders': '@multivendorx/zyra',
+				// @zyra/builderform is what zyra 1.0.65 ships in place of
+				// @zyra/builders: EmailBuilder, the legacy email-block
+				// adapters and the admin FormBuilder (no FormViewer).
+				'@zyra/builderform': '@multivendorx/zyra',
 			},
 		},
 
