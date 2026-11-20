@@ -228,6 +228,7 @@ class Installer {
             'is_enable_out_of_stock'  => 'all_products',
             'quote_user_permission'   => 'everyone',
             'additional_alert_email'  => CatalogX()->admin_email,
+            'enquiry_report_frequency' => 'monthly',
         );
 
         update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array_merge( $all_settings, $enquiry_quote_settings ) );
@@ -691,6 +692,12 @@ class Installer {
             delete_option( 'catalogx_enquiry_email_temp_settings' );
             delete_option( 'catalogx_pages_settings' );
             delete_option( 'catalogx_all_settings_settings' );
+        }
+
+        if ( version_compare( $previous_version, '6.1.9', '<' ) ) {
+            $customer_engagement_settings = get_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array() );
+            $customer_engagement_settings['enquiry_report_frequency'] = 'monthly';
+            update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $customer_engagement_settings );
         }
     }
 

@@ -267,6 +267,43 @@ export default {
             label: __('Recipient email for product enquiries', 'catalogx'),
             moduleEnabled: 'enquiry',
         },
+        {
+            key: 'enquiry_report_frequency',
+            type: 'choice-toggle',
+            label: __('Enquiry report frequency', 'catalogx'),
+            settingDescription: __(
+                'Choose how often to receive product enquiry reports.',
+                'catalogx'
+            ),
+            options: [
+                {
+                    key: 'daily',
+                    label: __('Daily', 'catalogx'),
+                    value: 'daily',
+                },
+                {
+                    key: 'weekly',
+                    label: __('Weekly', 'catalogx'),
+                    value: 'weekly',
+                },
+                {
+                    key: 'biweekly',
+                    label: __('Every 2 weeks', 'catalogx'),
+                    value: 'biweekly',
+                },
+                {
+                    key: 'monthly',
+                    label: __('Monthly', 'catalogx'),
+                    value: 'monthly',
+                },
+                {
+                    key: 'quarterly',
+                    label: __('Quarterly', 'catalogx'),
+                    value: 'quarterly',
+                },
+            ],
+            moduleEnabled: 'enquiry',
+        },
         //whatsapp section
         {
             key: 'enable_whatsapp',

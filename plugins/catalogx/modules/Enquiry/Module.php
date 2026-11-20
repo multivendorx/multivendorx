@@ -48,6 +48,7 @@ class Module {
         $this->services['frontend'] = new Frontend();
         $this->services['rest']     = new Rest();
         $this->services['ajax']     = new Ajax();
+        $this->services['cron']     = new Cron();
     }
 
     /**

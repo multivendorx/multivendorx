@@ -215,7 +215,8 @@ final class CatalogX {
      */
     public function register_email_classes( $emails ) {
         $emails['EnquiryEmail']          = new Emails\EnquiryEmail();
-        $emails['requestQuoteSendEmail'] = new Emails\RequestQuoteSendEmail();
+        $emails['EnquiryReportEmail']    = new Emails\EnquiryReportEmail();
+        $emails['RequestQuoteSendEmail'] = new Emails\RequestQuoteSendEmail();
         return $emails;
     }
 
