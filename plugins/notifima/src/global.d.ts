@@ -72,9 +72,20 @@ declare global {
         email_logs_url: string;
     }
 
+    /** Printed on the Plugins screen only, when VuloForm is active (Installer::enqueue_deactivation_confirm_assets()). */
+    interface VuloformDeactivateLocalizer {
+        plugin_file: string;
+        title: string;
+        description: string;
+        question: string;
+        cancel: string;
+        confirm: string;
+    }
+
     var appLocalizer: AppLocalizer;
     var subscription: Subscription;
     var vuloMailLocalizer: VuloMailLocalizer;
+    var vuloformDeactivateLocalizer: VuloformDeactivateLocalizer;
 
     module '*.png';
     module '*.jpg';

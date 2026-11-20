@@ -21,11 +21,12 @@ export interface VuloFormEmbedProps {
 	 */
 	nonce?: string;
 	/**
-	 * VuloForm's own script handles submission entirely client-side (fetch straight to its
-	 * public REST endpoint) and never tells the host page about it. Called once, with the
-	 * submitted `vf[...]` field values, when that script swaps the form for its success message.
+	 * Takes over the form's submission entirely: called with the raw posted `FormData` instead
+	 * of letting VuloForm's own script submit it. The caller decides what happens next -- e.g.
+	 * check eligibility with Notifima's own API first, and only forward it to VuloForm's submit
+	 * endpoint itself once that passes. If it doesn't pass, VuloForm never sees this submission.
 	 */
-	onSubmitted?: (values: Record<string, string>) => void;
+	onBeforeSubmit?: (formData: FormData) => void;
 }
 
 /** Loads a stylesheet/script by URL into `<head>` once, shared across form instances. */
@@ -70,7 +71,7 @@ const VuloFormEmbed: React.FC<VuloFormEmbedProps> = ({
 	apiUrl,
 	productId,
 	nonce,
-	onSubmitted,
+	onBeforeSubmit,
 }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [failed, setFailed] = useState(false);
@@ -105,14 +106,12 @@ const VuloFormEmbed: React.FC<VuloFormEmbedProps> = ({
 	useEffect(() => {
 		const container = containerRef.current;
 
-		if (!container || !onSubmitted) {
+		if (!container || !onBeforeSubmit) {
 			return;
 		}
 
-		let submittedValues: Record<string, string> | null = null;
-
-		// Capture phase: runs before VuloForm's own bubble-phase listener on the <form>, while
-		// field values are still readable.
+		// Capture phase: runs before VuloForm's own bubble-phase listener on the <form>, so this
+		// fully takes over the submission -- VuloForm's script never sees it.
 		const onSubmitCapture = (event: Event) => {
 			const form = event.target as HTMLFormElement;
 
@@ -120,44 +119,18 @@ const VuloFormEmbed: React.FC<VuloFormEmbedProps> = ({
 				return;
 			}
 
-			const values: Record<string, string> = {};
+			event.preventDefault();
+			event.stopImmediatePropagation();
 
-			new FormData(form).forEach((value, name) => {
-				const match = /^vf\[(.+)\]$/.exec(name);
-
-				if (match && 'string' === typeof value) {
-					values[match[1]] = value;
-				}
-			});
-
-			submittedValues = values;
+			onBeforeSubmit(new FormData(form));
 		};
 
-		// VuloForm's script swaps the <form> for a `.vuloform-message--success` node on success.
-		const observer = new MutationObserver((mutations) => {
-			const succeeded = mutations.some((mutation) =>
-				Array.prototype.some.call(
-					mutation.addedNodes,
-					(node: Node) =>
-						node instanceof HTMLElement &&
-						node.classList.contains('vuloform-message--success')
-				)
-			);
-
-			if (succeeded && submittedValues) {
-				onSubmitted(submittedValues);
-				submittedValues = null;
-			}
-		});
-
 		container.addEventListener('submit', onSubmitCapture, true);
-		observer.observe(container, { childList: true, subtree: true });
 
 		return () => {
 			container.removeEventListener('submit', onSubmitCapture, true);
-			observer.disconnect();
 		};
-	}, [formId, onSubmitted]);
+	}, [formId, onBeforeSubmit]);
 
 	if (failed) {
 		return null;

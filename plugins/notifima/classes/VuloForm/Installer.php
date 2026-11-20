@@ -7,6 +7,7 @@
 
 namespace Notifima\VuloForm;
 
+use Notifima\FrontendScripts;
 use Notifima\Utill;
 
 defined( 'ABSPATH' ) || exit;
@@ -34,6 +35,8 @@ class Installer {
         add_action( 'admin_init', array( $this, 'maybe_install' ) );
         add_action( 'admin_notices', array( $this, 'installation_failed_notice' ) );
         add_action( 'admin_notices', array( $this, 'inactive_notice' ) );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_deactivation_confirm_assets' ) );
+        add_action( 'admin_footer-plugins.php', array( $this, 'print_deactivation_confirm_root' ) );
     }
 
     /**
@@ -196,5 +199,55 @@ class Installer {
             </p>
         </div>
         <?php
+    }
+
+    /**
+     * On the Plugins screen, loads Notifima's own admin bundle (same one its settings page
+     * uses) so the deactivation-confirm dialog can be a real zyra `PopupComponent`, not a
+     * hand-rolled one.
+     *
+     * @return void
+     */
+    public function enqueue_deactivation_confirm_assets() {
+        $plugin_file = $this->installed_plugin_file();
+        $screen      = get_current_screen();
+
+        if ( ! $screen || 'plugins' !== $screen->id || ! class_exists( '\VuloForm\VuloForm' ) || ! $plugin_file || ! current_user_can( 'activate_plugins' ) ) {
+            return;
+        }
+
+        wp_enqueue_script( 'wp-element' );
+
+        FrontendScripts::admin_load_scripts();
+        FrontendScripts::enqueue_script( 'notifima-components-script' );
+        FrontendScripts::enqueue_script( 'notifima-admin-script' );
+        FrontendScripts::enqueue_style( 'notifima-components-style' );
+        FrontendScripts::localize_scripts( 'notifima-admin-script' );
+
+        wp_localize_script(
+            'notifima-admin-script',
+            'vuloformDeactivateLocalizer',
+            array(
+                'plugin_file' => $plugin_file,
+                'title'       => __( 'Before you deactivate VuloForm, please note:', 'notifima' ),
+                'description' => __( 'The back-in-stock subscription form on your out-of-stock product pages is powered by VuloForm. If you deactivate it, this form will no longer be displayed, and customers will not be able to subscribe to back-in-stock notifications.', 'notifima' ),
+                'question'    => __( 'Do you still want to proceed with deactivating VuloForm?', 'notifima' ),
+                'cancel'      => __( 'Cancel', 'notifima' ),
+                'confirm'     => __( 'Deactivate anyway', 'notifima' ),
+            )
+        );
+    }
+
+    /**
+     * Prints the mount point `src/index.tsx` renders the deactivation-confirm popup into.
+     *
+     * @return void
+     */
+    public function print_deactivation_confirm_root() {
+        if ( ! wp_script_is( 'notifima-admin-script', 'enqueued' ) ) {
+            return;
+        }
+
+        echo '<div id="notifima-vuloform-deactivate-root"></div>';
     }
 }

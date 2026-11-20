@@ -74,17 +74,39 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
     };
 
     /**
-     * VuloForm's own script handles the actual submission -- the subscriber row already exists
-     * by the time this fires (SubscriptionBridge inserts it server-side). Re-asking Notifima's
-     * subscribe endpoint for the same email/product just surfaces its existing "already
-     * subscribed" response, which is what renders the unsubscribe button below.
+     * Forwards the raw submitted fields to VuloForm's own public submit endpoint -- the same
+     * request its script would have made, just issued by us instead, after Notifima's own check
+     * already passed.
      */
-    const onVuloFormSubmitted = (values: Record<string, string>) => {
-        const customerEmail = values.email;
+    const submitToVuloForm = (formData: FormData) => {
+        axios
+            .post(
+                `${subscription.apiUrl}/vuloform/v1/public/forms/${vuloformFormId}/submit`,
+                formData
+            )
+            .catch(() => {
+                // Notifima's own subscribe call already succeeded and told the visitor so;
+                // VuloForm not recording its copy of the submission isn't user-facing.
+            });
+    };
+
+    /**
+     * VuloForm's script never gets this submission -- `VuloFormEmbed` hands it to us first.
+     * Notifima's subscribe endpoint runs its own checks (email validation, banned domains/
+     * addresses, already-subscribed dedup, etc.); only once it reports a real new subscription
+     * do we forward the submission on to VuloForm itself. If Notifima doesn't add the subscriber,
+     * VuloForm never receives or stores this submission at all.
+     */
+    const onVuloFormBeforeSubmit = (formData: FormData) => {
+        const customerEmail = (formData.get('vf[email]') as string) || '';
 
         if (!customerEmail) {
+            // No email field on this form -- nothing for Notifima to check.
+            submitToVuloForm(formData);
             return;
         }
+
+        setLoading(true);
 
         axios({
             method: 'POST',
@@ -101,9 +123,22 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
         })
             .then(({ data }: { data: ApiResponse }) => {
                 setResponse(data);
+
+                if (data.status) {
+                    submitToVuloForm(formData);
+                }
             })
             .catch(() => {
-                // The frontend form itself already told the visitor it worked; nothing to add.
+                setResponse({
+                    status: false,
+                    message: __(
+                        'Something went wrong. Please try again.',
+                        'notifima'
+                    ),
+                });
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
 
@@ -138,7 +173,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
                     apiUrl={subscription.apiUrl}
                     productId={productId}
                     nonce={subscription.nonce}
-                    onSubmitted={onVuloFormSubmitted}
+                    onBeforeSubmit={onVuloFormBeforeSubmit}
                 />
             )}
 

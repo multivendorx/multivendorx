@@ -3,6 +3,7 @@ import { createRoot } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import App from './app';
 import EmailLogs from './components/EmailLogs/EmailLogs';
+import DeactivateConfirmPopup from './components/VuloForm/DeactivateConfirmPopup';
 import { configureZyra } from '@zyra/core';
 
 configureZyra(appLocalizer);
@@ -34,6 +35,14 @@ function mount() {
 
 	if (emailLogsRoot) {
 		createRoot(emailLogsRoot).render(<EmailLogs />);
+	}
+
+	const vuloformDeactivateRoot = document.getElementById(
+		'notifima-vuloform-deactivate-root'
+	);
+
+	if (vuloformDeactivateRoot) {
+		createRoot(vuloformDeactivateRoot).render(<DeactivateConfirmPopup />);
 	}
 }
 
