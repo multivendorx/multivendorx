@@ -104,7 +104,10 @@ class Frontend {
 
         $display_enquiry_button = CatalogX()->setting->get_setting( 'is_enable_out_of_stock', '' );
 
-        if ( 'is_enable_out_of_stock' === $display_enquiry_button && $product_obj->is_in_stock() ) {
+        // A variable product's own is_in_stock() is true as soon as any one variation has stock,
+        // even when the variation the shopper has selected doesn't -- so for variable products
+        // this is left to the frontend script to decide per selected variation instead.
+        if ( 'is_enable_out_of_stock' === $display_enquiry_button && ! $product_obj->is_type( 'variable' ) && $product_obj->is_in_stock() ) {
             return;
         }
 

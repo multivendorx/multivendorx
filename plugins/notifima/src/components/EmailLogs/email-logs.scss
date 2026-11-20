@@ -1,0 +1,313 @@
+// "Email Logs" landing page (EmailLogs.tsx) - a VuloMail install pitch, styled on the same
+// hero / feature-grid / closing-CTA pattern as Notifima's own Free vs Pro tab
+// (AdminDashboard/free-vs-pro.scss), since this page lives outside #admin-main-wrapper and
+// can't rely on that stylesheet's design tokens, the same purple palette is hardcoded here.
+#notifima-email-logs {
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 70rem;
+	margin: 1.5rem 0;
+
+	h1,
+	h2,
+	h3,
+	p,
+	ul,
+	li {
+		margin: 0;
+		padding: 0;
+	}
+}
+
+// ---- Hero ----
+.nf-el-hero {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 2rem;
+	box-sizing: border-box;
+	padding: 2.5rem 2.5rem;
+	border: 1px solid #e6dcf6;
+	border-radius: 0.875rem;
+	background:
+		radial-gradient(circle at 100% 0%, rgb(123 47 240 / 14%) 0, transparent 45%),
+		linear-gradient(135deg, #f4ecfd 0%, #fbf8ff 55%, #fff 100%);
+
+	@media (width <= 782px) {
+		padding: 1.75rem 1.5rem;
+	}
+}
+
+.nf-el-hero-text {
+	display: flex;
+	flex: 1 1 28rem;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.875rem;
+	min-width: 0;
+}
+
+.nf-el-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	padding: 0.1875rem 0.625rem;
+	border-radius: 999px;
+	background: linear-gradient(135deg, #5007aa, #8b3fd9);
+	color: #fff;
+	font-size: 0.6875rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+
+	.dashicons {
+		width: 0.875rem;
+		height: 0.875rem;
+		font-size: 0.875rem;
+	}
+}
+
+.nf-el-hero-text h1 {
+	max-width: 36rem;
+	color: #1f1b3e;
+	font-size: 1.625rem;
+	font-weight: 700;
+	line-height: 1.3;
+	letter-spacing: -0.01em;
+}
+
+.nf-el-hero-text > p {
+	max-width: 38rem;
+	color: #4b4a57;
+	font-size: 0.9375rem;
+	line-height: 1.6;
+}
+
+.nf-el-hero-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 1rem;
+	margin-top: 0.25rem;
+}
+
+.nf-el-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	box-sizing: border-box;
+	height: 3rem;
+	padding: 0 1.75rem;
+	border: 0;
+	border-radius: 0.5rem;
+	background: linear-gradient(135deg, #5007aa, #8b3fd9);
+	box-shadow: 0 0.75rem 1.5rem -0.75rem rgb(80 7 170 / 45%);
+	color: #fff;
+	font-size: 1rem;
+	font-weight: 600;
+	text-decoration: none;
+	cursor: pointer;
+
+	.dashicons {
+		font-size: 1.125rem;
+	}
+
+	&:hover,
+	&:focus-visible {
+		background: linear-gradient(135deg, #42068c, #7b2ff0);
+		color: #fff;
+	}
+
+	&.is-light {
+		background: #fff;
+		box-shadow: 0 0.75rem 1.5rem -0.5rem rgb(20 0 50 / 45%);
+		color: #5007aa;
+
+		.dashicons {
+			color: #5007aa;
+		}
+
+		&:hover,
+		&:focus-visible {
+			background: #f8f3fe;
+			color: #42068c;
+		}
+	}
+}
+
+.nf-el-note {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	color: #6b7280;
+	font-size: 0.8125rem;
+
+	.dashicons {
+		color: #15803d;
+		font-size: 1rem;
+	}
+}
+
+.nf-el-hero-badge {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 6.5rem;
+	height: 6.5rem;
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 0.75rem 1.5rem -0.75rem rgb(80 7 170 / 30%);
+	color: #5007aa;
+	font-size: 2.75rem;
+}
+
+// ---- Feature grid ----
+.nf-el-features {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem;
+
+	@media (width <= 782px) {
+		grid-template-columns: 1fr;
+	}
+}
+
+.nf-el-feature {
+	display: flex;
+	gap: 0.875rem;
+	box-sizing: border-box;
+	padding: 1.25rem 1.5rem;
+	border: 1px solid #e3e6ef;
+	border-radius: 0.875rem;
+	background: #fff;
+}
+
+.nf-el-feature-icon {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 0.625rem;
+	background: #f4eefb;
+	color: #5007aa;
+	font-size: 1.25rem;
+}
+
+.nf-el-feature-body {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	min-width: 0;
+
+	strong {
+		color: #1f1b3e;
+		font-size: 0.9375rem;
+		font-weight: 600;
+	}
+
+	span {
+		color: #6b7280;
+		font-size: 0.8125rem;
+		line-height: 1.5;
+	}
+}
+
+// ---- Closing call to action ----
+.nf-el-cta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1.25rem;
+	box-sizing: border-box;
+	padding: 1.75rem 2rem;
+	border-radius: 0.875rem;
+	background: linear-gradient(135deg, #3f0588 0%, #5007aa 45%, #7b2ff0 100%);
+	color: #fff;
+
+	> div {
+		flex: 1 1 22rem;
+		min-width: 0;
+	}
+
+	h3 {
+		color: #fff;
+		font-size: 1.1875rem;
+		font-weight: 700;
+		line-height: 1.3;
+	}
+
+	p {
+		margin-top: 0.375rem;
+		color: rgb(255 255 255 / 82%);
+		font-size: 0.875rem;
+		line-height: 1.5;
+	}
+
+	@media (width <= 782px) {
+		padding: 1.5rem 1.25rem;
+	}
+}
+
+// ---- Already installed state ----
+.nf-el-active {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 1.75rem;
+	box-sizing: border-box;
+	padding: 2.5rem 2.5rem;
+	border: 1px solid #d5ecd9;
+	border-radius: 0.875rem;
+	background: linear-gradient(135deg, #f1faf3 0%, #fbfffc 60%, #fff 100%);
+}
+
+.nf-el-active-icon {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 4rem;
+	height: 4rem;
+	border-radius: 50%;
+	background: #e8f5ee;
+	color: #15803d;
+	font-size: 2rem;
+}
+
+.nf-el-active-text {
+	display: flex;
+	flex: 1 1 20rem;
+	flex-direction: column;
+	gap: 0.625rem;
+
+	h2 {
+		color: #1f1b3e;
+		font-size: 1.375rem;
+		font-weight: 700;
+	}
+
+	p {
+		max-width: 36rem;
+		color: #4b4a57;
+		font-size: 0.9375rem;
+		line-height: 1.6;
+	}
+}
+
+.nf-el-active .nf-el-btn {
+	background: linear-gradient(135deg, #15803d, #1f9d4d);
+	box-shadow: 0 0.75rem 1.5rem -0.75rem rgb(21 128 61 / 45%);
+
+	&:hover,
+	&:focus-visible {
+		background: linear-gradient(135deg, #0f5c2c, #15803d);
+	}
+}
