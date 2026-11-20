@@ -8,6 +8,16 @@ jQuery( document ).ready( function ( $ ) {
     $( 'form.variations_form' ).on(
         'found_variation',
         function ( event, variation ) {
+            // In "out of stock only" mode, a variable product's own stock status can't tell us
+            // whether the *selected* variation is out of stock -- only the variation data can.
+            if (
+                enquiryFrontend.is_enable_out_of_stock &&
+                variation.is_in_stock
+            ) {
+                $enquiryBtn.hide();
+                return;
+            }
+
             $enquiryBtn.show();
         }
     );

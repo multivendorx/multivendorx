@@ -7,7 +7,6 @@
 
 namespace CatalogX;
 
-use CatalogX\Enquiry\Frontend as EnquiryFrontend;
 use CatalogX\Utill;
 
 defined( 'ABSPATH' ) || exit;
@@ -490,15 +489,29 @@ class FrontendScripts {
                 ),
                 'catalogx-enquiry-frontend-script'       => array(
                     'object_name' => 'enquiryFrontend',
-                    'data'        => self::get_base_ajax_data( 'catalogx-enquiry-frontend-script' ),
+                    'data'        => array_merge(
+                        self::get_base_ajax_data( 'catalogx-enquiry-frontend-script' ),
+                        array(
+                            // Whether a variable product's "Send an enquiry" button should only
+                            // show for a variation that's actually out of stock.
+                            'is_enable_out_of_stock' => 'is_enable_out_of_stock' === CatalogX()->setting->get_setting( 'is_enable_out_of_stock', '' ),
+                        )
+                    ),
                 ),
                 'catalogx-enquiry-form-script'           => array(
                     'object_name' => 'enquiryFormData',
                     'data'        => array_merge(
                         $base_rest,
                         array(
-                            'settings_free'       => CatalogX()->modules->is_active( 'enquiry' ) ? EnquiryFrontend::catalogx_free_form_settings() : array(),
-                            'settings_pro'        => CatalogX()->modules->is_active( 'enquiry' ) ? EnquiryFrontend::catalogx_pro_form_settings() : array(),
+                            'vuloform_form_id'    => (int) CatalogX()->setting->get_setting( 'vuloform_enquiry_form_id', 0 ),
+                            // VuloForm's own script handles the actual submission now, so the
+                            // "What happens after enquiry submission?" setting (Settings →
+                            // Customer Engagement) has to be acted on here, not from the
+                            // `catalogx/v1/enquiries` response -- the browser never sees that
+                            // response, only VuloForm's.
+                            'redirect_url'        => ( 'dedicated_page' === CatalogX()->setting->get_setting( 'is_page_redirect' ) && CatalogX()->setting->get_setting( 'redirect_page_id' ) )
+                                ? get_permalink( CatalogX()->setting->get_setting( 'redirect_page_id' ) )
+                                : '',
                             'khali_dabba'         => Utill::is_khali_dabba(),
                             'product_data'        => apply_filters( 'catalogx_product_data', array() ),
                             'default_placeholder' => array(

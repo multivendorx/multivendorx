@@ -216,13 +216,7 @@ class Installer {
             return;
         }
 
-        wp_enqueue_script( 'wp-element' );
-
-        FrontendScripts::admin_load_scripts();
-        FrontendScripts::enqueue_script( 'notifima-components-script' );
-        FrontendScripts::enqueue_script( 'notifima-admin-script' );
-        FrontendScripts::enqueue_style( 'notifima-components-style' );
-        FrontendScripts::localize_scripts( 'notifima-admin-script' );
+        FrontendScripts::enqueue_admin_bundle();
 
         wp_localize_script(
             'notifima-admin-script',

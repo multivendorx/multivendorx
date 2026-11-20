@@ -51,9 +51,12 @@ declare global {
 
     interface EnquiryFormData {
         apiUrl: string;
+        restUrl: string;
         nonce: string;
-        settings_free: Array;
-        settings_pro: Array;
+        /** The configured VuloForm form id, 0 when none is set. */
+        vuloform_form_id: number;
+        /** Where to send the shopper after a successful enquiry; '' to stay on the page. */
+        redirect_url: string;
         khali_dabba: boolean;
         product_data: Array;
         default_placeholder: Array;

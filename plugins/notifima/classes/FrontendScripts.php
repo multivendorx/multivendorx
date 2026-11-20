@@ -147,6 +147,23 @@ class FrontendScripts {
     }
 
     /**
+     * Registers, enqueues and localizes the main admin bundle ("notifima-admin-script", built
+     * from `src/index.tsx`) -- shared by every admin screen that mounts any part of it
+     * (Admin::enqueue_admin_assets(), VuloForm\Installer::enqueue_deactivation_confirm_assets()).
+     *
+     * @return void
+     */
+    public static function enqueue_admin_bundle() {
+        wp_enqueue_script( 'wp-element' );
+
+        self::admin_load_scripts();
+        self::enqueue_script( 'notifima-components-script' );
+        self::enqueue_script( 'notifima-admin-script' );
+        self::enqueue_style( 'notifima-components-style' );
+        self::localize_scripts( 'notifima-admin-script' );
+    }
+
+    /**
 	 * Register/queue admin scripts.
 	 */
 	public static function admin_load_scripts() {

@@ -252,13 +252,7 @@ class Admin {
         $screen_id = get_current_screen()->id;
 
         if ( 'toplevel_page_notifima' === $screen_id || 'notifima_page_' . self::EMAIL_LOGS_PAGE_SLUG === $screen_id ) {
-            wp_enqueue_script( 'wp-element' );
-
-            FrontendScripts::admin_load_scripts();
-            FrontendScripts::enqueue_script( 'notifima-components-script' );
-            FrontendScripts::enqueue_script( 'notifima-admin-script' );
-			FrontendScripts::enqueue_style( 'notifima-components-style' );
-			FrontendScripts::localize_scripts( 'notifima-admin-script' );
+            FrontendScripts::enqueue_admin_bundle();
         }
 
         if ( 'notifima_page_' . self::EMAIL_LOGS_PAGE_SLUG === $screen_id ) {

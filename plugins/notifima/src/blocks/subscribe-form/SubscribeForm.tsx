@@ -27,6 +27,7 @@ interface ApiResponse {
 
 const SubscribeForm: React.FC<SubscribeFormProps> = ({
     productId,
+    variationId,
     shownInterest,
 }) => {
     const [loading, setLoading] = useState(false);
@@ -99,6 +100,10 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
      */
     const onVuloFormBeforeSubmit = (formData: FormData) => {
         const customerEmail = (formData.get('vf[email]') as string) || '';
+        const countryCode = (formData.get('vf[phone][country_code]') as string) || '';
+        const phoneNumber = (formData.get('vf[phone][phone]') as string) || '';
+
+        const phone = `${countryCode}${phoneNumber}`;
 
         if (!customerEmail) {
             // No email field on this form -- nothing for Notifima to check.
@@ -118,7 +123,8 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
                 action: 'subscribe',
                 customer_email: customerEmail,
                 product_id: productId,
-                variation_id: 0,
+                phone,
+                variation_id: variationId,
             },
         })
             .then(({ data }: { data: ApiResponse }) => {
@@ -171,7 +177,7 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
                 <VuloFormEmbed
                     formId={vuloformFormId}
                     apiUrl={subscription.apiUrl}
-                    productId={productId}
+                    productId={variationId > 0 ? variationId : productId}
                     nonce={subscription.nonce}
                     onBeforeSubmit={onVuloFormBeforeSubmit}
                 />
