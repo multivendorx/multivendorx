@@ -20,7 +20,6 @@ class Integration {
     public function __construct() {
         new Installer();
         new Templates();
-        new SubscriptionBridge();
         new PreviewRest();
 
         add_filter( 'notifima_subscribe_form_localize_data', array( $this, 'localize_data' ) );

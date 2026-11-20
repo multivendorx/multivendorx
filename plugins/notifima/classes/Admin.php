@@ -44,7 +44,7 @@ class Admin {
      *
      * @var string
      */
-    const VULOMAIL_EMAIL_LOGS_PAGE_SLUG = 'vulomail-email-logs';
+    const VULOMAIL_EMAIL_LOGS_PAGE_SLUG = 'vulomail#&tab=logs';
 
     /**
      * Admin constructor.

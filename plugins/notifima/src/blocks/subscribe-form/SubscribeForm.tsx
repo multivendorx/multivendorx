@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { getApiLink } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
-import logo from '../../assets/images/brand-logo.png';
 import VuloFormEmbed from './VuloFormEmbed';
 
 interface SubscribeFormProps {
@@ -74,6 +73,40 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
             });
     };
 
+    /**
+     * VuloForm's own script handles the actual submission -- the subscriber row already exists
+     * by the time this fires (SubscriptionBridge inserts it server-side). Re-asking Notifima's
+     * subscribe endpoint for the same email/product just surfaces its existing "already
+     * subscribed" response, which is what renders the unsubscribe button below.
+     */
+    const onVuloFormSubmitted = (values: Record<string, string>) => {
+        const customerEmail = values.email;
+
+        if (!customerEmail) {
+            return;
+        }
+
+        axios({
+            method: 'POST',
+            url: getApiLink(subscription, `subscribers/${productId}`),
+            headers: {
+                'X-WP-Nonce': subscription.nonce,
+            },
+            data: {
+                action: 'subscribe',
+                customer_email: customerEmail,
+                product_id: productId,
+                variation_id: 0,
+            },
+        })
+            .then(({ data }: { data: ApiResponse }) => {
+                setResponse(data);
+            })
+            .catch(() => {
+                // The frontend form itself already told the visitor it worked; nothing to add.
+            });
+    };
+
     const showForm =
         !response || (!response.status && !response.already_subscribed);
 
@@ -104,6 +137,8 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
                     formId={vuloformFormId}
                     apiUrl={subscription.apiUrl}
                     productId={productId}
+                    nonce={subscription.nonce}
+                    onSubmitted={onVuloFormSubmitted}
                 />
             )}
 
@@ -152,12 +187,6 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
                                 >
                                     ×
                                 </button>
-
-                                <img
-                                    src={logo}
-                                    alt=""
-                                    className="notifima-popup-logo"
-                                />
 
                                 {formContent}
                             </div>

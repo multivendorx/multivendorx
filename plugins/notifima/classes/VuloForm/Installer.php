@@ -33,10 +33,12 @@ class Installer {
     public function __construct() {
         add_action( 'admin_init', array( $this, 'maybe_install' ) );
         add_action( 'admin_notices', array( $this, 'installation_failed_notice' ) );
+        add_action( 'admin_notices', array( $this, 'inactive_notice' ) );
     }
 
     /**
-     * Installs/activates VuloForm if needed. Safe to call on every admin request.
+     * Installs/activates VuloForm the first time, only. Deliberately does not force it back on
+     * if a site owner later deactivates it -- `inactive_notice()` warns them instead.
      *
      * @return void
      */
@@ -46,9 +48,17 @@ class Installer {
             return;
         }
 
+        // Already attempted once (installed, activated, or deliberately deactivated since) --
+        // don't keep reinstalling/reactivating it out from under the site owner.
+        if ( get_option( self::ATTEMPTED_OPTION ) ) {
+            return;
+        }
+
         if ( ! current_user_can( 'install_plugins' ) || ! current_user_can( 'activate_plugins' ) ) {
             return;
         }
+
+        update_option( self::ATTEMPTED_OPTION, time() );
 
         $plugin_file = $this->installed_plugin_file();
 
@@ -56,13 +66,6 @@ class Installer {
             $this->activate( $plugin_file );
             return;
         }
-
-        // Only attempted once, successful or not.
-        if ( get_option( self::ATTEMPTED_OPTION ) ) {
-            return;
-        }
-
-        update_option( self::ATTEMPTED_OPTION, time() );
 
         $this->install_and_activate();
     }
@@ -163,6 +166,32 @@ class Installer {
                         $message
                     )
                 );
+                ?>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Admin notice shown whenever VuloForm is installed but currently inactive (e.g. a site
+     * owner deactivated it deliberately) -- the subscription form won't render on the frontend
+     * without it.
+     *
+     * @return void
+     */
+    public function inactive_notice() {
+        if ( class_exists( '\VuloForm\VuloForm' ) || ! $this->installed_plugin_file() ) {
+            return;
+        }
+
+        if ( ! current_user_can( 'activate_plugins' ) ) {
+            return;
+        }
+        ?>
+        <div class="notice notice-warning is-dismissible">
+            <p>
+                <?php
+                esc_html_e( 'VuloForm is deactivated. Notifima\'s subscription form will not render on the frontend until you reactivate it.', 'notifima' );
                 ?>
             </p>
         </div>

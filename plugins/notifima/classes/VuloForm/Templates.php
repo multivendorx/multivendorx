@@ -31,7 +31,6 @@ class Templates {
         }
 
         $templates['notifima_back_in_stock'] = $this->back_in_stock_template();
-        $templates['notifima_waitlist']       = $this->waitlist_template();
 
         return $templates;
     }
@@ -65,52 +64,6 @@ class Templates {
                             'key'     => 'product_id',
                             'label'   => __( 'Product', 'notifima' ),
                             // From the `?product_id=` param VuloFormEmbed.tsx passes to the embed call.
-                            'default' => '{query:product_id}',
-                        ),
-                    ),
-                    'settings' => $settings,
-                )
-            ),
-        );
-    }
-
-    /**
-     * @return array {title, desc, icon, category, schema}
-     */
-    private function waitlist_template() {
-        $settings                    = \VuloForm\Forms\Schema::default_settings();
-        $settings['submit_label']    = __( 'Join waitlist', 'notifima' );
-        $settings['notifications'][] = \VuloForm\Forms\Templates::admin_notification( 'email' );
-
-        return array(
-            'title'    => __( 'Restock waitlist (Notifima)', 'notifima' ),
-            'desc'     => __( 'Name, email and an optional phone number for a restock waitlist.', 'notifima' ),
-            'icon'     => 'profile',
-            'category' => __( 'Notifima', 'notifima' ),
-            'schema'   => \VuloForm\Forms\Schema::sanitize(
-                array(
-                    'fields'   => array(
-                        array(
-                            'type'  => 'text',
-                            'key'   => 'name',
-                            'label' => __( 'Name', 'notifima' ),
-                        ),
-                        array(
-                            'type'     => 'email',
-                            'key'      => 'email',
-                            'label'    => __( 'Email', 'notifima' ),
-                            'required' => true,
-                            'default'  => '{user:email}',
-                        ),
-                        array(
-                            'type'  => 'phone',
-                            'key'   => 'phone',
-                            'label' => __( 'Phone (optional)', 'notifima' ),
-                        ),
-                        array(
-                            'type'    => 'hidden',
-                            'key'     => 'product_id',
-                            'label'   => __( 'Product', 'notifima' ),
                             'default' => '{query:product_id}',
                         ),
                     ),
