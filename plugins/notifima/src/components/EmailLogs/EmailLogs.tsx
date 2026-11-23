@@ -48,24 +48,30 @@ const EmailLogs = () => {
 
     if ( isVuloMailActive ) {
         return (
-            <div className="nf-el-active">
-                <span className="nf-el-active-icon">
-                    <i className="dashicons dashicons-yes-alt" aria-hidden="true" />
-                </span>
-                <div className="nf-el-active-text">
-                    <h2>{ __( 'VuloMail is installed and active', 'notifima' ) }</h2>
+            <section className="nf-el-hero is-active">
+                <div className="nf-el-hero-text">
+                    <span className="nf-el-pill is-active">
+                        <i className="dashicons dashicons-yes-alt" aria-hidden="true" />
+                        { __( 'VuloMail', 'notifima' ) }
+                    </span>
+                    <h1>{ __( 'VuloMail is installed and active', 'notifima' ) }</h1>
                     <p>
                         { __(
                             'Every back-in-stock email Notifima sends is already being logged there - open VuloMail’s Email Logs to see delivery status, content, and history.',
                             'notifima'
                         ) }
                     </p>
-                    <a className="nf-el-btn" href={ vuloMailLocalizer.email_logs_url }>
-                        <i className="dashicons dashicons-list-view" aria-hidden="true" />
-                        { __( 'Open VuloMail Email Logs', 'notifima' ) }
-                    </a>
+                    <div className="nf-el-hero-actions">
+                        <a className="nf-el-btn is-large is-active" href={ vuloMailLocalizer.email_logs_url }>
+                            <i className="dashicons dashicons-list-view" aria-hidden="true" />
+                            { __( 'Open VuloMail Email Logs', 'notifima' ) }
+                        </a>
+                    </div>
                 </div>
-            </div>
+                <span className="nf-el-hero-badge is-active">
+                    <i className="dashicons dashicons-yes-alt" aria-hidden="true" />
+                </span>
+            </section>
         );
     }
 
