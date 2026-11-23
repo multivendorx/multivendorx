@@ -7,6 +7,9 @@
 
 namespace CatalogX\Enquiry;
 
+use CatalogX\VuloMail\Mailer;
+use CatalogX\VuloMail\Templates as VuloMailTemplates;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -109,19 +112,12 @@ class Cron {
 				return;
 		}
 
-		$email = WC()->mailer()->emails['EnquiryReportEmail'];
-
 		$enquiries = Util::get_enquiries(
 			array(
 				'start_date' => wp_date( 'Y-m-d H:i:s', $start_date ),
 				'end_date'   => wp_date( 'Y-m-d H:i:s', $now ),
 			)
 		);
-
-		if( empty( $enquiries ) ) {
-			$email->trigger( array(), wp_date( 'Y-m-d H:i:s', $start_date ), wp_date( 'Y-m-d H:i:s', $now ) );
-			return;
-		}
 
 		$product_report = array();
 
@@ -143,7 +139,24 @@ class Cron {
 			}
 		}
 
-		$email->trigger( $product_report, wp_date( 'Y-m-d H:i:s', $start_date ), wp_date( 'Y-m-d H:i:s', $now ) );
+		$enquiry_rows = '';
 
+		foreach ( $product_report as $row ) {
+			$enquiry_rows .= sprintf(
+				'<tr><td>%s</td><td>%s</td></tr>',
+				esc_html( $row['product_name'] ),
+				esc_html( $row['count'] )
+			);
+		}
+
+		Mailer::send(
+			VuloMailTemplates::ENQUIRY_REPORT,
+			get_option( 'admin_email' ),
+			array(
+				'{start_date}'   => wp_date( 'Y-m-d H:i:s', $start_date ),
+				'{end_date}'     => wp_date( 'Y-m-d H:i:s', $now ),
+				'{enquiry_rows}' => $enquiry_rows,
+			)
+		);
 	}
 }

@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-20T12:22:18+00:00\n"
+"POT-Creation-Date: 2026-11-23T06:37:42+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: notifima\n"
@@ -16,6 +16,7 @@ msgstr ""
 #. Plugin Name of the plugin
 #: product_stock_alert.php
 #: classes/VuloForm/Templates.php:50
+#: classes/VuloMail/Templates.php:45
 #: assets/js/index.js:1
 msgid "Notifima"
 msgstr ""
@@ -55,7 +56,7 @@ msgid "Inventory Manager"
 msgstr ""
 
 #: classes/Admin.php:131
-#: classes/Notifima.php:298
+#: classes/Notifima.php:283
 #: assets/js/index.js:1
 msgid "Settings"
 msgstr ""
@@ -68,7 +69,7 @@ msgstr ""
 #: classes/Admin.php:164
 #: classes/Admin.php:165
 #: classes/Notifima.php:119
-#: classes/Notifima.php:302
+#: classes/Notifima.php:287
 #: assets/js/index.js:1
 msgid "Upgrade to Pro"
 msgstr ""
@@ -140,67 +141,9 @@ msgstr ""
 msgid "(opens in a new tab)"
 msgstr ""
 
-#: classes/Emails/AdminNewSubscriberEmail.php:54
-msgid "Alert admin"
-msgstr ""
-
-#: classes/Emails/AdminNewSubscriberEmail.php:55
-msgid "Admin will get an alert when customer subscribe any out of stock product"
-msgstr ""
-
-#: classes/Emails/AdminNewSubscriberEmail.php:91
-msgid "A Customer has subscribed to a product on {site_title} "
-msgstr ""
-
-#: classes/Emails/AdminNewSubscriberEmail.php:100
-#: classes/Emails/ProductBackInStockEmail.php:118
-#: classes/Emails/SubscriberConfirmationEmail.php:93
-msgid "Welcome to {site_title} "
-msgstr ""
-
-#: classes/Emails/ProductBackInStockEmail.php:55
-msgid "Alert Subscriber"
-msgstr ""
-
-#: classes/Emails/ProductBackInStockEmail.php:56
-msgid "Alert customer when their subscribed product becomes in stock"
-msgstr ""
-
-#: classes/Emails/ProductBackInStockEmail.php:108
-msgid "Your Subscribed product on {site_title} is available now"
-msgstr ""
-
-#: classes/Emails/SubscriberConfirmationEmail.php:47
-msgid "Confirm subscriber"
-msgstr ""
-
-#: classes/Emails/SubscriberConfirmationEmail.php:48
-msgid "Confirm customer when they subscribe a product"
-msgstr ""
-
-#: classes/Emails/SubscriberConfirmationEmail.php:83
-msgid "You have subscribed to a product on {site_title} "
-msgstr ""
-
-#: classes/Emails/SubscriberReportEmail.php:58
-#: classes/Emails/SubscriberReportEmail.php:134
-#: templates/emails/html/SubscriberReportEmail.php:40
-msgid "Subscriber Report"
-msgstr ""
-
-#: classes/Emails/SubscriberReportEmail.php:59
-msgid "Sends the subscriber report to the configured email recipient(s) at the selected frequency."
-msgstr ""
-
-#: classes/Emails/SubscriberReportEmail.php:121
-msgid "Subscriber Report ({START_DATE} - {END_DATE})"
-msgstr ""
-
 #: classes/Install.php:323
 #: classes/VuloForm/Templates.php:65
-#: templates/emails/html/AdminNewSubscriberEmail.php:28
-#: templates/emails/html/ProductBackInStockEmail.php:30
-#: templates/emails/html/SubscriberConfirmationEmail.php:30
+#: classes/VuloMail/Templates.php:92
 #: assets/js/index.js:1
 msgid "Product"
 msgstr ""
@@ -279,19 +222,19 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-#: classes/Notifima.php:278
+#: classes/Notifima.php:263
 msgid "Notifima is currently updating the database in the background. Please be patient while the process completes."
 msgstr ""
 
-#: classes/Notifima.php:284
+#: classes/Notifima.php:269
 msgid "The Notifima is experiencing configuration issues. To ensure proper functioning, kindly deactivate and then activate the plugin."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Dashboard.php:75
+#: classes/RestAPI/Controllers/Dashboard.php:71
 msgid "Length of the reporting period, in days."
 msgstr ""
 
-#: classes/RestAPI/Controllers/Dashboard.php:142
+#: classes/RestAPI/Controllers/Dashboard.php:138
 msgid "Could not load the dashboard."
 msgstr ""
 
@@ -367,7 +310,7 @@ msgid_plural "Unsubscribed <span class=\"count\">( %s )</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: classes/Subscriber.php:579
+#: classes/Subscriber.php:591
 msgid "Notifima Retry Interval"
 msgstr ""
 
@@ -452,146 +395,110 @@ msgid "Collects an email address to notify a visitor when this product is back i
 msgstr ""
 
 #: classes/VuloForm/Templates.php:57
-#: templates/emails/html/AdminNewSubscriberEmail.php:56
-#: templates/emails/html/ProductBackInStockEmail.php:55
-#: templates/emails/html/SubscriberConfirmationEmail.php:55
 #: assets/js/index.js:1
 msgid "Email"
 msgstr ""
 
-#: templates/emails/html/AdminNewSubscriberEmail.php:20
-#: templates/emails/plain/AdminNewSubscriberEmail.php:20
-msgid "Hi there. A customer has subscribed to a product on your shop. Product details are shown below for your reference:"
+#: classes/VuloMail/Installer.php:135
+msgid "VuloMail could not be installed."
 msgstr ""
 
-#: templates/emails/html/AdminNewSubscriberEmail.php:24
-#: templates/emails/html/ProductBackInStockEmail.php:26
-#: templates/emails/html/SubscriberConfirmationEmail.php:26
-msgid "Product Details"
-msgstr ""
-
-#: templates/emails/html/AdminNewSubscriberEmail.php:29
-#: templates/emails/html/ProductBackInStockEmail.php:31
-#: templates/emails/html/SubscriberConfirmationEmail.php:31
-#: assets/js/index.js:1
-msgid "Price"
-msgstr ""
-
-#: templates/emails/html/AdminNewSubscriberEmail.php:51
-#: templates/emails/html/ProductBackInStockEmail.php:50
-#: templates/emails/html/SubscriberConfirmationEmail.php:50
-msgid "Following is the product link : "
-msgstr ""
-
-#: templates/emails/html/AdminNewSubscriberEmail.php:54
-#: templates/emails/html/ProductBackInStockEmail.php:53
-#: templates/emails/html/SubscriberConfirmationEmail.php:53
-msgid "Customer Details"
-msgstr ""
-
-#: templates/emails/html/ProductBackInStockEmail.php:22
-#: templates/emails/plain/ProductBackInStockEmail.php:20
-msgid "Hi there. You have subscribed to a product. Your subscribed product is available now. Product details are shown below for your reference:"
-msgstr ""
-
-#: templates/emails/html/SubscriberConfirmationEmail.php:22
-#: templates/emails/plain/SubscriberConfirmationEmail.php:20
-msgid "Hi there. You have successfully subscribed to a product. We will inform you when the product becomes available. Product details are shown below for your reference:"
-msgstr ""
-
-#. translators: 1: Start date, 2: End date.
-#: templates/emails/html/SubscriberReportEmail.php:30
+#. translators: %s: error message.
+#: classes/VuloMail/Installer.php:166
 #, php-format
-msgid "Here is your subscriber report for the period %1$s to %2$s."
+msgid "Notifima could not automatically install the VuloMail plugin needed to deliver its emails: %s. Please install and activate \"VuloMail\" manually from the Plugins screen."
 msgstr ""
 
-#: templates/emails/html/SubscriberReportEmail.php:48
+#: classes/VuloMail/Templates.php:59
+msgid "Back in stock notification"
+msgstr ""
+
+#: classes/VuloMail/Templates.php:60
+msgid "Sent to a customer when a product they subscribed to is back in stock."
+msgstr ""
+
+#: classes/VuloMail/Templates.php:62
+#: classes/VuloMail/Templates.php:71
+#: classes/VuloMail/Templates.php:80
 #: assets/js/index.js:1
-msgid "Product ID"
+msgid "Subscriptions"
 msgstr ""
 
-#: templates/emails/html/SubscriberReportEmail.php:51
+#: classes/VuloMail/Templates.php:64
+msgid "Your subscribed product on {site_title} is available now"
+msgstr ""
+
+#: classes/VuloMail/Templates.php:65
+#: classes/VuloMail/Templates.php:74
+#: classes/VuloMail/Templates.php:83
+msgid "Welcome to {site_title}"
+msgstr ""
+
+#: classes/VuloMail/Templates.php:65
+msgid "Good news! {product_name} is back in stock."
+msgstr ""
+
+#: classes/VuloMail/Templates.php:65
+msgid "This notification was sent to {customer_email}."
+msgstr ""
+
+#: classes/VuloMail/Templates.php:68
+msgid "New subscriber (admin notification)"
+msgstr ""
+
+#: classes/VuloMail/Templates.php:69
+msgid "Sent to the site owner (and vendor, if MultiVendorX is active) when a customer subscribes to an out-of-stock product."
+msgstr ""
+
+#: classes/VuloMail/Templates.php:73
+msgid "A customer has subscribed to a product on {site_title}"
+msgstr ""
+
+#: classes/VuloMail/Templates.php:74
+msgid "Subscribed by {customer_email}."
+msgstr ""
+
+#: classes/VuloMail/Templates.php:77
 #: assets/js/index.js:1
-msgid "Product Name"
+msgid "Subscription confirmation"
 msgstr ""
 
-#: templates/emails/html/SubscriberReportEmail.php:54
-msgid "Subscriber Count"
+#: classes/VuloMail/Templates.php:78
+msgid "Sent to a customer confirming their back-in-stock subscription."
 msgstr ""
 
-#: templates/emails/html/SubscriberReportEmail.php:78
-msgid "Total Subscribers"
+#: classes/VuloMail/Templates.php:82
+msgid "You have subscribed to a product on {site_title}"
 msgstr ""
 
-#: templates/emails/html/SubscriberReportEmail.php:90
-#: templates/emails/plain/SubscriberReportEmail.php:58
-msgid "No subscribers were found during this reporting period."
+#: classes/VuloMail/Templates.php:83
+msgid "We will email {customer_email} when it is back in stock."
 msgstr ""
 
-#: templates/emails/plain/AdminNewSubscriberEmail.php:25
-#: templates/emails/plain/ProductBackInStockEmail.php:25
-#: templates/emails/plain/SubscriberConfirmationEmail.php:28
-#: templates/emails/plain/SubscriberReportEmail.php:42
-msgid "Product Name:"
+#: classes/VuloMail/Templates.php:86
+#: classes/VuloMail/Templates.php:92
+msgid "Subscriber report"
 msgstr ""
 
-#: templates/emails/plain/AdminNewSubscriberEmail.php:26
-#: templates/emails/plain/ProductBackInStockEmail.php:26
-#: templates/emails/plain/SubscriberConfirmationEmail.php:29
-msgid "Dummy Product"
+#: classes/VuloMail/Templates.php:87
+msgid "Periodic report of product subscriptions, sent to the site admin."
 msgstr ""
 
-#: templates/emails/plain/AdminNewSubscriberEmail.php:30
-#: templates/emails/plain/ProductBackInStockEmail.php:30
-#: templates/emails/plain/SubscriberConfirmationEmail.php:33
-msgid "Product Price:"
+#: classes/VuloMail/Templates.php:89
+msgid "Reports"
 msgstr ""
 
-#: templates/emails/plain/AdminNewSubscriberEmail.php:31
-#: templates/emails/plain/ProductBackInStockEmail.php:31
-#: templates/emails/plain/SubscriberConfirmationEmail.php:34
-msgid "$20.00"
+#: classes/VuloMail/Templates.php:91
+msgid "Subscriber report ({start_date} - {end_date})"
 msgstr ""
 
-#: templates/emails/plain/AdminNewSubscriberEmail.php:36
-#: templates/emails/plain/ProductBackInStockEmail.php:36
-#: templates/emails/plain/SubscriberConfirmationEmail.php:39
-msgid "Product Link:"
+#: classes/VuloMail/Templates.php:92
+#: assets/js/index.js:1
+msgid "Subscribers"
 msgstr ""
 
-#: templates/emails/plain/AdminNewSubscriberEmail.php:42
-msgid "Customer Email:"
-msgstr ""
-
-#: templates/emails/plain/AdminNewSubscriberEmail.php:43
-#: templates/emails/plain/ProductBackInStockEmail.php:44
-#: templates/emails/plain/SubscriberConfirmationEmail.php:47
-msgid "test@example.com"
-msgstr ""
-
-#: templates/emails/plain/ProductBackInStockEmail.php:43
-#: templates/emails/plain/SubscriberConfirmationEmail.php:46
-msgid "Customer Details:"
-msgstr ""
-
-#: templates/emails/plain/SubscriberReportEmail.php:23
-msgid "Here is your subscriber report for the selected reporting period."
-msgstr ""
-
-#: templates/emails/plain/SubscriberReportEmail.php:28
-msgid "Report Period:"
-msgstr ""
-
-#: templates/emails/plain/SubscriberReportEmail.php:38
-msgid "Product ID:"
-msgstr ""
-
-#: templates/emails/plain/SubscriberReportEmail.php:46
-msgid "Subscriber Count:"
-msgstr ""
-
-#: templates/emails/plain/SubscriberReportEmail.php:53
-msgid "Total Subscribers:"
+#: classes/VuloMail/Templates.php:92
+msgid "Total: {total_subscribers}"
 msgstr ""
 
 #: assets/js/block/stock-notification-block/index.js:1
@@ -883,10 +790,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Customize the message shown with the subscriber count on product pages. Use <code>%no_of_subscribed%</code> to display the current subscriber count."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Subscription confirmation"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -1509,6 +1412,10 @@ msgid "Subscriber ID"
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Product ID"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Phone"
 msgstr ""
 
@@ -1545,7 +1452,7 @@ msgid "Select"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Subscribers"
+msgid "Product Name"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -1590,6 +1497,10 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Out of Stock"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Price"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -1960,10 +1871,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "New subscriptions per day"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Subscriptions"
 msgstr ""
 
 #: assets/js/index.js:1

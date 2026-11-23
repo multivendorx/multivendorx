@@ -27,7 +27,12 @@ class FrontEnd {
 
         add_action( 'woocommerce_simple_add_to_cart', array( $this, 'display_product_subscription_form' ), 10 );
         add_filter( 'woocommerce_grouped_product_list_column_price', array( $this, 'append_grouped_product_subscription_form' ), 10, 2 );
-        add_action( 'woocommerce_after_variations_form', array( $this, 'display_product_subscription_form' ), 10 );
+        // Not `woocommerce_after_variations_form` -- that one fires just before the closing
+        // </form>, so the subscription form's own <form> ends up nested inside WooCommerce's
+        // add-to-cart <form>. Nested forms are invalid HTML; browsers "fix" it by submitting the
+        // add-to-cart form instead, which is why an out-of-stock variation showed WooCommerce's
+        // "cannot add to cart" error instead of actually submitting the subscription form.
+        add_action( 'woocommerce_after_add_to_cart_form', array( $this, 'display_product_subscription_form' ), 10 );
     }
 
 

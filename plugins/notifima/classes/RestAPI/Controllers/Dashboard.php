@@ -8,6 +8,7 @@
 namespace Notifima\RestAPI\Controllers;
 
 use Notifima\Utill;
+use Notifima\VuloMail\Templates as VuloMailTemplates;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -52,11 +53,6 @@ class Dashboard extends \WP_REST_Controller {
 	 * How many subscriptions the "Latest subscribers" card lists.
 	 */
 	const RECENT_SUBSCRIBERS = 5;
-
-	/**
-	 * ID of the back-in-stock email (Emails/ProductBackInStockEmail.php).
-	 */
-	const BACK_IN_STOCK_EMAIL_ID = 'notifima_product_back_stock';
 
 	/**
 	 * Register the routes for the objects of the controller.
@@ -149,20 +145,22 @@ class Dashboard extends \WP_REST_Controller {
 	 * What the setup checklist needs beyond the counts: whether the back-in-stock email is on (and where to change it),
 	 * and whether the subscription form has been customized.
 	 *
+	 * The back-in-stock email is no longer a `WC_Email` (see `VuloMail\Mailer`/`VuloMail\Templates`)
+	 * -- "enabled" and "where to manage it" now come from VuloMail's own template registry instead
+	 * of `WC()->mailer()->get_emails()`.
+	 *
 	 * @return array
 	 */
 	private function get_setup_state() {
-		$email_enabled = false;
-		$email_url     = admin_url( 'admin.php?page=wc-settings&tab=email' );
+		$email_enabled = true;
+		$email_url     = admin_url( 'admin.php?page=vulomail#&tab=email-templates&template=' . VuloMailTemplates::PRODUCT_BACK_IN_STOCK );
 
-		if ( function_exists( 'WC' ) && WC()->mailer() ) {
-			foreach ( WC()->mailer()->get_emails() as $email ) {
-				if ( self::BACK_IN_STOCK_EMAIL_ID === $email->id ) {
-					$email_enabled = $email->is_enabled();
-					$email_url     = add_query_arg( 'section', strtolower( get_class( $email ) ), $email_url );
-					break;
-				}
-			}
+		if ( class_exists( '\VuloMail\Templates\Registry' ) ) {
+			$email_enabled = \VuloMail\Templates\Registry::is_enabled( VuloMailTemplates::PRODUCT_BACK_IN_STOCK );
+		} elseif ( ! class_exists( '\VuloMail\VuloMail' ) ) {
+			// VuloMail isn't active -- Mailer::send() still sends via wp_mail(), but there's no
+			// on/off toggle or editor to link to until it is.
+			$email_url = admin_url( 'plugin-install.php?s=VuloMail&tab=search&type=term' );
 		}
 
 		return array(

@@ -166,7 +166,6 @@ class Notifima {
     public function init_plugin() {
         $this->load_plugin_textdomain();
         $this->init_classes();
-        add_filter( 'woocommerce_email_classes', array( $this, 'setup_email_class' ) );
 
         do_action( 'notifima_loaded' );
     }
@@ -193,23 +192,9 @@ class Notifima {
         $this->container['frontendScripts'] = new FrontendScripts();
         $this->container['communications']    = new Communications();
         $this->container['vuloform']        = new VuloForm\Integration();
+        $this->container['vulomail']        = new VuloMail\Installer();
+        $this->container['vulomailTemplates'] = new VuloMail\Templates();
         $this->container['cron']            = new Cron();
-    }
-
-    /**
-     * Add Notifima Email Class.
-     *
-     * @param array $emails  All notifima emails.
-     * @return array
-     */
-    public function setup_email_class( $emails ) {
-
-        $emails['Admin_New_Subscriber_Email']    = new Emails\AdminNewSubscriberEmail();
-        $emails['Subscriber_Confirmation_Email'] = new Emails\SubscriberConfirmationEmail();
-        $emails['Product_Back_In_Stock_Email']   = new Emails\ProductBackInStockEmail();
-        $emails['Subscriber_Report_Email']       = new Emails\SubscriberReportEmail();
-
-        return $emails;
     }
 
     /**

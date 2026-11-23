@@ -55,7 +55,7 @@ class Rest {
         // Decide on $context (the effective operation), not the raw transport verb —
         // a client can dispatch a write through a request whose $_SERVER['REQUEST_METHOD']
         // is GET via _method / X-HTTP-Method-Override.
-        if ( 'read' === $context && 'product' === $post_type ) {
+        if ( !empty ($object_id) && get_post_status($object_id) === 'publish' && 'read' === $context && 'product' === $post_type ) {
             return true;
         }
 

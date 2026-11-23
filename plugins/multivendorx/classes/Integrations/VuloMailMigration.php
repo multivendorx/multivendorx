@@ -30,36 +30,6 @@ defined( 'ABSPATH' ) || exit;
 class VuloMailMigration extends CompanionPlugin {
 
 	/**
-	 * Option storing the current migration status: 'pending', 'done', or 'failed'.
-	 *
-	 * @var string
-	 */
-	const STATUS_OPTION = 'multivendorx_vulomail_migration_status';
-
-	/**
-	 * Option storing the last migration error message, when status is 'failed'.
-	 *
-	 * @var string
-	 */
-	const ERROR_OPTION = 'multivendorx_vulomail_migration_error';
-
-	/**
-	 * Option flagging that the one-time success notice has already been shown.
-	 *
-	 * @var string
-	 */
-	const NOTICE_SHOWN_OPTION = 'multivendorx_vulomail_migration_notice_shown';
-
-	/**
-	 * Option storing why this run is happening: 'install' (a brand new site, nothing to
-	 * migrate) or 'migrate' (an existing site upgrading from before 5.0.21 with prior
-	 * email/SMS settings configured). Controls which success notice text is shown.
-	 *
-	 * @var string
-	 */
-	const REASON_OPTION = 'multivendorx_vulomail_migration_reason';
-
-	/**
 	 * VuloMail's wordpress.org plugin slug.
 	 *
 	 * @var string
@@ -106,7 +76,7 @@ class VuloMailMigration extends CompanionPlugin {
 	 * @return string
 	 */
 	protected function get_status_option() {
-		return self::STATUS_OPTION;
+		return 'multivendorx_vulomail_migration_status';
 	}
 
 	/**
@@ -115,7 +85,7 @@ class VuloMailMigration extends CompanionPlugin {
 	 * @return string
 	 */
 	protected function get_error_option() {
-		return self::ERROR_OPTION;
+		return 'multivendorx_vulomail_migration_error';
 	}
 
 	/**
@@ -124,7 +94,7 @@ class VuloMailMigration extends CompanionPlugin {
 	 * @return string
 	 */
 	protected function get_notice_shown_option() {
-		return self::NOTICE_SHOWN_OPTION;
+		return 'multivendorx_vulomail_migration_notice_shown';
 	}
 
 	/**
@@ -142,7 +112,7 @@ class VuloMailMigration extends CompanionPlugin {
 	 * @return string
 	 */
 	protected function get_success_message() {
-		return 'install' === get_option( self::REASON_OPTION )
+		return 'install' === get_option( 'multivendorx_vulomail_migration_reason' )
 			? __( 'MultiVendorX has installed VuloMail, the companion plugin used to deliver marketplace email and SMS notifications. Set up an SMS gateway and/or email connection inside VuloMail to start sending.', 'multivendorx' )
 			: __( 'MultiVendorX has installed VuloMail and migrated your admin notification settings to it. SMS notifications now deliver through VuloMail; email notifications will too once you add an email connection inside VuloMail (MultiVendorX never had its own SMTP credentials to migrate).', 'multivendorx' );
 	}
