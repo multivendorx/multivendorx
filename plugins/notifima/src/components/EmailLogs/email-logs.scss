@@ -257,57 +257,31 @@
 }
 
 // ---- Already installed state ----
-.nf-el-active {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 1.75rem;
-	box-sizing: border-box;
-	padding: 2.5rem 2.5rem;
-	border: 1px solid #d5ecd9;
-	border-radius: 0.875rem;
-	background: linear-gradient(135deg, #f1faf3 0%, #fbfffc 60%, #fff 100%);
+// Reuses the hero's own layout (.nf-el-hero/-text/-actions, .nf-el-pill, .nf-el-btn,
+// .nf-el-hero-badge) with the same purple ".is-active" palette as the rest of this page,
+// so both states share one design language instead of a separate hand-rolled layout.
+.nf-el-hero.is-active {
+	border-color: #e6dcf6;
+	background:
+		radial-gradient(circle at 100% 0%, rgb(123 47 240 / 14%) 0, transparent 45%),
+		linear-gradient(135deg, #f4ecfd 0%, #fbf8ff 55%, #fff 100%);
 }
 
-.nf-el-active-icon {
-	display: flex;
-	flex: 0 0 auto;
-	align-items: center;
-	justify-content: center;
-	width: 4rem;
-	height: 4rem;
-	border-radius: 50%;
-	background: #e8f5ee;
-	color: #15803d;
-	font-size: 2rem;
+.nf-el-pill.is-active {
+	background: linear-gradient(135deg, #5007aa, #8b3fd9);
 }
 
-.nf-el-active-text {
-	display: flex;
-	flex: 1 1 20rem;
-	flex-direction: column;
-	gap: 0.625rem;
-
-	h2 {
-		color: #1f1b3e;
-		font-size: 1.375rem;
-		font-weight: 700;
-	}
-
-	p {
-		max-width: 36rem;
-		color: #4b4a57;
-		font-size: 0.9375rem;
-		line-height: 1.6;
-	}
-}
-
-.nf-el-active .nf-el-btn {
-	background: linear-gradient(135deg, #15803d, #1f9d4d);
-	box-shadow: 0 0.75rem 1.5rem -0.75rem rgb(21 128 61 / 45%);
+.nf-el-btn.is-active {
+	background: linear-gradient(135deg, #5007aa, #8b3fd9);
+	box-shadow: 0 0.75rem 1.5rem -0.75rem rgb(80 7 170 / 45%);
 
 	&:hover,
 	&:focus-visible {
-		background: linear-gradient(135deg, #0f5c2c, #15803d);
+		background: linear-gradient(135deg, #42068c, #7b2ff0);
 	}
+}
+
+.nf-el-hero-badge.is-active {
+	box-shadow: 0 0.75rem 1.5rem -0.75rem rgb(80 7 170 / 30%);
+	color: #5007aa;
 }

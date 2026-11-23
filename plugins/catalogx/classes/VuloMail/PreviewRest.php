@@ -84,9 +84,25 @@ class PreviewRest {
         }
 
         $response['edit_url'] = admin_url( 'admin.php?page=vulomail#&tab=email-templates&template=' . Templates::ENQUIRY );
-        $response['subject']  = $email['subject'] ?? '';
-        $response['content']  = $email['content'] ?? '';
+        $response['subject']  = strtr( (string) ( $email['subject'] ?? '' ), self::demo_tags() );
+        $response['content']  = strtr( (string) ( $email['content'] ?? '' ), self::demo_tags() );
 
         return rest_ensure_response( $response );
+    }
+
+    /**
+     * Sample values so the admin preview reads like a real enquiry instead of showing raw `{tag}`
+     * placeholders. Preview-only -- `Mailer::send()` always substitutes the real submitted values.
+     *
+     * @return array `{tag}` => demo value.
+     */
+    private static function demo_tags() {
+        return array(
+            '{product_name}'    => __( 'Sample Product', 'catalogx' ),
+            '{user_name}'       => __( 'Jane Doe', 'catalogx' ),
+            '{user_email}'      => 'jane.doe@example.com',
+            '{enquiry_details}' => __( 'Is this product available in other colors?', 'catalogx' ),
+            '{date_time}'       => current_time( 'F j, Y g:i a' ),
+        );
     }
 }
