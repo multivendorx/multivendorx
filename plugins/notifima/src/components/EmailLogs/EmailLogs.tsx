@@ -44,7 +44,12 @@ const FEATURES: Feature[] = [
 ];
 
 const EmailLogs = () => {
-    const isVuloMailActive = Boolean( appLocalizer.vulomail?.is_vulomail_active );
+    const vulomail = appLocalizer.vulomail ?? {
+        is_vulomail_active: false,
+        install_url: '',
+        email_logs_url: '',
+    };
+    const isVuloMailActive = Boolean( vulomail.is_vulomail_active );
 
     if ( isVuloMailActive ) {
         return (
@@ -61,7 +66,7 @@ const EmailLogs = () => {
                             'notifima'
                         ) }
                     </p>
-                    <a className="nf-el-btn" href={ appLocalizer.vulomail.email_logs_url }>
+                    <a className="nf-el-btn" href={ vulomail.email_logs_url }>
                         <i className="dashicons dashicons-list-view" aria-hidden="true" />
                         { __( 'Open VuloMail Email Logs', 'notifima' ) }
                     </a>
@@ -94,7 +99,7 @@ const EmailLogs = () => {
                         ) }
                     </p>
                     <div className="nf-el-hero-actions">
-                        <a className="nf-el-btn is-large" href={ appLocalizer.vulomail.install_url }>
+                        <a className="nf-el-btn is-large" href={ vulomail.install_url }>
                             <i className="dashicons dashicons-download" aria-hidden="true" />
                             { __( 'Install VuloMail', 'notifima' ) }
                         </a>
@@ -133,7 +138,7 @@ const EmailLogs = () => {
                         ) }
                     </p>
                 </div>
-                <a className="nf-el-btn is-light" href={ appLocalizer.vulomail.install_url }>
+                <a className="nf-el-btn is-light" href={ vulomail.install_url }>
                     <i className="dashicons dashicons-download" aria-hidden="true" />
                     { __( 'Install VuloMail', 'notifima' ) }
                 </a>

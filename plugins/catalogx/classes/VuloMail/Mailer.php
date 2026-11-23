@@ -57,8 +57,14 @@ class Mailer {
 			$tags
         );
 
-        $subject = strtr( (string) $subject, $subject_tags );
-        $content = strtr( (string) $content, $tags );
+        // Case-insensitive: once a template's content/subject is edited in VuloMail's own
+        // editor, its tags are whatever casing was typed/pasted there (e.g. a generic
+        // "{PRODUCT_NAME}" placeholder VuloMail itself suggested), not necessarily the exact
+        // lowercase `{product_name}` this plugin registers. strtr() is case-sensitive and
+        // silently leaves an unmatched tag as literal text instead of the real value -- which is
+        // how a saved template can end up missing product/enquiry details with no error at all.
+        $subject = str_ireplace( array_keys( $subject_tags ), array_values( $subject_tags ), (string) $subject );
+        $content = str_ireplace( array_keys( $tags ), array_values( $tags ), (string) $content );
 
         if ( function_exists( 'vulomail_send_email' ) ) {
             $result = vulomail_send_email(

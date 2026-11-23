@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-23T06:37:42+00:00\n"
+"POT-Creation-Date: 2026-11-23T11:50:30+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: notifima\n"
@@ -86,31 +86,31 @@ msgid_plural "Removed subscribers from %s products."
 msgstr[0] ""
 msgstr[1] ""
 
-#: classes/Admin.php:301
+#: classes/Admin.php:270
 msgid "Interested Person( s )"
 msgstr ""
 
-#: classes/Admin.php:327
+#: classes/Admin.php:296
 msgid "Number of Interested Person( s )"
 msgstr ""
 
-#: classes/Admin.php:349
+#: classes/Admin.php:318
 msgid "Number of Interested Person( s ) : "
 msgstr ""
 
-#: classes/Admin.php:424
+#: classes/Admin.php:393
 msgid "Mark this product as discontinued"
 msgstr ""
 
-#: classes/Admin.php:425
+#: classes/Admin.php:394
 msgid "Mark this product as discontinued from the shop."
 msgstr ""
 
-#: classes/Admin.php:441
+#: classes/Admin.php:410
 msgid "Mark this variation as discontinued"
 msgstr ""
 
-#: classes/Admin.php:442
+#: classes/Admin.php:411
 msgid "Mark this variation as discontinued from the shop."
 msgstr ""
 
@@ -150,6 +150,12 @@ msgstr ""
 
 #: classes/Install.php:338
 msgid "Subscription form"
+msgstr ""
+
+#. translators: %s: companion plugin slug, e.g. vulomail.
+#: classes/Integrations/PluginInstaller.php:174
+#, php-format
+msgid "%s could not be installed."
 msgstr ""
 
 #: classes/Notifima.php:85
@@ -352,37 +358,33 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: classes/VuloForm/Installer.php:137
-msgid "VuloForm could not be installed."
-msgstr ""
-
 #. translators: %s: error message.
-#: classes/VuloForm/Installer.php:168
+#: classes/VuloForm/Installer.php:59
 #, php-format
 msgid "Notifima could not automatically install the VuloForm plugin needed for subscription forms: %s. Please install and activate \"VuloForm\" manually from the Plugins screen."
 msgstr ""
 
-#: classes/VuloForm/Installer.php:197
+#: classes/VuloForm/Installer.php:83
 msgid "VuloForm is deactivated. Notifima's subscription form will not render on the frontend until you reactivate it."
 msgstr ""
 
-#: classes/VuloForm/Installer.php:226
+#: classes/VuloForm/Installer.php:112
 msgid "Before you deactivate VuloForm, please note:"
 msgstr ""
 
-#: classes/VuloForm/Installer.php:227
+#: classes/VuloForm/Installer.php:113
 msgid "The back-in-stock subscription form on your out-of-stock product pages is powered by VuloForm. If you deactivate it, this form will no longer be displayed, and customers will not be able to subscribe to back-in-stock notifications."
 msgstr ""
 
-#: classes/VuloForm/Installer.php:228
+#: classes/VuloForm/Installer.php:114
 msgid "Do you still want to proceed with deactivating VuloForm?"
 msgstr ""
 
-#: classes/VuloForm/Installer.php:229
+#: classes/VuloForm/Installer.php:115
 msgid "Cancel"
 msgstr ""
 
-#: classes/VuloForm/Installer.php:230
+#: classes/VuloForm/Installer.php:116
 msgid "Deactivate anyway"
 msgstr ""
 
@@ -399,12 +401,8 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: classes/VuloMail/Installer.php:135
-msgid "VuloMail could not be installed."
-msgstr ""
-
 #. translators: %s: error message.
-#: classes/VuloMail/Installer.php:166
+#: classes/VuloMail/Installer.php:51
 #, php-format
 msgid "Notifima could not automatically install the VuloMail plugin needed to deliver its emails: %s. Please install and activate \"VuloMail\" manually from the Plugins screen."
 msgstr ""
@@ -2520,6 +2518,10 @@ msgid "Open the exact HTML that was sent to a subscriber to confirm pricing, sto
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "VuloMail"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "VuloMail is installed and active"
 msgstr ""
 
@@ -2529,10 +2531,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Open VuloMail Email Logs"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "VuloMail"
 msgstr ""
 
 #: assets/js/index.js:1
