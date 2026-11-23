@@ -1,4 +1,4 @@
-/* global vuloMailLocalizer */
+/* global appLocalizer */
 import { __ } from '@wordpress/i18n';
 import './email-logs.scss';
 
@@ -44,7 +44,7 @@ const FEATURES: Feature[] = [
 ];
 
 const EmailLogs = () => {
-    const isVuloMailActive = Boolean( vuloMailLocalizer?.is_vulomail_active );
+    const isVuloMailActive = Boolean( appLocalizer.vulomail?.is_vulomail_active );
 
     if ( isVuloMailActive ) {
         return (
@@ -61,12 +61,10 @@ const EmailLogs = () => {
                             'notifima'
                         ) }
                     </p>
-                    <div className="nf-el-hero-actions">
-                        <a className="nf-el-btn is-large is-active" href={ vuloMailLocalizer.email_logs_url }>
-                            <i className="dashicons dashicons-list-view" aria-hidden="true" />
-                            { __( 'Open VuloMail Email Logs', 'notifima' ) }
-                        </a>
-                    </div>
+                    <a className="nf-el-btn" href={ appLocalizer.vulomail.email_logs_url }>
+                        <i className="dashicons dashicons-list-view" aria-hidden="true" />
+                        { __( 'Open VuloMail Email Logs', 'notifima' ) }
+                    </a>
                 </div>
                 <span className="nf-el-hero-badge is-active">
                     <i className="dashicons dashicons-yes-alt" aria-hidden="true" />
@@ -96,7 +94,7 @@ const EmailLogs = () => {
                         ) }
                     </p>
                     <div className="nf-el-hero-actions">
-                        <a className="nf-el-btn is-large" href={ vuloMailLocalizer.install_url }>
+                        <a className="nf-el-btn is-large" href={ appLocalizer.vulomail.install_url }>
                             <i className="dashicons dashicons-download" aria-hidden="true" />
                             { __( 'Install VuloMail', 'notifima' ) }
                         </a>
@@ -135,7 +133,7 @@ const EmailLogs = () => {
                         ) }
                     </p>
                 </div>
-                <a className="nf-el-btn is-light" href={ vuloMailLocalizer.install_url }>
+                <a className="nf-el-btn is-light" href={ appLocalizer.vulomail.install_url }>
                     <i className="dashicons dashicons-download" aria-hidden="true" />
                     { __( 'Install VuloMail', 'notifima' ) }
                 </a>

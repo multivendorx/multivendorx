@@ -36,11 +36,10 @@ const loadAssetOnce = (tag: 'link' | 'script', url: string) => {
 
 	const el = document.createElement(tag);
 
+	el.setAttribute(attr, url);
+
 	if (tag === 'link') {
 		el.setAttribute('rel', 'stylesheet');
-		el.setAttribute('href', url);
-	} else {
-		el.setAttribute('src', url);
 	}
 
 	document.head.appendChild(el);
@@ -78,17 +77,10 @@ const VuloFormEmbed: React.FC<VuloFormEmbedProps> = ({
 		setFailed(false);
 
 		const url = `${apiUrl}/vuloform/v1/public/forms/${formId}/embed`;
-		const params = new URLSearchParams();
-
-		if (productId) {
-			params.set('product_id', productId);
-		}
-
-		if (quantity) {
-			params.set('quantity', quantity);
-		}
-
-		const query = params.toString();
+		const query = new URLSearchParams({
+			...(productId && { product_id: productId }),
+			...(quantity && { quantity }),
+		}).toString();
 
 		axios
 			.get<VuloFormEmbedPayload>(query ? `${url}?${query}` : url)

@@ -39,11 +39,10 @@ const loadAssetOnce = (tag: 'link' | 'script', url: string) => {
 
 	const el = document.createElement(tag);
 
+	el.setAttribute(attr, url);
+
 	if (tag === 'link') {
 		el.setAttribute('rel', 'stylesheet');
-		el.setAttribute('href', url);
-	} else {
-		el.setAttribute('src', url);
 	}
 
 	document.head.appendChild(el);

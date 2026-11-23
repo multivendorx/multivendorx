@@ -3,12 +3,6 @@ import './EnquiryForm.scss';
 import { __ } from '@wordpress/i18n';
 import VuloFormEmbed from './VuloFormEmbed';
 
-/**
- * The enquiry form itself is now built and rendered in VuloForm -- actually creating the
- * enquiry happens server-side (`VuloForm\SubmissionBridge`, hooked on
- * `vuloform_submission_created`) once VuloForm accepts the submission, reusing the existing
- * `catalogx/v1/enquiries` REST route as-is.
- */
 const EnquiryForm = () => {
     const formData = enquiryFormData;
 
@@ -20,8 +14,6 @@ const EnquiryForm = () => {
         document.querySelector<HTMLInputElement>('.quantity .qty')?.value ??
         '1';
 
-    // `#catalogx-modal` (Enquiry\Frontend.php) carries this class server-side only when the
-    // enquiry form is set to render as a popup -- an inline form has no modal to close.
     const isPopup = document
         .getElementById('catalogx-modal')
         ?.classList.contains('popup-enable');

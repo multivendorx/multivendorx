@@ -94,6 +94,9 @@ class Rest {
             $user_name  = $user->display_name;
             $user_email = $user->user_email;
 
+            $attachment_id = null;
+            $attachments   = array();
+
             // Create attachment of files.
             foreach ( $uploaded_files as $file ) {
                 $attachment_id = \CatalogX\Utill::create_attachment_from_files_array( $file );
@@ -115,13 +118,11 @@ class Rest {
             foreach ( $enquiry_form_fields as $key => $value ) {
                 switch ( $key ) {
                     case 'name':
-                        // sanitize_text_field() strips control characters (including CR/LF), so a
-                        // guest's submitted name can never inject extra mail headers downstream.
                         $customer_name = ! empty( $user_name ) ? $user_name : sanitize_text_field( (string) $value );
                         break;
 
                     case 'email':
-                        $submitted_email = sanitize_email( (string) $value );
+                        $submitted_email = sanitize_email( $value );
                         $customer_email  = ! empty( $user_email ) ? $user_email : ( is_email( $submitted_email ) ? $submitted_email : '' );
                         break;
 
@@ -141,10 +142,6 @@ class Rest {
                 'user_name'              => $customer_name ?? $user_name,
                 'user_email'             => $customer_email ?? $user_email,
                 'user_additional_fields' => serialize( $additional_fields ),
-                // Set explicitly (UTC) rather than relying on the `date` column's default: Dashboard.php's
-                // period counts compare this value as UTC, and an existing table from before the column had
-                // a `CURRENT_TIMESTAMP` default would otherwise store an all-zero date here, permanently
-                // bucketing the row out of every "new" period count.
                 'date'                   => current_time( 'mysql', true ),
             );
 
@@ -212,7 +209,7 @@ class Rest {
                 $attachments      = apply_filters( 'catalogx_set_enquiry_pdf_and_attachments', array(), $enquiry_id, $enquiry_data );
                 $additional_email = CatalogX()->setting->get_setting( 'additional_alert_email' );
 
-                // Vendor/store emails, same as the old EnquiryEmail::add_store_emails().
+                // Store emails, same as the old EnquiryEmail::add_store_emails().
                 if ( Utill::is_active_plugin( 'multivendorx' ) ) {
                     foreach ( $product_info as $enquired_product_id => $quantity ) {
                         $store_id = get_post_meta( $enquired_product_id, 'multivendorx_store_id', true );
@@ -246,10 +243,6 @@ class Rest {
                     }
                 }
 
-                // Defense in depth: even though $enquiry_data['user_name']/['user_email'] are
-                // already sanitized where they're read from the request above, a mail header
-                // must never be built from raw submitter input without stripping CR/LF again
-                // here -- an injected newline turns into a real extra header (e.g. a Bcc:).
                 $reply_to_name  = str_replace( array( "\r", "\n" ), '', (string) $enquiry_data['user_name'] );
                 $reply_to_email = sanitize_email( (string) $enquiry_data['user_email'] );
                 $reply_to       = is_email( $reply_to_email ) ? 'Reply-to: ' . $reply_to_name . ' <' . $reply_to_email . '>' : '';

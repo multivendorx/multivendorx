@@ -252,43 +252,12 @@ class Admin {
         $screen_id = get_current_screen()->id;
 
         if ( 'toplevel_page_notifima' === $screen_id || 'notifima_page_' . self::EMAIL_LOGS_PAGE_SLUG === $screen_id ) {
+            // Localizes `appLocalizer`, including the "Email Logs" page's VuloMail install
+            // state/CTA data (FrontendScripts::get_vulomail_data()).
             FrontendScripts::enqueue_admin_bundle();
         }
 
-        if ( 'notifima_page_' . self::EMAIL_LOGS_PAGE_SLUG === $screen_id ) {
-            $this->localize_email_logs_data();
-        }
-
         FrontendScripts::enqueue_style( 'notifima-admin-style' );
-    }
-
-    /**
-     * Localize the VuloMail install-state/CTA data the "Email Logs" page needs.
-     *
-     * VuloMail is not a dependency of this plugin, so this only reads WordPress's
-     * own plugin registry (`is_plugin_active()`) rather than anything VuloMail-specific.
-     *
-     * @return void
-     */
-    private function localize_email_logs_data() {
-        if ( ! function_exists( 'is_plugin_active' ) ) {
-            require_once ABSPATH . 'wp-admin/includes/plugin.php';
-        }
-
-        $is_vulomail_active = is_plugin_active( self::VULOMAIL_PLUGIN_FILE );
-
-        wp_localize_script(
-            'notifima-admin-script',
-            'vuloMailLocalizer',
-            array(
-                'is_vulomail_active' => $is_vulomail_active,
-                'install_url'        => wp_nonce_url(
-                    self_admin_url( 'update.php?action=install-plugin&plugin=' . self::VULOMAIL_PLUGIN_SLUG ),
-                    'install-plugin_' . self::VULOMAIL_PLUGIN_SLUG
-                ),
-                'email_logs_url'      => admin_url( 'admin.php?page=' . self::VULOMAIL_EMAIL_LOGS_PAGE_SLUG ),
-            )
-        );
     }
 
     /**

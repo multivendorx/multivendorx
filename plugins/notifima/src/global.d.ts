@@ -50,6 +50,8 @@ declare global {
         pro_data: ProData;
         /** The logged-in admin's first name (or display name), for the dashboard greeting. */
         user_first_name?: string;
+        /** VuloMail's install state/CTA data for the "Email Logs" page. */
+        vulomail: VuloMailData;
     }
 
     interface Subscription {
@@ -66,7 +68,7 @@ declare global {
         vuloform_rest_namespace?: string;
     }
 
-    interface VuloMailLocalizer {
+    interface VuloMailData {
         is_vulomail_active: boolean;
         install_url: string;
         email_logs_url: string;
@@ -84,7 +86,6 @@ declare global {
 
     var appLocalizer: AppLocalizer;
     var subscription: Subscription;
-    var vuloMailLocalizer: VuloMailLocalizer;
     var vuloformDeactivateLocalizer: VuloformDeactivateLocalizer;
 
     module '*.png';
