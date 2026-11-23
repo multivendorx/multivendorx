@@ -258,30 +258,30 @@
 
 // ---- Already installed state ----
 // Reuses the hero's own layout (.nf-el-hero/-text/-actions, .nf-el-pill, .nf-el-btn,
-// .nf-el-hero-badge) with a green ".is-active" palette, so both states share one design
-// language instead of a separate hand-rolled layout.
+// .nf-el-hero-badge) with the same purple ".is-active" palette as the rest of this page,
+// so both states share one design language instead of a separate hand-rolled layout.
 .nf-el-hero.is-active {
-	border-color: #d5ecd9;
+	border-color: #e6dcf6;
 	background:
-		radial-gradient(circle at 100% 0%, rgb(21 128 61 / 12%) 0, transparent 45%),
-		linear-gradient(135deg, #f1faf3 0%, #fbfffc 60%, #fff 100%);
+		radial-gradient(circle at 100% 0%, rgb(123 47 240 / 14%) 0, transparent 45%),
+		linear-gradient(135deg, #f4ecfd 0%, #fbf8ff 55%, #fff 100%);
 }
 
 .nf-el-pill.is-active {
-	background: linear-gradient(135deg, #15803d, #1f9d4d);
+	background: linear-gradient(135deg, #5007aa, #8b3fd9);
 }
 
 .nf-el-btn.is-active {
-	background: linear-gradient(135deg, #15803d, #1f9d4d);
-	box-shadow: 0 0.75rem 1.5rem -0.75rem rgb(21 128 61 / 45%);
+	background: linear-gradient(135deg, #5007aa, #8b3fd9);
+	box-shadow: 0 0.75rem 1.5rem -0.75rem rgb(80 7 170 / 45%);
 
 	&:hover,
 	&:focus-visible {
-		background: linear-gradient(135deg, #0f5c2c, #15803d);
+		background: linear-gradient(135deg, #42068c, #7b2ff0);
 	}
 }
 
 .nf-el-hero-badge.is-active {
-	box-shadow: 0 0.75rem 1.5rem -0.75rem rgb(21 128 61 / 30%);
-	color: #15803d;
+	box-shadow: 0 0.75rem 1.5rem -0.75rem rgb(80 7 170 / 30%);
+	color: #5007aa;
 }
