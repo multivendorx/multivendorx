@@ -77,7 +77,7 @@ const AllProduct: React.FC = () => {
 				{
 					name: __('Auto Draft', 'multivendorx'),
 					status: 'draft',
-					meta_data: [{ key: '_is_auto_draft', value: true },{key: 'multivendorx_store_id',value: appLocalizer.store_id}],
+					meta_data: [{ key: '_is_auto_draft', value: true }, { key: 'multivendorx_store_id', value: appLocalizer.store_id }],
 				},
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
@@ -142,10 +142,10 @@ const AllProduct: React.FC = () => {
 					result.status === 'fulfilled'
 						? result.value
 						: {
-								value: statuses[index],
-								label: STATUS_LABELS[statuses[index]],
-								count: 0,
-							}
+							value: statuses[index],
+							label: STATUS_LABELS[statuses[index]],
+							count: 0,
+						}
 				)
 			);
 		} catch (error) {
@@ -235,10 +235,14 @@ const AllProduct: React.FC = () => {
 	}, []);
 
 	const handleDelete = async (productId: number) => {
+		const product = rows.find((row: any) => row.id === productId);
 		await axios.delete(
 			`${appLocalizer.apiUrl}/wc/v3/products/${productId}`,
 			{
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					force: product?.status === 'trash',
+				},
 			}
 		);
 		doRefreshTableData({});
@@ -268,7 +272,7 @@ const AllProduct: React.FC = () => {
 			selectedIds,
 			appLocalizer,
 		);
-		setBulkActionContent(result); 
+		setBulkActionContent(result);
 	};
 
 	const doRefreshTableData = (query: QueryProps) => {
@@ -293,9 +297,9 @@ const AllProduct: React.FC = () => {
 					stock_status: query.filter?.stockStatus,
 					after: query.filter?.created_at?.startDate
 						? toWcIsoDate(
-								query.filter.created_at.startDate,
-								'start'
-							)
+							query.filter.created_at.startDate,
+							'start'
+						)
 						: undefined,
 					before: query.filter?.created_at?.endDate
 						? toWcIsoDate(query.filter.created_at.endDate, 'end')
@@ -427,7 +431,7 @@ const AllProduct: React.FC = () => {
 						onClick: (row: ProductRow) =>
 							navigator.clipboard
 								.writeText(row.permalink)
-								.catch(() => {}),
+								.catch(() => { }),
 					},
 					{
 						label: __('Delete', 'multivendorx'),
@@ -469,11 +473,11 @@ const AllProduct: React.FC = () => {
 				},
 				...(row.stock_status
 					? [
-							{
-								text: formatStatusLabel(row.stock_status),
-								color: `badge-${row.stock_status}`,
-							},
-						]
+						{
+							text: formatStatusLabel(row.stock_status),
+							color: `badge-${row.stock_status}`,
+						},
+					]
 					: []),
 				{ text: formatDate(row.date_created), color: 'blue' },
 			],
@@ -518,7 +522,7 @@ const AllProduct: React.FC = () => {
 									modules.includes('shared-listing') &&
 									appLocalizer.admin_settings
 										.onboarding?.store_selling_mode ==
-										'shared_listing'
+									'shared_listing'
 								) {
 									dashNavigate(navigate, ['products', 'add']);
 								} else {
@@ -547,7 +551,7 @@ const AllProduct: React.FC = () => {
 			)}
 			<TableCard
 				headers={headers}
-				variant="transparent"				
+				variant="transparent"
 				cardColumns={3}
 				rows={infoRows}
 				totalRows={totalRows}

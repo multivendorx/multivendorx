@@ -1689,6 +1689,9 @@ class Stores extends \WP_REST_Controller {
         // Sorting.
         if ( ! empty( $payload['order_by'] ) ) {
             $args['order_by'] = sanitize_text_field( $payload['order_by'] );
+        }
+
+        if ( ! empty( $payload['order'] ) ) {
             $args['order']    = sanitize_text_field( $payload['order'] );
         }
 
