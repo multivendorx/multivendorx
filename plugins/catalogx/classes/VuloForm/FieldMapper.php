@@ -35,9 +35,11 @@ class FieldMapper {
     );
 
     /**
-     * Old field types that aren't a real form field.
+     * Old field types that aren't a real form field. `custom-recaptcha` is the free-form's old
+     * captcha toggle -- VuloForm's own recaptcha is a form-level setting, not a field, so there's
+     * nothing meaningful to convert it to.
      */
-    const SKIP_TYPES = array( 'button', 'title', 'section', 'recaptcha' );
+    const SKIP_TYPES = array( 'button', 'title', 'section', 'recaptcha', 'custom-recaptcha' );
 
     /**
      * @param array  $old_fields   The old `formfieldlist` array.

@@ -117,6 +117,8 @@ declare global {
 		content_after_form: string;
 		is_user_logged_in: boolean;
 		dashboard_redirect_url: string;
+		/** Forced into the embed's hidden `applicant_user_id` field; 0 for a guest. */
+		current_user_id: number;
 	}
 
 	var appLocalizer: AppLocalizer;

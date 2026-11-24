@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { SetupWizardInput } from '@zyra/inputs';
 import { __, sprintf } from '@wordpress/i18n';
-import img from '../../assets/images/multivendorx-logo.png';
 interface SettingsState {
 	marketplace_setup: {
 		store_selling_mode: string;
@@ -667,7 +666,6 @@ const SetupWizard: React.FC = () => {
 
 	const intro = (
 		<div className="welcome-wrapper">
-			<img src={img} alt="" />
 			<div className="wizard-title">
 				{__('Welcome to the MultivendorX family!', 'multivendorx')}
 			</div>

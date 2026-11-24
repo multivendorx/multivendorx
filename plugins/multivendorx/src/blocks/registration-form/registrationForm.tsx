@@ -186,6 +186,11 @@ const RegistrationForm = () => {
 				formId={registrationForm.vuloform_form_id}
 				apiUrl={registrationForm.apiUrl}
 				prefill={prefill}
+				userId={
+					registrationForm.current_user_id
+						? String(registrationForm.current_user_id)
+						: ''
+				}
 			/>
 			{submitted && (
 				<div className="woocommerce-notices-wrapper">

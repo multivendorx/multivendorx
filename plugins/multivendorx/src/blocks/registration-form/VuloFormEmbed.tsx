@@ -19,6 +19,8 @@ export interface VuloFormEmbedProps {
 	 * `{query:<key>}` defaults. Omit a key (or pass '') to leave that field empty.
 	 */
 	prefill?: Record<string, string>;
+	/** Forced into the form's hidden `applicant_user_id` field once VuloForm finishes init. */
+	userId?: string;
 }
 
 declare global {
@@ -65,6 +67,30 @@ const loadAssetOnce = (
 };
 
 /**
+ * VuloForm doesn't support a `{user:id}` token -- only `query:`/`page:url`/`page:title` -- so a
+ * hidden field relying on it submits that literal, unresolved string. Set the real value
+ * directly once VuloForm's own init (which last touches hidden fields) has already run.
+ */
+const forceHiddenFieldValues = (
+	container: HTMLElement,
+	values: Record<string, string | undefined>
+) => {
+	Object.entries(values).forEach(([key, value]) => {
+		if (!value) {
+			return;
+		}
+
+		const input = container.querySelector<HTMLInputElement>(
+			`input[name="vf[${key}]"]`
+		);
+
+		if (input) {
+			input.value = value;
+		}
+	});
+};
+
+/**
  * Injects an `embed` payload into a container; `style`/`script` are asset URLs to load.
  * VuloForm's script only auto-initializes the forms present when *it* first finishes loading --
  * a form injected after that (every embed past the first on a page that dedupes the shared
@@ -73,7 +99,8 @@ const loadAssetOnce = (
  */
 export const injectVuloFormEmbed = (
 	container: HTMLElement,
-	embed: VuloFormEmbedPayload
+	embed: VuloFormEmbedPayload,
+	fieldOverrides?: Record<string, string | undefined>
 ) => {
 	container.innerHTML = embed.html;
 
@@ -81,10 +108,20 @@ export const injectVuloFormEmbed = (
 		loadAssetOnce('link', embed.style);
 	}
 
+	const applyOverrides = () => {
+		if (fieldOverrides) {
+			forceHiddenFieldValues(container, fieldOverrides);
+		}
+	};
+
 	if (embed.script) {
-		loadAssetOnce('script', embed.script, () => window.vuloformInit?.(container));
+		loadAssetOnce('script', embed.script, () => {
+			window.vuloformInit?.(container);
+			applyOverrides();
+		});
 	} else {
 		window.vuloformInit?.(container);
+		applyOverrides();
 	}
 };
 
@@ -93,6 +130,7 @@ const VuloFormEmbed: React.FC<VuloFormEmbedProps> = ({
 	formId,
 	apiUrl,
 	prefill,
+	userId,
 }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [failed, setFailed] = useState(false);
@@ -117,7 +155,9 @@ const VuloFormEmbed: React.FC<VuloFormEmbedProps> = ({
 			.get<VuloFormEmbedPayload>(query ? `${url}?${query}` : url)
 			.then(({ data }) => {
 				if (!cancelled && containerRef.current) {
-					injectVuloFormEmbed(containerRef.current, data);
+					injectVuloFormEmbed(containerRef.current, data, {
+						applicant_user_id: userId,
+					});
 				}
 			})
 			.catch(() => {
@@ -129,7 +169,7 @@ const VuloFormEmbed: React.FC<VuloFormEmbedProps> = ({
 		return () => {
 			cancelled = true;
 		};
-	}, [formId, apiUrl, JSON.stringify(prefill)]);
+	}, [formId, apiUrl, JSON.stringify(prefill), userId]);
 
 	if (failed) {
 		return null;

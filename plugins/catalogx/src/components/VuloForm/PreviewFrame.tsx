@@ -1,5 +1,5 @@
 import React from 'react';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import PreviewFrameBase from '../VuloPreview/PreviewFrameBase';
 
 interface PreviewData {
@@ -40,9 +40,13 @@ const PreviewFrame: React.FC<PreviewFrameProps> = ({
 		getCompanionState={(data) => data}
 		getEditUrl={(data) => data.edit_url}
 		editLabel={__('Edit form', 'catalogx')}
-		noticeText={__(
-			'This form is editable in VuloForm. Use Edit form to change its fields and settings. Changes show here after you save the form and reload this page.',
-			'catalogx'
+		noticeText={sprintf(
+			/* translators: %s: VuloForm link. */
+			__(
+				'This form is editable in %s. Use Edit form to change its fields and settings. Changes show here after you save the form and reload this page.',
+				'catalogx'
+			),
+			'<a href="https://wordpress.org/plugins/vuloform/" target="_blank" rel="noopener noreferrer"><strong>VuloForm</strong></a>'
 		)}
 		getFrameHtml={(data) => data.html}
 		getFrameHeadExtra={(data) =>

@@ -146,6 +146,31 @@
     height: 75% !important;
 }
 
+// Store dashboard > Coupons > Add Coupon (and any other popup given an explicit `height` prop,
+// e.g. height="70%", without also using zyra's "slide"/"lightbox" position variants) --
+// zyra's default .popup-content isn't a flex column, so .popup-body's own flex:1/overflow-y:auto
+// rule never gets a bounded height to scroll within: tall content (here, three tabs of form
+// fields) just overflows past the popup's edge instead of scrolling inside it.
+// Stores > Add Store is the same variant but passes no `height` prop at all -- with nothing
+// bounding .popup-content's height, flex-direction: column alone does nothing (there's no
+// constraint for .popup-body to scroll within), so tall content just grows the box past the
+// viewport. Its own .popup-footer is `position: fixed` (zyra's base rule) and so never reserves
+// space in the flow either way, meaning the footer overlaps the bottom of that overflowing
+// content instead of the body scrolling under it. A sane default max-height fixes both: it gives
+// flex-direction: column something to bound against even with no explicit `height` prop, and
+// keeps the whole popup from ever exceeding the viewport regardless of content length.
+.popup-content:not([data-position]) {
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+
+    .popup-body {
+        flex: 1 1 auto;
+        min-height: 0; // flex children don't shrink below content size without this
+        overflow-y: auto;
+    }
+}
+
 // requied plugin popup
 .required-popup {
     padding: 1.5rem 1.5rem 5.5rem;

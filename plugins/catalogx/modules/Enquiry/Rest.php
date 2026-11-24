@@ -158,7 +158,9 @@ class Rest {
                         // VuloForm's `phone` field type submits a nested `{phone: "..."}` value.
                         $additional_fields[] = array(
                             'name'  => $key,
-                            'value' => is_array( $value ) ? ( $value['phone'] ?? '' ) : $value,
+                            'value' => is_array( $value )
+                                ? sanitize_text_field( (string) ( $value['phone'] ?? '' ) )
+                                : $value,
                         );
                         break;
                 }

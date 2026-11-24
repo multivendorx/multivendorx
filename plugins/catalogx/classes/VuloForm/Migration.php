@@ -101,12 +101,40 @@ class Migration {
     }
 
     /**
+     * The real, free-tier-editable field list is `free_enquiry_form` -- toggled on/off per field
+     * via the (now-retired) Settings UI, with phone/address/subject/comment/fileupload/captcha as
+     * real possibilities alongside name/email. `enquiry_form_builder.formfieldlist` looks similar
+     * but is CatalogX Pro's drag-and-drop builder: on a free-tier site it never moves from its
+     * hardcoded name/email placeholder defaults (both `not_editable`), so reading it instead of
+     * `free_enquiry_form` silently drops everything the site owner actually configured. Only fall
+     * back to the builder list when there's truly nothing in the free form to migrate -- that
+     * covers a Pro site whose owner only ever touched the builder.
+     *
      * @return array
      */
     private function old_fields() {
         $settings = CatalogX()->setting->get_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], array() );
-        $fields   = $settings['enquiry_form_tabs']['enquiry_form_builder']['formfieldlist'] ?? array();
+        $tabs     = $settings['enquiry_form_tabs'] ?? array();
 
-        return is_array( $fields ) ? $fields : array();
+        $free_fields = is_array( $tabs['free_enquiry_form'] ?? null ) ? $tabs['free_enquiry_form'] : array();
+
+        $free_fields = array_values(
+            array_filter(
+                $free_fields,
+                static function ( $field ) {
+                    // 'filesize-limit' is a size-limit setting for the 'fileupload' field, not a
+                    // field of its own -- VuloForm's 'file' field type has its own max_size_mb.
+                    return empty( $field['disabled'] ) && 'filesize-limit' !== ( $field['name'] ?? '' );
+                }
+            )
+        );
+
+        if ( $free_fields ) {
+            return $free_fields;
+        }
+
+        $builder_fields = $tabs['enquiry_form_builder']['formfieldlist'] ?? array();
+
+        return is_array( $builder_fields ) ? $builder_fields : array();
     }
 }
