@@ -59,9 +59,11 @@ class Templates {
                             'default'  => '{user:email}',
                         ),
                         array(
-                            'type'  => 'phone',
-                            'key'   => 'phone',
-                            'label' => __( 'Phone (optional)', 'catalogx' ),
+                            'type'              => 'phone',
+                            'key'               => 'phone',
+                            'label'             => __( 'Phone (optional)', 'catalogx' ),
+                            // Without this, VuloForm mishandles the field's nested value as a plain string.
+                            'show_country_code' => true,
                         ),
                         array(
                             'type'     => 'textarea',

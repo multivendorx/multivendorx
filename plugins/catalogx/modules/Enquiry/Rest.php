@@ -86,7 +86,8 @@ class Rest {
             global $wpdb;
 
             $quantity            = absint( $request->get_param( 'quantity' ) );
-            $product_id          = absint( $request->get_param( 'productId' ) );
+            $product_id_param    = $request->get_param( 'productId' );
+            $product_id          = absint( $product_id_param );
             $enquiry_form_fields = $request->get_body_params();
             $uploaded_files      = $request->get_file_params();
 
@@ -107,10 +108,21 @@ class Rest {
 
             unset( $enquiry_form_fields['quantity'], $enquiry_form_fields['productId'] );
 
-            // Gather product information.
+            // Gather product information. `productId` is either a single product id (the
+            // single-product enquiry button) or a JSON `{product_id: quantity}` map (the
+            // enquiry cart's bulk "Send enquiry", baked in via the same `?productId=` query
+            // param at embed time -- see catalogx-pro's EnquiryCartTable.tsx).
             $product_info = apply_filters( 'catalogx_set_enquiry_product_info', array() );
+            $cart_products = json_decode( (string) $product_id_param, true );
+
             if ( empty( $product_info ) ) {
-                $product_info[ $product_id ] = $quantity;
+                if ( is_array( $cart_products ) ) {
+                    foreach ( $cart_products as $cart_product_id => $cart_quantity ) {
+                        $product_info[ absint( $cart_product_id ) ] = absint( $cart_quantity );
+                    }
+                } else {
+                    $product_info[ $product_id ] = $quantity;
+                }
             }
 
             // Get extra fields.
@@ -127,9 +139,10 @@ class Rest {
                         break;
 
                     default:
+                        // VuloForm's `phone` field type submits a nested `{phone: "..."}` value.
                         $additional_fields[] = array(
                             'name'  => $key,
-                            'value' => $value,
+                            'value' => is_array( $value ) ? ( $value['phone'] ?? '' ) : $value,
                         );
                         break;
                 }

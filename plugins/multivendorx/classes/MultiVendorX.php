@@ -135,8 +135,6 @@ final class MultiVendorX {
         }
 
         add_action( 'init', array( $this, 'multivendorx_register_setup_wizard' ) );
-
-        add_filter( 'woocommerce_email_classes', array( $this, 'setup_email_class' ) );
     }
 
 
@@ -180,6 +178,16 @@ final class MultiVendorX {
         $this->container['migration']       = new Migration\Cron();
         $this->container['vulomail_migration'] = new Integrations\VuloMailMigration();
         $this->container['vuloform_installer'] = new Integrations\VuloFormInstaller();
+        // No installer of its own: Integrations\VuloMailMigration (above) already installs/
+        // activates VuloMail for the whole plugin -- this just registers the two remaining
+        // one-off admin emails (site-information, plugin-deactivated) with it.
+        $this->container['vulomail_templates']  = new VuloMail\Templates();
+        // Same reason: Integrations\VuloFormInstaller (above) already installs/activates
+        // VuloForm -- this wires it in as the store registration form builder.
+        $this->container['vuloform_templates']     = new VuloForm\Templates();
+        $this->container['vuloform_migration']     = new VuloForm\Migration();
+        $this->container['vuloform_submission_bridge'] = new VuloForm\SubmissionBridge();
+        $this->container['vuloform_preview_rest']  = new VuloForm\PreviewRest();
         $this->container['abilities']       = new Abilities();
 
         $this->initialize_multivendorx_log();
@@ -204,16 +212,6 @@ final class MultiVendorX {
             wp_safe_redirect( admin_url( 'admin.php?page=multivendorx-setup' ) );
             exit;
         }
-    }
-
-    /**
-     * Add MultiVendorX Email Class.
-     *
-     * @param array $emails  All MultiVendorX emails.
-     * @return array
-     */
-    public function setup_email_class( $emails ) {
-        return $emails;
     }
 
     /**

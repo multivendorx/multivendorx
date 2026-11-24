@@ -37,12 +37,10 @@ class SubmissionBridge {
             return;
         }
 
-        // No early return when this is empty: the Enquiry Cart's bulk "Send an enquiry" form
-        // (catalogx-pro) is this same configured form, submitted with no product_id at all --
-        // `create_item()` gets its product list from the cart itself server-side, via
-        // `catalogx-pro`'s `catalogx_set_enquiry_product_info` filter (modules/Enquiry/Admin.php),
-        // not from this field. Only the single-product enquiry button actually relies on it.
-        $product_id = isset( $values['product_id'] ) ? absint( $values['product_id'] ) : 0;
+        // `product_id` is either a single product id (the single-product enquiry button) or a
+        // JSON `{product_id: quantity}` map (the enquiry cart's bulk "Send enquiry") -- passed
+        // through as-is, `create_item()` tells the two apart.
+        $product_id = isset( $values['product_id'] ) ? sanitize_text_field( (string) $values['product_id'] ) : 0;
 
         $body = array(
             'productId' => $product_id,

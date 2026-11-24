@@ -7,6 +7,9 @@
 
 namespace MultiVendorX;
 
+use MultiVendorX\VuloMail\Mailer;
+use MultiVendorX\VuloMail\Templates as VuloMailTemplates;
+
 defined( 'ABSPATH' ) || exit;
 /**
  * MultiVendorX Promotions class.
@@ -159,8 +162,14 @@ class Promotions {
                     )
                 );
 
-                $email = WC()->mailer()->emails['WC_Email_Send_Site_Information'];
-                $email->trigger( get_current_user_id() );
+                Mailer::send(
+                    VuloMailTemplates::SITE_INFORMATION,
+                    $current_user->user_email,
+                    array(
+                        '{user_name}'  => sanitize_text_field( $current_user->display_name ),
+                        '{user_email}' => sanitize_email( $current_user->user_email ),
+                    )
+                );
             }
             return;
         }
