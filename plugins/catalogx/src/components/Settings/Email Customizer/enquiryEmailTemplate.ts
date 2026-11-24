@@ -1,6 +1,6 @@
 import { createElement } from 'react';
 import { __ } from '@wordpress/i18n';
-import EnquiryEmailPanel from '../../VuloMail/EnquiryEmailPanel';
+import EnquiryEmailPanel from './EnquiryEmailPanel';
 
 export default {
     id: 'enquiry-email-template',
