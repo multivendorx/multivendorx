@@ -42,9 +42,12 @@ class FieldMapper {
     /**
      * @param array  $old_fields   The old `formfieldlist` array.
      * @param string $submit_label Fallback submit button label (a 'button' entry overrides it).
+     * @param array  $extra_fields Infrastructure fields (e.g. hidden `product_id`/`user_id`) the
+     *                             caller's own starter template carries, appended as-is since the
+     *                             legacy field list never had anything equivalent to convert.
      * @return array Sanitized VuloForm schema ({version, fields, settings}).
      */
-    public static function schema( array $old_fields, $submit_label ) {
+    public static function schema( array $old_fields, $submit_label, array $extra_fields = array() ) {
         $fields = array();
 
         foreach ( $old_fields as $old_field ) {
@@ -62,6 +65,10 @@ class FieldMapper {
             }
 
             $fields[] = self::field( $old_field, $type );
+        }
+
+        foreach ( $extra_fields as $extra_field ) {
+            $fields[] = $extra_field;
         }
 
         $settings                    = \VuloForm\Forms\Schema::default_settings();

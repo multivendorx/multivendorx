@@ -93,7 +93,12 @@ class PreviewRest {
     }
 
     /**
-     * The form to preview/edit: the requested id, the stored one, or a freshly created one.
+     * The form to preview/edit: the requested id, the stored one, or -- via the same
+     * `Migration::ensure_form()` the `admin_init` migration check uses -- a legacy-field migration
+     * or a freshly created starter-template form. Sharing that method (rather than this class
+     * auto-creating a starter-template form of its own) is what previously let whichever of these
+     * two triggers fired first "win" with the wrong form, permanently skipping a legitimate
+     * legacy-field migration if this one ran first.
      *
      * @param int $requested_id Form id from the request, 0 when none was asked for.
      * @return int 0 on failure.
@@ -103,45 +108,6 @@ class PreviewRest {
             return $requested_id;
         }
 
-        $stored_id = (int) CatalogX()->setting->get_setting( 'vuloform_enquiry_form_id', 0 );
-
-        if ( $stored_id && vuloform_get_form( $stored_id ) ) {
-            return $stored_id;
-        }
-
-        return $this->create_default_form();
-    }
-
-    /**
-     * @return int 0 on failure.
-     */
-    private function create_default_form() {
-        if ( ! class_exists( '\VuloForm\Forms\Templates' ) ) {
-            return 0;
-        }
-
-        $templates = \VuloForm\Forms\Templates::all();
-
-        if ( ! isset( $templates[ Templates::TEMPLATE_ID ] ) ) {
-            return 0;
-        }
-
-        $form_id = (int) VuloForm()->forms->create(
-            $templates[ Templates::TEMPLATE_ID ]['title'],
-            $templates[ Templates::TEMPLATE_ID ]['schema'],
-            'published'
-        );
-
-        if ( $form_id ) {
-            // Explicit option key -- Setting::get_option_key() can't find one for a key saved
-            // for the first time.
-            CatalogX()->setting->update_setting(
-                'vuloform_enquiry_form_id',
-                $form_id,
-                Utill::CATALOGX_SETTINGS['enquiry-form-customization']
-            );
-        }
-
-        return $form_id;
+        return ( new Migration() )->ensure_form();
     }
 }

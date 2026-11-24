@@ -53,21 +53,10 @@ class SubmissionBridge {
             }
         }
 
-        // VuloForm's public submit endpoint is deliberately unauthenticated (so an embedded,
-        // cross-origin form can still submit) -- by this point in the request, WordPress's own
-        // REST layer has reset the real current user to anonymous (get_current_user_id()/
-        // is_user_logged_in() both report logged-out here) even for a visitor who really is
-        // logged in. `CatalogX()->current_user_id` was captured earlier in this same request,
-        // before that happened, so it still holds the real identity (0 for a genuine guest) --
-        // re-sync WordPress's own current user to it before dispatching, then restore
-        // afterward, since this hook runs before VuloForm's own later callbacks (e.g.
-        // Webhooks::queue) which still expect the original anonymous context. Without this,
-        // `catalogx_create_item_permissions_check()` denies a logged-in customer's own
-        // enquiry: the `enquiry_user_permission === 'everyone'` anonymous bypass doesn't apply
-        // (CatalogX()->current_user_id isn't 0), yet current_user_can() also fails (the live
-        // user really is anonymous here) -- neither path can succeed without this re-sync.
-        $previous_user_id = get_current_user_id();
-        wp_set_current_user( CatalogX()->current_user_id );
+        $applicant_id      = !empty( $values['user_id'] ) ? absint( $values['user_id'] ) : 0;
+        if ( $applicant_id ) {
+            wp_set_current_user( $applicant_id );
+        }
 
         $request = new \WP_REST_Request( 'POST', '/' . CatalogX()->rest_namespace . '/enquiries' );
         // No X-WP-Nonce header available here, so issue one for this same request.
@@ -76,7 +65,7 @@ class SubmissionBridge {
 
         $response = rest_do_request( $request );
 
-        wp_set_current_user( $previous_user_id );
+        wp_set_current_user( CatalogX()->current_user_id );
 
         if ( $response->is_error() ) {
             Utill::log( $response->as_error() );

@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-24T10:12:42+00:00\n"
+"POT-Creation-Date: 2026-11-24T10:40:38+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: catalogx\n"
@@ -214,12 +214,12 @@ msgstr ""
 msgid "CatalogX could not automatically install the VuloForm plugin needed for its forms: %s. Please install and activate \"VuloForm\" manually from the Plugins screen."
 msgstr ""
 
-#: classes/VuloForm/Migration.php:56
+#: classes/VuloForm/Migration.php:76
 #: classes/VuloForm/Templates.php:36
 msgid "Send enquiry"
 msgstr ""
 
-#: classes/VuloForm/Migration.php:57
+#: classes/VuloForm/Migration.php:77
 msgid "Enquiry form"
 msgstr ""
 
@@ -239,14 +239,14 @@ msgstr ""
 msgid "CatalogX"
 msgstr ""
 
-#: classes/VuloForm/Templates.php:50
+#: classes/VuloForm/Templates.php:51
 #: classes/VuloMail/Templates.php:307
 #: classes/VuloMail/Templates.php:380
 #: assets/js/index.js:1
 msgid "Name"
 msgstr ""
 
-#: classes/VuloForm/Templates.php:57
+#: classes/VuloForm/Templates.php:58
 #: classes/VuloMail/Templates.php:200
 #: classes/VuloMail/Templates.php:237
 #: classes/VuloMail/Templates.php:309
@@ -257,11 +257,11 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: classes/VuloForm/Templates.php:64
+#: classes/VuloForm/Templates.php:65
 msgid "Phone (optional)"
 msgstr ""
 
-#: classes/VuloForm/Templates.php:71
+#: classes/VuloForm/Templates.php:72
 #: classes/VuloMail/Templates.php:202
 #: classes/VuloMail/Templates.php:239
 #: classes/VuloMail/Templates.php:273
@@ -272,7 +272,7 @@ msgstr ""
 msgid "Message"
 msgstr ""
 
-#: classes/VuloForm/Templates.php:77
+#: classes/VuloForm/Templates.php:99
 #: classes/VuloMail/Templates.php:198
 #: classes/VuloMail/Templates.php:235
 #: classes/VuloMail/Templates.php:305
@@ -285,14 +285,14 @@ msgstr ""
 msgid "Product"
 msgstr ""
 
-#: classes/VuloForm/Templates.php:84
+#: classes/VuloForm/Templates.php:106
 #: classes/VuloMail/Templates.php:453
 #: assets/js/block/quote-cart/index.js:1
 #: assets/js/block/quote-cart/view.js:1
 msgid "Quantity"
 msgstr ""
 
-#: classes/VuloForm/Templates.php:90
+#: classes/VuloForm/Templates.php:112
 #: assets/js/index.js:1
 msgid "User"
 msgstr ""
