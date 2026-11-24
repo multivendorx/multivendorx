@@ -84,8 +84,8 @@ class PreviewRest {
         }
 
         $response['edit_url'] = admin_url( 'admin.php?page=vulomail#&tab=email-templates&template=' . Templates::ENQUIRY );
-        $response['subject']  = strtr( (string) ( $email['subject'] ?? '' ), self::demo_tags() );
-        $response['content']  = strtr( (string) ( $email['content'] ?? '' ), self::demo_tags() );
+        $response['subject']  = Mailer::substitute_tags( (string) ( $email['subject'] ?? '' ), self::demo_tags(), true );
+        $response['content']  = Mailer::substitute_tags( (string) ( $email['content'] ?? '' ), self::demo_tags() );
 
         return rest_ensure_response( $response );
     }
