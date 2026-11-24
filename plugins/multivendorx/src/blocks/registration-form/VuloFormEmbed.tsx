@@ -21,11 +21,33 @@ export interface VuloFormEmbedProps {
 	prefill?: Record<string, string>;
 }
 
-/** Loads a stylesheet/script by URL into `<head>` once, shared across form instances. */
-const loadAssetOnce = (tag: 'link' | 'script', url: string) => {
-	const attr = tag === 'link' ? 'href' : 'src';
+declare global {
+	interface Window {
+		vuloformInit?: (root?: ParentNode) => void;
+	}
+}
 
-	if (document.head.querySelector(`${tag}[${attr}="${url}"]`)) {
+/**
+ * Loads a stylesheet/script by URL into `<head>` once, shared across form instances. `onReady`
+ * (script only) fires once that script has actually finished loading -- immediately if it was
+ * already loaded by an earlier embed on this page, otherwise once its `load` event fires, even
+ * when we aren't the one who originally added the tag. Mirrors VuloForm's own embed-loader
+ * (`vuloform-embed.min.js`)'s identical helper.
+ */
+const loadAssetOnce = (
+	tag: 'link' | 'script',
+	url: string,
+	onReady?: () => void
+) => {
+	const attr = tag === 'link' ? 'href' : 'src';
+	const existing = document.head.querySelector<HTMLElement>(
+		`${tag}[${attr}="${url}"]`
+	);
+
+	if (existing) {
+		if (tag === 'script' && onReady) {
+			window.vuloformInit ? onReady() : existing.addEventListener('load', onReady);
+		}
 		return;
 	}
 
@@ -35,12 +57,20 @@ const loadAssetOnce = (tag: 'link' | 'script', url: string) => {
 
 	if (tag === 'link') {
 		el.setAttribute('rel', 'stylesheet');
+	} else if (onReady) {
+		el.addEventListener('load', onReady);
 	}
 
 	document.head.appendChild(el);
 };
 
-/** Injects an `embed` payload into a container; `style`/`script` are asset URLs to load. */
+/**
+ * Injects an `embed` payload into a container; `style`/`script` are asset URLs to load.
+ * VuloForm's script only auto-initializes the forms present when *it* first finishes loading --
+ * a form injected after that (every embed past the first on a page that dedupes the shared
+ * script) needs this explicit call, or its submit button falls through to a plain, unhandled
+ * browser form POST.
+ */
 export const injectVuloFormEmbed = (
 	container: HTMLElement,
 	embed: VuloFormEmbedPayload
@@ -52,7 +82,9 @@ export const injectVuloFormEmbed = (
 	}
 
 	if (embed.script) {
-		loadAssetOnce('script', embed.script);
+		loadAssetOnce('script', embed.script, () => window.vuloformInit?.(container));
+	} else {
+		window.vuloformInit?.(container);
 	}
 };
 

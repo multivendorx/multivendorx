@@ -29,6 +29,11 @@ class Migration {
     }
 
     /**
+     * Ensures a store registration form exists (creating one from the starter template if
+     * there's none configured yet), and that whichever form ends up configured -- freshly
+     * created here, or one that already existed from before `Templates::applicant_field()` was
+     * added -- has the hidden applicant-id field `SubmissionBridge` depends on.
+     *
      * @return void
      */
     public function maybe_create_default_form() {
@@ -43,19 +48,29 @@ class Migration {
         // Only ever attempted once.
         update_option( self::MIGRATED_OPTION, time() );
 
-        // Already has a configured form -- nothing to do.
-        if ( (int) MultiVendorX()->setting->get_setting( 'vuloform_store_registration_form_id', 0 ) ) {
-            return;
+        $form_id = (int) MultiVendorX()->setting->get_setting( 'vuloform_store_registration_form_id', 0 );
+
+        if ( ! $form_id ) {
+            $form_id = $this->create_default_form();
         }
 
+        if ( $form_id ) {
+            $this->ensure_applicant_field( $form_id );
+        }
+    }
+
+    /**
+     * @return int 0 on failure.
+     */
+    private function create_default_form() {
         if ( ! class_exists( '\VuloForm\Forms\Templates' ) ) {
-            return;
+            return 0;
         }
 
         $templates = \VuloForm\Forms\Templates::all();
 
         if ( ! isset( $templates[ Templates::TEMPLATE_ID ] ) ) {
-            return;
+            return 0;
         }
 
         $form_id = (int) VuloForm()->forms->create(
@@ -71,5 +86,32 @@ class Migration {
                 Utill::MULTIVENDORX_SETTINGS['registration']
             );
         }
+
+        return $form_id;
+    }
+
+    /**
+     * @param int $form_id Form to check/patch.
+     * @return void
+     */
+    private function ensure_applicant_field( $form_id ) {
+        $form = VuloForm()->forms->get( $form_id );
+
+        if ( ! $form ) {
+            return;
+        }
+
+        $fields = $form['schema']['fields'] ?? array();
+
+        foreach ( $fields as $field ) {
+            if ( isset( $field['key'] ) && Templates::APPLICANT_FIELD_KEY === $field['key'] ) {
+                return;
+            }
+        }
+
+        $fields[]                 = Templates::applicant_field();
+        $form['schema']['fields'] = $fields;
+
+        VuloForm()->forms->update( $form_id, array( 'schema' => $form['schema'] ) );
     }
 }

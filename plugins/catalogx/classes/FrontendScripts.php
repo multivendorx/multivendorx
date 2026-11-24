@@ -504,16 +504,12 @@ class FrontendScripts {
                         $base_rest,
                         array(
                             'vuloform_form_id'    => (int) CatalogX()->setting->get_setting( 'vuloform_enquiry_form_id', 0 ),
-                            // VuloForm's own script handles the actual submission now, so the
-                            // "What happens after enquiry submission?" setting (Settings →
-                            // Customer Engagement) has to be acted on here, not from the
-                            // `catalogx/v1/enquiries` response -- the browser never sees that
-                            // response, only VuloForm's.
                             'redirect_url'        => ( 'dedicated_page' === CatalogX()->setting->get_setting( 'is_page_redirect' ) && CatalogX()->setting->get_setting( 'redirect_page_id' ) )
                                 ? get_permalink( CatalogX()->setting->get_setting( 'redirect_page_id' ) )
                                 : '',
                             'khali_dabba'         => Utill::is_khali_dabba(),
                             'product_data'        => apply_filters( 'catalogx_product_data', array() ),
+                            'current_user_id'    => CatalogX()->current_user_id,
                             'default_placeholder' => array(
                                 'name'  => $current_user->display_name,
                                 'email' => $current_user->user_email,

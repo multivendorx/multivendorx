@@ -45,6 +45,7 @@ const EnquiryForm = () => {
                     apiUrl={formData.apiUrl}
                     productId={productId}
                     quantity={quantity}
+                    userId={formData.current_user_id ? String(formData.current_user_id) : ''}
                     onSubmitted={() => {
                         if (formData.redirect_url) {
                             window.location.href = formData.redirect_url;

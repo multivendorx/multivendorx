@@ -95,6 +95,22 @@ class Rest {
             $user_name  = $user->display_name;
             $user_email = $user->user_email;
 
+            // VuloForm's own submission never carries cookies (it supports cross-origin
+            // embeds), so `CatalogX()->current_user` is anonymous here even for a logged-in
+            // shopper -- the real user id is staged into the form's hidden `user_id` field
+            // instead, from a request that did carry cookies (the embed call).
+            $submitted_user_id = absint( $request->get_param( 'user_id' ) );
+
+            if ( $submitted_user_id ) {
+                $real_user = get_user_by( 'id', $submitted_user_id );
+
+                if ( $real_user ) {
+                    $user       = $real_user;
+                    $user_name  = $real_user->display_name;
+                    $user_email = $real_user->user_email;
+                }
+            }
+
             $attachment_id = null;
             $attachments   = array();
 
@@ -106,7 +122,7 @@ class Rest {
                 }
             }
 
-            unset( $enquiry_form_fields['quantity'], $enquiry_form_fields['productId'] );
+            unset( $enquiry_form_fields['quantity'], $enquiry_form_fields['productId'], $enquiry_form_fields['user_id'] );
 
             // Gather product information. `productId` is either a single product id (the
             // single-product enquiry button) or a JSON `{product_id: quantity}` map (the

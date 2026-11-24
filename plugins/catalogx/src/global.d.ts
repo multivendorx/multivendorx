@@ -59,6 +59,8 @@ declare global {
         redirect_url: string;
         khali_dabba: boolean;
         product_data: Array;
+        /** The real logged-in user's id, staged into the embed since VuloForm's submission never carries cookies. */
+        current_user_id: number;
         default_placeholder: Array;
         content_before_form: any;
         content_after_form: any;

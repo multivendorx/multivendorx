@@ -84,6 +84,14 @@ class Templates {
                             'label'   => __( 'Quantity', 'catalogx' ),
                             'default' => '{query:quantity}',
                         ),
+                        array(
+                            'type'    => 'hidden',
+                            'key'     => 'user_id',
+                            'label'   => __( 'User', 'catalogx' ),
+                            // VuloForm's own submission never carries cookies, so the logged-in
+                            // user's real id is staged into the page URL at embed time instead.
+                            'default' => '{query:user_id}',
+                        ),
                     ),
                     'settings' => $settings,
                 )
