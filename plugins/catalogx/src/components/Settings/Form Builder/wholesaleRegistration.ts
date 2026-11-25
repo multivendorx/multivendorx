@@ -1,6 +1,6 @@
 import { createElement } from 'react';
 import { __ } from '@wordpress/i18n';
-import WholesaleFormPanel from '../../VuloForm/WholesaleFormPanel';
+import WholesaleFormPanel from './WholesaleFormPanel';
 
 export default {
     id: 'wholesale-registration',

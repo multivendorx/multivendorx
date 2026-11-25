@@ -44,27 +44,8 @@ class Mailer {
             }
         }
 
-        // A tag's value can come from an unauthenticated form submission (e.g. the enquiry
-        // form's name/email). Strip CR/LF before it ever lands in the subject line -- a stray
-        // newline there becomes a real extra mail header once PHPMailer/wp_mail parses it. (The
-        // caller is still responsible for validating/newline-stripping anything it puts directly
-        // into $headers itself, e.g. a Reply-To built from submitter input -- see the CVE report
-        // on the enquiry email's old Reply-To header.)
-        $subject_tags = array_map(
-            static function ( $value ) {
-                return str_replace( array( "\r", "\n" ), ' ', (string) $value );
-            },
-			$tags
-        );
-
-        // Case-insensitive: once a template's content/subject is edited in VuloMail's own
-        // editor, its tags are whatever casing was typed/pasted there (e.g. a generic
-        // "{PRODUCT_NAME}" placeholder VuloMail itself suggested), not necessarily the exact
-        // lowercase `{product_name}` this plugin registers. strtr() is case-sensitive and
-        // silently leaves an unmatched tag as literal text instead of the real value -- which is
-        // how a saved template can end up missing product/enquiry details with no error at all.
-        $subject = str_ireplace( array_keys( $subject_tags ), array_values( $subject_tags ), (string) $subject );
-        $content = str_ireplace( array_keys( $tags ), array_values( $tags ), (string) $content );
+        $subject = self::substitute_tags( $subject, $tags, true );
+        $content = self::substitute_tags( $content, $tags, false );
 
         if ( function_exists( 'vulomail_send_email' ) ) {
             $result = vulomail_send_email(
@@ -85,5 +66,37 @@ class Mailer {
         $mail_headers[] = 'Content-Type: text/html; charset=UTF-8';
 
         return (bool) wp_mail( $to, $subject, $content, $mail_headers, $attachments );
+    }
+
+    /**
+     * Single substitution path for a template's subject/content -- `send()` and the Email
+     * Customizer's preview (`PreviewRest`) both go through this instead of each carrying their
+     * own `str_ireplace()`/`strtr()` pass, which used to let the two silently drift. Delegates to
+     * VuloMail's own `vulomail_substitute_tags()` (every VuloLabs plugin sending through VuloMail
+     * shares that one implementation instead of each keeping its own copy -- which had already
+     * drifted: Notifima's copy used case-sensitive `strtr()` and silently left differently-cased
+     * tags unsubstituted). Falls back to the same logic locally so sending still works with
+     * VuloMail inactive.
+     *
+     * @param string $text           Subject or content, `{tag}` placeholders intact.
+     * @param array  $tags           `{tag}` => replacement value.
+     * @param bool   $strip_newlines True for a subject line -- see `vulomail_substitute_tags()`.
+     * @return string
+     */
+    public static function substitute_tags( $text, array $tags, $strip_newlines = false ) {
+        if ( function_exists( 'vulomail_substitute_tags' ) ) {
+            return vulomail_substitute_tags( $text, $tags, $strip_newlines );
+        }
+
+        if ( $strip_newlines ) {
+            $tags = array_map(
+                static function ( $value ) {
+                    return str_replace( array( "\r", "\n" ), ' ', (string) $value );
+                },
+                $tags
+            );
+        }
+
+        return str_ireplace( array_keys( $tags ), array_values( $tags ), (string) $text );
     }
 }

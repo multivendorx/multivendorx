@@ -44,21 +44,8 @@ class Mailer {
             }
         }
 
-        // A tag's value can come from user-submitted input (e.g. the deactivation-feedback
-        // form's reason/details). Strip CR/LF before it ever lands in the subject line -- a
-        // stray newline there becomes a real extra mail header once PHPMailer/wp_mail parses it.
-        $subject_tags = array_map(
-            static function ( $value ) {
-                return str_replace( array( "\r", "\n" ), ' ', (string) $value );
-            },
-            $tags
-        );
-
-        // Case-insensitive: once a template's content/subject is edited in VuloMail's own
-        // editor, its tags are whatever casing was typed/pasted there, not necessarily the exact
-        // lowercase tags registered here.
-        $subject = str_ireplace( array_keys( $subject_tags ), array_values( $subject_tags ), (string) $subject );
-        $content = str_ireplace( array_keys( $tags ), array_values( $tags ), (string) $content );
+        $subject = self::substitute_tags( $subject, $tags, true );
+        $content = self::substitute_tags( $content, $tags, false );
 
         if ( function_exists( 'vulomail_send_email' ) ) {
             $result = vulomail_send_email(
@@ -78,5 +65,35 @@ class Mailer {
         $mail_headers[] = 'Content-Type: text/html; charset=UTF-8';
 
         return (bool) wp_mail( $to, $subject, $content, $mail_headers );
+    }
+
+    /**
+     * Fills `{tag}` placeholders into a subject/content string. Delegates to VuloMail's own
+     * `vulomail_substitute_tags()` (every VuloLabs plugin sending through VuloMail shares that
+     * one implementation instead of each keeping its own copy -- which had already drifted:
+     * Notifima's copy used case-sensitive `strtr()` and silently left differently-cased tags
+     * unsubstituted). Falls back to the same logic locally so sending still works with VuloMail
+     * inactive.
+     *
+     * @param string $text           Subject or content, `{tag}` placeholders intact.
+     * @param array  $tags           `{tag}` => replacement value.
+     * @param bool   $strip_newlines True for a subject line -- see `vulomail_substitute_tags()`.
+     * @return string
+     */
+    public static function substitute_tags( $text, array $tags, $strip_newlines = false ) {
+        if ( function_exists( 'vulomail_substitute_tags' ) ) {
+            return vulomail_substitute_tags( $text, $tags, $strip_newlines );
+        }
+
+        if ( $strip_newlines ) {
+            $tags = array_map(
+                static function ( $value ) {
+                    return str_replace( array( "\r", "\n" ), ' ', (string) $value );
+                },
+                $tags
+            );
+        }
+
+        return str_ireplace( array_keys( $tags ), array_values( $tags ), (string) $text );
     }
 }

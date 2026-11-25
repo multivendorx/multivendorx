@@ -1,6 +1,6 @@
 import { createElement } from 'react';
 import { __ } from '@wordpress/i18n';
-import EnquiryFormPanel from '../../VuloForm/EnquiryFormPanel';
+import EnquiryFormPanel from './EnquiryFormPanel';
 
 export default {
     id: 'enquiry-form-customization',
