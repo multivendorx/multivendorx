@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import React from 'react';
 import { __, sprintf } from '@wordpress/i18n';
-import { FormPreview } from 'zyra';
+import { FormPreview, useVuloFormPreview } from 'zyra';
 import ShowProPopup from '../../Popup/Popup';
 
 /**
@@ -9,7 +9,19 @@ import ShowProPopup from '../../Popup/Popup';
  * sees elsewhere in CatalogX (`proSetting` fields) otherwise.
  */
 const WholesaleFormPanel: React.FC = () => {
-	if (!appLocalizer.khali_dabba) {
+	const loadErrorMessage = __('The form could not be loaded.', 'catalogx');
+	const wholesale = appLocalizer.vuloform_wholesale;
+
+	// Hooks must run unconditionally -- call it with a 0 form id (a no-op fetch) when there's
+	// nothing to preview yet (no license, or the field isn't localized for a free-tier site).
+	const { data: embed, error } = useVuloFormPreview(
+		appLocalizer.apiUrl,
+		wholesale?.form_id ?? 0,
+		Boolean(wholesale?.installed),
+		loadErrorMessage
+	);
+
+	if (!appLocalizer.khali_dabba || !wholesale) {
 		return (
 			<ShowProPopup
 				feature={{
@@ -26,8 +38,13 @@ const WholesaleFormPanel: React.FC = () => {
 
 	return (
 		<FormPreview
-			appLocalizer={appLocalizer}
-			previewPath="vuloform-wholesale-preview"
+			adminUrl={appLocalizer.url}
+			installed={wholesale.installed}
+			pluginUrl={wholesale.plugin_url}
+			canActivate={wholesale.can_activate}
+			formId={wholesale.form_id}
+			embed={embed}
+			error={error}
 			companionTitle={__('Enable VuloForm', 'catalogx')}
 			companionDesc={__(
 				'This form is built with VuloForm. Activate the plugin to show it and edit it here.',
@@ -44,7 +61,6 @@ const WholesaleFormPanel: React.FC = () => {
 				),
 				'<a href="https://wordpress.org/plugins/vuloform/" target="_blank" rel="noopener noreferrer"><strong>VuloForm</strong></a>'
 			)}
-			loadErrorMessage={__('The form could not be loaded.', 'catalogx')}
 		/>
 	);
 };

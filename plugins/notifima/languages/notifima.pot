@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-23T11:50:30+00:00\n"
+"POT-Creation-Date: 2026-11-25T07:01:18+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: notifima\n"
@@ -1176,10 +1176,6 @@ msgid "This message is shown once the unsubscribe request has been completed suc
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "The subscription form could not be loaded."
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Enable VuloForm"
 msgstr ""
 
@@ -1196,19 +1192,15 @@ msgid "Install VuloForm"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Subscription form preview"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Loading…"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Edit form"
 msgstr ""
 
 #: assets/js/index.js:1
 msgid "This form is editable in VuloForm. Use Edit form to change its fields and settings. Changes show here after you save the form and reload this page."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "The subscription form could not be loaded."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -1381,6 +1373,10 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Quarterly"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Loading…"
 msgstr ""
 
 #: assets/js/index.js:1

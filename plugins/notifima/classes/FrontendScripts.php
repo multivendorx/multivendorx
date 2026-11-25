@@ -300,6 +300,7 @@ class FrontendScripts {
                             )
                         ),
                         'vulomail'      => self::get_vulomail_data(),
+                        'vuloform'      => \Notifima\VuloForm\Integration::get_admin_localize_data(),
 					),
                 ),
                 'notifima-subscribe-form' => array(

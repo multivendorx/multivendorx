@@ -26,6 +26,8 @@ declare global {
 		user_first_name?: string;
 		/** Ids of the modules that are on. */
 		active_modules?: string[];
+		/** VuloForm's install state/form id for the Registration settings tab. */
+		vuloform: VuloFormAdminData;
 		tab_name: string;
 		order_statuses?: { label: string; value: string }[];
 		admin_settings: any;
@@ -119,6 +121,13 @@ declare global {
 		dashboard_redirect_url: string;
 		/** Forced into the embed's hidden `applicant_user_id` field; 0 for a guest. */
 		current_user_id: number;
+	}
+
+	interface VuloFormAdminData {
+		installed: boolean;
+		plugin_url: string;
+		can_activate: boolean;
+		form_id: number;
 	}
 
 	var appLocalizer: AppLocalizer;

@@ -187,7 +187,8 @@ final class MultiVendorX {
         $this->container['vuloform_templates']     = new VuloForm\Templates();
         $this->container['vuloform_migration']     = new VuloForm\Migration();
         $this->container['vuloform_submission_bridge'] = new VuloForm\SubmissionBridge();
-        $this->container['vuloform_preview_rest']  = new VuloForm\PreviewRest();
+        // VuloForm\PreviewRest is a static-only helper now (no REST route to register) -- see
+        // FrontendScripts::localize_scripts()'s `vuloform` key.
         $this->container['abilities']       = new Abilities();
 
         $this->initialize_multivendorx_log();

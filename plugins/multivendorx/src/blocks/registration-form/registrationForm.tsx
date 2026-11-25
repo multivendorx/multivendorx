@@ -1,11 +1,11 @@
 // RegistrationForm.tsx
 /* global registrationForm */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getApiLink } from '@zyra/core';
 import { ToggleInputFieldComponent } from '@zyra/inputs';
+import { VuloFormEmbed } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import VuloFormEmbed from './VuloFormEmbed';
 
 type StoreOption = {
 	label: string;
@@ -130,45 +130,15 @@ const RegistrationForm = () => {
 	// VuloForm's script swaps the <form> for a `.vuloform-message--success` node on success --
 	// the store is created/updated server-side (SubmissionBridge), so this only needs to react
 	// to it: show a confirmation, then send the vendor to their dashboard.
-	const embedContainerRef = useRef<HTMLDivElement>(null);
+	const handleRegistrationSubmitted = () => {
+		setSubmitted(true);
 
-	useEffect(() => {
-		const container = document.querySelector(
-			'.multivendorx-vuloform-embed'
-		);
-
-		if (!container) {
-			return;
-		}
-
-		const observer = new MutationObserver((mutations) => {
-			const succeeded = mutations.some((mutation) =>
-				Array.prototype.some.call(
-					mutation.addedNodes,
-					(node: Node) =>
-						node instanceof HTMLElement &&
-						node.classList.contains('vuloform-message--success')
-				)
-			);
-
-			if (succeeded) {
-				setSubmitted(true);
-
-				setTimeout(() => {
-					if (registrationForm.dashboard_redirect_url) {
-						window.location.href =
-							registrationForm.dashboard_redirect_url;
-					}
-				}, 2000);
+		setTimeout(() => {
+			if (registrationForm.dashboard_redirect_url) {
+				window.location.href = registrationForm.dashboard_redirect_url;
 			}
-		});
-
-		observer.observe(container, { childList: true, subtree: true });
-
-		return () => {
-			observer.disconnect();
-		};
-	}, [currentStep]);
+		}, 2000);
+	};
 
 	const prefill = inputs
 		? {
@@ -181,16 +151,18 @@ const RegistrationForm = () => {
 		: undefined;
 
 	const form = registrationForm.vuloform_form_id > 0 && (
-		<div ref={embedContainerRef}>
+		<div>
 			<VuloFormEmbed
 				formId={registrationForm.vuloform_form_id}
 				apiUrl={registrationForm.apiUrl}
-				prefill={prefill}
-				userId={
-					registrationForm.current_user_id
+				className="multivendorx-vuloform-embed"
+				queryParams={prefill}
+				fieldValues={{
+					applicant_user_id: registrationForm.current_user_id
 						? String(registrationForm.current_user_id)
-						: ''
-				}
+						: undefined,
+				}}
+				onSubmitted={handleRegistrationSubmitted}
 			/>
 			{submitted && (
 				<div className="woocommerce-notices-wrapper">

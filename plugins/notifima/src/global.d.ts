@@ -52,6 +52,8 @@ declare global {
         user_first_name?: string;
         /** VuloMail's install state/CTA data for the "Email Logs" page. */
         vulomail: VuloMailData;
+        /** VuloForm's install state/form id for the Subscription Form Designer settings tab. */
+        vuloform: VuloFormAdminData;
     }
 
     interface Subscription {
@@ -72,6 +74,13 @@ declare global {
         is_vulomail_active: boolean;
         install_url: string;
         email_logs_url: string;
+    }
+
+    interface VuloFormAdminData {
+        installed: boolean;
+        plugin_url: string;
+        can_activate: boolean;
+        form_id: number;
     }
 
     /** Printed on the Plugins screen only, when VuloForm is active (Installer::enqueue_deactivation_confirm_assets()). */
