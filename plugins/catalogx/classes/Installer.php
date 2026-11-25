@@ -7,6 +7,8 @@
 
 namespace CatalogX;
 
+use CatalogX\Integrations\VuloForm\Migration as VuloFormMigration;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -698,6 +700,7 @@ class Installer {
             $customer_engagement_settings = get_option( Utill::CATALOGX_SETTINGS['customer-engagement'], array() );
             $customer_engagement_settings['enquiry_report_frequency'] = 'monthly';
             update_option( Utill::CATALOGX_SETTINGS['customer-engagement'], $customer_engagement_settings );
+            VuloFormMigration::maybe_migrate();
         }
     }
 

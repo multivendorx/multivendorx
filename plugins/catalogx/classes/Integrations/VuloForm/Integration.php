@@ -13,18 +13,10 @@ use CatalogX\Utill;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Wires VuloForm in as the enquiry form builder, for every CatalogX site. Silently installs and
- * activates the "vuloform" WordPress.org plugin via the shared `PluginInstaller` (also used
- * as-is by `Integrations\VuloMail\Integration` -- no VuloForm-specific installer subclass). The
- * one-time migration of the old block-builder enquiry form fields into a VuloForm form lives in
- * the sibling `Migration` class, not here.
- *
- * No preview REST route here: the Enquiry form settings tab (`zyra`'s `FormPreview`) fetches the
- * form's embed HTML straight from VuloForm's own public, cross-origin `/public/forms/{id}/embed`
- * endpoint. This class is only responsible for the install-state check (localized as a plain
- * value via `get_admin_localize_data()` rather than fetched) and turning a VuloForm submission of
- * the enquiry form into an enquiry, via an internal request to CatalogX's own `enquiries` REST
- * route -- reuses its existing create/notify logic as-is.
+ * Wires VuloForm in as the enquiry form builder. Installs VuloForm via the shared
+ * `PluginInstaller`; legacy-field migration lives in the sibling `Migration` class
+ * (triggered from `Installer::do_migration()`). This class only handles the install-state
+ * localize data and turning a VuloForm submission into an enquiry.
  */
 class Integration {
 
@@ -45,7 +37,6 @@ class Integration {
         );
         new Templates();
 
-        add_action( 'admin_init', array( Migration::class, 'maybe_migrate' ) );
         add_action( 'vuloform_submission_created', array( $this, 'maybe_create_enquiry' ), 10, 3 );
     }
 

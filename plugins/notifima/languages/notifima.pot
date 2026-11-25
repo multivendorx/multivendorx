@@ -8,15 +8,15 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-25T11:00:23+00:00\n"
+"POT-Creation-Date: 2026-11-25T11:52:47+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: notifima\n"
 
 #. Plugin Name of the plugin
 #: product_stock_alert.php
-#: classes/VuloForm/Templates.php:50
-#: classes/VuloMail/Templates.php:45
+#: classes/Integrations/VuloForm/Templates.php:50
+#: classes/Integrations/VuloMail/Templates.php:45
 #: assets/js/index.js:1
 msgid "Notifima"
 msgstr ""
@@ -56,7 +56,7 @@ msgid "Inventory Manager"
 msgstr ""
 
 #: classes/Admin.php:131
-#: classes/Notifima.php:283
+#: classes/Notifima.php:293
 #: assets/js/index.js:1
 msgid "Settings"
 msgstr ""
@@ -69,7 +69,7 @@ msgstr ""
 #: classes/Admin.php:164
 #: classes/Admin.php:165
 #: classes/Notifima.php:119
-#: classes/Notifima.php:287
+#: classes/Notifima.php:297
 #: assets/js/index.js:1
 msgid "Upgrade to Pro"
 msgstr ""
@@ -142,8 +142,8 @@ msgid "(opens in a new tab)"
 msgstr ""
 
 #: classes/Install.php:323
-#: classes/VuloForm/Templates.php:65
-#: classes/VuloMail/Templates.php:92
+#: classes/Integrations/VuloForm/Templates.php:65
+#: classes/Integrations/VuloMail/Templates.php:92
 #: assets/js/index.js:1
 msgid "Product"
 msgstr ""
@@ -153,19 +153,159 @@ msgid "Subscription form"
 msgstr ""
 
 #. translators: %s: companion plugin slug, e.g. vulomail.
-#: classes/Integrations/PluginInstaller.php:174
+#: classes/Integrations/PluginInstaller.php:191
 #, php-format
 msgid "%s could not be installed."
+msgstr ""
+
+#. translators: %s: error message.
+#: classes/Integrations/VuloForm/Integration.php:47
+#, php-format
+msgid "Notifima could not automatically install the VuloForm plugin needed for subscription forms: %s. Please install and activate \"VuloForm\" manually from the Plugins screen."
+msgstr ""
+
+#: classes/Integrations/VuloForm/Integration.php:79
+msgid "VuloForm is deactivated. Notifima's subscription form will not render on the frontend until you reactivate it."
+msgstr ""
+
+#: classes/Integrations/VuloForm/Integration.php:108
+msgid "Before you deactivate VuloForm, please note:"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Integration.php:109
+msgid "The back-in-stock subscription form on your out-of-stock product pages is powered by VuloForm. If you deactivate it, this form will no longer be displayed, and customers will not be able to subscribe to back-in-stock notifications."
+msgstr ""
+
+#: classes/Integrations/VuloForm/Integration.php:110
+msgid "Do you still want to proceed with deactivating VuloForm?"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Integration.php:111
+msgid "Cancel"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Integration.php:112
+msgid "Deactivate anyway"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:43
+#: classes/Notifima.php:90
+msgid "Notify me"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:47
+msgid "Back in stock notification (Notifima)"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:48
+msgid "Collects an email address to notify a visitor when this product is back in stock."
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:57
+#: assets/js/index.js:1
+msgid "Email"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:58
+#: classes/Notifima.php:87
+msgid "Enter your email"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:59
+msgid "Back in stock notification"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:60
+msgid "Sent to a customer when a product they subscribed to is back in stock."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:62
+#: classes/Integrations/VuloMail/Templates.php:71
+#: classes/Integrations/VuloMail/Templates.php:80
+#: assets/js/index.js:1
+msgid "Subscriptions"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:64
+msgid "Your subscribed product on {site_title} is available now"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:65
+#: classes/Integrations/VuloMail/Templates.php:74
+#: classes/Integrations/VuloMail/Templates.php:83
+msgid "Welcome to {site_title}"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:65
+msgid "Good news! {product_name} is back in stock."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:65
+msgid "This notification was sent to {customer_email}."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:68
+msgid "New subscriber (admin notification)"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:69
+msgid "Sent to the site owner (and vendor, if MultiVendorX is active) when a customer subscribes to an out-of-stock product."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:73
+msgid "A customer has subscribed to a product on {site_title}"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:74
+msgid "Subscribed by {customer_email}."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:77
+#: assets/js/index.js:1
+msgid "Subscription confirmation"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:78
+msgid "Sent to a customer confirming their back-in-stock subscription."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:82
+msgid "You have subscribed to a product on {site_title}"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:83
+msgid "We will email {customer_email} when it is back in stock."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:86
+#: classes/Integrations/VuloMail/Templates.php:92
+msgid "Subscriber report"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:87
+msgid "Periodic report of product subscriptions, sent to the site admin."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:89
+msgid "Reports"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:91
+msgid "Subscriber report ({start_date} - {end_date})"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:92
+#: assets/js/index.js:1
+msgid "Subscribers"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:92
+msgid "Total: {total_subscribers}"
 msgstr ""
 
 #: classes/Notifima.php:85
 #: classes/Notifima.php:86
 msgid "Kindly check your inbox to confirm the subscription."
-msgstr ""
-
-#: classes/Notifima.php:87
-#: classes/VuloForm/Templates.php:58
-msgid "Enter your email"
 msgstr ""
 
 #: classes/Notifima.php:88
@@ -176,11 +316,6 @@ msgstr ""
 #: assets/js/block/subscribe-form/index.js:1
 #: assets/js/index.js:1
 msgid "Unsubscribe"
-msgstr ""
-
-#: classes/Notifima.php:90
-#: classes/VuloForm/Templates.php:43
-msgid "Notify me"
 msgstr ""
 
 #: classes/Notifima.php:91
@@ -228,11 +363,17 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-#: classes/Notifima.php:263
+#. translators: %s: error message.
+#: classes/Notifima.php:201
+#, php-format
+msgid "Notifima could not automatically install the VuloMail plugin needed to deliver its emails: %s. Please install and activate \"VuloMail\" manually from the Plugins screen."
+msgstr ""
+
+#: classes/Notifima.php:273
 msgid "Notifima is currently updating the database in the background. Please be patient while the process completes."
 msgstr ""
 
-#: classes/Notifima.php:269
+#: classes/Notifima.php:279
 msgid "The Notifima is experiencing configuration issues. To ensure proper functioning, kindly deactivate and then activate the plugin."
 msgstr ""
 
@@ -328,175 +469,34 @@ msgstr ""
 msgid "Invalid nonce."
 msgstr ""
 
-#: classes/Utill.php:353
+#: classes/Utill.php:356
 #: assets/js/index.js:1
 msgid "Notification Sent"
 msgstr ""
 
-#: classes/Utill.php:354
+#: classes/Utill.php:357
 #: assets/js/index.js:1
 msgid "Notification Failed"
 msgstr ""
 
-#: classes/Utill.php:355
+#: classes/Utill.php:358
 #: assets/js/index.js:1
 msgid "Subscribed"
 msgstr ""
 
-#: classes/Utill.php:356
+#: classes/Utill.php:359
 #: assets/js/index.js:1
 msgid "Unsubscribed"
 msgstr ""
 
-#: classes/Utill.php:384
+#: classes/Utill.php:387
 #: assets/js/index.js:1
 msgid "Yes"
 msgstr ""
 
-#: classes/Utill.php:384
+#: classes/Utill.php:387
 #: assets/js/index.js:1
 msgid "No"
-msgstr ""
-
-#. translators: %s: error message.
-#: classes/VuloForm/Installer.php:59
-#, php-format
-msgid "Notifima could not automatically install the VuloForm plugin needed for subscription forms: %s. Please install and activate \"VuloForm\" manually from the Plugins screen."
-msgstr ""
-
-#: classes/VuloForm/Installer.php:83
-msgid "VuloForm is deactivated. Notifima's subscription form will not render on the frontend until you reactivate it."
-msgstr ""
-
-#: classes/VuloForm/Installer.php:112
-msgid "Before you deactivate VuloForm, please note:"
-msgstr ""
-
-#: classes/VuloForm/Installer.php:113
-msgid "The back-in-stock subscription form on your out-of-stock product pages is powered by VuloForm. If you deactivate it, this form will no longer be displayed, and customers will not be able to subscribe to back-in-stock notifications."
-msgstr ""
-
-#: classes/VuloForm/Installer.php:114
-msgid "Do you still want to proceed with deactivating VuloForm?"
-msgstr ""
-
-#: classes/VuloForm/Installer.php:115
-msgid "Cancel"
-msgstr ""
-
-#: classes/VuloForm/Installer.php:116
-msgid "Deactivate anyway"
-msgstr ""
-
-#: classes/VuloForm/Templates.php:47
-msgid "Back in stock notification (Notifima)"
-msgstr ""
-
-#: classes/VuloForm/Templates.php:48
-msgid "Collects an email address to notify a visitor when this product is back in stock."
-msgstr ""
-
-#: classes/VuloForm/Templates.php:57
-#: assets/js/index.js:1
-msgid "Email"
-msgstr ""
-
-#. translators: %s: error message.
-#: classes/VuloMail/Installer.php:51
-#, php-format
-msgid "Notifima could not automatically install the VuloMail plugin needed to deliver its emails: %s. Please install and activate \"VuloMail\" manually from the Plugins screen."
-msgstr ""
-
-#: classes/VuloMail/Templates.php:59
-msgid "Back in stock notification"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:60
-msgid "Sent to a customer when a product they subscribed to is back in stock."
-msgstr ""
-
-#: classes/VuloMail/Templates.php:62
-#: classes/VuloMail/Templates.php:71
-#: classes/VuloMail/Templates.php:80
-#: assets/js/index.js:1
-msgid "Subscriptions"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:64
-msgid "Your subscribed product on {site_title} is available now"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:65
-#: classes/VuloMail/Templates.php:74
-#: classes/VuloMail/Templates.php:83
-msgid "Welcome to {site_title}"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:65
-msgid "Good news! {product_name} is back in stock."
-msgstr ""
-
-#: classes/VuloMail/Templates.php:65
-msgid "This notification was sent to {customer_email}."
-msgstr ""
-
-#: classes/VuloMail/Templates.php:68
-msgid "New subscriber (admin notification)"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:69
-msgid "Sent to the site owner (and vendor, if MultiVendorX is active) when a customer subscribes to an out-of-stock product."
-msgstr ""
-
-#: classes/VuloMail/Templates.php:73
-msgid "A customer has subscribed to a product on {site_title}"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:74
-msgid "Subscribed by {customer_email}."
-msgstr ""
-
-#: classes/VuloMail/Templates.php:77
-#: assets/js/index.js:1
-msgid "Subscription confirmation"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:78
-msgid "Sent to a customer confirming their back-in-stock subscription."
-msgstr ""
-
-#: classes/VuloMail/Templates.php:82
-msgid "You have subscribed to a product on {site_title}"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:83
-msgid "We will email {customer_email} when it is back in stock."
-msgstr ""
-
-#: classes/VuloMail/Templates.php:86
-#: classes/VuloMail/Templates.php:92
-msgid "Subscriber report"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:87
-msgid "Periodic report of product subscriptions, sent to the site admin."
-msgstr ""
-
-#: classes/VuloMail/Templates.php:89
-msgid "Reports"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:91
-msgid "Subscriber report ({start_date} - {end_date})"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:92
-#: assets/js/index.js:1
-msgid "Subscribers"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:92
-msgid "Total: {total_subscribers}"
 msgstr ""
 
 #: assets/js/block/stock-notification-block/index.js:1

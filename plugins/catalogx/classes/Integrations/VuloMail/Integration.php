@@ -12,18 +12,11 @@ use CatalogX\Integrations\PluginInstaller;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Wires VuloMail in as the enquiry email's editor, for every CatalogX site. Silently installs and
- * activates the "vulomail" WordPress.org plugin via the shared `PluginInstaller` (also used
- * as-is by `Integrations\VuloForm\Integration` -- no VuloMail-specific installer subclass). The
- * Email Customizer's enquiry email preview reads VuloMail's own public REST API
- * (`vulomail/v1/templates/item`) directly from the browser instead of this plugin registering
- * its own wrapper route for it -- `get_admin_localize_data()` only resolves install state
- * server-side, the same pattern used for the VuloForm integration.
- *
- * Also replaces `WC_Email`/`WC()->mailer()->emails[...]` as how CatalogX actually builds and
- * sends its transactional emails (`send()`) -- subject/content come from VuloMail's own editable
- * copy (`Templates::defaults()` registers them there) when it's active; when it's not, the same
- * defaults are used directly and the email goes out through plain `wp_mail()` instead.
+ * Wires VuloMail in as the enquiry email's editor. Installs VuloMail via the shared
+ * `PluginInstaller`. The Email Customizer's preview reads VuloMail's own REST API directly, so
+ * `get_admin_localize_data()` only resolves install state. Also replaces `WC_Email` as how
+ * CatalogX sends its transactional emails (`send()`), falling back to `wp_mail()` when VuloMail
+ * isn't active.
  */
 class Integration {
 

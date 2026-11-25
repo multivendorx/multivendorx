@@ -12,12 +12,9 @@ use Notifima\Utill;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Silently installs and activates a companion WordPress.org plugin (VuloMail, VuloForm) on an
- * admin page load, if it isn't already active. One shared, concrete class for both -- a caller
- * (`Integrations\VuloForm\Integration`, or the bootstrap directly for VuloMail, which needs no
- * extra behavior of its own) just constructs it with the plugin's slug/class/failure-message
- * instead of each needing its own installer subclass; everything else (attempted/failure option
- * bookkeeping, download/activate, the notice itself) lives here once.
+ * Silently installs/activates a companion plugin (VuloMail, VuloForm) if it isn't already active.
+ * One shared class for both -- construct with the plugin's slug/class/failure-message instead of
+ * a per-plugin installer subclass.
  */
 class PluginInstaller {
 

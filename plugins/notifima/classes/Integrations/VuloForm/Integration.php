@@ -14,18 +14,10 @@ use Notifima\Utill;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Wires VuloForm in as Notifima's subscription form builder, auto-creating the subscription
- * form from Notifima's starter template on first use, since there's no manual picker. Silently
- * installs and activates the "vuloform" WordPress.org plugin via the shared `PluginInstaller`,
- * plus VuloForm-specific admin notices/deactivation-confirm UI that only this plugin needs (no
- * installer subclass -- that extra behavior lives here as this class's own methods instead).
- *
- * No preview REST route here: the Subscription Form Designer settings tab (`zyra`'s
- * `FormPreview`) fetches the form's embed HTML straight from VuloForm's own public, cross-origin
- * `/public/forms/{id}/embed` endpoint -- the same one the frontend subscription form's
- * `VuloFormEmbed` already uses. This class is only responsible for resolving/auto-creating the
- * form id and the install-state check, both localized as plain values via
- * `get_admin_localize_data()` (`FrontendScripts::localize_scripts()`) rather than fetched.
+ * Wires VuloForm in as Notifima's subscription form builder, auto-creating the form from the
+ * starter template on first use. Installs VuloForm via the shared `PluginInstaller`, plus its own
+ * admin notices/deactivation-confirm UI. Resolves/auto-creates the form id and localizes the
+ * install state for the Subscription Form Designer tab's `FormPreview`.
  */
 class Integration {
 

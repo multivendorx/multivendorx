@@ -11,12 +11,9 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Registers CatalogX's transactional emails with VuloMail (`vulomail_email_templates`), so their
- * subject/content are editable there -- the single source of truth `Integration::send()` reads from,
- * instead of a `WC_Email` template file.
- *
- * Every template is plain HTML `content` -- the same fallback used when VuloMail isn't active.
- * VuloMail owns turning that into its own block-based preview/editor; this class never builds a
- * blocks array or renders one to HTML itself.
+ * subject/content are editable there instead of a `WC_Email` template file -- the single source
+ * of truth `Integration::send()` reads from. Each template is plain HTML; VuloMail owns turning
+ * that into its own block-based preview/editor.
  */
 class Templates {
 

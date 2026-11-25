@@ -13,10 +13,9 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * One-time migration of the old block-builder enquiry form fields into a VuloForm form, so a
- * site that already customized its enquiry form keeps those fields instead of starting over
- * from the starter template. Used by the sibling `Integration` class, which hooks
- * `maybe_migrate()` to `admin_init` and calls `ensure_form()` on demand from
- * `get_admin_localize_data()`.
+ * site keeps its customized fields instead of starting over. `maybe_migrate()` is triggered from
+ * `Installer::do_migration()`; `ensure_form()` is also called on demand from the sibling
+ * `Integration::get_admin_localize_data()`.
  */
 class Migration {
 
@@ -48,15 +47,9 @@ class Migration {
     const SKIP_TYPES = array( 'button', 'title', 'section', 'recaptcha', 'custom-recaptcha' );
 
     /**
-     * admin_init-triggered attempt -- just calls the same `ensure_form()` that
-     * `Integrations\VuloForm\Integration::get_admin_localize_data()` calls on demand, so a site
-     * gets its form migrated even if the admin never opens the Enquiry Form settings tab. Sharing
-     * one method is what matters here, not which trigger runs it first: both `admin_init` (this)
-     * and the settings tab's own `appLocalizer` resolution (the other caller) can plausibly fire
-     * first depending on the admin's own navigation, and whichever does must reach the same
-     * decision -- migrate the legacy fields if there are any, otherwise fall back to the starter
-     * template -- or whichever runs first "wins" with the wrong form and the real migration
-     * never gets a second chance.
+     * Run once per site (version-gated from `Installer::do_migration()`). Calls the same
+     * `ensure_form()` that `Integration::get_admin_localize_data()` calls on demand, so the form
+     * still migrates even if the admin never opens the Enquiry Form settings tab.
      *
      * @return void
      */
@@ -76,11 +69,8 @@ class Migration {
     }
 
     /**
-     * The form to use: whichever is already configured, a site's legacy enquiry-form fields
-     * migrated across, or -- if there's nothing to migrate -- a fresh one from the starter
-     * template. Safe to call from multiple places (`maybe_migrate()`'s own `admin_init` check and
-     * `Integrations\VuloForm\Integration::get_admin_localize_data()`'s on-demand resolution)
-     * since it only ever creates a form when none is configured yet.
+     * The form to use: whichever is already configured, legacy fields migrated across, or a
+     * fresh one from the starter template. Only ever creates a form when none is configured yet.
      *
      * @return int 0 on failure.
      */
@@ -122,14 +112,9 @@ class Migration {
     }
 
     /**
-     * The real, free-tier-editable field list is `free_enquiry_form` -- toggled on/off per field
-     * via the (now-retired) Settings UI, with phone/address/subject/comment/fileupload/captcha as
-     * real possibilities alongside name/email. `enquiry_form_builder.formfieldlist` looks similar
-     * but is CatalogX Pro's drag-and-drop builder: on a free-tier site it never moves from its
-     * hardcoded name/email placeholder defaults (both `not_editable`), so reading it instead of
-     * `free_enquiry_form` silently drops everything the site owner actually configured. Only fall
-     * back to the builder list when there's truly nothing in the free form to migrate -- that
-     * covers a Pro site whose owner only ever touched the builder.
+     * `free_enquiry_form` is the real, free-tier-editable field list. `enquiry_form_builder.
+     * formfieldlist` is CatalogX Pro's builder, which never moves from its hardcoded defaults on
+     * a free-tier site -- only fall back to it when there's truly nothing in the free form.
      *
      * @return array
      */
@@ -161,9 +146,9 @@ class Migration {
 
     /**
      * Maps the old block-builder field list shape ({id, type, label, required?, placeholder?,
-     * name, options?}) to a VuloForm form schema. CatalogX Pro's wholesale migration
-     * (`CatalogXPro\Integrations\VuloForm\Migration::schema_from_old_fields()`) keeps its own copy rather than
-     * depending on this one across the PSR-4 plugin boundary.
+     * name, options?}) to a VuloForm form schema. CatalogX Pro keeps its own copy of this
+     * (`Integrations\VuloForm\Migration`) rather than depending on this one across the plugin
+     * boundary.
      *
      * @param array  $old_fields   The old `formfieldlist` array.
      * @param string $submit_label Fallback submit button label (a 'button' entry overrides it).
