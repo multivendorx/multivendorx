@@ -80,8 +80,5 @@
     "wireit": "^0.14.12",
     "wp-readme-to-markdown": "^1.0.1",
     "wp-textdomain": "^1.0.1"
-  },
-  "dependencies": {
-    "@multivendorx/zyra": "link:../../zyra/packages/bundle"
   }
 }
