@@ -8,7 +8,7 @@
 namespace CatalogX\Enquiry;
 
 use CatalogX\Utill;
-use CatalogX\VuloMail\Mailer;
+use CatalogX\VuloMail\Integration as VuloMailIntegration;
 use CatalogX\VuloMail\Templates as VuloMailTemplates;
 
 /**
@@ -278,7 +278,7 @@ class Rest {
                 $reply_to_email = sanitize_email( (string) $enquiry_data['user_email'] );
                 $reply_to       = is_email( $reply_to_email ) ? 'Reply-to: ' . $reply_to_name . ' <' . $reply_to_email . '>' : '';
 
-                Mailer::send(
+                VuloMailIntegration::send(
                     VuloMailTemplates::ENQUIRY,
                     $additional_email,
                     array(

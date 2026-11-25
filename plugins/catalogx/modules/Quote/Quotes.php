@@ -8,7 +8,7 @@
 namespace CatalogX\Quote;
 
 use CatalogX\Utill;
-use CatalogX\VuloMail\Mailer;
+use CatalogX\VuloMail\Integration as VuloMailIntegration;
 use CatalogX\VuloMail\Templates as VuloMailTemplates;
 
 defined( 'ABSPATH' ) || exit;
@@ -159,7 +159,7 @@ class Quotes extends \WP_REST_Controller {
                 );
             }
 
-            Mailer::send(
+            VuloMailIntegration::send(
                 VuloMailTemplates::QUOTE_REQUEST,
                 CatalogX()->setting->get_setting( 'additional_alert_email' ),
                 array(

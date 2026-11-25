@@ -1,6 +1,6 @@
 /* global appLocalizer */
 import React from 'react';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { FormPreview, useVuloFormPreview } from 'zyra';
 
 /** Settings → Subscription Form Designer: a preview of the VuloForm subscription form. */
@@ -33,9 +33,13 @@ const VuloFormPanel: React.FC = () => {
 			activateLabel={__('Activate VuloForm', 'notifima')}
 			installLabel={__('Install VuloForm', 'notifima')}
 			editLabel={__('Edit form', 'notifima')}
-			noticeText={__(
-				'This form is editable in VuloForm. Use Edit form to change its fields and settings. Changes show here after you save the form and reload this page.',
-				'notifima'
+			noticeText={sprintf(
+				/* translators: %s: VuloForm link. */
+				__(
+					'This form is editable in %s. Use Edit form to change its fields and settings. Changes show here after you save the form and reload this page.',
+					'notifima'
+				),
+				'<a href="https://wordpress.org/plugins/vuloform/" target="_blank" rel="noopener noreferrer"><strong>VuloForm</strong></a>'
 			)}
 		/>
 	);

@@ -7,7 +7,7 @@
 
 namespace CatalogX\Enquiry;
 
-use CatalogX\VuloMail\Mailer;
+use CatalogX\VuloMail\Integration as VuloMailIntegration;
 use CatalogX\VuloMail\Templates as VuloMailTemplates;
 
 defined( 'ABSPATH' ) || exit;
@@ -149,7 +149,7 @@ class Cron {
 			);
 		}
 
-		Mailer::send(
+		VuloMailIntegration::send(
 			VuloMailTemplates::ENQUIRY_REPORT,
 			get_option( 'admin_email' ),
 			array(

@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-25T07:01:18+00:00\n"
+"POT-Creation-Date: 2026-11-25T10:35:39+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: notifima\n"
@@ -272,6 +272,23 @@ msgstr ""
 msgid "Customer email is required."
 msgstr ""
 
+#. translators: %d: page number.
+#. translators: %s: field label.
+#. translators: %d: number of choices.
+#. translators: %s: field label, such as Quantity.
+#. translators: 1: parts shown, 2: parts available.
+#. translators: %d: number of fields in one row.
+#. translators: %s: name of a notification or webhook.
+#. translators: 1: a rule such as: Subject is "Sales". 2: "a message" or "another page".
+#. translators: 1: a rule such as: Subject is "Sales". 2: number of further rules.
+#. translators: %s: the site's admin email address.
+#. translators: 1: email address, 2: phone number.
+#. translators: %s: phone number or placeholder.
+#. translators: 1: number of exceptions. 2: the most a form can have.
+#. translators: %d: number of the exception.
+#. translators: %s: name of the exception, such as: Exception 1.
+#. translators: %s: web address.
+#. translators: %d: number of problems.
 #: classes/RestAPI/Controllers/Subscribers.php:363
 #: assets/js/block/subscribe-form/index.js:1
 msgid "Something went wrong. Please try again."
@@ -536,6 +553,23 @@ msgstr ""
 msgid "Notify Me"
 msgstr ""
 
+#. translators: %d: page number.
+#. translators: %s: field label.
+#. translators: %d: number of choices.
+#. translators: %s: field label, such as Quantity.
+#. translators: 1: parts shown, 2: parts available.
+#. translators: %d: number of fields in one row.
+#. translators: %s: name of a notification or webhook.
+#. translators: 1: a rule such as: Subject is "Sales". 2: "a message" or "another page".
+#. translators: 1: a rule such as: Subject is "Sales". 2: number of further rules.
+#. translators: %s: the site's admin email address.
+#. translators: 1: email address, 2: phone number.
+#. translators: %s: phone number or placeholder.
+#. translators: 1: number of exceptions. 2: the most a form can have.
+#. translators: %d: number of the exception.
+#. translators: %s: name of the exception, such as: Exception 1.
+#. translators: %s: web address.
+#. translators: %d: number of problems.
 #: assets/js/index.js:1
 msgid "Double Opt-in"
 msgstr ""
@@ -1176,6 +1210,10 @@ msgid "This message is shown once the unsubscribe request has been completed suc
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "The subscription form could not be loaded."
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Enable VuloForm"
 msgstr ""
 
@@ -1197,10 +1235,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "This form is editable in VuloForm. Use Edit form to change its fields and settings. Changes show here after you save the form and reload this page."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "The subscription form could not be loaded."
 msgstr ""
 
 #: assets/js/index.js:1
