@@ -18,3 +18,5 @@ onlyBuiltDependencies:
   - '@parcel/watcher'
   - fs-ext-extra-prebuilt
   - unrs-resolver
+overrides:
+  '@multivendorx/zyra': link:../../zyra/packages/bundle

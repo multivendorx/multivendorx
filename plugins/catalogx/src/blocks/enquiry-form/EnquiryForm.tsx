@@ -1,7 +1,7 @@
 /* global enquiryFormData */
 import './EnquiryForm.scss';
 import { __ } from '@wordpress/i18n';
-import VuloFormEmbed from './VuloFormEmbed';
+import { VuloFormEmbed } from 'zyra';
 
 const EnquiryForm = () => {
     const formData = enquiryFormData;
@@ -43,9 +43,14 @@ const EnquiryForm = () => {
                 <VuloFormEmbed
                     formId={formData.vuloform_form_id}
                     apiUrl={formData.apiUrl}
-                    productId={productId}
-                    quantity={quantity}
-                    userId={formData.current_user_id ? String(formData.current_user_id) : ''}
+                    className="catalogx-vuloform-embed"
+                    fieldValues={{
+                        product_id: productId,
+                        quantity,
+                        user_id: formData.current_user_id
+                            ? String(formData.current_user_id)
+                            : undefined,
+                    }}
                     onSubmitted={() => {
                         if (formData.redirect_url) {
                             window.location.href = formData.redirect_url;
