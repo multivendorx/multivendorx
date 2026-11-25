@@ -26,12 +26,12 @@ class SubmissionBridge {
     }
 
     /**
-     * @param int   $_submission_id VuloForm submission id (unused -- matching is on form id).
+     * @param int   $submission_id VuloForm submission id (unused -- matching is on form id).
      * @param array $values         Field key => submitted value.
      * @param array $form           The VuloForm form (id, title, status, schema, ...).
      * @return void
      */
-    public function maybe_register_store( $_submission_id, $values, $form ) {
+    public function maybe_register_store( $submission_id, $values, $form ) {
         $configured_form_id = (int) MultiVendorX()->setting->get_setting( 'vuloform_store_registration_form_id', 0 );
 
         if ( ! $configured_form_id || $configured_form_id !== (int) $form['id'] ) {

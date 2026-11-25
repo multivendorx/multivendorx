@@ -82,12 +82,12 @@ class Integration {
     }
 
     /**
-     * @param int   $_submission_id VuloForm submission id (unused -- matching is on form id).
+     * @param int   $submission_id VuloForm submission id (unused -- matching is on form id).
      * @param array $values         Field key => submitted value.
      * @param array $form           The VuloForm form (id, title, status, schema, ...).
      * @return void
      */
-    public function maybe_create_enquiry( $_submission_id, $values, $form ) {
+    public function maybe_create_enquiry( $submission_id, $values, $form ) {
         $configured_form_id = (int) CatalogX()->setting->get_setting( 'vuloform_enquiry_form_id', 0 );
 
         if ( ! $configured_form_id || $configured_form_id !== (int) $form['id'] ) {
