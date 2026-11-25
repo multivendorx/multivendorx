@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { getApiLink } from '@zyra/core';
 import { __ } from '@wordpress/i18n';
-import VuloFormEmbed from './VuloFormEmbed';
+import { VuloFormEmbed } from 'zyra';
 
 interface SubscribeFormProps {
     productId: number;
@@ -177,9 +177,12 @@ const SubscribeForm: React.FC<SubscribeFormProps> = ({
                 <VuloFormEmbed
                     formId={vuloformFormId}
                     apiUrl={subscription.apiUrl}
-                    productId={variationId > 0 ? variationId : productId}
+                    queryParams={{
+                        product_id: variationId > 0 ? variationId : productId,
+                    }}
                     nonce={subscription.nonce}
                     onBeforeSubmit={onVuloFormBeforeSubmit}
+                    className="notifima-vuloform-embed"
                 />
             )}
 
