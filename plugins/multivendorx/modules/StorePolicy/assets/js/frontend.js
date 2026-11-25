@@ -1,8 +1,9 @@
 /* global jQuery */
 
 jQuery(document).ready(function ($) {
-	$('.multivendorx-policies-accordion .accordion-header').on(
+	$(document).on(
 		'click',
+		'.multivendorx-policies-accordion .accordion-header',
 		function () {
 			var $currentItem = $(this).closest('.accordion-item');
 			var $currentBody = $currentItem.find('.accordion-body');

@@ -56,7 +56,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 	const { modules } = useModules();
 	const [formData, setFormData] = useState<StoreSquadFormData>({});
 	const [showPrimaryOwnerSelect, setShowPrimaryOwnerSelect] =
-		useState<boolean>(true);
+		useState<boolean>(false);
 	const [selectedOwnerInfo, setSelectedOwnerInfo] =
 		useState<StoreOwner | null>(null);
 	const [showAdditionalOwnerSelect, setShowAdditionalOwnerSelect] =
@@ -281,9 +281,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 														'multivendorx'
 													),
 													onClick: () =>
-														setShowPrimaryOwnerSelect(
-															true
-														),
+														setShowPrimaryOwnerSelect((prev) => !prev),
 													color: 'blue',
 													icon: 'switch-store',
 												},
