@@ -258,7 +258,8 @@ jQuery(document).ready(function ($) {
 		});
 	});
 
-	// Initial Load
-	loadAverageRatings();
-	loadReviews();
+	$(document).ready(function () {
+		loadAverageRatings();
+		loadReviews();
+	});
 });
