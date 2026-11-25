@@ -768,7 +768,9 @@ class Stores extends \WP_REST_Controller {
             );
 
             foreach ( (array) $store->meta_data as $key => $values ) {
-                $response[ $key ] = $values;
+                if ( ! array_key_exists( $key, $response ) ) {
+                    $response[ $key ] = $values;
+                }
             }
 
             return rest_ensure_response( $response );
