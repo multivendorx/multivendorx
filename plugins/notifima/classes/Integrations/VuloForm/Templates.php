@@ -5,7 +5,7 @@
  * @package Notifima
  */
 
-namespace Notifima\VuloForm;
+namespace Notifima\Integrations\VuloForm;
 
 defined( 'ABSPATH' ) || exit;
 

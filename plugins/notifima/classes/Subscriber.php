@@ -165,8 +165,8 @@ class Subscriber {
         do_action( 'notifima_send_product_notification', $product->get_id() );
 
         foreach ( $product_subscribers as $subscribe_id => $to ) {
-            $sent = VuloMail\Mailer::send(
-                VuloMail\Templates::PRODUCT_BACK_IN_STOCK,
+            $sent = Integrations\VuloMail\Integration::send(
+                Integrations\VuloMail\Templates::PRODUCT_BACK_IN_STOCK,
                 $to,
                 array(
                     '{site_title}'     => get_bloginfo( 'name' ),
@@ -436,11 +436,11 @@ class Subscriber {
 
         // Trigger the additional email.
         if ( ! empty( $additional_email ) ) {
-            VuloMail\Mailer::send( VuloMail\Templates::ADMIN_NEW_SUBSCRIBER, $additional_email, $merge_tags );
+            Integrations\VuloMail\Integration::send( Integrations\VuloMail\Templates::ADMIN_NEW_SUBSCRIBER, $additional_email, $merge_tags );
         }
 
         // Trigger customer email.
-        VuloMail\Mailer::send( VuloMail\Templates::SUBSCRIBER_CONFIRMATION, $customer_email, $merge_tags );
+        Integrations\VuloMail\Integration::send( Integrations\VuloMail\Templates::SUBSCRIBER_CONFIRMATION, $customer_email, $merge_tags );
     }
 
     /**

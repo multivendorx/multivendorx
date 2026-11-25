@@ -8,8 +8,8 @@
 namespace CatalogX\Enquiry;
 
 use CatalogX\Utill;
-use CatalogX\VuloMail\Integration as VuloMailIntegration;
-use CatalogX\VuloMail\Templates as VuloMailTemplates;
+use CatalogX\Integrations\VuloMail\Integration as VuloMailIntegration;
+use CatalogX\Integrations\VuloMail\Templates as VuloMailTemplates;
 
 /**
  * CatalogX Enquiry Module Rest class

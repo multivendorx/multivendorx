@@ -13,35 +13,35 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Silently installs and activates a companion WordPress.org plugin (VuloMail, VuloForm) on an
- * admin page load, if it isn't already active. Shared by `VuloMail\Installer` and
- * `VuloForm\Installer` -- a subclass names the plugin and supplies the failure notice text;
- * everything else (attempted/failure option bookkeeping, download/activate, the notice itself)
- * lives here once.
+ * admin page load, if it isn't already active. One shared, concrete class for both -- a caller
+ * (`Integrations\VuloForm\Integration`, or the bootstrap directly for VuloMail, which needs no
+ * extra behavior of its own) just constructs it with the plugin's slug/class/failure-message
+ * instead of each needing its own installer subclass; everything else (attempted/failure option
+ * bookkeeping, download/activate, the notice itself) lives here once.
  */
-abstract class PluginInstaller {
+class PluginInstaller {
 
     /**
      * The companion's wordpress.org slug, e.g. 'vulomail'.
      *
-     * @return string
+     * @var string
      */
-    abstract protected function get_plugin_slug();
+    private $plugin_slug;
 
     /**
      * The companion's fully-qualified main class, e.g. '\VuloMail\VuloMail'. Used as the "is it
      * active" check -- its classes only autoload while active.
      *
-     * @return string
+     * @var string
      */
-    abstract protected function get_plugin_class();
+    private $plugin_class;
 
     /**
-     * Translated failure notice text, with $error_message included.
+     * Builds the translated failure notice text from an error message.
      *
-     * @param string $error_message The install/activation failure message.
-     * @return string
+     * @var callable
      */
-    abstract protected function get_failure_message( $error_message );
+    private $failure_message;
 
     /**
      * Option recording that an install attempt was made, so a failure is not retried forever.
@@ -49,7 +49,7 @@ abstract class PluginInstaller {
      * @return string
      */
     protected function get_attempted_option() {
-        return 'notifima_' . $this->get_plugin_slug() . '_install_attempted';
+        return 'notifima_' . $this->plugin_slug . '_install_attempted';
     }
 
     /**
@@ -58,13 +58,30 @@ abstract class PluginInstaller {
      * @return string
      */
     protected function get_failure_option() {
-        return 'notifima_' . $this->get_plugin_slug() . '_install_failed';
+        return 'notifima_' . $this->plugin_slug . '_install_failed';
+    }
+
+    /**
+     * Whether the companion is active -- its classes only autoload while active.
+     *
+     * @return bool
+     */
+    public function is_installed() {
+        return class_exists( $this->plugin_class );
     }
 
     /**
      * PluginInstaller constructor.
+     *
+     * @param string   $plugin_slug     The companion's wordpress.org slug, e.g. 'vulomail'.
+     * @param string   $plugin_class    The companion's fully-qualified main class, e.g. '\VuloMail\VuloMail'.
+     * @param callable $failure_message Translated failure notice text builder: `function( string $error_message ): string`.
      */
-    public function __construct() {
+    public function __construct( $plugin_slug, $plugin_class, callable $failure_message ) {
+        $this->plugin_slug     = $plugin_slug;
+        $this->plugin_class    = $plugin_class;
+        $this->failure_message = $failure_message;
+
         add_action( 'admin_init', array( $this, 'maybe_install' ) );
         add_action( 'admin_notices', array( $this, 'installation_failed_notice' ) );
     }
@@ -76,7 +93,7 @@ abstract class PluginInstaller {
      * @return void
      */
     public function maybe_install() {
-        if ( class_exists( $this->get_plugin_class() ) ) {
+        if ( class_exists( $this->plugin_class ) ) {
             delete_option( $this->get_failure_option() );
             return;
         }
@@ -107,10 +124,10 @@ abstract class PluginInstaller {
      *
      * @return string
      */
-    protected function installed_plugin_file() {
+    public function installed_plugin_file() {
         require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-        $main_file = $this->get_plugin_slug() . '.php';
+        $main_file = $this->plugin_slug . '.php';
 
         foreach ( array_keys( get_plugins() ) as $plugin_file ) {
             if ( basename( $plugin_file ) === $main_file ) {
@@ -152,7 +169,7 @@ abstract class PluginInstaller {
         $api = plugins_api(
             'plugin_information',
             array(
-                'slug'   => $this->get_plugin_slug(),
+                'slug'   => $this->plugin_slug,
                 'fields' => array( 'sections' => false ),
             )
         );
@@ -171,7 +188,7 @@ abstract class PluginInstaller {
             $message = is_wp_error( $result )
                 ? $result->get_error_message()
                 /* translators: %s: companion plugin slug, e.g. vulomail. */
-                : sprintf( __( '%s could not be installed.', 'notifima' ), $this->get_plugin_slug() );
+                : sprintf( __( '%s could not be installed.', 'notifima' ), $this->plugin_slug );
 
             update_option( $this->get_failure_option(), $message );
             Utill::log( $result );
@@ -198,7 +215,7 @@ abstract class PluginInstaller {
         }
         ?>
         <div class="notice notice-warning is-dismissible">
-            <p><?php echo esc_html( $this->get_failure_message( $message ) ); ?></p>
+            <p><?php echo esc_html( call_user_func( $this->failure_message, $message ) ); ?></p>
         </div>
         <?php
     }

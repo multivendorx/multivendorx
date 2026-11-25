@@ -1,11 +1,11 @@
 <?php
 /**
- * Mailer class file.
+ * Integration class file.
  *
  * @package Notifima
  */
 
-namespace Notifima\VuloMail;
+namespace Notifima\Integrations\VuloMail;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  * (`Templates::defaults()` registers them there) when it's active; when it's not, the same
  * defaults are used directly and the email goes out through plain `wp_mail()` instead.
  */
-class Mailer {
+class Integration {
 
     /**
      * @param string $name    `plugin/name` registered in `Templates::defaults()`.

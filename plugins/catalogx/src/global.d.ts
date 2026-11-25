@@ -51,6 +51,8 @@ declare global {
         vuloform_enquiry: VuloFormAdminData;
         /** VuloForm's install state/form id for the Wholesale registration settings tab (CatalogX Pro only). */
         vuloform_wholesale?: VuloFormAdminData;
+        /** VuloMail's install state/template name for the Email Customizer's enquiry email tab. */
+        vulomail_enquiry: VuloMailAdminData;
     }
 
     interface VuloFormAdminData {
@@ -58,6 +60,15 @@ declare global {
         plugin_url: string;
         can_activate: boolean;
         form_id: number;
+    }
+
+    interface VuloMailAdminData {
+        installed: boolean;
+        plugin_url: string;
+        available: boolean;
+        edit_url: string;
+        /** VuloMail template name, e.g. `catalogx/enquiry`. */
+        template_name: string;
     }
 
     interface EnquiryFormData {

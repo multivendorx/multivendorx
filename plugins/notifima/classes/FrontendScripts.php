@@ -149,7 +149,7 @@ class FrontendScripts {
     /**
      * Registers, enqueues and localizes the main admin bundle ("notifima-admin-script", built
      * from `src/index.tsx`) -- shared by every admin screen that mounts any part of it
-     * (Admin::enqueue_admin_assets(), VuloForm\Installer::enqueue_deactivation_confirm_assets()).
+     * (Admin::enqueue_admin_assets(), Integrations\VuloForm\Integration::enqueue_deactivation_confirm_assets()).
      *
      * @return void
      */
@@ -300,7 +300,7 @@ class FrontendScripts {
                             )
                         ),
                         'vulomail'      => self::get_vulomail_data(),
-                        'vuloform'      => \Notifima\VuloForm\Integration::get_admin_localize_data(),
+                        'vuloform'      => \Notifima\Integrations\VuloForm\Integration::get_admin_localize_data(),
 					),
                 ),
                 'notifima-subscribe-form' => array(

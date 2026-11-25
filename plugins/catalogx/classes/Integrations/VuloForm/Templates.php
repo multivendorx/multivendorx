@@ -5,7 +5,7 @@
  * @package CatalogX
  */
 
-namespace CatalogX\VuloForm;
+namespace CatalogX\Integrations\VuloForm;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -183,8 +183,8 @@ final class CatalogX {
 
         $this->services['block']           = new Block();
         $this->services['frontendscripts'] = new FrontendScripts();
-        $this->services['vuloform']        = new VuloForm\Integration();
-        $this->services['vulomail']        = new VuloMail\Integration();
+        $this->services['vuloform']        = new Integrations\VuloForm\Integration();
+        $this->services['vulomail']        = new Integrations\VuloMail\Integration();
         $this->initialize_catalogx_log();
 
         do_action( 'catalogx_loaded' );

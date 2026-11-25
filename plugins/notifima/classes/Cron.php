@@ -139,8 +139,8 @@ class Cron {
             );
         }
 
-        VuloMail\Mailer::send(
-            VuloMail\Templates::SUBSCRIBER_REPORT,
+        Integrations\VuloMail\Integration::send(
+            Integrations\VuloMail\Templates::SUBSCRIBER_REPORT,
             get_option( 'admin_email' ),
             array(
                 '{start_date}'        => wp_date( 'Y-m-d H:i:s', $start_date ),

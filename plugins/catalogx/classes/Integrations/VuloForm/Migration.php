@@ -1,24 +1,24 @@
 <?php
 /**
- * Installer class file.
+ * Migration class file.
  *
  * @package CatalogX
  */
 
-namespace CatalogX\VuloForm;
+namespace CatalogX\Integrations\VuloForm;
 
-use CatalogX\Integrations\PluginInstaller;
 use CatalogX\Utill;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Silently installs and activates the "vuloform" WordPress.org plugin on an admin page load,
- * if it isn't already active, and runs the one-time migration of the old block-builder enquiry
- * form fields into a VuloForm form, so a site that already customized its enquiry form keeps
- * those fields instead of starting over from the starter template.
+ * One-time migration of the old block-builder enquiry form fields into a VuloForm form, so a
+ * site that already customized its enquiry form keeps those fields instead of starting over
+ * from the starter template. Used by the sibling `Integration` class, which hooks
+ * `maybe_migrate()` to `admin_init` and calls `ensure_form()` on demand from
+ * `get_admin_localize_data()`.
  */
-class Installer extends PluginInstaller {
+class Migration {
 
     const MIGRATED_OPTION = 'catalogx_vuloform_enquiry_migrated';
 
@@ -48,59 +48,19 @@ class Installer extends PluginInstaller {
     const SKIP_TYPES = array( 'button', 'title', 'section', 'recaptcha', 'custom-recaptcha' );
 
     /**
-     * Installer constructor.
-     */
-    public function __construct() {
-        parent::__construct();
-
-        add_action( 'admin_init', array( $this, 'maybe_migrate' ) );
-    }
-
-    /**
-     * VuloForm's wordpress.org slug.
-     *
-     * @return string
-     */
-    protected function get_plugin_slug() {
-        return 'vuloform';
-    }
-
-    /**
-     * VuloForm's main class.
-     *
-     * @return string
-     */
-    protected function get_plugin_class() {
-        return '\VuloForm\VuloForm';
-    }
-
-    /**
-     * Translated failure notice text for VuloForm.
-     *
-     * @param string $error_message The install/activation failure message.
-     * @return string
-     */
-    protected function get_failure_message( $error_message ) {
-        return sprintf(
-            /* translators: %s: error message. */
-            __( 'CatalogX could not automatically install the VuloForm plugin needed for its forms: %s. Please install and activate "VuloForm" manually from the Plugins screen.', 'catalogx' ),
-            $error_message
-        );
-    }
-
-    /**
-     * admin_init-triggered attempt -- just calls the same `ensure_form()` that `Integration`'s
-     * preview route calls on demand, so a site gets its form migrated even if the admin never
-     * opens the Enquiry Form settings tab. Sharing one method is what matters here, not which
-     * trigger runs it first: both `admin_init` (this) and `rest_api_init` (the preview panel's
-     * fetch) can plausibly fire first depending on the admin's own navigation, and whichever does
-     * must reach the same decision -- migrate the legacy fields if there are any, otherwise fall
-     * back to the starter template -- or whichever runs first "wins" with the wrong form and the
-     * real migration never gets a second chance.
+     * admin_init-triggered attempt -- just calls the same `ensure_form()` that
+     * `Integrations\VuloForm\Integration::get_admin_localize_data()` calls on demand, so a site
+     * gets its form migrated even if the admin never opens the Enquiry Form settings tab. Sharing
+     * one method is what matters here, not which trigger runs it first: both `admin_init` (this)
+     * and the settings tab's own `appLocalizer` resolution (the other caller) can plausibly fire
+     * first depending on the admin's own navigation, and whichever does must reach the same
+     * decision -- migrate the legacy fields if there are any, otherwise fall back to the starter
+     * template -- or whichever runs first "wins" with the wrong form and the real migration
+     * never gets a second chance.
      *
      * @return void
      */
-    public function maybe_migrate() {
+    public static function maybe_migrate() {
         if ( get_option( self::MIGRATED_OPTION ) ) {
             return;
         }
@@ -112,29 +72,29 @@ class Installer extends PluginInstaller {
         // Only ever attempted once.
         update_option( self::MIGRATED_OPTION, time() );
 
-        $this->ensure_form();
+        self::ensure_form();
     }
 
     /**
      * The form to use: whichever is already configured, a site's legacy enquiry-form fields
      * migrated across, or -- if there's nothing to migrate -- a fresh one from the starter
-     * template. Safe to call from multiple places (this class's own `admin_init` check and
-     * `Integration`'s on-demand preview) since it only ever creates a form when none is configured
-     * yet.
+     * template. Safe to call from multiple places (`maybe_migrate()`'s own `admin_init` check and
+     * `Integrations\VuloForm\Integration::get_admin_localize_data()`'s on-demand resolution)
+     * since it only ever creates a form when none is configured yet.
      *
      * @return int 0 on failure.
      */
-    public function ensure_form() {
+    public static function ensure_form() {
         $form_id = (int) CatalogX()->setting->get_setting( 'vuloform_enquiry_form_id', 0 );
 
         if ( $form_id && vuloform_get_form( $form_id ) ) {
             return $form_id;
         }
 
-        $old_fields = $this->old_fields();
+        $old_fields = self::old_fields();
 
         if ( $old_fields ) {
-            $schema  = $this->schema_from_old_fields( $old_fields, __( 'Send enquiry', 'catalogx' ), Templates::infrastructure_fields() );
+            $schema  = self::schema_from_old_fields( $old_fields, __( 'Send enquiry', 'catalogx' ), Templates::infrastructure_fields() );
             $form_id = (int) VuloForm()->forms->create( __( 'Enquiry form', 'catalogx' ), $schema, 'published' );
         } elseif ( class_exists( '\VuloForm\Forms\Templates' ) ) {
             $templates = \VuloForm\Forms\Templates::all();
@@ -173,7 +133,7 @@ class Installer extends PluginInstaller {
      *
      * @return array
      */
-    private function old_fields() {
+    private static function old_fields() {
         $settings = CatalogX()->setting->get_option( Utill::CATALOGX_SETTINGS['enquiry-form-customization'], array() );
         $tabs     = $settings['enquiry_form_tabs'] ?? array();
 
@@ -202,7 +162,7 @@ class Installer extends PluginInstaller {
     /**
      * Maps the old block-builder field list shape ({id, type, label, required?, placeholder?,
      * name, options?}) to a VuloForm form schema. CatalogX Pro's wholesale migration
-     * (`CatalogXPro\VuloForm\Migration::schema_from_old_fields()`) keeps its own copy rather than
+     * (`CatalogXPro\Integrations\VuloForm\Migration::schema_from_old_fields()`) keeps its own copy rather than
      * depending on this one across the PSR-4 plugin boundary.
      *
      * @param array  $old_fields   The old `formfieldlist` array.
@@ -212,7 +172,7 @@ class Installer extends PluginInstaller {
      *                             legacy field list never had anything equivalent to convert.
      * @return array Sanitized VuloForm schema ({version, fields, settings}).
      */
-    private function schema_from_old_fields( array $old_fields, $submit_label, array $extra_fields = array() ) {
+    private static function schema_from_old_fields( array $old_fields, $submit_label, array $extra_fields = array() ) {
         $fields = array();
 
         foreach ( $old_fields as $old_field ) {
@@ -229,7 +189,7 @@ class Installer extends PluginInstaller {
                 continue;
             }
 
-            $fields[] = $this->mapped_field( $old_field, $type );
+            $fields[] = self::mapped_field( $old_field, $type );
         }
 
         foreach ( $extra_fields as $extra_field ) {
@@ -253,7 +213,7 @@ class Installer extends PluginInstaller {
      * @param string $type      Old field type.
      * @return array VuloForm field.
      */
-    private function mapped_field( array $old_field, $type ) {
+    private static function mapped_field( array $old_field, $type ) {
         $field = array(
             'type'     => self::TYPE_MAP[ $type ] ?? 'text',
             'key'      => sanitize_key( (string) ( $old_field['name'] ?? $old_field['id'] ?? '' ) ),

@@ -5,7 +5,7 @@
  * @package Notifima
  */
 
-namespace Notifima\VuloMail;
+namespace Notifima\Integrations\VuloMail;
 
 defined( 'ABSPATH' ) || exit;
 

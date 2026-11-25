@@ -191,9 +191,19 @@ class Notifima {
         $this->container['block']           = new Block();
         $this->container['frontendScripts'] = new FrontendScripts();
         $this->container['communications']    = new Communications();
-        $this->container['vuloform']        = new VuloForm\Integration();
-        $this->container['vulomail']        = new VuloMail\Installer();
-        $this->container['vulomailTemplates'] = new VuloMail\Templates();
+        $this->container['vuloform']        = new Integrations\VuloForm\Integration();
+        $this->container['vulomail']        = new Integrations\PluginInstaller(
+            'vulomail',
+            '\VuloMail\VuloMail',
+            static function ( $error_message ) {
+                return sprintf(
+                    /* translators: %s: error message. */
+                    __( 'Notifima could not automatically install the VuloMail plugin needed to deliver its emails: %s. Please install and activate "VuloMail" manually from the Plugins screen.', 'notifima' ),
+                    $error_message
+                );
+            }
+        );
+        $this->container['vulomailTemplates'] = new Integrations\VuloMail\Templates();
         $this->container['cron']            = new Cron();
     }
 

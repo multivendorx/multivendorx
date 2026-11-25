@@ -5,7 +5,7 @@
  * @package CatalogX
  */
 
-namespace CatalogX\VuloMail;
+namespace CatalogX\Integrations\VuloMail;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -8,7 +8,7 @@
 namespace Notifima\RestAPI\Controllers;
 
 use Notifima\Utill;
-use Notifima\VuloMail\Templates as VuloMailTemplates;
+use Notifima\Integrations\VuloMail\Templates as VuloMailTemplates;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -145,7 +145,7 @@ class Dashboard extends \WP_REST_Controller {
 	 * What the setup checklist needs beyond the counts: whether the back-in-stock email is on (and where to change it),
 	 * and whether the subscription form has been customized.
 	 *
-	 * The back-in-stock email is no longer a `WC_Email` (see `VuloMail\Mailer`/`VuloMail\Templates`)
+	 * The back-in-stock email is no longer a `WC_Email` (see `Integrations\VuloMail\Integration`/`Integrations\VuloMail\Templates`)
 	 * -- "enabled" and "where to manage it" now come from VuloMail's own template registry instead
 	 * of `WC()->mailer()->get_emails()`.
 	 *

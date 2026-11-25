@@ -480,7 +480,8 @@ class FrontendScripts {
 								)
 							),
                             'email_tags'               => Utill::get_tags_enquiry_form(),
-                            'vuloform_enquiry'         => \CatalogX\VuloForm\Integration::get_admin_localize_data(),
+                            'vuloform_enquiry'         => \CatalogX\Integrations\VuloForm\Integration::get_admin_localize_data(),
+                            'vulomail_enquiry'         => \CatalogX\Integrations\VuloMail\Integration::get_admin_localize_data(),
                             // The dashboard greets the admin by name ("Good morning, Ana"); empty when no one is logged in.
                             'user_first_name'          => $first_name,
                             // The enquiry inbox tells the admin's own messages from the customer's by sender id.
