@@ -83,9 +83,7 @@ class Migration {
     /**
      * Ensures a store registration form exists: the one already configured, the site's legacy
      * block-builder fields migrated across, or -- if there's nothing to migrate -- a fresh one
-     * from the starter template. Whichever form ends up configured is also patched with the
-     * hidden applicant-id field `Integration::maybe_register_store()` depends on, since a
-     * migrated or pre-`Templates::applicant_field()` form won't have it yet.
+     * from the starter template.
      *
      * @return int 0 on failure.
      */
@@ -93,14 +91,13 @@ class Migration {
         $form_id = (int) MultiVendorX()->setting->get_setting( 'vuloform_store_registration_form_id', 0 );
 
         if ( $form_id && vuloform_get_form( $form_id ) ) {
-            self::ensure_applicant_field( $form_id );
             return $form_id;
         }
 
         $old_fields = self::old_fields();
 
         if ( $old_fields ) {
-            $schema  = self::schema_from_old_fields( $old_fields, __( 'Register your store', 'multivendorx' ), array( Templates::applicant_field() ) );
+            $schema  = self::schema_from_old_fields( $old_fields, __( 'Register your store', 'multivendorx' ) );
             $form_id = (int) VuloForm()->forms->create( __( 'Store registration form', 'multivendorx' ), $schema, 'published' );
         } else {
             $form_id = self::create_default_form();
@@ -112,7 +109,6 @@ class Migration {
                 $form_id,
                 Utill::MULTIVENDORX_SETTINGS['registration']
             );
-            self::ensure_applicant_field( $form_id );
         }
 
         return $form_id;
@@ -140,31 +136,6 @@ class Migration {
     }
 
     /**
-     * @param int $form_id Form to check/patch.
-     * @return void
-     */
-    private static function ensure_applicant_field( $form_id ) {
-        $form = VuloForm()->forms->get( $form_id );
-
-        if ( ! $form ) {
-            return;
-        }
-
-        $fields = $form['schema']['fields'] ?? array();
-
-        foreach ( $fields as $field ) {
-            if ( isset( $field['key'] ) && Templates::APPLICANT_FIELD_KEY === $field['key'] ) {
-                return;
-            }
-        }
-
-        $fields[]                 = Templates::applicant_field();
-        $form['schema']['fields'] = $fields;
-
-        VuloForm()->forms->update( $form_id, array( 'schema' => $form['schema'] ) );
-    }
-
-    /**
      * The site's customized `store_registration_from.formfieldlist`, if any -- a brand new site
      * (or one that never touched the old block-builder form) has none, and `ensure_form()` falls
      * back to the starter template instead.
@@ -185,9 +156,8 @@ class Migration {
      *
      * @param array  $old_fields   The old `formfieldlist` array.
      * @param string $submit_label Fallback submit button label (a 'button' entry overrides it).
-     * @param array  $extra_fields Infrastructure fields (e.g. the hidden applicant-id field) the
-     *                             caller wants appended as-is, since the legacy field list never
-     *                             had anything equivalent to convert.
+     * @param array  $extra_fields Infrastructure fields the caller wants appended as-is, since
+     *                             the legacy field list never had anything equivalent to convert.
      * @return array Sanitized VuloForm schema ({version, fields, settings}).
      */
     private static function schema_from_old_fields( array $old_fields, $submit_label, array $extra_fields = array() ) {

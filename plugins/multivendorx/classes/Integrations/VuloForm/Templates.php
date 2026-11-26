@@ -102,22 +102,6 @@ class Templates {
                 'label'   => __( 'Address', 'multivendorx' ),
                 'default' => '{query:address}',
             ),
-            self::applicant_field(),
         );
     }
-
-    /**
-     * Bakes the real user id in at embed time, since submission is cookie-less and anonymous.
-     *
-     * @return array
-     */
-    public static function applicant_field() {
-        return array(
-            'type'    => 'hidden',
-            'key'     => self::APPLICANT_FIELD_KEY,
-            'default' => '{user:id}',
-        );
-    }
-
-    const APPLICANT_FIELD_KEY = 'applicant_user_id';
 }

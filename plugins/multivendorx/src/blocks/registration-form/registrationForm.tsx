@@ -155,11 +155,6 @@ const RegistrationForm = () => {
 				apiUrl={registrationForm.apiUrl}
 				className="multivendorx-vuloform-embed"
 				queryParams={prefill}
-				fieldValues={{
-					applicant_user_id: registrationForm.current_user_id
-						? String(registrationForm.current_user_id)
-						: undefined,
-				}}
 				onSubmitted={handleRegistrationSubmitted}
 			/>
 		</div>

@@ -59,10 +59,6 @@ class SetupWizard {
 
         if ( 'dashboard_page_multivendorx-setup' === $current_screen->id ) {
             FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
-            // Unlike the main admin screen (Admin.php's enqueue_admin_script(), gated to
-            // `toplevel_page_multivendorx`/`product`/`shop_coupon` only), this standalone wizard
-            // page never registered or enqueued the shared admin stylesheet -- its inputs
-            // (dropdowns, toggles, panel chrome) have no styling at all without it.
             FrontendScripts::register_admin_styles();
             FrontendScripts::enqueue_style( 'multivendorx-index-style' );
             wp_enqueue_script( 'setup-wizard-script', FrontendScripts::get_asset_path() . 'js/block/setup-wizard/index.js', array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ), MultiVendorX()->version, true );

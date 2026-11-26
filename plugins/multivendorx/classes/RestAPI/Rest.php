@@ -662,13 +662,7 @@ class Rest {
                 $formatted_phone = '';
                 if ( is_array( $phone_meta ) && ! empty( $phone_meta['country_code'] ) && ! empty( $phone_meta['phone'] ) ) {
                     $formatted_phone = $phone_meta['country_code'] . '-' . $phone_meta['phone'];
-                } elseif ( is_string( $phone_meta ) && '' !== $phone_meta ) {
-                    // A flat string (no country code) -- e.g. a VuloForm 'phone' field submitted
-                    // without 'show_country_code' set. Indexing it with ['country_code']/['phone']
-                    // above would read string offsets instead, not emptiness.
-                    $formatted_phone = $phone_meta;
                 }
-
                 $response->data['store_id']      = $store_id;
                 $response->data['store_name']    = (string) $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
                 $response->data['store_slug']    = (string) $store->get( Utill::STORE_SETTINGS_KEYS['slug'] );
