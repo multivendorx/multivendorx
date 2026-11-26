@@ -321,8 +321,7 @@ const App = () => {
 		},
 	];
 
-	const isBannerDismissed =
-		localStorage.getItem('banner_dismissed') === 'true';
+	const isBannerDismissed = !!appLocalizer.khali_dabba || localStorage.getItem('banner_dismissed') === 'true';
 
 	useEffect(() => {
 		const handler = (e: any) => {
