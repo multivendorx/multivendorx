@@ -252,8 +252,37 @@ class FrontendScripts {
             $settings[ $tab_name ] = MultiVendorX()->setting->get_option( $option_name );
         }
 
+        if ( ! Utill::current_user_has_capability( array( 'manage_options' ) ) ) {
+            $settings = self::redact_payment_secrets( $settings );
+        }
+
         self::$settings_cache = $settings;
         return self::$settings_cache;
+    }
+
+    /**
+     * Strip live payment-gateway credentials from the withdrawal-methods settings tab.
+     *
+     * @param array $settings Settings keyed by tab name, as returned by get_admin_settings().
+     * @return array
+     */
+    private static function redact_payment_secrets( $settings ) {
+        $secret_fields_by_method = array(
+            'stripe-connect' => array( 'test_secret_key', 'live_secret_key' ),
+            'paypal-payout'  => array( 'client_secret' ),
+        );
+
+        foreach ( $secret_fields_by_method as $method => $secret_fields ) {
+            if ( empty( $settings['withdrawal-methods']['payment_methods'][ $method ] ) ) {
+                continue;
+            }
+
+            foreach ( $secret_fields as $secret_field ) {
+                unset( $settings['withdrawal-methods']['payment_methods'][ $method ][ $secret_field ] );
+            }
+        }
+
+        return $settings;
     }
 
 	/**
