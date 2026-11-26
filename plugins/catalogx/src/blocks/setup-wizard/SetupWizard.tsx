@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { SetupWizardInput } from '@zyra/inputs';
 import { __ } from '@wordpress/i18n';
-import img from '../../assets/images/catalogx-logo.png';
 import './SetupWizard.scss';
 
 const SetupWizard: React.FC = () => {
@@ -187,7 +186,6 @@ const SetupWizard: React.FC = () => {
 
 	const intro = (
 		<div className="welcome-wrapper">
-			<img src={img} alt="" style={{ maxWidth: '220px', height: 'auto' }} />
 			<div className="wizard-title">
 				{__('Welcome to the CatalogX family!', 'catalogx')}
 			</div>

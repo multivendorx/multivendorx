@@ -99,8 +99,6 @@ final class CatalogX {
         }
 
         add_action( 'init', array( $this, 'catalogx_register_strings_and_setup_wizard' ) );
-
-        add_filter( 'woocommerce_email_classes', array( $this, 'register_email_classes' ) );
     }
 
     /**
@@ -185,6 +183,8 @@ final class CatalogX {
 
         $this->services['block']           = new Block();
         $this->services['frontendscripts'] = new FrontendScripts();
+        $this->services['vuloform']        = new Integrations\VuloForm\Integration();
+        $this->services['vulomail']        = new Integrations\VuloMail\Integration();
         $this->initialize_catalogx_log();
 
         do_action( 'catalogx_loaded' );
@@ -204,19 +204,6 @@ final class CatalogX {
             }
             return;
         }
-    }
-
-    /**
-     * CatalogX emails
-     *
-     * @param array $emails Array of default WooCommerce email classes.
-     * @return array Modified array with CatalogX email classes added.
-     */
-    public function register_email_classes( $emails ) {
-        $emails['EnquiryEmail']          = new Emails\EnquiryEmail();
-        $emails['EnquiryReportEmail']    = new Emails\EnquiryReportEmail();
-        $emails['RequestQuoteSendEmail'] = new Emails\RequestQuoteSendEmail();
-        return $emails;
     }
 
     /**

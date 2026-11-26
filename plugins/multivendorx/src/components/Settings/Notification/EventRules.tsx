@@ -532,6 +532,7 @@ const EventRules: React.FC = () => {
 					onClose={() => setOpenChannel(null)}
 					width="90%"
 					height="90%"
+					className="popup-drawer"
 					header={{
 						icon: 'notification',
 						title: `${
@@ -676,6 +677,7 @@ const EventRules: React.FC = () => {
 					onClose={() => setEditingNotification(null)}
 					width={32.25}
 					height="60%"
+					className="popup-drawer"
 					header={{
 						icon: 'notification',
 						title: `${__('Settings', 'multivendorx')} - ${editNotification?.event ?? ''}`,

@@ -332,6 +332,7 @@ const PendingCoupons: React.FC<object> = () => {
 						setIsSubmitting(false);
 					}}
 					width="31.25rem"
+					className="popup-drawer"
 					header={{
 						icon: 'cart',
 						title: __('Reason', 'multivendorx'),

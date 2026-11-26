@@ -446,6 +446,7 @@ class FrontendScripts {
                             'default_user_avatar'    => get_avatar_url( 0 ),
                             'multivendor_plugin'     => Utill::get_active_multivendor(),
                             'active_modules'         => MultiVendorX()->modules->get_active_modules(),
+                            'vuloform'               => Integrations\VuloForm\Integration::get_admin_localize_data(),
                         )
                     ),
                 ),
@@ -511,31 +512,25 @@ class FrontendScripts {
                     'object_name' => 'registrationForm',
                     'use_rest'    => true,
                     'data'        => array(
-                        'settings'            => MultiVendorX()->setting->get_setting( 'store_registration_from', array() ),
+                        'vuloform_form_id'    => (int) MultiVendorX()->setting->get_setting( 'vuloform_store_registration_form_id', 0 ),
                         'content_before_form' => apply_filters( 'multivendorx_add_content_before_form', '' ),
                         'content_after_form'  => apply_filters( 'multivendorx_add_content_after_form', '' ),
-                        'error_strings'       => array(
-                            'required' => __( 'This field is required', 'multivendorx' ),
-                            'invalid'  => __( 'Invalid email format', 'multivendorx' ),
+                        'dashboard_redirect_url' => esc_url(
+                            get_permalink( (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) )
                         ),
-                        'country_list'        => $country_list,
-						'state_list'          => WC()->countries->get_states(),
                     ),
                 ),
                 'multivendorx-registration-form-view-script' => array(
                     'object_name' => 'registrationForm',
                     'use_rest'    => true,
                     'data'        => array(
-                        'settings'            => MultiVendorX()->setting->get_setting( 'store_registration_from', array() ),
+                        'vuloform_form_id'    => (int) MultiVendorX()->setting->get_setting( 'vuloform_store_registration_form_id', 0 ),
                         'content_before_form' => apply_filters( 'multivendorx_add_content_before_form', '' ),
                         'content_after_form'  => apply_filters( 'multivendorx_add_content_after_form', '' ),
                         'is_user_logged_in'   => is_user_logged_in(),
-                        'error_strings'       => array(
-                            'required' => __( 'This field is required', 'multivendorx' ),
-                            'invalid'  => __( 'Invalid email format', 'multivendorx' ),
+                        'dashboard_redirect_url' => esc_url(
+                            get_permalink( (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) )
                         ),
-                        'country_list'        => $country_list,
-						'state_list'          => WC()->countries->get_states(),
                     ),
                 ),
                 'multivendorx-marketplace-stores-editor-script' => array(

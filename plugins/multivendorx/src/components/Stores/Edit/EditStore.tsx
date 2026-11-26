@@ -949,6 +949,7 @@ const EditStore = () => {
 				onClose={() => setDeleteModal(false)}
 				width={37.5}
 				height="50%"
+				className="popup-drawer"
 				header={{
 					icon: 'storefront',
 					title: __('Manage store deletion', 'multivendorx'),

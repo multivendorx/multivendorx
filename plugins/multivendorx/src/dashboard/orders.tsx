@@ -614,6 +614,7 @@ const Orders: React.FC = () => {
 					onClose={() => setTracking(false)}
 					width={31.25}
 					height={40}
+					className="popup-drawer"
 					header={{
 						icon: 'shipping',
 						title: __('Tracking', 'multivendorx'),

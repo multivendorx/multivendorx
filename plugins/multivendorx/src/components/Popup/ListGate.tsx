@@ -74,7 +74,7 @@ export function ListGate({
 				actions={
 					<a
 						className="mvx-locked-button"
-						href={`${appLocalizer.admin_dashboard_url}#&tab=modules&module=${module.id}`}
+						href={`${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=modules&module=${module.id}`}
 					>
 						{__('Open Modules', 'multivendorx')}
 					</a>

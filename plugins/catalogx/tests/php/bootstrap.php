@@ -83,24 +83,24 @@ define( 'TEST_WC_DIR', catalogx_locate_or_download_woocommerce_for_tests() );
 error_log( 'CatalogX plugin dir : ' . CATALOGX_PLUGIN_DIR );
 error_log( 'test wc dir : ' . TEST_WC_DIR );
 
-$_tests_dir = getenv( 'WP_TESTS_DIR' );
+$tests_dir = getenv( 'WP_TESTS_DIR' );
 
-if ( ! $_tests_dir ) {
-	$_tests_dir = rtrim( sys_get_temp_dir(), '/\\' ) . '/wordpress-tests-lib';
+if ( ! $tests_dir ) {
+	$tests_dir = rtrim( sys_get_temp_dir(), '/\\' ) . '/wordpress-tests-lib';
 }
 
-$_phpunit_polyfills_path = getenv( 'WP_TESTS_PHPUNIT_POLYFILLS_PATH' );
-if ( false !== $_phpunit_polyfills_path ) {
-	define( 'WP_TESTS_PHPUNIT_POLYFILLS_PATH', $_phpunit_polyfills_path );
+$phpunit_polyfills_path = getenv( 'WP_TESTS_PHPUNIT_POLYFILLS_PATH' );
+if ( false !== $phpunit_polyfills_path ) {
+	define( 'WP_TESTS_PHPUNIT_POLYFILLS_PATH', $phpunit_polyfills_path );
 }
 
-if ( ! file_exists( "{$_tests_dir}/includes/functions.php" ) ) {
-	error_log( "Could not find {$_tests_dir}/includes/functions.php, have you run tools/bin/install-wp-tests.sh from the monorepo root?" );
+if ( ! file_exists( "{$tests_dir}/includes/functions.php" ) ) {
+	error_log( "Could not find {$tests_dir}/includes/functions.php, have you run tools/bin/install-wp-tests.sh from the monorepo root?" );
 	exit( 1 );
 }
 
 // Give access to tests_add_filter() function.
-require_once "{$_tests_dir}/includes/functions.php";
+require_once "{$tests_dir}/includes/functions.php";
 
 /**
  * Manually load the plugin being tested.
@@ -174,4 +174,4 @@ function install_catalogx() {
 tests_add_filter( 'setup_theme', 'install_wc' );
 tests_add_filter( 'setup_theme', 'install_catalogx' );
 
-require "{$_tests_dir}/includes/bootstrap.php";
+require "{$tests_dir}/includes/bootstrap.php";

@@ -1,14 +1,14 @@
 # Copyright (c) 2026 CatalogX Inc. All Rights Reserved.
 msgid ""
 msgstr ""
-"Project-Id-Version: CatalogX — Catalog Mode, Enquiry & Quotes for WooCommerce 6.1.8\n"
+"Project-Id-Version: CatalogX — Catalog Mode, Enquiry & Quotes for WooCommerce 6.1.9\n"
 "Report-Msgid-Bugs-To: https://catalogx.com/contact/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=catalogx\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-19T08:49:38+00:00\n"
+"POT-Creation-Date: 2026-11-26T05:53:32+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: catalogx\n"
@@ -81,20 +81,20 @@ msgstr ""
 msgid "Upgrade to pro"
 msgstr ""
 
-#: classes/CatalogX.php:122
+#: classes/CatalogX.php:120
 #: modules/Quote/Frontend.php:104
 #: assets/js/block/quote-button/index.js:1
 msgid "Add to Quote"
 msgstr ""
 
-#: classes/CatalogX.php:123
+#: classes/CatalogX.php:121
 #: modules/Quote/Frontend.php:105
 msgid "View Quote"
 msgstr ""
 
-#: classes/CatalogX.php:124
-#: modules/Enquiry/Frontend.php:118
-#: modules/Enquiry/Frontend.php:338
+#: classes/CatalogX.php:122
+#: modules/Enquiry/Frontend.php:121
+#: modules/Enquiry/Frontend.php:341
 #: assets/js/block/enquiry-button/index.js:1
 msgid "Send an enquiry"
 msgstr ""
@@ -130,6 +130,7 @@ msgid "Track outgoing emails, monitor email delivery, and quickly identify faile
 msgstr ""
 
 #: classes/Communications.php:159
+#: assets/js/index.js:1
 msgid "Install VuloMail"
 msgstr ""
 
@@ -150,48 +151,353 @@ msgstr ""
 msgid "Product already added to quote cart."
 msgstr ""
 
-#: classes/Emails/EnquiryEmail.php:64
-msgid "Enquiry sent"
-msgstr ""
-
-#: classes/Emails/EnquiryEmail.php:65
-msgid "Admin will get an email when a customer enquires about a product."
-msgstr ""
-
-#: classes/Emails/EnquiryEmail.php:134
-msgid "Product Enquiry for {PRODUCT_NAME} by {USER_NAME}"
-msgstr ""
-
-#: classes/Emails/EnquiryEmail.php:141
-msgid "Enquiry for {PRODUCT_NAME}"
-msgstr ""
-
-#: classes/Emails/RequestQuoteSendEmail.php:60
-msgid "Email to request a quote"
-msgstr ""
-
-#: classes/Emails/RequestQuoteSendEmail.php:61
-msgid "This email is sent when a user clicks on \"Request a quote\" button"
-msgstr ""
-
-#: classes/Emails/RequestQuoteSendEmail.php:109
-msgid "New Quote Request from {customer_name}"
-msgstr ""
-
-#: classes/Emails/RequestQuoteSendEmail.php:119
-msgid "New Quote Submitted by {customer_name} - Please Review"
-msgstr ""
-
-#: classes/FrontendScripts.php:511
+#: classes/FrontendScripts.php:522
 msgid "This field is required"
 msgstr ""
 
-#: classes/FrontendScripts.php:512
+#: classes/FrontendScripts.php:523
 msgid "Invalid email format"
 msgstr ""
 
-#: classes/FrontendScripts.php:523
+#: classes/FrontendScripts.php:534
 msgid "No more product in Quote list!"
+msgstr ""
+
+#. translators: %s: companion plugin slug, e.g. vulomail.
+#: classes/Integrations/PluginInstaller.php:179
+#, php-format
+msgid "%s could not be installed."
+msgstr ""
+
+#. translators: %s: error message.
+#: classes/Integrations/VuloForm/Integration.php:33
+#, php-format
+msgid "CatalogX could not automatically install the VuloForm plugin needed for its forms: %s. Please install and activate \"VuloForm\" manually from the Plugins screen."
+msgstr ""
+
+#: classes/Integrations/VuloForm/Migration.php:87
+#: classes/Integrations/VuloForm/Templates.php:36
+msgid "Send enquiry"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Migration.php:88
+msgid "Enquiry form"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:40
+msgid "Enquiry form (CatalogX)"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:41
+msgid "Name, email and a message for a product enquiry."
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:43
+#: classes/Integrations/VuloMail/Templates.php:58
+#: assets/js/block/setup-wizard/index.js:1
+#: assets/js/block/setup-wizard/view.js:1
+#: assets/js/index.js:1
+msgid "CatalogX"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:51
+#: classes/Integrations/VuloMail/Templates.php:159
+#: classes/Integrations/VuloMail/Templates.php:203
+#: assets/js/index.js:1
+msgid "Name"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:58
+#: classes/Integrations/VuloMail/Templates.php:92
+#: classes/Integrations/VuloMail/Templates.php:115
+#: classes/Integrations/VuloMail/Templates.php:161
+#: classes/Integrations/VuloMail/Templates.php:181
+#: classes/Integrations/VuloMail/Templates.php:205
+#: classes/Integrations/VuloMail/Templates.php:253
+#: assets/js/index.js:1
+msgid "Email"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:65
+msgid "Phone (optional)"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:72
+#: classes/Integrations/VuloMail/Templates.php:94
+#: classes/Integrations/VuloMail/Templates.php:117
+#: classes/Integrations/VuloMail/Templates.php:139
+#: classes/Integrations/VuloMail/Templates.php:163
+#: classes/Integrations/VuloMail/Templates.php:183
+#: classes/Integrations/VuloMail/Templates.php:207
+#: assets/js/index.js:1
+msgid "Message"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:99
+#: classes/Integrations/VuloMail/Templates.php:88
+#: classes/Integrations/VuloMail/Templates.php:111
+#: classes/Integrations/VuloMail/Templates.php:157
+#: classes/Integrations/VuloMail/Templates.php:201
+#: classes/Integrations/VuloMail/Templates.php:225
+#: classes/Integrations/VuloMail/Templates.php:247
+#: assets/js/block/quote-cart/index.js:1
+#: assets/js/block/quote-cart/view.js:1
+#: assets/js/index.js:1
+msgid "Product"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:106
+#: classes/Integrations/VuloMail/Templates.php:249
+#: assets/js/block/quote-cart/index.js:1
+#: assets/js/block/quote-cart/view.js:1
+msgid "Quantity"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:112
+#: assets/js/index.js:1
+msgid "User"
+msgstr ""
+
+#. translators: %s: error message.
+#: classes/Integrations/VuloMail/Integration.php:33
+#, php-format
+msgid "CatalogX could not automatically install the VuloMail plugin needed for email templates: %s. Please install and activate \"VuloMail\" manually from the Plugins screen."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:71
+msgid "New enquiry for {product_name} from {user_name}"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:77
+msgid "Enquiry notification"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:78
+msgid "Sent to the site owner (and vendor, if MultiVendorX is active) when a customer sends a product enquiry."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:80
+#: classes/Integrations/VuloMail/Templates.php:104
+#: classes/Integrations/VuloMail/Templates.php:127
+#: classes/Integrations/VuloMail/Templates.php:149
+#: classes/Integrations/VuloMail/Templates.php:171
+#: classes/Integrations/VuloMail/Templates.php:193
+#: classes/Integrations/VuloMail/Templates.php:217
+#: assets/js/index.js:1
+msgid "Enquiry"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:84
+#: classes/Integrations/VuloMail/Templates.php:197
+msgid "New enquiry"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:85
+msgid "You have a new product enquiry"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:86
+#: classes/Integrations/VuloMail/Templates.php:109
+#: classes/Integrations/VuloMail/Templates.php:132
+#: classes/Integrations/VuloMail/Templates.php:154
+#: classes/Integrations/VuloMail/Templates.php:177
+#: classes/Integrations/VuloMail/Templates.php:199
+msgid "Hi {user_name},"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:87
+msgid "Someone is interested in {product_name}. Here is everything you need to follow up."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:90
+#: classes/Integrations/VuloMail/Templates.php:113
+#: classes/Integrations/VuloMail/Templates.php:179
+#: classes/Integrations/VuloMail/Templates.php:252
+msgid "Customer"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:97
+msgid "You are receiving this email because product enquiries are enabled on your store."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:101
+msgid "Enquiry notification (card style)"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:102
+msgid "Same enquiry notification, with a soft hero panel and stacked detail cards."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:108
+#: classes/Integrations/VuloMail/Templates.php:153
+#: classes/Integrations/VuloMail/Templates.php:198
+msgid "New product enquiry"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:110
+msgid "A customer has asked about {product_name}. Their details are below."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:120
+msgid "Reply to the customer directly to follow up on this enquiry."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:124
+msgid "Enquiry notification (purple banner)"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:125
+msgid "Same enquiry notification, with a bold indigo hero banner."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:131
+msgid "New enquiry received"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:133
+msgid "A customer has submitted a new enquiry for {product_name}. Please review the details below."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:134
+msgid "Enquiry details"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:135
+msgid "Customer name"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:137
+msgid "Email address"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:142
+msgid "This is an automated notification."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:146
+msgid "Enquiry notification (minimal)"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:147
+msgid "Same enquiry notification, typography only with no colored backgrounds."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:155
+msgid "A customer has submitted an enquiry for {product_name}."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:168
+msgid "Enquiry notification (alert badge)"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:169
+msgid "Same enquiry notification, with an orange \"new\" alert strip and timestamp."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:175
+msgid "● New enquiry  ·  Received {date_time}"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:176
+msgid "Product enquiry for {product_name}"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:178
+msgid "A customer is waiting to hear back from you. Here is what they sent."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:186
+msgid "This is an automated notification. Please do not reply to this email — reply to the customer at {user_email} instead."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:190
+msgid "Enquiry notification (accent sidebar)"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:191
+msgid "Same enquiry notification, as a key/value sheet with a tinted label column."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:200
+msgid "A customer has submitted an enquiry for {product_name}. Here are the full details."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:210
+msgid "Sent automatically when a customer submits a product enquiry."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:214
+msgid "Enquiry report"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:215
+msgid "Periodic report of product enquiries, sent to the site admin."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:219
+msgid "Your enquiry report: {start_date} – {end_date}"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:221
+msgid "Your enquiry summary"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:222
+msgid "Reporting period: {start_date} – {end_date}"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:223
+msgid "Here is how many enquiries each of your products received during this period."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:227
+#: assets/js/index.js:1
+msgid "Enquiries"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:231
+msgid "This report is generated automatically by CatalogX."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:235
+msgid "New quote request"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:236
+msgid "Sent to the site admin when a customer submits a quote request."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:238
+#: assets/js/index.js:1
+msgid "Quote"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:240
+msgid "New quote request from {customer_name}"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:242
+msgid "● New quote request"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:243
+msgid "{customer_name} is requesting a quote"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:244
+msgid "Review the requested products below and send your best price to the customer."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:245
+msgid "Requested products"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:255
+msgid "Phone"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:259
+msgid "You are receiving this email because quote requests are enabled on your store."
 msgstr ""
 
 #: classes/RestAPI/Controllers/Dashboard.php:67
@@ -250,7 +556,26 @@ msgstr ""
 msgid "Security check failed."
 msgstr ""
 
-#: modules/Enquiry/Rest.php:217
+#: modules/Enquiry/Cron.php:43
+#: assets/js/index.js:1
+msgid "Every 2 weeks"
+msgstr ""
+
+#: modules/Enquiry/Cron.php:48
+#: assets/js/index.js:1
+msgid "Monthly"
+msgstr ""
+
+#: modules/Enquiry/Cron.php:53
+#: assets/js/index.js:1
+msgid "Quarterly"
+msgstr ""
+
+#: modules/Enquiry/Rest.php:271
+msgid "MULTIPLE PRODUCTS"
+msgstr ""
+
+#: modules/Enquiry/Rest.php:308
 msgid "Enquiry sent successfully"
 msgstr ""
 
@@ -360,171 +685,16 @@ msgstr ""
 msgid "Missing required parameter: key."
 msgstr ""
 
-#: modules/Quote/Quotes.php:80
+#: modules/Quote/Quotes.php:82
 msgid "Missing form data."
 msgstr ""
 
-#: modules/Quote/Quotes.php:102
+#: modules/Quote/Quotes.php:104
 msgid "Failed to create order."
 msgstr ""
 
-#: templates/emails/enquiry-email.php:22
-msgid "New Product Enquiry"
-msgstr ""
-
-#: templates/emails/enquiry-email.php:26
-#: templates/emails/plain/enquiry-email.php:18
-msgid "Dear Admin"
-msgstr ""
-
-#: templates/emails/enquiry-email.php:27
-#: templates/emails/plain/enquiry-email.php:19
-msgid "Please find the product enquiry, details are given below"
-msgstr ""
-
-#: templates/emails/enquiry-email.php:28
-msgid "Product Details"
-msgstr ""
-
-#: templates/emails/enquiry-email.php:33
-#: templates/emails/request-quote.php:37
-#: assets/js/block/quote-cart/index.js:1
-#: assets/js/block/quote-cart/view.js:1
-#: assets/js/index.js:1
-msgid "Product"
-msgstr ""
-
-#: templates/emails/enquiry-email.php:34
-msgid "Product Url"
-msgstr ""
-
-#: templates/emails/enquiry-email.php:35
-msgid "Product SKU"
-msgstr ""
-
-#: templates/emails/enquiry-email.php:105
-msgid "Customer Details"
-msgstr ""
-
-#: templates/emails/enquiry-email.php:107
-#: assets/js/index.js:1
-msgid "Name"
-msgstr ""
-
-#: templates/emails/enquiry-email.php:111
-#: assets/js/index.js:1
-msgid "Email"
-msgstr ""
-
-#: templates/emails/enquiry-email.php:120
-msgid "User Phone : "
-msgstr ""
-
-#: templates/emails/enquiry-email.php:128
-msgid "User Address : "
-msgstr ""
-
-#: templates/emails/enquiry-email.php:136
-msgid "User Subject : "
-msgstr ""
-
-#: templates/emails/enquiry-email.php:144
-msgid "User Comments : "
-msgstr ""
-
-#. translators: %s: email footer which display the site name.
-#. translators: %s: site name.
-#: templates/emails/enquiry-email.php:159
-#: templates/emails/plain/enquiry-email.php:69
-#, php-format
-msgid "%s - Powered by CatalogX"
-msgstr ""
-
-#. translators: %s: Show the admin name.
-#. translators: %s: admin's display name.
-#: templates/emails/plain/request-quote.php:13
-#: templates/emails/request-quote.php:25
-#, php-format
-msgid "Dear %s"
-msgstr ""
-
-#: templates/emails/plain/request-quote.php:14
-#: templates/emails/request-quote.php:28
-msgid "You have received a new quote request from a customer for the following product:"
-msgstr ""
-
-#. translators: %s: Show the product name.
-#: templates/emails/plain/request-quote.php:22
-#: templates/emails/plain/request-quote.php:30
-#, php-format
-msgid "Product: %s"
-msgstr ""
-
-#. translators: %s: Show the quantity of the product.
-#: templates/emails/plain/request-quote.php:24
-#: templates/emails/plain/request-quote.php:32
-#, php-format
-msgid "Qty: %s"
-msgstr ""
-
-#. translators: %s: Show the price of the product.
-#: templates/emails/plain/request-quote.php:26
-#: templates/emails/plain/request-quote.php:34
-#, php-format
-msgid "Price: %s"
-msgstr ""
-
-#: templates/emails/plain/request-quote.php:37
-msgid "Customer Details:"
-msgstr ""
-
-#: templates/emails/plain/request-quote.php:38
-#: templates/emails/request-quote.php:98
-msgid "Customer Name:"
-msgstr ""
-
-#: templates/emails/plain/request-quote.php:39
-#: templates/emails/request-quote.php:99
-#: assets/js/block/quote-cart/index.js:1
-#: assets/js/block/quote-cart/view.js:1
-msgid "Email:"
-msgstr ""
-
-#: templates/emails/plain/request-quote.php:40
-#: templates/emails/request-quote.php:104
-#: assets/js/block/quote-cart/index.js:1
-#: assets/js/block/quote-cart/view.js:1
-msgid "Phone:"
-msgstr ""
-
-#: templates/emails/plain/request-quote.php:43
-#: templates/emails/request-quote.php:108
-msgid "Additional Details:"
-msgstr ""
-
-#. translators: %s: admin's display name.
-#: templates/emails/request-quote.php:25
-msgid "Store Admin"
-msgstr ""
-
-#: templates/emails/request-quote.php:40
-msgid "Qty"
-msgstr ""
-
-#: templates/emails/request-quote.php:43
-msgid "Price"
-msgstr ""
-
-#: templates/emails/request-quote.php:80
-msgid "Sample Product"
-msgstr ""
-
-#: templates/emails/request-quote.php:98
-msgid "John Doe"
-msgstr ""
-
-#: templates/emails/request-quote.php:105
-msgid "8797639205"
+#: modules/Quote/Quotes.php:157
+msgid "Unknown product"
 msgstr ""
 
 #: assets/js/block/enquiry-button/index.js:1
@@ -536,21 +706,8 @@ msgstr ""
 msgid "Failed to load."
 msgstr ""
 
-#. translators: %s: Field label.
-#: assets/js/block/enquiry-form/index.js:3
-#: assets/js/block/enquiry-form/index.js:5
-#, js-format
-msgid "%s is required."
-msgstr ""
-
-#: assets/js/block/enquiry-form/index.js:3
-#: assets/js/block/enquiry-form/index.js:5
-msgid "Please enter a valid email address."
-msgstr ""
-
-#: assets/js/block/enquiry-form/index.js:3
-#: assets/js/block/enquiry-form/index.js:5
-msgid "Please accept the Terms & Conditions."
+#: assets/js/block/enquiry-form/index.js:1
+msgid "Close"
 msgstr ""
 
 #: assets/js/block/excluded-products/view.js:1
@@ -599,11 +756,6 @@ msgstr ""
 
 #: assets/js/block/quote-cart/index.js:1
 #: assets/js/block/quote-cart/view.js:1
-msgid "Quantity"
-msgstr ""
-
-#: assets/js/block/quote-cart/index.js:1
-#: assets/js/block/quote-cart/view.js:1
 msgid "Subtotal"
 msgstr ""
 
@@ -630,6 +782,16 @@ msgstr ""
 #: assets/js/block/quote-cart/index.js:1
 #: assets/js/block/quote-cart/view.js:1
 msgid "Name:"
+msgstr ""
+
+#: assets/js/block/quote-cart/index.js:1
+#: assets/js/block/quote-cart/view.js:1
+msgid "Email:"
+msgstr ""
+
+#: assets/js/block/quote-cart/index.js:1
+#: assets/js/block/quote-cart/view.js:1
+msgid "Phone:"
 msgstr ""
 
 #: assets/js/block/quote-cart/index.js:1
@@ -751,12 +913,6 @@ msgstr ""
 #: assets/js/block/setup-wizard/index.js:1
 #: assets/js/block/setup-wizard/view.js:1
 msgid "This quick setup wizard will help you configure enquiries and quotations for your products. It shouldn't take longer than two minutes."
-msgstr ""
-
-#: assets/js/block/setup-wizard/index.js:1
-#: assets/js/block/setup-wizard/view.js:1
-#: assets/js/index.js:1
-msgid "CatalogX"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -914,155 +1070,47 @@ msgid "license"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Outer Space"
+msgid "Sample Product"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "New product enquiry"
+msgid "Jane Doe"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Admin notification"
+msgid "Is this product available in other colors?"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Hello Admin,"
+msgid "The email could not be loaded."
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "A customer has submitted a product enquiry. Here are the full details below."
+msgid "Enable VuloMail"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Enquiry Details"
+msgid "This email is built with VuloMail. Activate the plugin to show it and edit it here."
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "User Name"
+msgid "Activate VuloMail"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "[{name_enter_your_name}]"
+msgid "Edit in VuloMail"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "User Email"
+msgid "This email is editable in VuloMail. Use Edit in VuloMail to change its subject, text and layout. Changes show here after you save it there and reload this page."
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "[{email_enter_your_email}]"
+msgid "Subject:"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Green Lagoon"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "New Enquiry Submitted"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Dear Admin,"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "A customer has submitted a new product enquiry. Please review the details below and respond at your earliest convenience."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Customer information and enquiry details"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Customer Name"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Customer Email"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Crimson Valley"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Product Enquiry"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Received: {date_time}"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "<small style=\"color: #9ca3af; font-size: 0.75rem;\">This is an automated notification. Please do not reply directly to this email.</small>"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Sunset Orange"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "New Enquiry Alert"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "A new product enquiry has been submitted. Please find the customer details below."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Customer & Product Details"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Full Name"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Please respond to this enquiry promptly."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Royal Indigo"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "New Enquiry Received"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "A customer has submitted a new product enquiry. Please review the details below."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Email Address"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "This is an automated notification."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Enquiry"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Customize the email template used for enquiry notifications."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Enquiry email"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "The email sent for each new enquiry. Start from a template, then edit its blocks."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Start from one of the templates below, then change its text, colours and layout block by block."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Quote"
+msgid "Preview the enquiry email and edit it in VuloMail."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -1102,51 +1150,23 @@ msgid "Wholesale email templates are coming soon."
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Design a personalized enquiry form with built-in form builder."
+msgid "The form could not be loaded."
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Enquiry form"
+msgid "Preview the enquiry form and edit it in VuloForm."
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "The fields a customer fills in to send an enquiry."
+msgid "Wholesale form builder"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Free Form Content"
+msgid "Build and customize the wholesale registration form with VuloForm."
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Simple textarea for free users."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Write something..."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Pro"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Add, remove and reorder the fields on the enquiry form."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Drag-and-drop interface to tailor the wholesale registration form."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Wholesale registration form"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "The fields a buyer fills in to apply for a wholesale account. Add, remove and reorder them."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Add, remove and reorder the fields on the wholesale registration form."
+msgid "Preview the wholesale registration form and edit it in VuloForm."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -1296,6 +1316,22 @@ msgid "Recipient email for product enquiries"
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "Enquiry report frequency"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Choose how often to receive product enquiry reports."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Daily"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Weekly"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Enable WhatsApp enquiries"
 msgstr ""
 
@@ -1421,6 +1457,10 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Selected user roles"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "User Name"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -1999,6 +2039,18 @@ msgstr ""
 msgid "Loading…"
 msgstr ""
 
+#: assets/js/index.js:1
+msgid "Expand menu"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Collapse menu"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Pro"
+msgstr ""
+
 #. translators: %s: page title, e.g. "Wholesale Users".
 #: assets/js/index.js:1
 #, js-format
@@ -2032,10 +2084,6 @@ msgid "Yesterday"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Message"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "You"
 msgstr ""
 
@@ -2045,10 +2093,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "On backorder"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Enquiries"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -2105,10 +2149,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Rejected"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "User"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -2301,6 +2341,14 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Order ID"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Customer Name"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Customer Email"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -3297,6 +3345,32 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Upgrade Now"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enable VuloForm"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "This form is built with VuloForm. Activate the plugin to show it and edit it here."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Activate VuloForm"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Install VuloForm"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Edit form"
+msgstr ""
+
+#. translators: %s: VuloForm link.
+#: assets/js/index.js:1
+#, js-format
+msgid "This form is editable in %s. Use Edit form to change its fields and settings. Changes show here after you save the form and reload this page."
 msgstr ""
 
 #: assets/js/modules/Quote/catalogx-frontend.min.js:1

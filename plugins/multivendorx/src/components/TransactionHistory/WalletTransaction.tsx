@@ -599,6 +599,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					onClose={() => setRequestWithdrawal(false)}
 					width={28.125}
 					height="75%"
+					className="popup-drawer"
 					header={{
 						icon: 'wallet',
 						title: __('Disburse payment', 'multivendorx'),

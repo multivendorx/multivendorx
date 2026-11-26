@@ -123,7 +123,7 @@ const Compliance = () => {
 								'multivendorx'
 							)}
 							buttonText={__('Enable Now', 'multivendorx')}
-							buttonLink={`${appLocalizer.admin_dashboard_url}#&tab=modules&module=marketplace-compliance`}
+							buttonLink={`${appLocalizer.admin_dashboard_url}#&tab=settings&subtab=modules&module=marketplace-compliance`}
 						/>
 					</ColumnComponent>
 				</ContainerComponent>

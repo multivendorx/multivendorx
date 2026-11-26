@@ -114,7 +114,7 @@ const AddProduct = () => {
 			status: product.status ? product.status : appLocalizer.current_user?.allcaps?.publish_products ? 'publish' : 'draft',
 			images: imagePayload,
 			meta_data: [
-				...product.meta_data,
+				...(product.meta_data || []),
 				{
 					key: 'multivendorx_store_id',
 					value: appLocalizer.store_id,
@@ -616,6 +616,7 @@ const AddProduct = () => {
 							setAppeal(false);
 						}}
 						width={31.25}
+						className="popup-drawer"
 						header={{
 							icon: 'announcement',
 							title: __(
@@ -704,6 +705,25 @@ const AddProduct = () => {
 										</FormGroupComponent>
 									</>
 								)}
+
+								{product?.type === 'variable' && (
+									<p className="description">
+										{__(
+											'Each variation has its own price — set it in the Variations section below.',
+											'multivendorx'
+										)}
+									</p>
+								)}
+
+								{product?.type &&
+									!['simple', 'variable'].includes(product.type) && (
+										<p className="description">
+											{__(
+												'Pricing for this product type is set further down the page.',
+												'multivendorx'
+											)}
+										</p>
+									)}
 
 								{['simple', 'variable'].includes(product?.type) &&
 									Object.prototype.hasOwnProperty.call(

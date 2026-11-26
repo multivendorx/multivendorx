@@ -433,13 +433,13 @@ class Zone_Shipping extends \WC_Shipping_Method {
      * Alter the default rate if one is chosen in settings.
      *
      * @param string $chosen_method      Chosen shipping method.
-     * @param array  $_available_methods Available shipping methods.
+     * @param array  $available_methods Available shipping methods.
      *
      * @return string Selected shipping method.
      */
-    public function select_default_rate( $chosen_method, $_available_methods ) {
+    public function select_default_rate( $chosen_method, $available_methods ) {
         // Select the 'Default' method from WooCommerce settings.
-        if ( is_array( $_available_methods ) && array_key_exists( $this->default, $_available_methods ) ) {
+        if ( is_array( $available_methods ) && array_key_exists( $this->default, $available_methods ) ) {
             return $this->default;
         }
 

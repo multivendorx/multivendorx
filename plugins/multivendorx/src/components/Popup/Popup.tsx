@@ -287,7 +287,7 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 									text: __('Enable Now', 'multivendorx'),
 									onClick: () => {
 										window.open(
-											`${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=modules&module=${props.moduleName}`
+											`${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=modules&module=${props.moduleName}`
 										);
 									},
 								},

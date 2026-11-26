@@ -7,7 +7,6 @@
 
 namespace CatalogX;
 
-use CatalogX\Enquiry\Frontend as EnquiryFrontend;
 use CatalogX\Utill;
 
 defined( 'ABSPATH' ) || exit;
@@ -481,6 +480,8 @@ class FrontendScripts {
 								)
 							),
                             'email_tags'               => Utill::get_tags_enquiry_form(),
+                            'vuloform_enquiry'         => \CatalogX\Integrations\VuloForm\Integration::get_admin_localize_data(),
+                            'vulomail_enquiry'         => \CatalogX\Integrations\VuloMail\Integration::get_admin_localize_data(),
                             // The dashboard greets the admin by name ("Good morning, Ana"); empty when no one is logged in.
                             'user_first_name'          => $first_name,
                             // The enquiry inbox tells the admin's own messages from the customer's by sender id.
@@ -490,15 +491,24 @@ class FrontendScripts {
                 ),
                 'catalogx-enquiry-frontend-script'       => array(
                     'object_name' => 'enquiryFrontend',
-                    'data'        => self::get_base_ajax_data( 'catalogx-enquiry-frontend-script' ),
+                    'data'        => array_merge(
+                        self::get_base_ajax_data( 'catalogx-enquiry-frontend-script' ),
+                        array(
+                            // Whether a variable product's "Send an enquiry" button should only
+                            // show for a variation that's actually out of stock.
+                            'is_enable_out_of_stock' => 'is_enable_out_of_stock' === CatalogX()->setting->get_setting( 'is_enable_out_of_stock', '' ),
+                        )
+                    ),
                 ),
                 'catalogx-enquiry-form-script'           => array(
                     'object_name' => 'enquiryFormData',
                     'data'        => array_merge(
                         $base_rest,
                         array(
-                            'settings_free'       => CatalogX()->modules->is_active( 'enquiry' ) ? EnquiryFrontend::catalogx_free_form_settings() : array(),
-                            'settings_pro'        => CatalogX()->modules->is_active( 'enquiry' ) ? EnquiryFrontend::catalogx_pro_form_settings() : array(),
+                            'vuloform_form_id'    => (int) CatalogX()->setting->get_setting( 'vuloform_enquiry_form_id', 0 ),
+                            'redirect_url'        => ( 'dedicated_page' === CatalogX()->setting->get_setting( 'is_page_redirect' ) && CatalogX()->setting->get_setting( 'redirect_page_id' ) )
+                                ? get_permalink( CatalogX()->setting->get_setting( 'redirect_page_id' ) )
+                                : '',
                             'khali_dabba'         => Utill::is_khali_dabba(),
                             'product_data'        => apply_filters( 'catalogx_product_data', array() ),
                             'default_placeholder' => array(

@@ -1,9 +1,9 @@
 // RegistrationForm.tsx
-/* global registrationForm, */
-import { useState, useEffect, useMemo, useCallback } from 'react';
+/* global registrationForm */
+import { useEffect, useState } from 'react';
 import { getApiLink } from '@zyra/core';
 import { ToggleInputFieldComponent } from '@zyra/inputs';
-import { FormViewer } from '@zyra/builders';
+import { VuloFormEmbed } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -29,31 +29,27 @@ type StoreData = {
 	note?: StoreNote[];
 };
 
+/**
+ * The form itself is now built and rendered in VuloForm -- actually registering/updating the
+ * store happens server-side (`MultiVendorX\Integrations\VuloForm\Integration::maybe_register_store()`,
+ * hooked on `vuloform_submission_created`) once VuloForm accepts the submission, reusing the
+ * existing `multivendorx/v1/stores` REST route as-is. This component just handles the step
+ * wizard UI around it, the store picker (for a vendor who already has one, re-editing it), and
+ * prefilling the embed with that vendor's existing data.
+ */
 const RegistrationForm = () => {
-	const [responseMessage, setResponseMessage] = useState<{
-		type: 'success' | 'error';
-		message: string;
-	} | null>(null);
-	const [responseData, setResponseData] = useState<RegistrationResponse[]>(
-		[]
-	);
 	const [stores, setStores] = useState<StoreOption[]>([]);
 	const [selectedStore, setSelectedStore] = useState<StoreOption | null>(
 		null
 	);
-	const [inputs, setInputs] = useState<
-		RegistrationResponse | Record<string, string | number | boolean>
-	>({});
+	const [inputs, setInputs] = useState<RegistrationResponse | null>(null);
 	const [allStoreData, setAllStoreData] = useState<StoreData[]>([]);
 	const [storeData, setStoreData] = useState<StoreData | null>(null);
-	const formData = registrationForm;
 
 	// Step wizard state
 	const [currentStep, setCurrentStep] = useState<1 | 2>(1);
 	const [step1Completed, setStep1Completed] = useState<boolean>(false);
-	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-	// Check if step 1 has content to show
 	const hasBeforeFormContent =
 		registrationForm.content_before_form &&
 		registrationForm.content_before_form.trim().length > 0;
@@ -73,25 +69,13 @@ const RegistrationForm = () => {
 			const returnedStoreData = data.store_data || [];
 
 			setAllStoreData(returnedStoreData);
-			//Prevent unnecessary re-renders
-			setStores((prev) => {
-				if (JSON.stringify(prev) !== JSON.stringify(storeList)) {
-					return storeList;
-				}
-				return prev;
-			});
-
-			setResponseData((prev) => {
-				if (JSON.stringify(prev) !== JSON.stringify(regData)) {
-					return regData;
-				}
-				return prev;
-			});
+			setStores(storeList);
 
 			if (storeList.length > 0 && regData.length > 0) {
-				const match = storeList.find((store) =>
+				const match = storeList.find((store: StoreOption) =>
 					regData.some(
-						(item) => String(item.id) === String(store.value)
+						(item: RegistrationResponse) =>
+							String(item.id) === String(store.value)
 					)
 				);
 
@@ -99,7 +83,8 @@ const RegistrationForm = () => {
 					setSelectedStore(match);
 
 					const matchData = regData.find(
-						(item) => String(item.id) === String(match.value)
+						(item: RegistrationResponse) =>
+							String(item.id) === String(match.value)
 					);
 
 					if (matchData) {
@@ -107,7 +92,8 @@ const RegistrationForm = () => {
 					}
 
 					const dataMatch = returnedStoreData.find(
-						(item) => String(item.id) === String(match.value)
+						(item: StoreData) =>
+							String(item.id) === String(match.value)
 					);
 					if (dataMatch) {
 						setStoreData(dataMatch);
@@ -115,8 +101,8 @@ const RegistrationForm = () => {
 				}
 			}
 
-			// Auto-complete step 1 if there's nothing to show
-			if (!shouldShowStep1) {
+			// Auto-complete step 1 if there's nothing to show.
+			if (!hasBeforeFormContent && storeList.length === 0) {
 				setStep1Completed(true);
 			}
 		});
@@ -124,33 +110,14 @@ const RegistrationForm = () => {
 
 	const handleStoreChange = (val: string) => {
 		const store = stores.find((s) => s.value === val);
-		setSelectedStore(store);
-
-		const match = responseData.find(
-			(item) => String(item.id) === String(val)
-		);
-		setInputs(match || {});
+		setSelectedStore(store || null);
 
 		const dataMatch = allStoreData.find(
 			(item) => String(item.id) === String(val)
 		);
-		setStoreData(dataMatch || {});
+		setStoreData(dataMatch || null);
 	};
 
-	useEffect(() => {
-		const backup = sessionStorage.getItem('multivendorxRegistrationForm');
-
-		if (backup) {
-			try {
-				const parsed = JSON.parse(backup);
-				setInputs(parsed); // restore into FormViewer
-			} catch (e) {
-				console.error('Invalid backup data');
-			}
-		}
-	}, []);
-
-	// Navigate to next step
 	const goToNextStep = () => {
 		if (currentStep === 1 && shouldShowStep1) {
 			setStep1Completed(true);
@@ -159,150 +126,71 @@ const RegistrationForm = () => {
 		}
 	};
 
-	// Navigate to previous step
-	const goToPreviousStep = () => {
-		if (currentStep === 2) {
-			setCurrentStep(1);
-			window.scrollTo({ top: 0, behavior: 'smooth' });
-		}
+	// VuloForm's script swaps the <form> for a `.vuloform-message--success` node on success --
+	// the store is created/updated server-side (Integration::maybe_register_store()), so this only needs to react
+	// to it by sending the vendor to their dashboard. VuloForm's own success message is shown
+	// in its place, so no separate confirmation is rendered here.
+	const handleRegistrationSubmitted = () => {
+		setTimeout(() => {
+			if (registrationForm.dashboard_redirect_url) {
+				window.location.href = registrationForm.dashboard_redirect_url;
+			}
+		}, 2000);
 	};
 
-	const onSubmit = useCallback(
-		(submittedFormData: Record<string, string | number | boolean>) => {
-			setIsSubmitting(true);
-
-			sessionStorage.setItem(
-				'multivendorxRegistrationForm',
-				JSON.stringify(submittedFormData)
-			);
-			setInputs(submittedFormData);
-
-			const mappedData: Record<string, string | number | boolean> = {};
-
-			if (submittedFormData['name']) {
-				mappedData['name'] = submittedFormData['name'];
+	const prefill = inputs
+		? {
+				name: String(inputs.name ?? ''),
+				description: String(inputs.description ?? ''),
+				phone: String(inputs.phone ?? ''),
+				paypal_email: String(inputs.paypal_email ?? ''),
+				address: String(inputs.address ?? ''),
 			}
-			if (submittedFormData['description']) {
-				mappedData['description'] = submittedFormData['description'];
-			}
-			if (submittedFormData['slug']) {
-				mappedData['slug'] = submittedFormData['slug'];
-			}
+		: undefined;
 
-			Object.keys(submittedFormData).forEach((key) => {
-				if (!['name', 'description', 'slug'].includes(key)) {
-					mappedData[key] = submittedFormData[key];
-				}
-			});
-
-			axios({
-				method: 'POST',
-				url: getApiLink(registrationForm, 'stores'),
-				headers: {
-					'Content-Type': 'multipart/form-data',
-					'X-WP-Nonce': registrationForm.nonce,
-					registrations: 'registrations',
-				},
-				data: { formData: mappedData },
-			})
-				.then((response) => {
-					setResponseMessage({
-						type: 'success',
-						message: __(
-							'Store created successfully',
-							'multivendorx'
-						),
-					});
-					setIsSubmitting(false);
-
-					sessionStorage.removeItem('multivendorxRegistrationForm');
-					if (response.data.redirect !== '') {
-						window.open(response.data.redirect, '_self');
-					}
-				})
-				.catch(() => {
-					setResponseMessage({
-						type: 'error',
-						message: __('Error creating store', 'multivendorx'),
-					});
-					setIsSubmitting(false);
-				});
-		},
-		[]
+	const form = registrationForm.vuloform_form_id > 0 && (
+		<div>
+			<VuloFormEmbed
+				formId={registrationForm.vuloform_form_id}
+				apiUrl={registrationForm.apiUrl}
+				className="multivendorx-vuloform-embed"
+				queryParams={prefill}
+				onSubmitted={handleRegistrationSubmitted}
+			/>
+		</div>
 	);
 
-	const memoizedCountryList = useMemo(
-		() => registrationForm.country_list,
-		[]
-	);
-	const memoizedStateList = useMemo(() => registrationForm.state_list, []);
+	const storeSelector = stores.length > 0 && (
+		<div className="store-selector">
+			<ToggleInputFieldComponent
+				options={stores}
+				value={selectedStore?.value || ''}
+				onChange={(val) => handleStoreChange(val)}
+			/>
 
-	// If there's no step 1 content, just show the form directly
+			{storeData?.note?.[0]?.note && (
+				<div>
+					<h4>{__('Store Note', 'multivendorx')}</h4>
+					<div className="store-note">
+						<strong>{__('Note', 'multivendorx')}:</strong>{' '}
+						{storeData.note[0].note}
+					</div>
+				</div>
+			)}
+		</div>
+	);
+
+	// If there's no step 1 content, just show the form directly.
 	if (!shouldShowStep1) {
 		return (
 			<div className="woocommerce">
-				{stores.length > 0 && (
-					<>
-						<div className="store-selector">
-							<ToggleInputFieldComponent
-								options={stores}
-								value={selectedStore?.value || ''}
-								onChange={(val) => handleStoreChange(val)}
-							/>
-						</div>
-
-						{storeData?.note?.[0]?.note && (
-							<div>
-								<h4>{__('Store Note', 'multivendorx')}</h4>
-								<div className="store-note">
-									<strong>
-										{__('Note', 'multivendorx')}:
-									</strong>{' '}
-									{storeData.note[0].note}
-								</div>
-							</div>
-						)}
-					</>
-				)}
-
-				<FormViewer
-					formFields={formData.settings}
-					response={inputs}
-					onSubmit={onSubmit}
-					countryList={memoizedCountryList}
-					stateList={memoizedStateList}
-					formMessages={{
-						/* translators: %s: Field label. */
-						fieldRequired: __('%s is required.', 'multivendorx'),
-						invalidEmail: __(
-							'Please enter a valid email address.',
-							'multivendorx'
-						),
-						termsRequired: __(
-							'Please accept the Terms & Conditions.',
-							'multivendorx'
-						),
-					}}
-				/>
+				{storeSelector}
+				{form}
 				<div
 					dangerouslySetInnerHTML={{
 						__html: registrationForm.content_after_form,
 					}}
 				/>
-				{responseMessage && (
-					<div className="woocommerce-notices-wrapper">
-						<ul
-							className={
-								responseMessage.type === 'success'
-									? 'woocommerce-message'
-									: 'woocommerce-error'
-							}
-							role="alert"
-						>
-							<li>{responseMessage.message}</li>
-						</ul>
-					</div>
-				)}
 			</div>
 		);
 	}
@@ -311,10 +199,11 @@ const RegistrationForm = () => {
 		<>
 			<div className="multivendorxstep-wizard">
 				<div className="multivendorxsteps-container">
-					{/* Step 1 */}
 					<div
 						className={`multivendorxstep-item ${currentStep === 1 ? 'active' : ''} ${step1Completed ? 'completed' : ''}`}
-						onClick={() => currentStep === 2 && goToPreviousStep()}
+						onClick={() =>
+							currentStep === 2 && setCurrentStep(1)
+						}
 					>
 						<div className="multivendorxstep-number">
 							{step1Completed ? (
@@ -333,13 +222,12 @@ const RegistrationForm = () => {
 							)}
 						</div>
 						<h4 className="multivendorxstep-label">
-							{' '}
 							{__('Account', 'multivendorx')}
 						</h4>
 					</div>
-						
+
 					<div className="multivendorx-step-divider"></div>
-					{/* Step 2 */}
+
 					<div
 						className={`multivendorxstep-item ${currentStep === 2 ? 'active' : ''}`}
 					>
@@ -359,35 +247,15 @@ const RegistrationForm = () => {
 				</div>
 			</div>
 
-			{/* Step 1 */}
 			{currentStep === 1 && (
 				<div className="multivendorxstep-content multivendorxstep-1-content">
 					{stores.length > 0 && (
 						<div className="multivendorxstore-selector-section">
 							<h3>{__('Select Your Store', 'multivendorx')}</h3>
-							<div className="store-selector">
-								<ToggleInputFieldComponent
-									options={stores}
-									value={selectedStore?.value || ''}
-									onChange={(val) => handleStoreChange(val)}
-								/>
-							</div>
-
-							{storeData?.note?.[0]?.note && (
-								<div className="multivendorxstore-note">
-									<h4>{__('Store Note', 'multivendorx')}</h4>
-									<div className="store-note">
-										<strong>
-											{__('Note', 'multivendorx')}:
-										</strong>{' '}
-										{storeData.note[0].note}
-									</div>
-								</div>
-							)}
+							{storeSelector}
 						</div>
 					)}
 
-					{/* Step 1 Main Content: content_before_form */}
 					{registrationForm.content_before_form && (
 						<div
 							className="multivendorxbefore-form-content"
@@ -399,7 +267,7 @@ const RegistrationForm = () => {
 
 					{registrationForm.is_user_logged_in && (
 						<div className="multivendorxstep-actions">
-							<button className="" onClick={goToNextStep}>
+							<button onClick={goToNextStep}>
 								{__('Continue to Store Details', 'multivendorx')}
 							</button>
 						</div>
@@ -407,14 +275,11 @@ const RegistrationForm = () => {
 				</div>
 			)}
 
-			{/* Step 2 */}
 			{currentStep === 2 && (
 				<div className="multivendorxstep-content">
 					<div className="multivendorxform-header">
 						<p>Step 2 of 2</p>
-						<h3>
-							{__('Tell us about your store', 'multivendorx')}
-						</h3>
+						<h3>{__('Tell us about your store', 'multivendorx')}</h3>
 						<p>
 							{__(
 								'This information will be reviewed by our team before your store goes live. Please fill it in accurately.',
@@ -423,37 +288,15 @@ const RegistrationForm = () => {
 						</p>
 					</div>
 
-					{/* Store selector and note (if any) for step 2 */}
 					{stores.length > 0 && selectedStore && (
 						<div className="multivendorxselected-store-info">
-							<strong>
-								{__('Selected Store:', 'multivendorx')}
-							</strong>{' '}
+							<strong>{__('Selected Store:', 'multivendorx')}</strong>{' '}
 							{selectedStore.label}
 						</div>
 					)}
 
-					<FormViewer
-						formFields={formData.settings}
-						response={inputs}
-						onSubmit={onSubmit}
-						countryList={memoizedCountryList}
-						stateList={memoizedStateList}
-						formMessages={{
-							/* translators: %s: Field label. */
-							fieldRequired: __('%s is required.', 'multivendorx'),
-							invalidEmail: __(
-								'Please enter a valid email address.',
-								'multivendorx'
-							),
-							termsRequired: __(
-								'Please accept the Terms & Conditions.',
-								'multivendorx'
-							),
-						}}
-					/>
+					{form}
 
-					{/* After Form Content */}
 					{registrationForm.content_after_form && (
 						<div
 							className="multivendorxafter-form-content"
@@ -462,32 +305,6 @@ const RegistrationForm = () => {
 							}}
 						/>
 					)}
-
-					{/* Response Message */}
-					{responseMessage && (
-						<div className="woocommerce-notices-wrapper">
-							<ul
-								className={
-									responseMessage.type === 'success'
-										? 'woocommerce-message'
-										: 'woocommerce-error'
-								}
-								role="alert"
-							>
-								<li>{responseMessage.message}</li>
-							</ul>
-						</div>
-					)}
-
-					{/* <div className="multivendorxstep-actions">
-						<button
-							className="multivendorxbtn multivendorxbtn-secondary"
-							onClick={goToPreviousStep}
-							disabled={isSubmitting}
-						>
-							{__('Back', 'multivendorx')}
-						</button>
-					</div> */}
 				</div>
 			)}
 		</>

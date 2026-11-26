@@ -164,10 +164,18 @@ class Subscriber {
 
         do_action( 'notifima_send_product_notification', $product->get_id() );
 
-        $email = WC()->mailer()->emails['Product_Back_In_Stock_Email'];
-
         foreach ( $product_subscribers as $subscribe_id => $to ) {
-            $sent           = $email->trigger( $to, $product );
+            $sent = Integrations\VuloMail\Integration::send(
+                Integrations\VuloMail\Templates::PRODUCT_BACK_IN_STOCK,
+                $to,
+                array(
+                    '{site_title}'     => get_bloginfo( 'name' ),
+                    '{product_name}'   => $product->get_name(),
+                    '{product_price}'  => wp_strip_all_tags( wc_price( wc_get_price_to_display( $product ) ) ),
+                    '{product_url}'    => $product->get_permalink(),
+                    '{customer_email}' => $to,
+                )
+            );
             $updated_status = $sent ? 'notification_sent' : 'notification_failed';
             self::update_subscriber( $subscribe_id, $updated_status );
         }
@@ -404,10 +412,6 @@ class Subscriber {
      * @return void
      */
     public static function insert_subscriber_email_trigger( $product, $customer_email ) {
-        // Get email object.
-        $admin_mail = WC()->mailer()->emails['Admin_New_Subscriber_Email'];
-        $cust_mail  = WC()->mailer()->emails['Subscriber_Confirmation_Email'];
-
         // Get additional email from global setting.
         $additional_email = Notifima()->setting->get_setting( 'additional_alert_email' );
 
@@ -422,13 +426,21 @@ class Subscriber {
             }
         }
 
+        $merge_tags = array(
+            '{site_title}'     => get_bloginfo( 'name' ),
+            '{product_name}'   => $product->get_name(),
+            '{product_price}'  => wp_strip_all_tags( wc_price( wc_get_price_to_display( $product ) ) ),
+            '{product_url}'    => $product->get_permalink(),
+            '{customer_email}' => $customer_email,
+        );
+
         // Trigger the additional email.
         if ( ! empty( $additional_email ) ) {
-            $admin_mail->trigger( $additional_email, $product, $customer_email );
+            Integrations\VuloMail\Integration::send( Integrations\VuloMail\Templates::ADMIN_NEW_SUBSCRIBER, $additional_email, $merge_tags );
         }
 
         // Trigger customer email.
-        $cust_mail->trigger( $customer_email, $product );
+        Integrations\VuloMail\Integration::send( Integrations\VuloMail\Templates::SUBSCRIBER_CONFIRMATION, $customer_email, $merge_tags );
     }
 
     /**

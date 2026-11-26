@@ -836,6 +836,7 @@ const AllCoupon: React.FC = () => {
 					onClose={() => setAddCoupon(false)}
 					width={31.25}
 					height="70%"
+					className="popup-drawer"
 					header={{
 						icon: 'coupon',
 						title: __('Add Coupon', 'multivendorx'),

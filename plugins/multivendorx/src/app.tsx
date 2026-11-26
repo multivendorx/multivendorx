@@ -373,6 +373,7 @@ const App = () => {
 				onClose={handleCloseFeaturePopup}
 				width={31.25}
 				height={50}
+				className="popup-drawer"
 				header={{
 					icon: 'database',
 					title: __('Import Dummy Data', 'multivendorx'),
@@ -553,6 +554,7 @@ const App = () => {
 						onClose={() => setActiveModal(null)}
 						width={31.25}
 						height={50}
+						className="popup-drawer"
 						header={{
 							icon: 'knowledgebase',
 							title: __('Migration', 'multivendorx'),

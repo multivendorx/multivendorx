@@ -799,7 +799,13 @@ class StoreUtil {
 	 * @return string Formatted phone number with country code.
 	 */
 	public static function get_phone( $phone_meta ) {
-		$data = (array) Utill::safe_unserialize( $phone_meta );
+		$unserialized = Utill::safe_unserialize( $phone_meta );
+
+		if ( is_string( $unserialized ) ) {
+			return $unserialized;
+		}
+
+		$data = (array) $unserialized;
 
 		$country = $data['country_code'] ?? '';
 		$phone   = $data['phone'] ?? $data['whatsapp_number'] ?? '';

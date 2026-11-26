@@ -407,6 +407,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 							width={32}
 							height="90%"
 							onClose={handleClosePopup}
+							className="popup-drawer"
 							header={{
 								icon: 'shipping',
 								title: `${isEditing
