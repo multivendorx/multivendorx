@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-24T10:29:17+00:00\n"
+"POT-Creation-Date: 2026-11-26T06:08:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: multivendorx\n"
@@ -18,10 +18,10 @@ msgstr ""
 #: dc_product_vendor.php
 #: classes/Abilities/Abilities.php:67
 #: classes/FrontendScripts.php:411
+#: classes/Integrations/VuloForm/Templates.php:44
+#: classes/Integrations/VuloMail/Templates.php:49
 #: classes/Pattern.php:46
 #: classes/Status.php:43
-#: classes/VuloForm/Templates.php:44
-#: classes/VuloMail/Templates.php:49
 #: modules/Elementor/WidgetLoader.php:106
 #: assets/js/block/setup-wizard/index.js:1
 msgid "MultiVendorX"
@@ -166,7 +166,7 @@ msgstr ""
 
 #: classes/Admin.php:178
 #: classes/Admin.php:179
-#: classes/MultiVendorX.php:263
+#: classes/MultiVendorX.php:253
 #: classes/Tracker.php:151
 #: assets/js/index.js:1
 #: assets/js/index.js:5
@@ -317,52 +317,134 @@ msgstr ""
 msgid "Go to store dashboard"
 msgstr ""
 
-#: classes/FrontendScripts.php:456
+#: classes/FrontendScripts.php:457
 msgid "Select an item..."
 msgstr ""
 
-#. translators: %s: companion plugin name, e.g. VuloMail.
-#: classes/Integrations/CompanionPlugin.php:242
+#. translators: %s: companion plugin slug, e.g. vulomail.
+#: classes/Integrations/PluginInstaller.php:179
 #, php-format
-msgid "%s could not be downloaded or installed."
+msgid "%s could not be installed."
 msgstr ""
 
-#: classes/Integrations/CompanionPlugin.php:277
-msgid "Unknown error."
-msgstr ""
-
-#. translators: %s: companion plugin name, e.g. VuloMail.
-#: classes/Integrations/CompanionPlugin.php:288
+#. translators: %s: error message.
+#: classes/Integrations/VuloForm/Integration.php:39
 #, php-format
-msgid "MultiVendorX couldn't set up %s"
+msgid "MultiVendorX could not automatically install the VuloForm plugin needed for its forms: %s. Please install and activate \"VuloForm\" manually from the Plugins screen."
 msgstr ""
 
-#: classes/Integrations/CompanionPlugin.php:294
-msgid "Retry"
+#: classes/Integrations/VuloForm/Templates.php:37
+msgid "Register your store"
 msgstr ""
 
-#: classes/Integrations/CompanionPlugin.php:311
-msgid "You are not allowed to do this."
+#: classes/Integrations/VuloForm/Templates.php:41
+msgid "Store registration (MultiVendorX)"
 msgstr ""
 
-#: classes/Integrations/VuloFormInstaller.php:114
-msgid "MultiVendorX has installed VuloForm, the companion plugin that builds and displays your marketplace forms, such as store and wholesale registration."
+#: classes/Integrations/VuloForm/Templates.php:42
+msgid "Store name, description, contact details and address for a new vendor application."
 msgstr ""
 
-#: classes/Integrations/VuloMailMigration.php:116
-msgid "MultiVendorX has installed VuloMail, the companion plugin used to deliver marketplace email and SMS notifications. Set up an SMS gateway and/or email connection inside VuloMail to start sending."
+#: classes/Integrations/VuloForm/Templates.php:68
+#: assets/js/index.js:1
+#: assets/js/index.js:5
+msgid "Store name"
 msgstr ""
 
-#: classes/Integrations/VuloMailMigration.php:117
-msgid "MultiVendorX has installed VuloMail and migrated your admin notification settings to it. SMS notifications now deliver through VuloMail; email notifications will too once you add an email connection inside VuloMail (MultiVendorX never had its own SMTP credentials to migrate)."
+#: classes/Integrations/VuloForm/Templates.php:75
+#: modules/Elementor/Tags/StoreInfo.php:85
+#: modules/MarketplaceCompliance/Frontend.php:118
+#: assets/js/block/contact-info/index.js:1
+#: assets/js/index.js:1
+#: assets/js/index.js:5
+msgid "Email"
 msgstr ""
 
-#: classes/Integrations/VuloMailMigration.php:156
-msgid "VuloMail did not load after activation."
+#: classes/Integrations/VuloForm/Templates.php:82
+#: assets/js/index.js:1
+#: assets/js/index.js:5
+msgid "Store description"
 msgstr ""
 
-#: classes/Integrations/VuloMailMigration.php:271
+#: classes/Integrations/VuloForm/Templates.php:88
+#: assets/js/index.js:1
+#: assets/js/index.js:5
+msgid "Phone"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:94
+msgid "PayPal email"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:100
+#: modules/Elementor/Tags/StoreInfo.php:75
+#: assets/js/index.js:1
+#: assets/js/index.js:5
+msgid "Address"
+msgstr ""
+
+#. translators: %s: error message.
+#: classes/Integrations/VuloMail/Integration.php:34
+#, php-format
+msgid "MultiVendorX could not automatically install the VuloMail plugin needed for email and SMS notifications: %s. Please install and activate \"VuloMail\" manually from the Plugins screen."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Migration.php:182
 msgid "Migrated from MultiVendorX"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:63
+msgid "Site information shared"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:64
+msgid "Sent to the site owner after they agree to share site information and usage data on plugin deactivation."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:66
+#: classes/Integrations/VuloMail/Templates.php:75
+#: assets/js/index.js:1
+msgid "Deactivation"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:68
+msgid "Thanks for sharing your site information, {user_name}"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:69
+msgid "Thank you!"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:69
+msgid "We received your site information and usage data. As a thank you, we have created a discount coupon for your next purchase."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:69
+msgid "This was sent to {user_email}."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:72
+msgid "Plugin deactivation feedback (admin notification)"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:73
+msgid "Sent to the site admin when a user submits the deactivation-feedback form."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:77
+msgid "MultiVendorX deactivation feedback: {reason}"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:78
+msgid "Deactivation feedback received"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:78
+msgid "Reason:"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:78
+msgid "Details:"
 msgstr ""
 
 #: classes/Migration/Cron.php:51
@@ -373,19 +455,19 @@ msgstr ""
 msgid "Every minute"
 msgstr ""
 
-#: classes/MultiVendorX.php:258
+#: classes/MultiVendorX.php:248
 msgid "View WooCommerce documentation"
 msgstr ""
 
-#: classes/MultiVendorX.php:258
+#: classes/MultiVendorX.php:248
 msgid "Docs"
 msgstr ""
 
-#: classes/MultiVendorX.php:259
+#: classes/MultiVendorX.php:249
 msgid "Visit community forums"
 msgstr ""
 
-#: classes/MultiVendorX.php:259
+#: classes/MultiVendorX.php:249
 #: assets/js/index.js:5
 msgid "Support"
 msgstr ""
@@ -1112,7 +1194,6 @@ msgstr ""
 #: classes/RestAPI/Controllers/Transactions.php:91
 #: classes/RestAPI/Controllers/Transactions.php:254
 #: classes/RestAPI/Controllers/Transactions.php:323
-#: classes/VuloForm/PreviewRest.php:59
 #: modules/Announcement/Rest.php:119
 #: modules/Announcement/Rest.php:256
 #: modules/Announcement/Rest.php:321
@@ -1618,110 +1699,6 @@ msgstr ""
 
 #: classes/Tracker.php:364
 msgid "Please share the reason"
-msgstr ""
-
-#: classes/VuloForm/Templates.php:37
-msgid "Register your store"
-msgstr ""
-
-#: classes/VuloForm/Templates.php:41
-msgid "Store registration (MultiVendorX)"
-msgstr ""
-
-#: classes/VuloForm/Templates.php:42
-msgid "Store name, description, contact details and address for a new vendor application."
-msgstr ""
-
-#: classes/VuloForm/Templates.php:68
-#: assets/js/index.js:1
-#: assets/js/index.js:5
-msgid "Store name"
-msgstr ""
-
-#: classes/VuloForm/Templates.php:75
-#: modules/Elementor/Tags/StoreInfo.php:85
-#: modules/MarketplaceCompliance/Frontend.php:118
-#: assets/js/block/contact-info/index.js:1
-#: assets/js/index.js:1
-#: assets/js/index.js:5
-msgid "Email"
-msgstr ""
-
-#: classes/VuloForm/Templates.php:82
-#: assets/js/index.js:1
-#: assets/js/index.js:5
-msgid "Store description"
-msgstr ""
-
-#: classes/VuloForm/Templates.php:88
-#: assets/js/index.js:1
-#: assets/js/index.js:5
-msgid "Phone"
-msgstr ""
-
-#: classes/VuloForm/Templates.php:94
-msgid "PayPal email"
-msgstr ""
-
-#: classes/VuloForm/Templates.php:100
-#: modules/Elementor/Tags/StoreInfo.php:75
-#: assets/js/index.js:1
-#: assets/js/index.js:5
-msgid "Address"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:63
-msgid "Site information shared"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:64
-msgid "Sent to the site owner after they agree to share site information and usage data on plugin deactivation."
-msgstr ""
-
-#: classes/VuloMail/Templates.php:66
-#: classes/VuloMail/Templates.php:75
-#: assets/js/index.js:1
-msgid "Deactivation"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:68
-msgid "Thanks for sharing your site information, {user_name}"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:69
-msgid "Thank you!"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:69
-msgid "We received your site information and usage data. As a thank you, we have created a discount coupon for your next purchase."
-msgstr ""
-
-#: classes/VuloMail/Templates.php:69
-msgid "This was sent to {user_email}."
-msgstr ""
-
-#: classes/VuloMail/Templates.php:72
-msgid "Plugin deactivation feedback (admin notification)"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:73
-msgid "Sent to the site admin when a user submits the deactivation-feedback form."
-msgstr ""
-
-#: classes/VuloMail/Templates.php:77
-msgid "MultiVendorX deactivation feedback: {reason}"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:78
-msgid "Deactivation feedback received"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:78
-msgid "Reason:"
-msgstr ""
-
-#: classes/VuloMail/Templates.php:78
-msgid "Details:"
 msgstr ""
 
 #: classes/Widgets.php:38
@@ -7475,6 +7452,10 @@ msgid "What happens when a store is missing documents or breaks the marketplace 
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "PRO"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Identity verification"
 msgstr ""
 
@@ -9416,19 +9397,13 @@ msgid "Install VuloForm"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Form preview"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Loading…"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Edit form"
 msgstr ""
 
+#. translators: %s: VuloForm link.
 #: assets/js/index.js:1
-msgid "This form is editable in VuloForm. Use Edit form to change its fields and settings. Changes show here after you save the form and reload this page."
+#, js-format
+msgid "This form is editable in %s. Use Edit form to change its fields and settings. Changes show here after you save the form and reload this page."
 msgstr ""
 
 #: assets/js/index.js:1

@@ -85,9 +85,6 @@ class Integration {
             return;
         }
 
-        // `product_id` is either a single product id (the single-product enquiry button) or a
-        // JSON `{product_id: quantity}` map (the enquiry cart's bulk "Send enquiry") -- passed
-        // through as-is, `create_item()` tells the two apart.
         $product_id = isset( $values['product_id'] ) ? sanitize_text_field( (string) $values['product_id'] ) : 0;
 
         $body = array(

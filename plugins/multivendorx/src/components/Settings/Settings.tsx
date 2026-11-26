@@ -9,6 +9,7 @@ import { useLocation, Link } from 'react-router-dom';
 import EventRules from './Notification/EventRules.tsx';
 import StoreStatus from './StoreConfiguration/StoreStatus.tsx';
 import Invoice from './StoreConfiguration/Invoice';
+import RegistrationFormPanel from '../VuloForm/RegistrationFormPanel';
 import ProductCompliance from './Privacy & Compliance/ProductCompliance.tsx';
 import PluginModules from '../Modules/Modules.tsx';
 import LicensePanel from '../License/LicensePanel';

@@ -155,12 +155,17 @@ class Rest {
                         break;
 
                     default:
-                        // VuloForm's `phone` field type submits a nested `{phone: "..."}` value.
+                        if ( is_array( $value ) ) {
+                            $field_value = array_key_exists( 'phone', $value )
+                                ? sanitize_text_field( (string) $value['phone'] )
+                                : implode( ', ', array_map( 'sanitize_text_field', array_map( 'strval', $value ) ) );
+                        } else {
+                            $field_value = $value;
+                        }
+
                         $additional_fields[] = array(
                             'name'  => $key,
-                            'value' => is_array( $value )
-                                ? sanitize_text_field( (string) ( $value['phone'] ?? '' ) )
-                                : $value,
+                            'value' => $field_value,
                         );
                         break;
                 }

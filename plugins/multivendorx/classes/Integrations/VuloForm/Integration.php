@@ -1,34 +1,87 @@
 <?php
 /**
- * SubmissionBridge class file.
+ * Integration class file.
  *
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\VuloForm;
+namespace MultiVendorX\Integrations\VuloForm;
 
+use MultiVendorX\Integrations\PluginInstaller;
 use MultiVendorX\Utill;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Turns a VuloForm submission of the store registration form into a store, via an internal
- * request to MultiVendorX's own `stores` REST route -- reuses its existing create/approval logic
- * as-is.
+ * Wires VuloForm in as the store registration form builder. Installs VuloForm via the shared
+ * `PluginInstaller`; legacy/applicant-field migration lives in the sibling `Migration` class
+ * (triggered from `Install.php`'s `do_migration()`). This class only handles the install-state
+ * localize data and turning a VuloForm submission into a store.
+ *
+ * No preview REST route here: the Registration settings tab (`zyra`'s `FormPreview`) fetches the
+ * form's embed HTML straight from VuloForm's own public, cross-origin `/public/forms/{id}/embed`
+ * endpoint. This class is only responsible for resolving/auto-creating the store registration
+ * form id and the install-state check, both localized as plain values via
+ * `get_admin_localize_data()` rather than fetched.
  */
-class SubmissionBridge {
+class Integration {
 
     /**
-     * SubmissionBridge constructor.
+     * Integration constructor.
      */
     public function __construct() {
+        new PluginInstaller(
+            'vuloform',
+            '\VuloForm\VuloForm',
+            static function ( $error_message ) {
+                return sprintf(
+                    /* translators: %s: error message. */
+                    __( 'MultiVendorX could not automatically install the VuloForm plugin needed for its forms: %s. Please install and activate "VuloForm" manually from the Plugins screen.', 'multivendorx' ),
+                    $error_message
+                );
+            }
+        );
+        new Templates();
+
         add_action( 'vuloform_submission_created', array( $this, 'maybe_register_store' ), 10, 3 );
     }
 
     /**
+     * The install-state/form-id data the Registration settings tab's `FormPreview` needs,
+     * localized into `appLocalizer` rather than fetched over REST.
+     *
+     * @return array {installed, plugin_url, can_activate, form_id}
+     */
+    public static function get_admin_localize_data() {
+        // "Installed" (active) means VuloForm's classes autoload -- they only do while active.
+        $installed = class_exists( '\VuloForm\VuloForm' );
+
+        if ( $installed ) {
+            return array(
+                'installed'    => true,
+                'plugin_url'   => '',
+                'can_activate' => false,
+                'form_id'      => Migration::ensure_form(),
+            );
+        }
+
+        $plugin_file  = 'vuloform/vuloform.php';
+        $file_present = file_exists( WP_PLUGIN_DIR . '/' . $plugin_file );
+
+        return array(
+            'installed'    => false,
+            'plugin_url'   => $file_present
+                ? wp_nonce_url( self_admin_url( 'plugins.php?action=activate&plugin=' . $plugin_file ), 'activate-plugin_' . $plugin_file )
+                : admin_url( 'plugin-install.php?s=VuloForm&tab=search&type=term' ),
+            'can_activate' => $file_present,
+            'form_id'      => 0,
+        );
+    }
+
+    /**
      * @param int   $submission_id VuloForm submission id (unused -- matching is on form id).
-     * @param array $values         Field key => submitted value.
-     * @param array $form           The VuloForm form (id, title, status, schema, ...).
+     * @param array $values        Field key => submitted value.
+     * @param array $form          The VuloForm form (id, title, status, schema, ...).
      * @return void
      */
     public function maybe_register_store( $submission_id, $values, $form ) {

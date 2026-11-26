@@ -7,7 +7,7 @@
 
 namespace MultiVendorX;
 
-use MultiVendorX\VuloMail\Mailer;
+use MultiVendorX\Integrations\VuloMail\Integration as VuloMailIntegration;
 use MultiVendorX\VuloMail\Templates as VuloMailTemplates;
 
 defined( 'ABSPATH' ) || exit;
@@ -329,7 +329,7 @@ class Tracker {
         update_option( 'multivendorx_deactivation_reason_' . $slug, $reason, false );
         update_option( 'multivendorx_deactivation_details_' . $slug, $details, false );
 
-        Mailer::send(
+        VuloMailIntegration::send(
             VuloMailTemplates::PLUGIN_DEACTIVATED,
             get_option( 'admin_email' ),
             array(

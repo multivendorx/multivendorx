@@ -7,7 +7,7 @@
 
 namespace MultiVendorX;
 
-use MultiVendorX\VuloMail\Mailer;
+use MultiVendorX\Integrations\VuloMail\Integration as VuloMailIntegration;
 use MultiVendorX\VuloMail\Templates as VuloMailTemplates;
 
 defined( 'ABSPATH' ) || exit;
@@ -162,7 +162,7 @@ class Promotions {
                     )
                 );
 
-                Mailer::send(
+                VuloMailIntegration::send(
                     VuloMailTemplates::SITE_INFORMATION,
                     $current_user->user_email,
                     array(

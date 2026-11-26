@@ -5,14 +5,14 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\VuloMail;
+namespace MultiVendorX\Integrations\VuloMail;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
  * Registers MultiVendorX's remaining one-off admin emails with VuloMail
  * (`vulomail_email_templates`), so their subject/content are editable there -- the single
- * source of truth `Mailer::send()` reads from, instead of the old (unregistered, dead)
+ * source of truth `Integration::send()` reads from, instead of the old (unregistered, dead)
  * `WC_Email_Send_Site_Information`/`WC_Email_Plugin_Deactivated_Mail` classes.
  *
  * MultiVendorX's own marketplace notifications (order/commission/etc.) already go through
@@ -52,8 +52,8 @@ class Templates {
     }
 
     /**
-     * The default subject/content for every email `Mailer::send()` knows how to send -- used to
-     * register them with VuloMail, and as the fallback when VuloMail isn't active.
+     * The default subject/content for every email `Integration::send()` knows how to send -- used
+     * to register them with VuloMail, and as the fallback when VuloMail isn't active.
      *
      * @return array `plugin/name` => {title, description, category, group, recipients, subject, content}
      */

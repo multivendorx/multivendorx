@@ -176,19 +176,8 @@ final class MultiVendorX {
         $this->container['admin_notice']    = new AdminNotice();
         $this->container['promotions']      = new Promotions();
         $this->container['migration']       = new Migration\Cron();
-        $this->container['vulomail_migration'] = new Integrations\VuloMailMigration();
-        $this->container['vuloform_installer'] = new Integrations\VuloFormInstaller();
-        // No installer of its own: Integrations\VuloMailMigration (above) already installs/
-        // activates VuloMail for the whole plugin -- this just registers the two remaining
-        // one-off admin emails (site-information, plugin-deactivated) with it.
-        $this->container['vulomail_templates']  = new VuloMail\Templates();
-        // Same reason: Integrations\VuloFormInstaller (above) already installs/activates
-        // VuloForm -- this wires it in as the store registration form builder.
-        $this->container['vuloform_templates']     = new VuloForm\Templates();
-        $this->container['vuloform_migration']     = new VuloForm\Migration();
-        $this->container['vuloform_submission_bridge'] = new VuloForm\SubmissionBridge();
-        // VuloForm\PreviewRest is a static-only helper now (no REST route to register) -- see
-        // FrontendScripts::localize_scripts()'s `vuloform` key.
+        $this->container['vulomail']        = new Integrations\VuloMail\Integration();
+        $this->container['vuloform']        = new Integrations\VuloForm\Integration();
         $this->container['abilities']       = new Abilities();
 
         $this->initialize_multivendorx_log();

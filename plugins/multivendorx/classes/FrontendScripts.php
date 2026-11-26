@@ -446,7 +446,7 @@ class FrontendScripts {
                             'default_user_avatar'    => get_avatar_url( 0 ),
                             'multivendor_plugin'     => Utill::get_active_multivendor(),
                             'active_modules'         => MultiVendorX()->modules->get_active_modules(),
-                            'vuloform'               => VuloForm\PreviewRest::get_admin_localize_data(),
+                            'vuloform'               => Integrations\VuloForm\Integration::get_admin_localize_data(),
                         )
                     ),
                 ),

@@ -1,22 +1,43 @@
 <?php
 /**
- * Mailer class file.
+ * Integration class file.
  *
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\VuloMail;
+namespace MultiVendorX\Integrations\VuloMail;
+
+use MultiVendorX\Integrations\PluginInstaller;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Replaces `WC()->mailer()->emails[...]` as how MultiVendorX sends the two admin emails that
- * were still reaching for it (both classes were never actually registered, so those calls were
- * already dead). Subject/content come from VuloMail's own editable copy (`Templates::defaults()`
- * registers them there) when it's active; when it's not, the same defaults are used directly and
- * the email goes out through plain `wp_mail()` instead.
+ * Wires VuloMail in as MultiVendorX's email transport. Installs VuloMail via the shared
+ * `PluginInstaller`; the one-time migration of a site's pre-5.0.21 admin email/SMS settings into
+ * VuloMail's own connections lives in the sibling `Migration` class (triggered from `Install.php`'s
+ * `do_migration()`). Also replaces `WC()->mailer()->emails[...]` as how MultiVendorX sends the two
+ * admin emails that were still reaching for it (`send()`), falling back to `wp_mail()` when
+ * VuloMail isn't active.
  */
-class Mailer {
+class Integration {
+
+    /**
+     * Integration constructor.
+     */
+    public function __construct() {
+        new PluginInstaller(
+            'vulomail',
+            '\VuloMail\VuloMail',
+            static function ( $error_message ) {
+                return sprintf(
+                    /* translators: %s: error message. */
+                    __( 'MultiVendorX could not automatically install the VuloMail plugin needed for email and SMS notifications: %s. Please install and activate "VuloMail" manually from the Plugins screen.', 'multivendorx' ),
+                    $error_message
+                );
+            }
+        );
+        new Templates();
+    }
 
     /**
      * @param string $name    `plugin/name` registered in `Templates::defaults()`.
@@ -61,7 +82,7 @@ class Mailer {
             return ! is_wp_error( $result );
         }
 
-        $mail_headers = $headers ? (array) $headers : array();
+        $mail_headers   = $headers ? (array) $headers : array();
         $mail_headers[] = 'Content-Type: text/html; charset=UTF-8';
 
         return (bool) wp_mail( $to, $subject, $content, $mail_headers );

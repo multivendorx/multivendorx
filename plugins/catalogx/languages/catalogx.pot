@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-25T12:11:09+00:00\n"
+"POT-Creation-Date: 2026-11-26T05:53:32+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: catalogx\n"
@@ -571,11 +571,11 @@ msgstr ""
 msgid "Quarterly"
 msgstr ""
 
-#: modules/Enquiry/Rest.php:266
+#: modules/Enquiry/Rest.php:271
 msgid "MULTIPLE PRODUCTS"
 msgstr ""
 
-#: modules/Enquiry/Rest.php:303
+#: modules/Enquiry/Rest.php:308
 msgid "Enquiry sent successfully"
 msgstr ""
 
@@ -1151,32 +1151,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "The form could not be loaded."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Enable VuloForm"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "This form is built with VuloForm. Activate the plugin to show it and edit it here."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Activate VuloForm"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Install VuloForm"
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Edit form"
-msgstr ""
-
-#. translators: %s: VuloForm link.
-#: assets/js/index.js:1
-#, js-format
-msgid "This form is editable in %s. Use Edit form to change its fields and settings. Changes show here after you save the form and reload this page."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -3371,6 +3345,32 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Upgrade Now"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enable VuloForm"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "This form is built with VuloForm. Activate the plugin to show it and edit it here."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Activate VuloForm"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Install VuloForm"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Edit form"
+msgstr ""
+
+#. translators: %s: VuloForm link.
+#: assets/js/index.js:1
+#, js-format
+msgid "This form is editable in %s. Use Edit form to change its fields and settings. Changes show here after you save the form and reload this page."
 msgstr ""
 
 #: assets/js/modules/Quote/catalogx-frontend.min.js:1

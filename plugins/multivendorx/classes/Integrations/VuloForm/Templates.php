@@ -5,7 +5,7 @@
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\VuloForm;
+namespace MultiVendorX\Integrations\VuloForm;
 
 defined( 'ABSPATH' ) || exit;
 
