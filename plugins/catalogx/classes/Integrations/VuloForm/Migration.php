@@ -19,8 +19,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class Migration {
 
-    const MIGRATED_OPTION = 'catalogx_vuloform_enquiry_migrated';
-
     /**
      * Old block-builder type => VuloForm field type.
      */
@@ -54,16 +52,9 @@ class Migration {
      * @return void
      */
     public static function maybe_migrate() {
-        if ( get_option( self::MIGRATED_OPTION ) ) {
-            return;
-        }
-
         if ( ! class_exists( '\VuloForm\VuloForm' ) || ! function_exists( 'vuloform_render' ) ) {
             return;
         }
-
-        // Only ever attempted once.
-        update_option( self::MIGRATED_OPTION, time() );
 
         self::ensure_form();
     }

@@ -329,14 +329,14 @@ class Tracker {
         update_option( 'multivendorx_deactivation_reason_' . $slug, $reason, false );
         update_option( 'multivendorx_deactivation_details_' . $slug, $details, false );
 
-        VuloMailIntegration::send(
-            VuloMailTemplates::PLUGIN_DEACTIVATED,
-            get_option( 'admin_email' ),
-            array(
-                '{reason}'  => $reason,
-                '{details}' => $details,
-            )
-        );
+        // VuloMailIntegration::send(
+        //     VuloMailTemplates::PLUGIN_DEACTIVATED,
+        //     get_option( 'admin_email' ),
+        //     array(
+        //         '{reason}'  => $reason,
+        //         '{details}' => $details,
+        //     )
+        // );
 
         wp_send_json_success();
     }

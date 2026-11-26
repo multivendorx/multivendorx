@@ -3,9 +3,9 @@ Contributors: wcmp, purnendu
 Tags: marketplace, WooCommerce marketplace, multi vendor, multivendor, multivendor marketplace
 Donate link: http://multivendorx.com/donate/?utm_source=wporg&utm_medium=plugindescription&utm_campaign=multivendorxwporg
 Requires at least: 6.4.0
-Tested up to: 7.1.4
+Tested up to: 7.1.5
 Requires PHP: 8.0
-Stable tag: 5.0.22
+Stable tag: 5.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -245,6 +245,12 @@ Ans. Obviously, you can! Join in on our [GitHub repository](https://github.com/m
 15. Store-admin-list.
 
 == Changelog ==
+
+= 5.1.0 - 2026-11-26 =
+* Added     - Compatibility of WordPress 7.1.5.
+* Added     - Compatibility of WooCommerce 11.3.1.
+* Updated   - UI/UX improvements for a better user experience.
+* Updated   - Language file.
 
 = 5.0.22 - 2026-11-10 =
 * Added     - Compatibility with WordPress 7.1.4

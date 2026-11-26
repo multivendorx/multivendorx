@@ -8,7 +8,7 @@
 namespace MultiVendorX;
 
 use MultiVendorX\Integrations\VuloMail\Integration as VuloMailIntegration;
-use MultiVendorX\VuloMail\Templates as VuloMailTemplates;
+use MultiVendorX\Integrations\VuloMail\Templates as VuloMailTemplates;
 
 defined( 'ABSPATH' ) || exit;
 /**

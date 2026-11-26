@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  * CatalogX Enquiry Module cron class
  *
  * @class       Frontend class
- * @version     6.1.9
+ * @version     6.2.0
  * @author      MultiVendorX
  */
 class Cron {

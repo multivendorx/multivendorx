@@ -264,19 +264,13 @@ class Install {
         }
 
         if ( version_compare( $previous_version, '5.0.21', '<' ) ) {
-            // VuloMail is installed unconditionally by Integrations\VuloMail\Integration's own
-            // PluginInstaller regardless of this version gate -- this only carries forward
-            // whatever admin email/SMS settings a pre-5.0.21 site had configured (a no-op if none).
             VuloMailMigration::maybe_migrate();
 
             $this->migrate_email_template_customizer_settings();
             $this->migrate_event_rule_email_bodies();
         }
 
-        if ( version_compare( $previous_version, '5.0.23', '<' ) ) {
-            // Store and wholesale registration forms are built and rendered by VuloForm from
-            // 5.0.23 -- Integrations\VuloForm\Integration's own PluginInstaller installs it
-            // unconditionally; this only migrates/creates the store registration form itself.
+        if ( version_compare( $previous_version, '5.1.0', '<' ) ) {
             VuloFormMigration::maybe_migrate();
         }
     }
