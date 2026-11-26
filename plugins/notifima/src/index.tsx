@@ -2,11 +2,18 @@
 import { createRoot } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import App from './app';
+import DeactivationPopup from './components/DeactivationPopup/DeactivationPopup';
 import EmailLogs from './components/EmailLogs/EmailLogs';
 import DeactivateConfirmPopup from './components/VuloForm/DeactivateConfirmPopup';
 import { configureZyra } from '@zyra/core';
 
-configureZyra(appLocalizer);
+// appLocalizer is only localized onto this bundle on Notifima's own settings page
+// (Admin::enqueue_admin_assets) - on the Plugins screen (DeactivationPopup's mount point),
+// referencing the bare, undeclared global would throw a ReferenceError and abort this whole
+// script before the popup's own mount code below ever ran.
+if ( typeof appLocalizer !== 'undefined' ) {
+    configureZyra( appLocalizer );
+}
 
 /**
  * Mounts the admin app into `#admin-main-wrapper` (printed by Admin::create_setting_page()).
@@ -43,6 +50,14 @@ function mount() {
 
 	if (vuloformDeactivateRoot) {
 		createRoot(vuloformDeactivateRoot).render(<DeactivateConfirmPopup />);
+	}
+
+	// Plugins-screen deactivation popup - separate mount point, printed only on that page
+	// (Tracker::wrap_deactivate_link), never alongside admin-main-wrapper.
+	const deactivationPopupRoot = document.getElementById('notifima-deactivation-popup');
+
+	if (deactivationPopupRoot) {
+		createRoot(deactivationPopupRoot).render(<DeactivationPopup />);
 	}
 }
 

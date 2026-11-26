@@ -95,6 +95,7 @@ declare global {
 
     var appLocalizer: AppLocalizer;
     var subscription: Subscription;
+    var ajaxurl: string;
     var vuloformDeactivateLocalizer: VuloformDeactivateLocalizer;
 
     module '*.png';

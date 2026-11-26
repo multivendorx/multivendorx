@@ -1,0 +1,16 @@
+{
+    "name": "multivendorx/engagement",
+    "description": "Shared MultivendorX Engagement Framework: notices, campaigns, events, telemetry consent.",
+    "type": "library",
+    "license": "GPL-2.0-or-later",
+    "version": "1.0.0",
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "MultivendorX\\Engagement\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.4"
+    }
+}

@@ -9,6 +9,8 @@ namespace Notifima;
 
 defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
+use Notifima\Discovery\Communications as DiscoveryCommunications;
+use Notifima\Discovery\Tracker;
 use Notifima\RestAPI\Rest;
 
 /**
@@ -55,6 +57,7 @@ class Notifima {
         $this->container['plugin_base'] = plugin_basename( $file );
 
         $this->container['version']        = NOTIFIMA_PLUGIN_VERSION;
+        $this->container['slug']           = NOTIFIMA_PLUGIN_SLUG;
         $this->container['rest_namespace'] = 'notifima/v1';
         $this->container['block_paths']    = array();
         $this->container['is_dev']         = defined( 'WP_ENV' ) && WP_ENV === 'development';
@@ -191,8 +194,11 @@ class Notifima {
         $this->container['block']           = new Block();
         $this->container['frontendScripts'] = new FrontendScripts();
         $this->container['communications']    = new Communications();
-        $this->container['vuloform']        = new Integrations\VuloForm\Integration();
-        $this->container['vulomail']        = new Integrations\PluginInstaller(
+        $this->container['discoveryCommunications'] = new DiscoveryCommunications();
+        $this->container['tracker']           = new Tracker();
+        $this->container['engagement']        = new EngagementProvider();
+        $this->container['vuloform']          = new Integrations\VuloForm\Integration();
+        $this->container['vulomail']          = new Integrations\PluginInstaller(
             'vulomail',
             '\VuloMail\VuloMail',
             static function ( $error_message ) {
@@ -204,7 +210,7 @@ class Notifima {
             }
         );
         $this->container['vulomailTemplates'] = new Integrations\VuloMail\Templates();
-        $this->container['cron']            = new Cron();
+        $this->container['cron']              = new Cron();
     }
 
     /**
