@@ -247,6 +247,7 @@ const Stores = () => {
 						<PopupComponent
 							open={addStore}
 							width={31.25}
+							className="popup-drawer"
 							onClose={() => {
 								resetForm();
 								setAddStore(false);

@@ -36,6 +36,10 @@ export default {
 					label: 'Identity verification',
 					connected: true,
 					disableBtn: true,
+					...(!appLocalizer.khali_dabba && {
+						badgeColor: 'purple',
+						badgeText: __('PRO', 'multivendorx'),
+					}),
 					desc: 'Verify store identity and business legitimacy',
 					moduleEnabled: 'marketplace-compliance',
 					formFields: [
@@ -123,6 +127,10 @@ export default {
 					moduleEnabled: 'marketplace-compliance',
 					proSetting: true,
 					disableBtn: true,
+					...(!appLocalizer.khali_dabba && {
+						badgeColor: 'purple',
+						badgeText: __('PRO', 'multivendorx'),
+					}),
 					desc: 'Require acceptance of platform terms and policies',
 					formFields: [
 						{
@@ -217,6 +225,10 @@ export default {
 					disableBtn: true,
 					moduleEnabled: 'marketplace-compliance',
 					proSetting: true,
+					...(!appLocalizer.khali_dabba && {
+						badgeColor: 'purple',
+						badgeText: __('PRO', 'multivendorx'),
+					}),
 					desc: 'Verify tax information and monitor transactions',
 					formFields: [
 						{
@@ -328,6 +340,10 @@ export default {
 					icon: 'product',
 					label: 'Product compliance',
 					disableBtn: true,
+					...(!appLocalizer.khali_dabba && {
+						badgeColor: 'purple',
+						badgeText: __('PRO', 'multivendorx'),
+					}),
 					desc: 'Ensure product listings meet marketplace standards',
 					moduleEnabled: 'marketplace-compliance',
 					proSetting: true,

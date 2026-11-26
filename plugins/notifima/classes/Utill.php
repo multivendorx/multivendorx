@@ -333,15 +333,18 @@ class Utill {
         $products_by_id = array();
 
         if ( ! empty( $page_product_ids ) ) {
-            $page_products = wc_get_products(
-                array(
-                    'include' => $page_product_ids,
-                    'limit'   => count( $page_product_ids ),
-                )
-            );
+            // wc_get_products()/WC_Product_Query only ever queries the `product` post type, so a
+            // subscription on a variable product -- whose stored product_id is the *variation's*
+            // id (RestAPI\Controllers\Subscribers::create_item()) -- would never resolve: this
+            // plugin's own `post_type => array('product','product_variation')` query above
+            // confirms variations are a real, expected id source here. wc_get_product() handles
+            // both post types and returns the right object type either way.
+            foreach ( $page_product_ids as $page_product_id ) {
+                $page_product = wc_get_product( $page_product_id );
 
-            foreach ( $page_products as $page_product ) {
-                $products_by_id[ $page_product->get_id() ] = $page_product;
+                if ( $page_product ) {
+                    $products_by_id[ $page_product->get_id() ] = $page_product;
+                }
             }
 
             update_meta_cache( 'post', $page_product_ids );
@@ -358,11 +361,11 @@ class Utill {
 
         foreach ( $subscriber_records as $subscriber ) {
             $product = $products_by_id[ $subscriber->product_id ] ?? null;
-            $image   = get_the_post_thumbnail_url(
-                $subscriber->product_id,
-                'full'
-            );
-            $user    = get_user_by( 'email', $subscriber->email );
+            // get_image_id() (unlike get_the_post_thumbnail_url() on the raw post id) already
+            // falls back to the parent product's image when a variation has none of its own.
+            $image_id = $product ? $product->get_image_id() : 0;
+            $image    = $image_id ? wp_get_attachment_image_url( $image_id, 'full' ) : '';
+            $user     = get_user_by( 'email', $subscriber->email );
 
             $date = wp_date(
                 get_option( 'date_format' ),

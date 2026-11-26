@@ -1,8 +1,7 @@
 /* global appLocalizer */
 import React, { useState } from 'react';
-import { ExpandablePanelInput } from '@zyra/inputs';
+import { SetupWizardInput } from '@zyra/inputs';
 import { __, sprintf } from '@wordpress/i18n';
-import img from '../../assets/images/multivendorx-logo.png';
 interface SettingsState {
 	marketplace_setup: {
 		store_selling_mode: string;
@@ -27,13 +26,6 @@ const SetupWizard: React.FC = () => {
 			approve_store: 'manually',
 		},
 	});
-
-	const inputField = {
-		key: 'setup_wizard',
-		proSetting: false,
-		apiLink: 'settings',
-		modal: [],
-	};
 
 	const methods = [
 		{
@@ -664,7 +656,7 @@ const SetupWizard: React.FC = () => {
 							label: __('Finish', 'multivendorx'),
 							action: 'next',
 							color: 'green',
-							redirect: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=modules`,
+							redirect: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=modules`,
 						},
 					],
 				},
@@ -672,37 +664,30 @@ const SetupWizard: React.FC = () => {
 		},
 	];
 
-	const updateSetting = (key: string, data: SettingsState) => {
-		setValue(data);
-	};
+	const intro = (
+		<div className="welcome-wrapper">
+			<div className="wizard-title">
+				{__('Welcome to the MultivendorX family!', 'multivendorx')}
+			</div>
+			<div className="des">
+				{__(
+					'Thank you for choosing MultiVendorX! This quick setup wizard will help you configure the basic settings and have your marketplace ready in no time. It’s completely optional and shouldn’t take longer than five minutes.',
+					'multivendorx'
+				)}
+			</div>
+		</div>
+	);
 
 	return (
 		<div className="wizard-container">
-			<div className="welcome-wrapper">
-				<img src={img} alt="" />
-				<div className="wizard-title">
-					{__('Welcome to the MultivendorX family!', 'multivendorx')}
-				</div>
-				<div className="des">
-					{__(
-						'Thank you for choosing MultiVendorX! This quick setup wizard will help you configure the basic settings and have your marketplace ready in no time. It’s completely optional and shouldn’t take longer than five minutes.',
-						'multivendorx'
-					)}
-				</div>
-			</div>
-
-			<ExpandablePanelInput
-				key={inputField.key}
-				name={inputField.key}
-				apilink={String(inputField.apiLink)}
-				appLocalizer={appLocalizer}
+			<SetupWizardInput
+				brandName={__('MultiVendorX', 'multivendorx')}
+				apilink="settings"
 				methods={methods}
 				value={value}
-				onChange={(data) => {
-					updateSetting(inputField.key, data);
-				}}
-				isWizardMode={true}
+				onChange={(data) => setValue(data as unknown as SettingsState)}
 				canAccess={true}
+				intro={intro}
 			/>
 		</div>
 	);

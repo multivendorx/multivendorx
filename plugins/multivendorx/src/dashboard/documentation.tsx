@@ -145,6 +145,7 @@ const Documentation: React.FC = () => {
 					onClose={() => setPopupOpen(false)}
 					width='90%'
 					height='90%'
+					className="popup-drawer"
 					header={{
 						icon: 'contact-form',
 						title: activeDocument.title,

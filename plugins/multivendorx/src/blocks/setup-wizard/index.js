@@ -1,8 +1,12 @@
+/* global appLocalizer */
 import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps } from '@wordpress/block-editor';
 import { createRoot } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
+import { configureZyra } from '@zyra/core';
 import SetupWizard from './SetupWizard';
+
+configureZyra(appLocalizer);
 
 // EditBlock for Gutenberg editor
 const EditBlock = () => {

@@ -50,6 +50,10 @@ declare global {
         pro_data: ProData;
         /** The logged-in admin's first name (or display name), for the dashboard greeting. */
         user_first_name?: string;
+        /** VuloMail's install state/CTA data for the "Email Logs" page. */
+        vulomail: VuloMailData;
+        /** VuloForm's install state/form id for the Subscription Form Designer settings tab. */
+        vuloform: VuloFormAdminData;
     }
 
     interface Subscription {
@@ -60,10 +64,38 @@ declare global {
         lead_time?: string;
         khali_dabba?: boolean;
         email?: string;
+        /** The configured VuloForm form id, 0 when none is set. */
+        vuloform_form_id?: number;
+        /** VuloForm's REST namespace, e.g. `vuloform/v1`. */
+        vuloform_rest_namespace?: string;
+    }
+
+    interface VuloMailData {
+        is_vulomail_active: boolean;
+        install_url: string;
+        email_logs_url: string;
+    }
+
+    interface VuloFormAdminData {
+        installed: boolean;
+        plugin_url: string;
+        can_activate: boolean;
+        form_id: number;
+    }
+
+    /** Printed on the Plugins screen only, when VuloForm is active (Installer::enqueue_deactivation_confirm_assets()). */
+    interface VuloformDeactivateLocalizer {
+        plugin_file: string;
+        title: string;
+        description: string;
+        question: string;
+        cancel: string;
+        confirm: string;
     }
 
     var appLocalizer: AppLocalizer;
     var subscription: Subscription;
+    var vuloformDeactivateLocalizer: VuloformDeactivateLocalizer;
 
     module '*.png';
     module '*.jpg';

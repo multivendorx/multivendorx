@@ -291,6 +291,7 @@ const CustomerQuestions: React.FC = () => {
 					onClose={() => setSelectedQueries(null)}
 					width={30}
 					height="70%"
+					className="popup-drawer"
 					header={{
 						icon: 'question',
 						title: __('Answer Question', 'multivendorx'),

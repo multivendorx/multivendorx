@@ -1,7 +1,6 @@
 import { registerMultiVendorXRoute } from './routeRegistry';
 
 import Settings from './components/Settings/Settings';
-import Modules from './components/Modules/Modules';
 import Stores from './components/Stores/Stores';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import StatusAndToolsRedirect from './components/Settings/StatusAndToolsRedirect';
@@ -21,7 +20,6 @@ registerMultiVendorXRoute({
 	tab: 'status-tools',
 	component: StatusAndToolsRedirect,
 });
-registerMultiVendorXRoute({ tab: 'modules', component: Modules });
 registerMultiVendorXRoute({ tab: 'stores', component: Stores });
 registerMultiVendorXRoute({ tab: 'commissions', component: Commissions });
 registerMultiVendorXRoute({ tab: 'customers', component: CustomersFeedback });

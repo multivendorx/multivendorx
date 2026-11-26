@@ -19,6 +19,34 @@ defined( 'ABSPATH' ) || exit;
 class Admin {
 
     /**
+     * Slug of the "Email Logs" submenu page this plugin registers under its own top-level menu.
+     *
+     * @var string
+     */
+    const EMAIL_LOGS_PAGE_SLUG = 'notifima-email-logs';
+
+    /**
+     * VuloMail's main plugin file, as used by `is_plugin_active()`.
+     *
+     * @var string
+     */
+    const VULOMAIL_PLUGIN_FILE = 'vulomail/vulomail.php';
+
+    /**
+     * VuloMail's plugin slug (its directory/WordPress.org slug).
+     *
+     * @var string
+     */
+    const VULOMAIL_PLUGIN_SLUG = 'vulomail';
+
+    /**
+     * Slug of VuloMail's own Email Logs admin page.
+     *
+     * @var string
+     */
+    const VULOMAIL_EMAIL_LOGS_PAGE_SLUG = 'vulomail#&tab=logs';
+
+    /**
      * Admin constructor.
      */
     public function __construct() {
@@ -119,6 +147,16 @@ class Admin {
                 );
             }
 
+            // Register the "Email Logs" submenu page (a VuloMail install pitch / redirect).
+            add_submenu_page(
+                'notifima',
+                __( 'Email Logs', 'notifima' ),
+                "<span style='position: relative; display: block; width: 100%;' class='admin-menu'>" . esc_html__( 'Email Logs', 'notifima' ) . '</span>',
+                'manage_options',
+                self::EMAIL_LOGS_PAGE_SLUG,
+                array( $this, 'render_email_logs_page' )
+            );
+
             // Register upgrade to pro submenu page.
             if ( ! Utill::is_khali_dabba() ) {
                 add_submenu_page(
@@ -141,6 +179,15 @@ class Admin {
      */
     public function create_setting_page() {
         echo '<div id="admin-main-wrapper" class="admin-main-wrapper"></div>';
+    }
+
+    /**
+     * Render the "Email Logs" page mount point. React root from here.
+     *
+     * @return void
+     */
+    public function render_email_logs_page() {
+        echo '<div id="notifima-email-logs" class="wrap"></div>';
     }
 
     /**
@@ -202,14 +249,12 @@ class Admin {
      * @return void
      */
     public function enqueue_admin_assets() {
-        if ( get_current_screen()->id === 'toplevel_page_notifima' ) {
-            wp_enqueue_script( 'wp-element' );
+        $screen_id = get_current_screen()->id;
 
-            FrontendScripts::admin_load_scripts();
-            FrontendScripts::enqueue_script( 'notifima-components-script' );
-            FrontendScripts::enqueue_script( 'notifima-admin-script' );
-			FrontendScripts::enqueue_style( 'notifima-components-style' );
-			FrontendScripts::localize_scripts( 'notifima-admin-script' );
+        if ( 'toplevel_page_notifima' === $screen_id || 'notifima_page_' . self::EMAIL_LOGS_PAGE_SLUG === $screen_id ) {
+            // Localizes `appLocalizer`, including the "Email Logs" page's VuloMail install
+            // state/CTA data (FrontendScripts::get_vulomail_data()).
+            FrontendScripts::enqueue_admin_bundle();
         }
 
         FrontendScripts::enqueue_style( 'notifima-admin-style' );

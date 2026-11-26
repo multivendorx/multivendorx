@@ -7,6 +7,8 @@
 
 namespace MultiVendorX;
 
+use MultiVendorX\Integrations\VuloForm\Migration as VuloFormMigration;
+use MultiVendorX\Integrations\VuloMail\Migration as VuloMailMigration;
 use MultiVendorX\Notifications\Notifications;
 use MultiVendorX\Store\Store;
 use MultiVendorX\Utill;
@@ -262,22 +264,14 @@ class Install {
         }
 
         if ( version_compare( $previous_version, '5.0.21', '<' ) ) {
-            $events_delivery_settings = get_option( Utill::MULTIVENDORX_SETTINGS['events-delivery'], array() );
-            $has_email_recipient      = ! empty( $events_delivery_settings['receiver_email_address'] );
-            $has_sms_recipient        = ! empty( $events_delivery_settings['sms_receiver_phone_number'] );
-
-            if ( $has_email_recipient || $has_sms_recipient ) {
-                update_option( 'multivendorx_vulomail_migration_status', 'pending' );
-                update_option( 'multivendorx_vulomail_migration_reason', 'migrate' );
-            }
+            VuloMailMigration::maybe_migrate();
 
             $this->migrate_email_template_customizer_settings();
             $this->migrate_event_rule_email_bodies();
         }
 
-        if ( version_compare( $previous_version, '5.0.23', '<' ) ) {
-            // Store and wholesale registration forms are built and rendered by VuloForm from 5.0.23.
-            update_option( Integrations\VuloFormInstaller::STATUS_OPTION, 'pending' );
+        if ( version_compare( $previous_version, '5.1.0', '<' ) ) {
+            VuloFormMigration::maybe_migrate();
         }
     }
 
@@ -353,14 +347,10 @@ class Install {
             $this->set_default_modules();
             $this->set_default_settings();
 
-            // A brand new site has no prior email/SMS settings to migrate, but VuloMail is
-            // still installed as the delivery plugin going forward -- Integrations\VuloMailMigration
-            // picks this up on the next wp-admin visit and shows an install-only notice, not the
-            // "your settings were migrated" one used for sites upgrading from before 5.0.21.
-            update_option( 'multivendorx_vulomail_migration_status', 'pending' );
-            update_option( 'multivendorx_vulomail_migration_reason', 'install' );
-            // VuloForm builds and renders the store/wholesale registration forms.
-            update_option( Integrations\VuloFormInstaller::STATUS_OPTION, 'pending' );
+            // A brand new site has no prior email/SMS settings to migrate -- VuloMail/VuloForm
+            // still get installed as the delivery/forms plugins going forward, unconditionally,
+            // by Integrations\VuloMail\Integration's and Integrations\VuloForm\Integration's own
+            // PluginInstaller on the next wp-admin visit. Nothing to flag here.
         } else {
             $this->do_migration();
         }

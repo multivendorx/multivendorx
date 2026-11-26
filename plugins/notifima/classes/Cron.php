@@ -109,8 +109,6 @@ class Cron {
                 return;
         }
 
-        $email = WC()->mailer()->emails['Subscriber_Report_Email'];
-
         $subscribers = Utill::get_subscribers(
             array(
                 'start_date' => $start_date,
@@ -131,10 +129,25 @@ class Cron {
             );
         }
 
-        $email->trigger(
-            array_values( $subscriber_report ),
-            wp_date( 'Y-m-d H:i:s', $start_date ),
-            wp_date( 'Y-m-d H:i:s', $now )
+        $subscriber_rows = '';
+
+        foreach ( $subscriber_report as $row ) {
+            $subscriber_rows .= sprintf(
+                '<tr><td>%s</td><td>%s</td></tr>',
+                esc_html( $row['product_name'] ),
+                esc_html( $row['count'] )
+            );
+        }
+
+        Integrations\VuloMail\Integration::send(
+            Integrations\VuloMail\Templates::SUBSCRIBER_REPORT,
+            get_option( 'admin_email' ),
+            array(
+                '{start_date}'        => wp_date( 'Y-m-d H:i:s', $start_date ),
+                '{end_date}'          => wp_date( 'Y-m-d H:i:s', $now ),
+                '{subscriber_rows}'   => $subscriber_rows,
+                '{total_subscribers}' => (string) array_sum( wp_list_pluck( $subscriber_report, 'count' ) ),
+            )
         );
     }
 }
