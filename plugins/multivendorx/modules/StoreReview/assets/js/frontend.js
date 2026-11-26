@@ -2,16 +2,15 @@
 
 jQuery(document).ready(function ($) {
 	const { __ } = wp.i18n;
-	function getStoreId() {
-		return $('#store_for_rating').val() || 0;
-	}
+	const store_id = $('#store_for_rating').val();
+
 	// Load Average Ratings
 	function loadAverageRatings() {
 		$.post(
 			review.ajaxurl,
 			{
 				action: 'multivendorx_store_review_avg',
-				store_id: getStoreId(),
+				store_id: store_id,
 				nonce: review.nonce,
 			},
 			function (res) {
@@ -31,20 +30,20 @@ jQuery(document).ready(function ($) {
 					let ratingPercentage = (ratingValue / 5) * 100;
 
 					html += `<div class="star-rating" role="img" aria-label="${__(
-						'Rated',
-						'multivendorx'
-					)} ${ratingValue} ${__('out of 5', 'multivendorx')}">
+								'Rated',
+								'multivendorx'
+							)} ${ratingValue} ${__('out of 5', 'multivendorx')}">
 							<span style="width: ${ratingPercentage}%;">
 								<strong class="rating">${ratingValue}</strong> ${__(
-						'out of 5',
-						'multivendorx'
-					)}
+												'out of 5',
+												'multivendorx'
+											)}
 							</span>
 						</div>`;
 
 					html += `<div class="total-number">${total} ${total !== 1
-						? __('Ratings', 'multivendorx')
-						: __('Rating', 'multivendorx')
+							? __('Ratings', 'multivendorx')
+							: __('Rating', 'multivendorx')
 						}</div>
 						</div>
 						<div class="rating-count">`;
@@ -85,7 +84,7 @@ jQuery(document).ready(function ($) {
 			review.ajaxurl,
 			{
 				action: 'multivendorx_store_review_list',
-				store_id: getStoreId(),
+				store_id: store_id,
 				nonce: review.nonce,
 			},
 			function (res) {
@@ -97,8 +96,9 @@ jQuery(document).ready(function ($) {
 	}
 
 	// Submit Review
-	$(document).on('click', '#review_submit', function (e) {
+	$('#review_submit').on('click', function (e) {
 		e.preventDefault();
+
 		// Clear previous messages
 		$('.review-message').remove();
 
@@ -123,7 +123,7 @@ jQuery(document).ready(function ($) {
 		const formData = new FormData();
 		formData.append('action', 'multivendorx_store_review_submit');
 		formData.append('nonce', review.nonce);
-		formData.append('store_id', getStoreId());
+		formData.append('store_id', store_id);
 		formData.append('review_title', title);
 		formData.append('review_content', content);
 
@@ -258,8 +258,7 @@ jQuery(document).ready(function ($) {
 		});
 	});
 
-	$(document).ready(function () {
-		loadAverageRatings();
-		loadReviews();
-	});
+	// Initial Load
+	loadAverageRatings();
+	loadReviews();
 });
