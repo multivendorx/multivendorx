@@ -1,6 +1,4 @@
-import { createElement } from 'react';
 import { __ } from '@wordpress/i18n';
-import RegistrationFormPanel from '../../VuloForm/RegistrationFormPanel';
 
 export default {
 	id: 'registration',
@@ -25,5 +23,4 @@ export default {
 			displayPosition: 'notice',
 		},
 	],
-	PanelComponent: () => createElement(RegistrationFormPanel),
 };

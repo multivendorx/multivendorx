@@ -9,7 +9,7 @@ import { useLocation, Link } from 'react-router-dom';
 import EventRules from './Notification/EventRules.tsx';
 import StoreStatus from './StoreConfiguration/StoreStatus.tsx';
 import Invoice from './StoreConfiguration/Invoice';
-import RegistrationFormPanel from '../VuloForm/RegistrationFormPanel';
+import RegistrationFormPanel from './StoreConfiguration/RegistrationFormPanel';
 import ProductCompliance from './Privacy & Compliance/ProductCompliance.tsx';
 import PluginModules from '../Modules/Modules.tsx';
 import LicensePanel from '../License/LicensePanel';
@@ -28,6 +28,7 @@ const PANELS: Record<string, React.ComponentType> = {
 	invoices: Invoice,
 	modules: PluginModules,
 	license: LicensePanel,
+	registration: RegistrationFormPanel,
 };
 
 const Settings: React.FC<SettingsProps> = () => {

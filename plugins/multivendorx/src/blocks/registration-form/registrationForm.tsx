@@ -45,7 +45,6 @@ const RegistrationForm = () => {
 	const [inputs, setInputs] = useState<RegistrationResponse | null>(null);
 	const [allStoreData, setAllStoreData] = useState<StoreData[]>([]);
 	const [storeData, setStoreData] = useState<StoreData | null>(null);
-	const [submitted, setSubmitted] = useState(false);
 
 	// Step wizard state
 	const [currentStep, setCurrentStep] = useState<1 | 2>(1);
@@ -129,10 +128,9 @@ const RegistrationForm = () => {
 
 	// VuloForm's script swaps the <form> for a `.vuloform-message--success` node on success --
 	// the store is created/updated server-side (SubmissionBridge), so this only needs to react
-	// to it: show a confirmation, then send the vendor to their dashboard.
+	// to it by sending the vendor to their dashboard. VuloForm's own success message is shown
+	// in its place, so no separate confirmation is rendered here.
 	const handleRegistrationSubmitted = () => {
-		setSubmitted(true);
-
 		setTimeout(() => {
 			if (registrationForm.dashboard_redirect_url) {
 				window.location.href = registrationForm.dashboard_redirect_url;
@@ -164,18 +162,6 @@ const RegistrationForm = () => {
 				}}
 				onSubmitted={handleRegistrationSubmitted}
 			/>
-			{submitted && (
-				<div className="woocommerce-notices-wrapper">
-					<ul className="woocommerce-message" role="alert">
-						<li>
-							{__(
-								'Store registration submitted successfully',
-								'multivendorx'
-							)}
-						</li>
-					</ul>
-				</div>
-			)}
 		</div>
 	);
 

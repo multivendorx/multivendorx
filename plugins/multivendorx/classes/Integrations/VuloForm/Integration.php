@@ -102,7 +102,7 @@ class Integration {
         // bail if that's 0.
         $applicant_id = (int) ( $values[ Templates::APPLICANT_FIELD_KEY ] ?? 0 );
 
-        if ( ! $applicant_id ) {
+        if ( ! $applicant_id || ! get_userdata( $applicant_id ) ) {
             return;
         }
 

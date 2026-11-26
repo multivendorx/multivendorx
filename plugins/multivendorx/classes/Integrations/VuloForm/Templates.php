@@ -83,10 +83,12 @@ class Templates {
                 'default' => '{query:description}',
             ),
             array(
-                'type'    => 'phone',
-                'key'     => 'phone',
-                'label'   => __( 'Phone', 'multivendorx' ),
-                'default' => '{query:phone}',
+                'type'              => 'phone',
+                'key'               => 'phone',
+                'label'             => __( 'Phone', 'multivendorx' ),
+                'default'           => '{query:phone}',
+                // Without this, VuloForm mishandles the field's nested value as a plain string.
+                'show_country_code' => true,
             ),
             array(
                 'type'    => 'email',

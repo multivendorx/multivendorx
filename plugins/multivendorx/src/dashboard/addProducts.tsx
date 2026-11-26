@@ -616,6 +616,7 @@ const AddProduct = () => {
 							setAppeal(false);
 						}}
 						width={31.25}
+						className="popup-drawer"
 						header={{
 							icon: 'announcement',
 							title: __(

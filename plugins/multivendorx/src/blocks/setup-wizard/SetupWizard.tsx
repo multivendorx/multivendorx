@@ -656,7 +656,7 @@ const SetupWizard: React.FC = () => {
 							label: __('Finish', 'multivendorx'),
 							action: 'next',
 							color: 'green',
-							redirect: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=modules`,
+							redirect: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=modules`,
 						},
 					],
 				},

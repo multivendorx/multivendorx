@@ -268,6 +268,7 @@ const PendingStores: React.FC<object> = () => {
 						setRejectReason('');
 					}}
 					width={31.25}
+					className="popup-drawer"
 					header={{
 						icon: 'cart',
 						title: __('Reason', 'multivendorx'),

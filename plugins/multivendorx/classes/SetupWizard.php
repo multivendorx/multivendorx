@@ -74,7 +74,7 @@ class SetupWizard {
 					'apiUrl'       => untrailingslashit( get_rest_url() ),
 					'nonce'        => wp_create_nonce( 'wp_rest' ),
 					'restUrl'      => MultiVendorX()->rest_namespace,
-					'redirect_url' => admin_url() . 'admin.php?page=multivendorx#&tab=modules',
+					'redirect_url' => admin_url() . 'admin.php?page=multivendorx#&tab=settings&subtab=modules',
                     'admin_url'    => admin_url(),
 				)
             );

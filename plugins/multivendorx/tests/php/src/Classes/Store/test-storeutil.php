@@ -67,6 +67,16 @@ class MultiVendorX_StoreUtil_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A flat-string phone meta (no country code) -- e.g. a VuloForm 'phone' field submitted
+	 * without 'show_country_code' set -- is returned as-is rather than silently dropped.
+	 *
+	 * @return void
+	 */
+	public function test_get_phone_returns_flat_string_meta_as_is() {
+		$this->assertSame( '5551234567', \MultiVendorX\Store\StoreUtil::get_phone( '5551234567' ) );
+	}
+
+	/**
 	 * Get_store_capability() returns a non-empty map of capability groups, each with the
 	 * label/desc/capability shape the admin UI and capability-assignment logic rely on.
 	 *
