@@ -521,8 +521,10 @@ class FrontendScripts {
                         // VuloForm's embed fetch carries no X-WP-Nonce header, so the REST layer
                         // resets the current user to anonymous for that request and the form's
                         // `applicant_user_id` field's `{user:id}` default never resolves -- force
-                        // the real value in client-side instead (see VuloFormEmbed.tsx).
-                        'current_user_id'    => MultiVendorX()->current_user_id,
+                        // the real value in client-side instead (see VuloFormEmbed.tsx). Fetched
+                        // live rather than via the cached `MultiVendorX()->current_user_id`
+                        // container property, which is set once at bootstrap.
+                        'current_user_id'    => get_current_user_id(),
                     ),
                 ),
                 'multivendorx-registration-form-view-script' => array(
@@ -537,7 +539,7 @@ class FrontendScripts {
                             get_permalink( (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) )
                         ),
                         // See the comment on the editor script's own 'current_user_id' above.
-                        'current_user_id'    => MultiVendorX()->current_user_id,
+                        'current_user_id'    => get_current_user_id(),
                     ),
                 ),
                 'multivendorx-marketplace-stores-editor-script' => array(

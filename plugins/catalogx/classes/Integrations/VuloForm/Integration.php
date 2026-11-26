@@ -98,19 +98,12 @@ class Integration {
             }
         }
 
-        $applicant_id      = !empty( $values['user_id'] ) ? absint( $values['user_id'] ) : 0;
-        if ( $applicant_id ) {
-            wp_set_current_user( $applicant_id );
-        }
-
         $request = new \WP_REST_Request( 'POST', '/' . CatalogX()->rest_namespace . '/enquiries' );
         // No X-WP-Nonce header available here, so issue one for this same request.
         $request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
         $request->set_body_params( $body );
 
         $response = rest_do_request( $request );
-
-        wp_set_current_user( CatalogX()->current_user_id );
 
         if ( $response->is_error() ) {
             Utill::log( $response->as_error() );

@@ -47,9 +47,6 @@ const EnquiryForm = () => {
                     fieldValues={{
                         product_id: productId,
                         quantity,
-                        user_id: formData.current_user_id
-                            ? String(formData.current_user_id)
-                            : undefined,
                     }}
                     onSubmitted={() => {
                         if (formData.redirect_url) {

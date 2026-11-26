@@ -31,11 +31,11 @@ type StoreData = {
 
 /**
  * The form itself is now built and rendered in VuloForm -- actually registering/updating the
- * store happens server-side (`MultiVendorX\VuloForm\SubmissionBridge`, hooked on
- * `vuloform_submission_created`) once VuloForm accepts the submission, reusing the existing
- * `multivendorx/v1/stores` REST route as-is. This component just handles the step wizard UI
- * around it, the store picker (for a vendor who already has one, re-editing it), and prefilling
- * the embed with that vendor's existing data.
+ * store happens server-side (`MultiVendorX\Integrations\VuloForm\Integration::maybe_register_store()`,
+ * hooked on `vuloform_submission_created`) once VuloForm accepts the submission, reusing the
+ * existing `multivendorx/v1/stores` REST route as-is. This component just handles the step
+ * wizard UI around it, the store picker (for a vendor who already has one, re-editing it), and
+ * prefilling the embed with that vendor's existing data.
  */
 const RegistrationForm = () => {
 	const [stores, setStores] = useState<StoreOption[]>([]);
@@ -127,7 +127,7 @@ const RegistrationForm = () => {
 	};
 
 	// VuloForm's script swaps the <form> for a `.vuloform-message--success` node on success --
-	// the store is created/updated server-side (SubmissionBridge), so this only needs to react
+	// the store is created/updated server-side (Integration::maybe_register_store()), so this only needs to react
 	// to it by sending the vendor to their dashboard. VuloForm's own success message is shown
 	// in its place, so no separate confirmation is rendered here.
 	const handleRegistrationSubmitted = () => {

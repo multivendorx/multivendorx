@@ -1,5 +1,6 @@
 /* global appLocalizer */
 import React, { useEffect } from 'react';
+import { applyFilters } from '@wordpress/hooks';
 import { SettingProvider } from '../../contexts/SettingContext';
 import { getTemplateData } from '../../services/templateService';
 
@@ -20,16 +21,22 @@ interface SettingsProps {
 	id: string;
 }
 
-// Tabs drawn by a component of their own instead of the declarative form.
-const PANELS: Record<string, React.ComponentType> = {
-	'event-rules': EventRules,
-	'store-status': StoreStatus,
-	'product-compliance': ProductCompliance,
-	invoices: Invoice,
-	modules: PluginModules,
-	license: LicensePanel,
-	registration: RegistrationFormPanel,
-};
+// Tabs drawn by a component of their own instead of the declarative form. Pro modules can't
+// import a component in here directly (this file is free-plugin-only), so `multivendorx_settings_panels`
+// lets them add their own tab id => component entries -- e.g. a Pro module's own `src/admin/*.ts`
+// tab config scans this same hook's handler for any `PanelComponent` field it defines.
+const PANELS: Record<string, React.ComponentType> = applyFilters(
+	'multivendorx_settings_panels',
+	{
+		'event-rules': EventRules,
+		'store-status': StoreStatus,
+		'product-compliance': ProductCompliance,
+		invoices: Invoice,
+		modules: PluginModules,
+		license: LicensePanel,
+		registration: RegistrationFormPanel,
+	}
+) as Record<string, React.ComponentType>;
 
 const Settings: React.FC<SettingsProps> = () => {
 	const settingsArray = getAvailableSettings(getTemplateData('settings'), []);

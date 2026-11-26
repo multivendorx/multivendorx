@@ -511,7 +511,6 @@ class FrontendScripts {
                                 : '',
                             'khali_dabba'         => Utill::is_khali_dabba(),
                             'product_data'        => apply_filters( 'catalogx_product_data', array() ),
-                            'current_user_id'    => CatalogX()->current_user_id,
                             'default_placeholder' => array(
                                 'name'  => $current_user->display_name,
                                 'email' => $current_user->user_email,
