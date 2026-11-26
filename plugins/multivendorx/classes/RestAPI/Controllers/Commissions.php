@@ -194,13 +194,6 @@ class Commissions extends \WP_REST_Controller {
                     case 'order_id':
                         $filter['order_id'] = (int) $search_value;
                         break;
-
-                    case 'all':
-                    default:
-                        $filter['ID']        = (int) $search_value;
-                        $filter['order_id']  = (int) $search_value;
-                        $filter['condition'] = 'OR';
-                        break;
                 }
             }
 

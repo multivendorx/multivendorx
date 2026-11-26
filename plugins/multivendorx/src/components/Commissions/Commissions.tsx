@@ -300,7 +300,7 @@ const Commission: React.FC = () => {
 						count:
 							Number(
 								response.headers[
-									'x-wp-status-partially-refunded'
+								'x-wp-status-partially-refunded'
 								]
 							) || 0,
 					},
@@ -386,6 +386,7 @@ const Commission: React.FC = () => {
 	) => {
 		const params = {
 			status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+			search_action: query.searchAction || 'commission_id',
 			search_value: query.searchValue || '',
 			start_date: query.filter?.created_at?.startDate
 				? formatLocalDate(query.filter.created_at.startDate)
@@ -458,7 +459,19 @@ const Commission: React.FC = () => {
 	const tableProps = {
 		headers,
 		hideHeader: true,
-		search: {},
+		search: {
+			placeholder: __('Search...', 'multivendorx'),
+			options: [
+				{
+					label: __('Commission Id', 'multivendorx'),
+					value: 'commission_id',
+				},
+				{
+					label: __('Order Id', 'multivendorx'),
+					value: 'order_id',
+				},
+			],
+		},
 		filters,
 		format: appLocalizer.date_format,
 		currency: {

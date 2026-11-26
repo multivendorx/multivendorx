@@ -20,6 +20,7 @@ import { applyFilters } from '@wordpress/hooks';
 interface StoreOwner {
 	label: string;
 	value: string;
+	email?: string;
 	[key: string]: unknown;
 }
 
@@ -55,7 +56,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 	const { modules } = useModules();
 	const [formData, setFormData] = useState<StoreSquadFormData>({});
 	const [showPrimaryOwnerSelect, setShowPrimaryOwnerSelect] =
-		useState<boolean>(true);
+		useState<boolean>(false);
 	const [selectedOwnerInfo, setSelectedOwnerInfo] =
 		useState<StoreOwner | null>(null);
 	const [showAdditionalOwnerSelect, setShowAdditionalOwnerSelect] =
@@ -89,22 +90,25 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 				}
 			}
 
-			// Load existing additional owners from store_owners array
-			// if (data.store_owners && Array.isArray(data.store_owners)) {
-			// 	const loadedOwners = data.store_owners.map(
-			// 		(ownerValue: string) => {
-			// 			const owner = (appLocalizer.store_owners || []).find(
-			// 				(opt: StoreOwner) => opt.value === ownerValue
-			// 			);
-			// 			return {
-			// 				id: ownerValue,
-			// 				label: owner?.label || ownerValue,
-			// 				email: owner?.value || ownerValue,
-			// 			};
-			// 		}
-			// 	);
-			// 	setAdditionalOwners(loadedOwners);
-			// }
+			const ownerOptions = appLocalizer.store_owners || [];
+			setAdditionalOwners(
+				(data.store_owners || [])
+					.filter(
+						(ownerId: string | number) =>
+							String(ownerId) !== String(data.primary_owner)
+					)
+					.map((ownerId: string | number) => {
+						const owner = ownerOptions.find(
+							(opt: StoreOwner) =>
+								String(opt.value) === String(ownerId)
+						);
+						return {
+							id: String(ownerId),
+							label: owner?.label || String(ownerId),
+							email: owner?.email || '',
+						};
+					})
+			);
 		});
 	}, [id]);
 
@@ -277,9 +281,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 														'multivendorx'
 													),
 													onClick: () =>
-														setShowPrimaryOwnerSelect(
-															true
-														),
+														setShowPrimaryOwnerSelect((prev) => !prev),
 													color: 'blue',
 													icon: 'switch-store',
 												},
@@ -316,7 +318,7 @@ const StoreSquad: React.FC<StoreSquadProps> = ({ id }) => {
 													'Email: ',
 													'multivendorx'
 												),
-												value: 'earthyways@test.com',
+												value: owner.email,
 											},
 										]}
 										badges={[
