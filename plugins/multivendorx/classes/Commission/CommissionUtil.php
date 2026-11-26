@@ -90,30 +90,16 @@ class CommissionUtil {
         $table    = $wpdb->prefix . Utill::TABLES['commission'];
         $is_count = ! empty( $args['count'] );
 
-        $conditions    = array();
-        $or_conditions = array();
-        $values        = array();
-
-        $use_or_search = ( isset( $args['condition'] ) && 'OR' === strtoupper( trim( $args['condition'] ) ) );
+        $conditions = array();
+        $values     = array();
 
         foreach ( array( 'ID', 'order_id', 'store_id', 'customer_id' ) as $filter_key ) {
             if ( isset( $args[ $filter_key ] ) ) {
                 $ids          = array_map( 'intval', (array) $args[ $filter_key ] );
                 $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-                $condition    = $filter_key . ' IN (' . $placeholders . ')';
-
-                if ( $use_or_search && in_array( $filter_key, array( 'ID', 'order_id' ), true ) ) {
-                    $or_conditions[] = $condition;
-                } else {
-                    $conditions[] = $condition;
-                }
-
-                $values = array_merge( $values, $ids );
+                $conditions[] = $filter_key . ' IN (' . $placeholders . ')';
+                $values       = array_merge( $values, $ids );
             }
-        }
-
-        if ( ! empty( $or_conditions ) ) {
-            $conditions[] = '( ' . implode( ' OR ', $or_conditions ) . ' )';
         }
 
         if ( isset( $args['status'] ) && '' !== $args['status'] ) {
@@ -127,7 +113,8 @@ class CommissionUtil {
             $values[]     = (string) $args['end_date'];
         }
 
-        $where_sql = $conditions ? ' WHERE ' . implode( ' AND ', $conditions ) : '';
+        $join      = ( 'OR' === strtoupper( trim( $args['condition'] ?? 'AND' ) ) ) ? ' OR ' : ' AND ';
+        $where_sql = $conditions ? ' WHERE ' . implode( $join, $conditions ) : '';
 
         if ( $is_count ) {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
