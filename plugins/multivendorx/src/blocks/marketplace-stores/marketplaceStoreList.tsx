@@ -574,7 +574,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 						</select>
 					</div>
 					<p>
-						{__('Showing', 'multivendorx')} {data.length}{' '}
+						{__('Showing', 'multivendorx')} {visibleStores.length}{' '}
 						{__('stores', 'multivendorx')}
 					</p>
 					<div className={`store-list-wrapper is-${viewMode}`}>

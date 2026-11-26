@@ -343,6 +343,7 @@ class FrontendScripts {
                 $owners_list[] = array(
                     'label' => $owner->display_name,
                     'value' => $owner->ID,
+                    'email' => $owner->user_email,
                 );
             }
         }

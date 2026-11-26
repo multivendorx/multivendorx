@@ -768,7 +768,9 @@ class Stores extends \WP_REST_Controller {
             );
 
             foreach ( (array) $store->meta_data as $key => $values ) {
-                $response[ $key ] = $values;
+                if ( ! array_key_exists( $key, $response ) ) {
+                    $response[ $key ] = $values;
+                }
             }
 
             return rest_ensure_response( $response );
@@ -1689,6 +1691,9 @@ class Stores extends \WP_REST_Controller {
         // Sorting.
         if ( ! empty( $payload['order_by'] ) ) {
             $args['order_by'] = sanitize_text_field( $payload['order_by'] );
+        }
+
+        if ( ! empty( $payload['order'] ) ) {
             $args['order']    = sanitize_text_field( $payload['order'] );
         }
 
