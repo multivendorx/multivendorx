@@ -65,7 +65,11 @@ class Shortcode {
         wp_deregister_style( 'wc-blocks-style' );
         FrontendScripts::enqueue_script( 'multivendorx-vendor-script' );
         FrontendScripts::enqueue_script( 'multivendorx-dashboard-script' );
-        FrontendScripts::localize_scripts( 'multivendorx-dashboard-script' );
+
+         if ( is_user_logged_in() ) {
+            FrontendScripts::localize_scripts( 'multivendorx-dashboard-script' );
+        }
+
         FrontendScripts::enqueue_style( 'multivendorx-dashboard-style' );
         wp_enqueue_script( 'wp-element' );
         wp_enqueue_media();
