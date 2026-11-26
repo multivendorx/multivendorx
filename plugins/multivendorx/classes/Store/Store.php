@@ -330,6 +330,12 @@ class Store {
 		if ( ! empty( $wpdb->last_error ) && MultiVendorX()->show_advanced_log ) {
 			MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
 		}
+
+		$this->meta_data[ $key ] = maybe_unserialize( $value );
+
+		if ( isset( self::$store_cache[ $this->id ] ) ) {
+			self::$store_cache[ $this->id ]['meta_data'] = $this->meta_data;
+		}
 	}
 
     /**

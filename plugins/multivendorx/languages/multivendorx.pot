@@ -1,14 +1,14 @@
 # Copyright (c) 2026 MultiVendorX Inc. All Rights Reserved.
 msgid ""
 msgstr ""
-"Project-Id-Version: MultiVendorX 5.0.22\n"
+"Project-Id-Version: MultiVendorX 5.1.0\n"
 "Report-Msgid-Bugs-To: https://multivendorx.com/contact/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-26T11:17:26+00:00\n"
+"POT-Creation-Date: 2026-11-26T12:59:12+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: multivendorx\n"
@@ -17,10 +17,13 @@ msgstr ""
 #. Author of the plugin
 #: dc_product_vendor.php
 #: classes/Abilities/Abilities.php:67
-#: classes/FrontendScripts.php:411
+#: classes/FrontendScripts.php:440
+#: classes/Integrations/VuloForm/Templates.php:44
+#: classes/Integrations/VuloMail/Templates.php:41
 #: classes/Pattern.php:46
 #: classes/Status.php:43
 #: modules/Elementor/WidgetLoader.php:106
+#: assets/js/block/setup-wizard/index.js:1
 msgid "MultiVendorX"
 msgstr ""
 
@@ -155,7 +158,7 @@ msgstr ""
 
 #: classes/Admin.php:126
 #: classes/RestAPI/Controllers/Dashboard.php:237
-#: classes/Tracker.php:137
+#: classes/Tracker.php:140
 #: assets/js/index.js:1
 #: assets/js/index.js:5
 msgid "Settings"
@@ -163,8 +166,8 @@ msgstr ""
 
 #: classes/Admin.php:178
 #: classes/Admin.php:179
-#: classes/MultiVendorX.php:265
-#: classes/Tracker.php:148
+#: classes/MultiVendorX.php:253
+#: classes/Tracker.php:151
 #: assets/js/index.js:1
 #: assets/js/index.js:5
 msgid "Upgrade to Pro"
@@ -314,62 +317,114 @@ msgstr ""
 msgid "Go to store dashboard"
 msgstr ""
 
-#: classes/FrontendScripts.php:456
+#: classes/FrontendScripts.php:486
 msgid "Select an item..."
 msgstr ""
 
-#: classes/FrontendScripts.php:518
-#: classes/FrontendScripts.php:534
-msgid "This field is required"
-msgstr ""
-
-#: classes/FrontendScripts.php:519
-#: classes/FrontendScripts.php:535
-msgid "Invalid email format"
-msgstr ""
-
-#. translators: %s: companion plugin name, e.g. VuloMail.
-#: classes/Integrations/CompanionPlugin.php:242
+#. translators: %s: companion plugin slug, e.g. vulomail.
+#: classes/Integrations/PluginInstaller.php:179
 #, php-format
-msgid "%s could not be downloaded or installed."
+msgid "%s could not be installed."
 msgstr ""
 
-#: classes/Integrations/CompanionPlugin.php:277
-msgid "Unknown error."
-msgstr ""
-
-#. translators: %s: companion plugin name, e.g. VuloMail.
-#: classes/Integrations/CompanionPlugin.php:288
+#. translators: %s: error message.
+#: classes/Integrations/VuloForm/Integration.php:39
 #, php-format
-msgid "MultiVendorX couldn't set up %s"
+msgid "MultiVendorX could not automatically install the VuloForm plugin needed for its forms: %s. Please install and activate \"VuloForm\" manually from the Plugins screen."
 msgstr ""
 
-#: classes/Integrations/CompanionPlugin.php:294
-msgid "Retry"
+#: classes/Integrations/VuloForm/Migration.php:91
+#: classes/Integrations/VuloForm/Templates.php:37
+msgid "Register your store"
 msgstr ""
 
-#: classes/Integrations/CompanionPlugin.php:311
-msgid "You are not allowed to do this."
+#: classes/Integrations/VuloForm/Migration.php:92
+msgid "Store registration form"
 msgstr ""
 
-#: classes/Integrations/VuloFormInstaller.php:114
-msgid "MultiVendorX has installed VuloForm, the companion plugin that builds and displays your marketplace forms, such as store and wholesale registration."
+#: classes/Integrations/VuloForm/Templates.php:41
+msgid "Store registration (MultiVendorX)"
 msgstr ""
 
-#: classes/Integrations/VuloMailMigration.php:146
-msgid "MultiVendorX has installed VuloMail, the companion plugin used to deliver marketplace email and SMS notifications. Set up an SMS gateway and/or email connection inside VuloMail to start sending."
+#: classes/Integrations/VuloForm/Templates.php:42
+msgid "Store name, description, contact details and address for a new vendor application."
 msgstr ""
 
-#: classes/Integrations/VuloMailMigration.php:147
-msgid "MultiVendorX has installed VuloMail and migrated your admin notification settings to it. SMS notifications now deliver through VuloMail; email notifications will too once you add an email connection inside VuloMail (MultiVendorX never had its own SMTP credentials to migrate)."
+#: classes/Integrations/VuloForm/Templates.php:68
+#: assets/js/index.js:1
+#: assets/js/index.js:5
+msgid "Store name"
 msgstr ""
 
-#: classes/Integrations/VuloMailMigration.php:186
-msgid "VuloMail did not load after activation."
+#: classes/Integrations/VuloForm/Templates.php:75
+#: modules/Elementor/Tags/StoreInfo.php:85
+#: modules/MarketplaceCompliance/Frontend.php:118
+#: assets/js/block/contact-info/index.js:1
+#: assets/js/index.js:1
+#: assets/js/index.js:5
+msgid "Email"
 msgstr ""
 
-#: classes/Integrations/VuloMailMigration.php:301
+#: classes/Integrations/VuloForm/Templates.php:82
+#: assets/js/index.js:1
+#: assets/js/index.js:5
+msgid "Store description"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:88
+#: assets/js/index.js:1
+#: assets/js/index.js:5
+msgid "Phone"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:96
+msgid "PayPal email"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:102
+#: modules/Elementor/Tags/StoreInfo.php:75
+#: assets/js/index.js:1
+#: assets/js/index.js:5
+msgid "Address"
+msgstr ""
+
+#. translators: %s: error message.
+#: classes/Integrations/VuloMail/Integration.php:34
+#, php-format
+msgid "MultiVendorX could not automatically install the VuloMail plugin needed for email and SMS notifications: %s. Please install and activate \"VuloMail\" manually from the Plugins screen."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Migration.php:182
 msgid "Migrated from MultiVendorX"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:55
+msgid "Site information shared"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:56
+msgid "Sent to the site owner after they agree to share site information and usage data on plugin deactivation."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:58
+#: assets/js/index.js:1
+msgid "Deactivation"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:60
+msgid "Thanks for sharing your site information, {user_name}"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:61
+msgid "Thank you!"
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:61
+msgid "We received your site information and usage data. As a thank you, we have created a discount coupon for your next purchase."
+msgstr ""
+
+#: classes/Integrations/VuloMail/Templates.php:61
+msgid "This was sent to {user_email}."
 msgstr ""
 
 #: classes/Migration/Cron.php:51
@@ -380,19 +435,19 @@ msgstr ""
 msgid "Every minute"
 msgstr ""
 
-#: classes/MultiVendorX.php:260
+#: classes/MultiVendorX.php:248
 msgid "View WooCommerce documentation"
 msgstr ""
 
-#: classes/MultiVendorX.php:260
+#: classes/MultiVendorX.php:248
 msgid "Docs"
 msgstr ""
 
-#: classes/MultiVendorX.php:261
+#: classes/MultiVendorX.php:249
 msgid "Visit community forums"
 msgstr ""
 
-#: classes/MultiVendorX.php:261
+#: classes/MultiVendorX.php:249
 #: assets/js/index.js:5
 msgid "Support"
 msgstr ""
@@ -1027,63 +1082,63 @@ msgstr ""
 msgid "— No change —"
 msgstr ""
 
-#: classes/Promotions.php:116
+#: classes/Promotions.php:119
 msgid "Enjoying MultiVendorX?"
 msgstr ""
 
-#: classes/Promotions.php:117
+#: classes/Promotions.php:120
 msgid "If it has helped your business, please consider leaving a quick review. It helps other store owners find us."
 msgstr ""
 
-#: classes/Promotions.php:120
+#: classes/Promotions.php:123
 msgid "Review now"
 msgstr ""
 
-#: classes/Promotions.php:126
+#: classes/Promotions.php:129
 msgid "Remind me later"
 msgstr ""
 
-#: classes/Promotions.php:186
+#: classes/Promotions.php:195
 msgid "Help improve MultiVendorX and get 10% off"
 msgstr ""
 
-#: classes/Promotions.php:189
+#: classes/Promotions.php:198
 msgid "Share anonymous usage data and we'll email you a 10% discount coupon for premium extensions."
 msgstr ""
 
-#: classes/Promotions.php:190
+#: classes/Promotions.php:199
 msgid "What we collect"
 msgstr ""
 
-#: classes/Promotions.php:194
+#: classes/Promotions.php:203
 msgid "Non-sensitive diagnostic and usage data: your site URL, WordPress and PHP versions, active plugins and themes, and your email address so we can send the coupon."
 msgstr ""
 
-#: classes/Promotions.php:198
+#: classes/Promotions.php:207
 msgid "Sure, I'd like to help"
 msgstr ""
 
-#: classes/Promotions.php:202
+#: classes/Promotions.php:211
 msgid "No thanks"
 msgstr ""
 
-#: classes/Promotions.php:219
+#: classes/Promotions.php:228
 msgid "Coupon data is required."
 msgstr ""
 
-#: classes/Promotions.php:238
+#: classes/Promotions.php:247
 msgid "Unable to create coupon."
 msgstr ""
 
-#: classes/Promotions.php:291
+#: classes/Promotions.php:300
 msgid "MultiVendorX Pro needs an update"
 msgstr ""
 
-#: classes/Promotions.php:292
+#: classes/Promotions.php:301
 msgid "This version of MultiVendorX needs MultiVendorX Pro 2.0.0 or later. Update Pro to keep every feature working."
 msgstr ""
 
-#: classes/Promotions.php:295
+#: classes/Promotions.php:304
 msgid "Update now"
 msgstr ""
 
@@ -1490,20 +1545,20 @@ msgid "You can only manage items that belong to your store."
 msgstr ""
 
 #. translators: 1: refund id, 2: date, 3: user
-#: classes/RestAPI/Rest.php:749
+#: classes/RestAPI/Rest.php:748
 #, php-format
 msgid "Refund #%1$s - %2$s by %3$s"
 msgstr ""
 
-#: classes/RestAPI/Rest.php:752
+#: classes/RestAPI/Rest.php:751
 msgid "system"
 msgstr ""
 
-#: classes/RestAPI/Rest.php:946
+#: classes/RestAPI/Rest.php:945
 msgid "Variation SKU is not generated!"
 msgstr ""
 
-#: classes/RestAPI/Rest.php:986
+#: classes/RestAPI/Rest.php:985
 msgid "SKU is not generated!"
 msgstr ""
 
@@ -1552,77 +1607,77 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: classes/Tracker.php:144
-#: modules/StoreReview/assets/js/frontend.js:256
+#: classes/Tracker.php:147
+#: modules/StoreReview/assets/js/frontend.js:272
 msgid "Write a Review"
 msgstr ""
 
-#: classes/Tracker.php:216
+#: classes/Tracker.php:219
 msgid "Support Forum"
 msgstr ""
 
-#: classes/Tracker.php:220
+#: classes/Tracker.php:223
 msgid "Facebook Group"
 msgstr ""
 
-#: classes/Tracker.php:224
+#: classes/Tracker.php:227
 msgid "Book a Call"
 msgstr ""
 
-#: classes/Tracker.php:253
+#: classes/Tracker.php:256
 msgid "We collect non-sensitive diagnostic data and plugin usage information along with your feedback."
 msgstr ""
 
-#: classes/Tracker.php:258
+#: classes/Tracker.php:261
 msgid "Skip & Deactivate"
 msgstr ""
 
-#: classes/Tracker.php:259
+#: classes/Tracker.php:262
 msgid "Submit & Deactivate"
 msgstr ""
 
-#: classes/Tracker.php:307
+#: classes/Tracker.php:310
 msgid "Submitting…"
 msgstr ""
 
-#: classes/Tracker.php:344
+#: classes/Tracker.php:351
 msgid "We're sorry to see you leave 😔"
 msgstr ""
 
-#: classes/Tracker.php:345
+#: classes/Tracker.php:352
 msgid "Thinking about deactivating? We're here to help — contact us anytime."
 msgstr ""
 
-#: classes/Tracker.php:346
+#: classes/Tracker.php:353
 msgid "Would you quickly share your reason for deactivating?"
 msgstr ""
 
-#: classes/Tracker.php:348
+#: classes/Tracker.php:355
 msgid "I no longer need the plugin"
 msgstr ""
 
-#: classes/Tracker.php:350
+#: classes/Tracker.php:357
 msgid "I found a better plugin"
 msgstr ""
 
-#: classes/Tracker.php:351
+#: classes/Tracker.php:358
 msgid "Please share which plugin"
 msgstr ""
 
-#: classes/Tracker.php:353
+#: classes/Tracker.php:360
 msgid "I couldn't get the plugin to work"
 msgstr ""
 
-#: classes/Tracker.php:354
+#: classes/Tracker.php:361
 msgid "It's a temporary deactivation"
 msgstr ""
 
-#: classes/Tracker.php:356
+#: classes/Tracker.php:363
 #: modules/MarketplaceCompliance/Ajax.php:122
 msgid "Other"
 msgstr ""
 
-#: classes/Tracker.php:357
+#: classes/Tracker.php:364
 msgid "Please share the reason"
 msgstr ""
 
@@ -1800,20 +1855,6 @@ msgstr ""
 #: modules/Elementor/Tags/StoreInfo.php:41
 #: modules/Elementor/Widgets/StoreInfo.php:43
 msgid "Store Info"
-msgstr ""
-
-#: modules/Elementor/Tags/StoreInfo.php:75
-#: assets/js/index.js:1
-#: assets/js/index.js:5
-msgid "Address"
-msgstr ""
-
-#: modules/Elementor/Tags/StoreInfo.php:85
-#: modules/MarketplaceCompliance/Frontend.php:118
-#: assets/js/block/contact-info/index.js:1
-#: assets/js/index.js:1
-#: assets/js/index.js:5
-msgid "Email"
 msgstr ""
 
 #: modules/Elementor/Tags/StoreInfo.php:95
@@ -2768,8 +2809,8 @@ msgid "Upload Images"
 msgstr ""
 
 #: templates/store/store-review.php:100
-#: modules/StoreReview/assets/js/frontend.js:156
-#: modules/StoreReview/assets/js/frontend.js:180
+#: modules/StoreReview/assets/js/frontend.js:172
+#: modules/StoreReview/assets/js/frontend.js:196
 msgid "Submit Review"
 msgstr ""
 
@@ -3154,12 +3195,13 @@ msgstr ""
 
 #: assets/js/block/registration-form/index.js:1
 #: assets/js/block/registration-form/view.js:1
-msgid "Store created successfully"
+msgid "Store Note"
 msgstr ""
 
 #: assets/js/block/registration-form/index.js:1
 #: assets/js/block/registration-form/view.js:1
-msgid "Error creating store"
+#: assets/js/index.js:5
+msgid "Note"
 msgstr ""
 
 #: assets/js/block/registration-form/index.js:1
@@ -3175,21 +3217,6 @@ msgstr ""
 #: assets/js/block/registration-form/index.js:1
 #: assets/js/block/registration-form/view.js:1
 msgid "Select Your Store"
-msgstr ""
-
-#: assets/js/block/registration-form/index.js:1
-#: assets/js/block/registration-form/index.js:3
-#: assets/js/block/registration-form/view.js:1
-#: assets/js/block/registration-form/view.js:3
-msgid "Store Note"
-msgstr ""
-
-#: assets/js/block/registration-form/index.js:1
-#: assets/js/block/registration-form/index.js:3
-#: assets/js/block/registration-form/view.js:1
-#: assets/js/block/registration-form/view.js:3
-#: assets/js/index.js:5
-msgid "Note"
 msgstr ""
 
 #: assets/js/block/registration-form/index.js:1
@@ -3210,30 +3237,6 @@ msgstr ""
 #: assets/js/block/registration-form/index.js:1
 #: assets/js/block/registration-form/view.js:1
 msgid "Selected Store:"
-msgstr ""
-
-#. translators: %s: Field label.
-#: assets/js/block/registration-form/index.js:3
-#: assets/js/block/registration-form/index.js:5
-#: assets/js/block/registration-form/view.js:3
-#: assets/js/block/registration-form/view.js:5
-#, js-format
-msgid "%s is required."
-msgstr ""
-
-#: assets/js/block/registration-form/index.js:3
-#: assets/js/block/registration-form/index.js:5
-#: assets/js/block/registration-form/view.js:3
-#: assets/js/block/registration-form/view.js:5
-#: modules/MarketplaceCompliance/assets/js/frontend.js:122
-msgid "Please enter a valid email address."
-msgstr ""
-
-#: assets/js/block/registration-form/index.js:3
-#: assets/js/block/registration-form/index.js:5
-#: assets/js/block/registration-form/view.js:3
-#: assets/js/block/registration-form/view.js:5
-msgid "Please accept the Terms & Conditions."
 msgstr ""
 
 #: assets/js/block/setup-wizard/index.js:1
@@ -7260,11 +7263,6 @@ msgid "Control which store information fields can be modified after a store has 
 msgstr ""
 
 #: assets/js/index.js:1
-#: assets/js/index.js:5
-msgid "Store description"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Logo and banner"
 msgstr ""
 
@@ -7274,11 +7272,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Phone and email"
-msgstr ""
-
-#: assets/js/index.js:1
-#: assets/js/index.js:5
-msgid "Store name"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -7431,6 +7424,10 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "What happens when a store is missing documents or breaks the marketplace rules."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "PRO"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -9359,11 +9356,41 @@ msgid "Registration"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Customise personalised store registration form for marketplace."
+msgid "Preview the store registration form and edit it in VuloForm."
 msgstr ""
 
 #: assets/js/index.js:1
 msgid "Only store owners can apply for store registration. Applicants must log in or create an account before proceeding. So, Make sure WooCommerce’s Account & Privacy settings are configured to allow user registration."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "The form could not be loaded."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enable VuloForm"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "This form is built with VuloForm. Activate the plugin to show it and edit it here."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Activate VuloForm"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Install VuloForm"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Edit form"
+msgstr ""
+
+#. translators: %s: VuloForm link.
+#: assets/js/index.js:1
+#, js-format
+msgid "This form is editable in %s. Use Edit form to change its fields and settings. Changes show here after you save the form and reload this page."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -9725,11 +9752,6 @@ msgid "Add your store’s contact details so customers can reach you easily thro
 msgstr ""
 
 #: assets/js/index.js:1
-#: assets/js/index.js:5
-msgid "Phone"
-msgstr ""
-
-#: assets/js/index.js:1
 msgid "Email / Additional Email"
 msgstr ""
 
@@ -9778,10 +9800,6 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Define your store’s policies so customers clearly understand your shipping, refund, and return terms."
-msgstr ""
-
-#: assets/js/index.js:1
-msgid "Deactivation"
 msgstr ""
 
 #: assets/js/index.js:1
@@ -10190,6 +10208,14 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Sale price"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Each variation has its own price — set it in the Variations section below."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Pricing for this product type is set further down the page."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -13641,7 +13667,7 @@ msgstr ""
 
 #: assets/js/index.js:5
 #: modules/CustomerQueries/assets/js/frontend.js:29
-#: modules/StoreReview/assets/js/frontend.js:151
+#: modules/StoreReview/assets/js/frontend.js:167
 msgid "Submitting..."
 msgstr ""
 
@@ -14724,6 +14750,10 @@ msgstr ""
 msgid "All fields are required."
 msgstr ""
 
+#: modules/MarketplaceCompliance/assets/js/frontend.js:122
+msgid "Please enter a valid email address."
+msgstr ""
+
 #: modules/MarketplaceCompliance/assets/js/frontend.js:179
 msgid "Something went wrong. Try again."
 msgstr ""
@@ -14752,19 +14782,23 @@ msgstr ""
 msgid "Please enter your Review Content."
 msgstr ""
 
-#: modules/StoreReview/assets/js/frontend.js:162
+#: modules/StoreReview/assets/js/frontend.js:133
+msgid "Please select a rating."
+msgstr ""
+
+#: modules/StoreReview/assets/js/frontend.js:178
 msgid "Thank you for your review!"
 msgstr ""
 
-#: modules/StoreReview/assets/js/frontend.js:171
+#: modules/StoreReview/assets/js/frontend.js:187
 msgid "Something went wrong. Please try again."
 msgstr ""
 
-#: modules/StoreReview/assets/js/frontend.js:183
+#: modules/StoreReview/assets/js/frontend.js:199
 msgid "Unable to submit review. Please try again later."
 msgstr ""
 
-#: modules/StoreReview/assets/js/frontend.js:256
+#: modules/StoreReview/assets/js/frontend.js:272
 msgid "Cancel Review"
 msgstr ""
 

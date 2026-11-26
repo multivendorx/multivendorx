@@ -61,9 +61,9 @@ class Promotions {
             MultiVendorX()->plugin_slug
         );
         $this->api_url            = 'https://multivendorx.com/wp-json/mvx_thirdparty/v1/coupon_create_for_pro';
-        add_action( 'admin_notices', array( $this, 'seek_site_information' ) );
-        add_action( 'admin_notices', array( $this, 'seek_product_review' ) );
-        add_action( 'admin_notices', array( $this, 'free_pro_admin_notice' ) );
+        // add_action( 'admin_notices', array( $this, 'seek_site_information' ) );
+        // add_action( 'admin_notices', array( $this, 'seek_product_review' ) );
+        // add_action( 'admin_notices', array( $this, 'free_pro_admin_notice' ) );
         add_action( 'wp_ajax_multivendorx_admin_notice_action', array( $this, 'admin_notice_action' ), 10 );
         add_action( 'wp_ajax_multivendorx_dismiss_free_pro_notice', array( $this, 'dismiss_free_pro_notice' ) );
         add_filter( 'admin_multivendorx_register_scripts', array( $this, 'register_notice_script' ) );
