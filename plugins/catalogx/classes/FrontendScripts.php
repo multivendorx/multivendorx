@@ -7,7 +7,6 @@
 
 namespace CatalogX;
 
-use CatalogX\Enquiry\Frontend as EnquiryFrontend;
 use CatalogX\Utill;
 
 defined( 'ABSPATH' ) || exit;
@@ -384,12 +383,14 @@ class FrontendScripts {
         }
 
         // Get current user role.
-        $current_user      = wp_get_current_user();
+        $current_user      = CatalogX()->current_user;
         $current_user_role = '';
 
         if ( ! empty( $current_user->roles ) && is_array( $current_user->roles ) ) {
             $current_user_role = reset( $current_user->roles );
         }
+
+        $first_name = ! empty( $current_user->first_name ) ? $current_user->first_name : $current_user->display_name;
 
         // Get all tab setting's database value.
         $settings_databases_value = array();
@@ -424,6 +425,20 @@ class FrontendScripts {
             'price_decimals'     => wc_get_price_decimals(),
             'currency_position'  => get_option( 'woocommerce_currency_pos' ),
         );
+        // The quote cart block gets the same data in the editor and on the page.
+        $quote_cart_data = array(
+            'object_name' => 'quoteCart',
+            'data'        => array_merge(
+                $base_rest,
+                array(
+                    'name'                 => $current_user->display_name,
+                    'email'                => $current_user->user_email,
+                    'quote_my_account_url' => site_url( '/my-account/all-quotes/' ),
+                    'khali_dabba'          => Utill::is_khali_dabba(),
+                )
+            ),
+        );
+
         $localize_scripts = apply_filters(
             'catalogx_localize_scripts',
             array(
@@ -465,20 +480,35 @@ class FrontendScripts {
 								)
 							),
                             'email_tags'               => Utill::get_tags_enquiry_form(),
+                            'vuloform_enquiry'         => \CatalogX\Integrations\VuloForm\Integration::get_admin_localize_data(),
+                            'vulomail_enquiry'         => \CatalogX\Integrations\VuloMail\Integration::get_admin_localize_data(),
+                            // The dashboard greets the admin by name ("Good morning, Ana"); empty when no one is logged in.
+                            'user_first_name'          => $first_name,
+                            // The enquiry inbox tells the admin's own messages from the customer's by sender id.
+                            'user_id'                  => CatalogX()->current_user_id,
                         )
                     ),
                 ),
                 'catalogx-enquiry-frontend-script'       => array(
                     'object_name' => 'enquiryFrontend',
-                    'data'        => self::get_base_ajax_data( 'catalogx-enquiry-frontend-script' ),
+                    'data'        => array_merge(
+                        self::get_base_ajax_data( 'catalogx-enquiry-frontend-script' ),
+                        array(
+                            // Whether a variable product's "Send an enquiry" button should only
+                            // show for a variation that's actually out of stock.
+                            'is_enable_out_of_stock' => 'is_enable_out_of_stock' === CatalogX()->setting->get_setting( 'is_enable_out_of_stock', '' ),
+                        )
+                    ),
                 ),
                 'catalogx-enquiry-form-script'           => array(
                     'object_name' => 'enquiryFormData',
                     'data'        => array_merge(
                         $base_rest,
                         array(
-                            'settings_free'       => CatalogX()->modules->is_active( 'enquiry' ) ? EnquiryFrontend::catalogx_free_form_settings() : array(),
-                            'settings_pro'        => CatalogX()->modules->is_active( 'enquiry' ) ? EnquiryFrontend::catalogx_pro_form_settings() : array(),
+                            'vuloform_form_id'    => (int) CatalogX()->setting->get_setting( 'vuloform_enquiry_form_id', 0 ),
+                            'redirect_url'        => ( 'dedicated_page' === CatalogX()->setting->get_setting( 'is_page_redirect' ) && CatalogX()->setting->get_setting( 'redirect_page_id' ) )
+                                ? get_permalink( CatalogX()->setting->get_setting( 'redirect_page_id' ) )
+                                : '',
                             'khali_dabba'         => Utill::is_khali_dabba(),
                             'product_data'        => apply_filters( 'catalogx_product_data', array() ),
                             'default_placeholder' => array(
@@ -520,30 +550,8 @@ class FrontendScripts {
                     'object_name' => 'quoteButton',
                     'data'        => $base_rest,
                 ),
-                'catalogx-quote-cart-editor-script'      => array(
-                    'object_name' => 'quoteCart',
-                    'data'        => array_merge(
-                        $base_rest,
-                        array(
-                            'name'                 => $current_user->display_name,
-                            'email'                => $current_user->user_email,
-                            'quote_my_account_url' => site_url( '/my-account/all-quotes/' ),
-                            'khali_dabba'          => Utill::is_khali_dabba(),
-                        )
-                    ),
-                ),
-                'catalogx-quote-cart-view-script'        => array(
-                    'object_name' => 'quoteCart',
-                    'data'        => array_merge(
-                        $base_rest,
-                        array(
-                            'name'                 => $current_user->display_name,
-                            'email'                => $current_user->user_email,
-                            'quote_my_account_url' => site_url( '/my-account/all-quotes/' ),
-                            'khali_dabba'          => Utill::is_khali_dabba(),
-                        )
-                    ),
-                ),
+                'catalogx-quote-cart-editor-script'      => $quote_cart_data,
+                'catalogx-quote-cart-view-script'        => $quote_cart_data,
                 'catalogx-excluded-products-view-script' => array(
                     'object_name' => 'excludedProducts',
                     'data'        => $base_rest,
@@ -585,4 +593,5 @@ class FrontendScripts {
     public static function enqueue_style( $handle ) {
         wp_enqueue_style( $handle );
     }
+
 }

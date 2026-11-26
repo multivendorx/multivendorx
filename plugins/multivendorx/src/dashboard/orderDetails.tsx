@@ -1118,6 +1118,7 @@ const OrderDetails: React.FC = () => {
 											onClose={() => setPopupOpen(false)}
 											width={40}
 											height="80%"
+											className="popup-drawer"
 											header={{
 												icon: 'announcement',
 												title: __(

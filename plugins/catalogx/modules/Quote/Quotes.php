@@ -8,6 +8,8 @@
 namespace CatalogX\Quote;
 
 use CatalogX\Utill;
+use CatalogX\Integrations\VuloMail\Integration as VuloMailIntegration;
+use CatalogX\Integrations\VuloMail\Templates as VuloMailTemplates;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -145,14 +147,29 @@ class Quotes extends \WP_REST_Controller {
             do_action( 'catalogx_quote_save_as_enquiry_msg', $form_data['id'], $customer_id, $product_ids, $order->get_id() );
 
             // Send email.
-            $customer_data = array(
-                'name'    => $customer_name,
-                'email'   => $customer_email,
-                'phone'   => $customer_phone,
-                'details' => $customer_message,
+            $quote_rows = '';
+
+            foreach ( $product_info as $item ) {
+                $quote_product = $item['product_id'] ? wc_get_product( $item['product_id'] ) : null;
+
+                $quote_rows .= sprintf(
+                    '<tr><td>%s</td><td>%s</td></tr>',
+                    esc_html( $quote_product ? $quote_product->get_name() : __( 'Unknown product', 'catalogx' ) ),
+                    esc_html( $item['quantity'] )
+                );
+            }
+
+            VuloMailIntegration::send(
+                VuloMailTemplates::QUOTE_REQUEST,
+                CatalogX()->setting->get_setting( 'additional_alert_email' ),
+                array(
+                    '{customer_name}'    => (string) $customer_name,
+                    '{customer_email}'   => (string) $customer_email,
+                    '{customer_phone}'   => (string) $customer_phone,
+                    '{customer_details}' => $customer_message ? nl2br( esc_html( $customer_message ) ) : '',
+                    '{quote_rows}'       => $quote_rows,
+                )
             );
-            $email         = WC()->mailer()->emails['requestQuoteSendEmail'];
-            $email->trigger( $product_info, $customer_data );
 
             // Clear cart if applicable.
             if ( $request->get_param( 'formData' ) ) {

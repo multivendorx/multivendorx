@@ -5,15 +5,11 @@ import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 
 import {
-	AnalyticsComponent,
 	CardComponent,
 	ColumnComponent,
 	ContainerComponent,
 	InformationItemComponent,
-	FormGroupWrapperComponent,
-	FormGroupComponent,
-	SectionComponent,
-	ModuleGuardComponent,
+	TrendStatComponent,
 } from '@zyra/components';
 import { getApiLink, useModules } from '@zyra/core';
 import { formatCurrency } from '../../../services/commonFunction';
@@ -162,48 +158,61 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 		}
 	}, [location.state]);
 
-	const overviewData = [
+	// The store's money, as the dashboard's tiles: what it can withdraw now, what is still settling, what it asked for.
+	const balanceTiles = [
 		{
-			icon: 'wallet red',
-			number: formatCurrency(storeData.transactions?.balance ?? 0),
-			text: __('Wallet Balance', 'multivendorx'),
+			icon: 'wallet',
+			label: __('Wallet balance', 'multivendorx'),
+			value: formatCurrency(storeData?.transactions?.balance ?? 0),
+			caption: __('Ready to pay out', 'multivendorx'),
 		},
 		{
-			icon: 'dollar yellow',
-			number: formatCurrency(
-				storeData.transactions?.locking_balance ?? 0
+			icon: 'dollar',
+			label: __('Upcoming balance', 'multivendorx'),
+			value: formatCurrency(
+				storeData?.transactions?.locking_balance ?? 0
 			),
-			text: __('Upcoming Balance', 'multivendorx'),
+			caption: __('Still in the clearance period', 'multivendorx'),
 		},
 		{
-			icon: 'wallet-in blue',
-			number: formatCurrency(storeData.request_withdrawal_amount ?? 0),
-			text: __('Requested Payout', 'multivendorx'),
+			icon: 'wallet-in',
+			label: __('Requested payout', 'multivendorx'),
+			value: formatCurrency(storeData?.request_withdrawal_amount ?? 0),
+			caption: __('Waiting for your approval', 'multivendorx'),
 		},
 	];
+
+	/** A card header's "View all →" link, in place of a bare external-link icon. */
+	const viewAll = (
+		onClick: () => void,
+		label: string = __('View all', 'multivendorx')
+	) => (
+		<button type="button" className="mvx-store-more" onClick={onClick}>
+			{label}
+			<i className="adminfont-arrow-right" aria-hidden="true" />
+		</button>
+	);
+
+	const primaryMethodId = getPrimaryPaymentMethodId(
+		storeData?.payment_methods
+	);
 
 	return (
 		<>
 			<ContainerComponent>
 				<ColumnComponent grid={8}>
-					<AnalyticsComponent
-						variant="small"
-						data={overviewData.map((item) => ({
-							icon: item.icon,
-							number: item.number,
-							text: item.text,
-						}))}
-					/>
+					<TrendStatComponent cols={3} items={balanceTiles} />
 					<CardComponent
 						title={__('Recent payouts', 'multivendorx')}
-						titleIcon="payment"
-						desc="Track the store’s latest payout activity and payment status."
-						iconName="external icon"
-						onIconClick={() => {
+						desc={__(
+							'The latest money paid out to this store.',
+							'multivendorx'
+						)}
+						action={viewAll(() =>
 							navigate(
 								`?page=multivendorx#&tab=transaction-history&store_id=${id}`
-							);
-						}}
+							)
+						)}
 					>
 						{recentDebits && recentDebits.length > 0 ? (
 							recentDebits.map((txn) => (
@@ -225,9 +234,12 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 								/>
 							))
 						) : (
-							<ModuleGuardComponent
-								title={__('No recent payout', 'multivendorx')}
-							/>
+							<p className="mvx-store-empty">
+								{__(
+									'No payouts yet. Each one this store receives shows up here.',
+									'multivendorx'
+								)}
+							</p>
 						)}
 					</CardComponent>
 					{/* <CardComponent
@@ -293,18 +305,19 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 					</CardComponent> */}
 					<CardComponent
 						title={__('Latest products', 'multivendorx')}
-						titleIcon="product"
-						desc="View recently added products and their current prices."
-						iconName="external icon"
-						onIconClick={() => {
+						desc={__(
+							'The newest products/listings in this store and their prices.',
+							'multivendorx'
+						)}
+						action={viewAll(() =>
 							window.open(
-								`${appLocalizer.admin_url}edit.php?post_type=product`,
+								`${appLocalizer.admin_url}edit.php?post_type=product&multivendorx_store_id=${id}`,
 								'_self'
-							);
-						}}
+							)
+						)}
 					>
 						{recentProducts.length > 0 ? (
-							recentProducts.map((product, idx) => {
+							recentProducts.map((product) => {
 								const productImage =
 									product.images && product.images.length > 0
 										? product.images[0].src
@@ -323,7 +336,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 										titleLink={editUrl}
 										avatar={{
 											image: productImage,
-											iconClass: "item-icon adminfont-single-product admin-color-2",
+											iconClass:
+												'item-icon adminfont-single-product admin-color-2',
 										}}
 										descriptions={[
 											{
@@ -341,26 +355,27 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 								);
 							})
 						) : (
-							<ModuleGuardComponent
-								title={__(
-									'No recent products found.',
+							<p className="mvx-store-empty">
+								{__(
+									'No products/listings yet.',
 									'multivendorx'
 								)}
-							/>
+							</p>
 						)}
 					</CardComponent>
 
 					{modules.includes('store-review') && (
 						<CardComponent
 							title={__('Latest reviews', 'multivendorx')}
-							titleIcon="review"
-							desc="See recent customer feedback and store ratings."
-							iconName="external icon"
-							onIconClick={() => {
+							desc={__(
+								'What customers said about this store most recently.',
+								'multivendorx'
+							)}
+							action={viewAll(() =>
 								navigate(
 									`?page=multivendorx#&tab=customers&subtab=store-review`
-								);
-							}}
+								)
+							)}
 						>
 							<LatestReview store_id={id} />
 						</CardComponent>
@@ -369,14 +384,15 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 					{modules.includes('marketplace-refund') && (
 						<CardComponent
 							title={__('Latest refunds', 'multivendorx')}
-							titleIcon="refund"
-							desc="Monitor recent refund activity and track returned payments."
-							iconName="external icon"
-							onIconClick={() => {
+							desc={__(
+								'Recent refund requests on this store’s orders.',
+								'multivendorx'
+							)}
+							action={viewAll(() =>
 								navigate(
 									`?page=multivendorx#&tab=reports&subtab=refunded-orders`
-								);
-							}}
+								)
+							)}
 						>
 							<div className="store-owner-details owner">
 								<LatestRefundRequest store_id={id} />
@@ -385,52 +401,76 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData, onUpdate }) => {
 					)}
 				</ColumnComponent>
 				<ColumnComponent grid={4}>
-					<CardComponent title={__('Store overview', 'multivendorx')} titleIcon="storefront" desc="Review store performance, activity, and key account details.">
-						<FormGroupWrapperComponent>
-							<FormGroupComponent
-								row
-								label={__(
-									'Compliance & records',
-									'multivendorx'
-								)}
-							>
-								<a
-									className="sku link-item"
-									onClick={() => {
-										navigate(
-											`?page=multivendorx#&tab=stores&edit/${id}/&subtab=compliance-records`
-										);
-									}}
-								>
-									{__('View details', 'multivendorx')}
-								</a>
-							</FormGroupComponent>
-							<SectionComponent title={__('Settings', 'multivendorx')} />
-							<FormGroupComponent
-								row
-								label={__('Payment method', 'multivendorx')}
-							>
-								{(() => {
-									const primaryMethodId =
-										getPrimaryPaymentMethodId(
-											storeData?.payment_methods
-										);
-									return primaryMethodId ? (
-										<div className="admin-badge purple method">
+					{/* The facts an admin checks first, as one list: label left, value right. */}
+					<CardComponent
+						title={__('Store details', 'multivendorx')}
+						className="mvx-store-details"
+					>
+						<dl className="mvx-store-facts">
+							<div>
+								<dt>{__('Owner', 'multivendorx')}</dt>
+								<dd>
+									{storeData?.primary_owner_info
+										?.display_name || '—'}
+								</dd>
+							</div>
+							{storeData?.primary_owner_info?.user_email && (
+								<div>
+									<dt>{__('Owner email', 'multivendorx')}</dt>
+									<dd>
+										<a
+											href={`mailto:${storeData.primary_owner_info.user_email}`}
+										>
+											{
+												storeData.primary_owner_info
+													.user_email
+											}
+										</a>
+									</dd>
+								</div>
+							)}
+							<div>
+								<dt>{__('Payment method', 'multivendorx')}</dt>
+								<dd>
+									{primaryMethodId ? (
+										<span className="admin-badge purple method">
 											<i className="adminfont-bank"></i>
 											{formatMethod(primaryMethodId)}
-										</div>
-									) : (
-										<span>
-											{__(
-												'No payment method saved',
-												'multivendorx'
-											)}
 										</span>
-									);
-								})()}
-							</FormGroupComponent>
-						</FormGroupWrapperComponent>
+									) : (
+										<>
+											<span className="mvx-store-muted">
+												{__(
+													'None saved',
+													'multivendorx'
+												)}
+											</span>
+											{viewAll(
+												() =>
+													navigate(
+														`?page=multivendorx#&tab=stores&edit/${id}/&subtab=payment`
+													),
+												__('Set up', 'multivendorx')
+											)}
+										</>
+									)}
+								</dd>
+							</div>
+							<div>
+								<dt>
+									{__('Compliance & records', 'multivendorx')}
+								</dt>
+								<dd>
+									{viewAll(
+										() =>
+											navigate(
+												`?page=multivendorx#&tab=stores&edit/${id}/&subtab=compliance-records`
+											),
+										__('View', 'multivendorx')
+									)}
+								</dd>
+							</div>
+						</dl>
 					</CardComponent>
 					{applyFilters(
 						'multivendorx_store_edit_right_section',

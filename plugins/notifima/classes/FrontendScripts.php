@@ -147,6 +147,23 @@ class FrontendScripts {
     }
 
     /**
+     * Registers, enqueues and localizes the main admin bundle ("notifima-admin-script", built
+     * from `src/index.tsx`) -- shared by every admin screen that mounts any part of it
+     * (Admin::enqueue_admin_assets(), Integrations\VuloForm\Integration::enqueue_deactivation_confirm_assets()).
+     *
+     * @return void
+     */
+    public static function enqueue_admin_bundle() {
+        wp_enqueue_script( 'wp-element' );
+
+        self::admin_load_scripts();
+        self::enqueue_script( 'notifima-components-script' );
+        self::enqueue_script( 'notifima-admin-script' );
+        self::enqueue_style( 'notifima-components-style' );
+        self::localize_scripts( 'notifima-admin-script' );
+    }
+
+    /**
 	 * Register/queue admin scripts.
 	 */
 	public static function admin_load_scripts() {
@@ -259,6 +276,9 @@ class FrontendScripts {
             'settings_databases_value' => self::get_admin_settings(),
         );
 
+        $current_user      = Notifima()->current_user;
+        $first_name = ! empty( $current_user->first_name ) ? $current_user->first_name : $current_user->display_name;
+
         $localize_scripts =
             array(
                 'notifima-admin-script'   => array(
@@ -267,11 +287,11 @@ class FrontendScripts {
                     'use_settings' => true,
 					'data'         => array(
                         'admin_url'     => admin_url(),
-						'export_button' => wp_nonce_url( admin_url( 'admin-ajax.php?action=export_subscribers' ), 'export_subscribers_nonce' ),
 						'khali_dabba'   => Utill::is_khali_dabba(),
-						'tab_name'      => __( 'Notifima', 'notifima' ),
 						'pro_url'       => esc_url( NOTIFIMA_PRO_SHOP_URL ),
 						'free_version'  => Notifima()->version,
+						// The dashboard greets the admin by name ("Good morning, Ana"); empty when no one is logged in.
+						'user_first_name' => $first_name,
                         'pro_data'      => apply_filters(
                             'notifima_update_pro_data',
                             array(
@@ -279,6 +299,8 @@ class FrontendScripts {
 								'manage_plan_url' => NOTIFIMA_PRO_SHOP_URL,
                             )
                         ),
+                        'vulomail'      => self::get_vulomail_data(),
+                        'vuloform'      => \Notifima\Integrations\VuloForm\Integration::get_admin_localize_data(),
 					),
                 ),
                 'notifima-subscribe-form' => array(
@@ -316,6 +338,28 @@ class FrontendScripts {
             $props = $localize_scripts[ $handle ];
             self::localize_script( $handle, $props['object_name'], $localized_data );
         }
+    }
+
+    /**
+     * VuloMail's install state/CTA data for the "Email Logs" page. VuloMail is not a dependency
+     * of this plugin, so this only reads WordPress's own plugin registry (`is_plugin_active()`)
+     * rather than anything VuloMail-specific.
+     *
+     * @return array
+     */
+    private static function get_vulomail_data() {
+        if ( ! function_exists( 'is_plugin_active' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        return array(
+            'is_vulomail_active' => is_plugin_active( Admin::VULOMAIL_PLUGIN_FILE ),
+            'install_url'        => wp_nonce_url(
+                self_admin_url( 'update.php?action=install-plugin&plugin=' . Admin::VULOMAIL_PLUGIN_SLUG ),
+                'install-plugin_' . Admin::VULOMAIL_PLUGIN_SLUG
+            ),
+            'email_logs_url'      => admin_url( 'admin.php?page=' . Admin::VULOMAIL_EMAIL_LOGS_PAGE_SLUG ),
+        );
     }
 
     /**

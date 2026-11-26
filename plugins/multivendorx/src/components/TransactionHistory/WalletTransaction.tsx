@@ -5,15 +5,10 @@ import { __, sprintf } from '@wordpress/i18n';
 import { getApiLink } from '@zyra/core';
 import {
 	ColumnComponent,
-	CardComponent,
 	ContainerComponent,
 	FormGroupWrapperComponent,
 	FormGroupComponent,
-	ModuleGuardComponent,
-	SkeletonComponent,
 	PopupComponent,
-	ListComponent,
-	NoticeComponent,
 	InformationItemComponent,
 } from '@zyra/components';
 import {
@@ -27,12 +22,15 @@ import { TableCard, TableRow, QueryProps, CategoryCount } from '@zyra/table';
 import {
 	downloadCSV,
 	formatCurrency,
-	formatDate,
 	formatLocalDate,
 	formatStatusLabel,
 	normalizeText
 } from '../../services/commonFunction';
 import ViewCommission from '../Commissions/ViewCommission';
+import WalletSummary, { type StoreWallet } from './WalletSummary';
+import ListGate from '../Popup/ListGate';
+import useNoRecordsYet from '../Popup/useNoRecordsYet';
+import { SAMPLE_WALLET_TRANSACTIONS } from '../Popup/sampleRows';
 
 interface WalletTransactionProps {
 	storeId: number | null;
@@ -46,7 +44,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	const [categoryCounts, setCategoryCounts] = useState<
 		CategoryCount[] | null
 	>(null);
-	const [wallet, setWallet] = useState([]);
+	const [wallet, setWallet] = useState<StoreWallet>({});
 	const [recentDebits, setRecentDebits] = useState([]);
 	const [storeData, setStoreData] = useState(null);
 	const [requestWithdrawal, setRequestWithdrawal] = useState(false);
@@ -211,7 +209,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	const headers = {
 		transaction_title: {
 			label: __('Transaction', 'multivendorx'),
-			width: 60,
+			// 60 left the three amount columns too little room: Balance ran past the card's edge.
+			width: 46,
 			render: (row: any) => {
 				const isCommissionLink =
 					row.transaction_type?.toLowerCase() === 'commission' &&
@@ -481,247 +480,126 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 			key: key,
 		}));
 
+	const { props: gatedProps, hasNoRecords } = useNoRecordsYet({
+		rows,
+		isLoading,
+		onQueryUpdate: doRefreshTableData,
+	});
+
+	const tableProps = {
+		headers,
+		variant: 'transparent',
+		search: { placeholder: 'Search...' },
+		filters,
+		format: appLocalizer.date_format,
+		currency: {
+			currencySymbol: appLocalizer.currency_symbol,
+			priceDecimals: appLocalizer.price_decimals,
+			decimalSeparator: appLocalizer.decimal_separator,
+			thousandSeparator: appLocalizer.thousand_separator,
+			currencyPosition: appLocalizer.currency_position,
+		},
+	};
+
+	// No store at all (the site has none yet), or a store with no transactions yet: sample rows behind a card.
+	const walletTable = (
+		<ListGate
+			feature={{
+				title: __('Wallet transactions', 'multivendorx'),
+				description: '',
+				icon: 'wallet',
+			}}
+			sample={
+				<TableCard
+					{...tableProps}
+					rows={SAMPLE_WALLET_TRANSACTIONS}
+					totalRows={SAMPLE_WALLET_TRANSACTIONS.length}
+				/>
+			}
+			isEmpty={!storeId || hasNoRecords}
+			empty={
+				storeId
+					? {
+							heading: __('No transactions yet', 'multivendorx'),
+							description: __(
+								'This store’s wallet records each commission it earns and each payout it receives. They show here after its first sale.',
+								'multivendorx'
+							),
+							actions: (
+								<a
+									className="mvx-locked-button"
+									href="#&tab=commissions"
+								>
+									{__('View commissions', 'multivendorx')}
+								</a>
+							),
+							note: __(
+								'A preview with sample transactions. This store’s show here once it sells.',
+								'multivendorx'
+							),
+						}
+					: {
+							heading: __('No stores yet', 'multivendorx'),
+							description: __(
+								'Every store has a wallet: commissions in, payouts out. Its transactions show here once your first store makes a sale.',
+								'multivendorx'
+							),
+							actions: (
+								<a
+									className="mvx-locked-button"
+									href="#&tab=stores"
+								>
+									{__('Add a store', 'multivendorx')}
+								</a>
+							),
+							note: __(
+								'A preview with sample transactions. Yours show here once stores sell.',
+								'multivendorx'
+							),
+						}
+			}
+		>
+			<TableCard
+				{...tableProps}
+				rows={rows}
+				totalRows={totalRows}
+				isLoading={isLoading}
+				onQueryUpdate={gatedProps.onQueryUpdate}
+				buttonActions={buttonActions}
+				ids={rowIds}
+				categoryCounts={categoryCounts}
+				bulkActions={[]}
+				onSelectCsvDownloadApply={downloadTransactionCSV}
+			/>
+		</ListGate>
+	);
+
+	// Without a store there is no wallet to summarise: just the table preview.
+	if (!storeId) {
+		return (
+			<ContainerComponent>
+				<ColumnComponent>{walletTable}</ColumnComponent>
+			</ContainerComponent>
+		);
+	}
+
 	return (
 		<>
 			<ContainerComponent>
-				<ColumnComponent fullHeight grid={6}>
-					<CardComponent title="Recent payouts" titleIcon="payment" desc="Track payout history, withdrawal eligibility, and payment status.">
-						{recentDebits.length > 0 ? (
-							<ListComponent
-								className="mini-card report"
-								items={recentDebits.slice(0, 5).map((txn) => {
-									const hasPaymentMethod =
-										!!txn.payment_method;
-									// Format payment method nicely (e.g., "stripe-connect" -> "Stripe Connect")
-									const formattedPaymentMethod =
-										txn.payment_method
-											? txn.payment_method
-												.replace(/[-_]/g, ' ') // replace - and _ with spaces
-												.replace(/\b\w/g, (char) =>
-													char.toUpperCase()
-												) // capitalize each word
-											: __(
-												'No payment method configured',
-												'multivendorx'
-											);
-
-									return {
-										title: formattedPaymentMethod,
-										desc: formatDate(txn.created_at),
-										tags: (
-											<>
-												{hasPaymentMethod && (
-													<div className="admin-badge green">
-														{__(
-															'Completed',
-															'multivendorx'
-														)}
-													</div>
-												)}
-												<div
-													className={`price ${parseFloat(txn.debit) <
-															0
-															? 'red-color'
-															: 'green-color'
-														}`}
-												>
-													{formatCurrency(txn.debit)}
-												</div>
-											</>
-										),
-									};
-								})}
-							/>
-						) : (
-							<ModuleGuardComponent
-								title={__(
-									'No recent payouts transactions found.',
-									'multivendorx'
-								)}
-							/>
-						)}
-					</CardComponent>
+				<ColumnComponent>
+					<WalletSummary
+						wallet={wallet}
+						lastPayout={recentDebits[0]}
+						isLoading={walletLoading}
+						onPayOut={() => setRequestWithdrawal(true)}
+					/>
 				</ColumnComponent>
-
-				<ColumnComponent fullHeight grid={6}>
-					<CardComponent>
-						<div className="payout-card-wrapper">
-							<div className="price-wrapper">
-								<div className="admin-badge green">
-									{__('Ready to withdraw', 'multivendorx')}
-								</div>
-								<div className="price">
-									{walletLoading ? (
-										<SkeletonComponent width={8.75} />
-									) : (
-										formatCurrency(wallet.available_balance)
-									)}
-								</div>
-								<div className="desc">
-									{__(
-										'Minimum required to withdraw - ',
-										'multivendorx'
-									)}
-									{walletLoading ? (
-										<SkeletonComponent width={15.625} />
-									) : wallet?.threshold > 0 ? (
-										<b>
-											{formatCurrency(
-												wallet.threshold
-											)}{' '}
-										</b>
-									) : (
-										__('No minimum', 'multivendorx')
-									)}
-								</div>
-								<div className="desc">
-									{__('Reserve balance - ', 'multivendorx')}
-									{walletLoading ? (
-										<SkeletonComponent width={15.625} />
-									) : wallet?.reserve_balance > 0 ? (
-										<>
-											<b>
-												{formatCurrency(
-													wallet.reserve_balance
-												)}{' '}
-											</b>
-										</>
-									) : (
-										__('No reserve set', 'multivendorx')
-									)}
-								</div>
-							</div>
-
-							{Number(wallet?.locking_balance) > 0 ? (
-								<ColumnComponent row>
-									<ListComponent
-										className="mini-card"
-										background
-										items={[
-											{
-												title: __(
-													'Upcoming Balance',
-													'multivendorx'
-												),
-												desc: (
-													<>
-														{__(
-															'This amount is being processed and will be released ',
-															'multivendorx'
-														)}
-														{wallet?.payment_schedules ? (
-															<>
-																{
-																	wallet.payment_schedules
-																}{' '}
-																{__(
-																	' by the admin.',
-																	'multivendorx'
-																)}
-															</>
-														) : (
-															<>
-																{__(
-																	'automatically every hour.',
-																	'multivendorx'
-																)}
-															</>
-														)}
-													</>
-												),
-												value: formatCurrency(
-													wallet.locking_balance
-												),
-											},
-
-											...(wallet?.withdrawal_setting
-												?.length > 0
-												? [
-													{
-														title: __(
-															'Free Withdrawals',
-															'multivendorx'
-														),
-														desc: (
-															<>
-																{__(
-																	'Then',
-																	'multivendorx'
-																)}{' '}
-																{Number(
-																	wallet
-																		?.withdrawal_setting?.[0]
-																		?.withdrawal_percentage
-																) || 0}
-																% +{' '}
-																{formatCurrency(
-																	Number(
-																		wallet
-																			?.withdrawal_setting?.[0]
-																			?.withdrawal_fixed
-																	) || 0
-																)}{' '}
-																{__(
-																	'fee',
-																	'multivendorx'
-																)}
-															</>
-														),
-														value: (
-															<>
-																{Math.max(
-																	0,
-																	(wallet
-																		?.withdrawal_setting?.[0]
-																		?.free_withdrawals ??
-																		0) -
-																	(wallet?.free_withdrawal ??
-																		0)
-																)}{' '}
-																<span>
-																	{__(
-																		'Left',
-																		'multivendorx'
-																	)}
-																</span>
-															</>
-														),
-													},
-												]
-												: []),
-										]}
-									/>
-								</ColumnComponent>
-							) : (
-								<NoticeComponent
-									type="error"
-									displayPosition="inline-notice"
-									title={__(
-										'No pending earning in clearance',
-										'multivendorx'
-									)}
-								/>
-							)}
-
-							<ButtonInput
-								buttons={{
-									icon: 'wallet',
-									text: __(
-										'Disburse Payment',
-										'multivendorx'
-									),
-									onClick: () => setRequestWithdrawal(true),
-								}}
-							/>
-						</div>
-					</CardComponent>
-				</ColumnComponent>
-
 				<PopupComponent
 					open={requestWithdrawal}
 					onClose={() => setRequestWithdrawal(false)}
 					width={28.125}
 					height="75%"
+					className="popup-drawer"
 					header={{
 						icon: 'wallet',
 						title: __('Disburse payment', 'multivendorx'),
@@ -838,31 +716,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					</>
 				</PopupComponent>
 
-				<ColumnComponent>
-					<TableCard
-						headers={headers}
-						variant="transparent"
-						rows={rows}
-						totalRows={totalRows}
-						isLoading={isLoading}
-						onQueryUpdate={doRefreshTableData}
-						search={{ placeholder: 'Search...' }}
-						filters={filters}
-						buttonActions={buttonActions}
-						ids={rowIds}
-						categoryCounts={categoryCounts}
-						bulkActions={[]}
-						onSelectCsvDownloadApply={downloadTransactionCSV}
-						format={appLocalizer.date_format}
-						currency={{
-							currencySymbol: appLocalizer.currency_symbol,
-							priceDecimals: appLocalizer.price_decimals,
-							decimalSeparator: appLocalizer.decimal_separator,
-							thousandSeparator: appLocalizer.thousand_separator,
-							currencyPosition: appLocalizer.currency_position,
-						}}
-					/>
-				</ColumnComponent>
+				<ColumnComponent>{walletTable}</ColumnComponent>
 			</ContainerComponent>
 			{viewCommission && selectedCommissionId !== null && (
 				<ViewCommission

@@ -234,6 +234,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 			onClose={onClose}
 			width="40%"
 			height="80%"
+			className="popup-drawer"
 			header={{
 				icon: 'commission',
 				title: `${__('View Commission', 'multivendorx')}${commissionId ? ` #${commissionId}` : ''}`,

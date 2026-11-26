@@ -11,7 +11,7 @@ export default {
     submitUrl: 'settings',
     modal: [
         {
-            key: 'section',
+            key: 'wholesale_signup_section',
             type: 'section',
             icon: 'wholesale',
             title: __('Sign-up & offers', 'catalogx'),
@@ -63,6 +63,8 @@ export default {
                     value: 'allowed',
                 },
             ],
+            proSetting: true,
+            moduleEnabled: 'wholesale',
         },
         {
             key: 'show_wholesale_price',
@@ -89,7 +91,7 @@ export default {
             moduleEnabled: 'wholesale',
         },
         {
-            key: 'section',
+            key: 'wholesale_pricing_section',
             type: 'section',
             icon: 'catalog',
             title: __('Catalog & pricing', 'catalogx'),

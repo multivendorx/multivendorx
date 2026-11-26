@@ -11,8 +11,16 @@ import {
 	formatStatusLabel,
 	getUrl,
 } from '../../services/commonFunction';
+import ListGate from '../Popup/ListGate';
+import useNoRecordsYet from '../Popup/useNoRecordsYet';
+import { SAMPLE_STORES, sampleCategoryCounts } from '../Popup/sampleRows';
 
-const StoreTable: React.FC = () => {
+interface StoreTableProps {
+	/** Opens the "Add Store" popup (Stores' header button); the "No stores yet" card offers it too. */
+	onAddStore?: () => void;
+}
+
+const StoreTable: React.FC<StoreTableProps> = ({ onAddStore }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -173,7 +181,8 @@ const StoreTable: React.FC = () => {
 		{ label: __('Rejected', 'multivendorx'), value: 'rejected' },
 		{ label: __('Suspended', 'multivendorx'), value: 'suspended' },
 	];
-	const infoRows = rows.map((row: any) => ({
+	/** A `/stores` record as a table row; the sample stores go through it too, so they look like real ones. */
+	const toInfoRow = (row: any) => ({
 		...row,
 		lifetime_earning: row.commission?.commission_total,
 		info_icon: 'store-inventory',
@@ -197,35 +206,106 @@ const StoreTable: React.FC = () => {
 			},
 			{ text: formatDate(row.create_time), color: 'blue' },
 		],
-	}));
+	});
+	const infoRows = rows.map(toInfoRow);
+
+	const { props: gatedProps, hasNoRecords } = useNoRecordsYet({
+		rows: infoRows,
+		isLoading,
+		onQueryUpdate: doRefreshTableData,
+	});
+
+	const tableProps = {
+		headers,
+		variant: 'transparent',
+		search: {},
+		filters,
+		format: appLocalizer.date_format,
+		currency: {
+			currencySymbol: appLocalizer.currency_symbol,
+			priceDecimals: appLocalizer.price_decimals,
+			decimalSeparator: appLocalizer.decimal_separator,
+			thousandSeparator: appLocalizer.thousand_separator,
+			currencyPosition: appLocalizer.currency_position,
+		},
+	};
 
 	return (
 		<ContainerComponent general>
 			<ColumnComponent>
-				<TableCard
-					headers={headers}
-					variant="transparent"
-					rows={infoRows}
-					totalRows={totalRows}
-					isLoading={isLoading}
-					onQueryUpdate={doRefreshTableData}
-					ids={rowIds}
-					categoryCounts={categoryCounts}
-					bulkActions={bulkActions}
-					onBulkActionApply={(action: string, selectedIds: []) => {
-						handleBulkAction(action, selectedIds);
+				<ListGate
+					feature={{
+						title: __('Stores', 'multivendorx'),
+						description: '',
+						icon: 'storefront',
 					}}
-					search={{}}
-					filters={filters}
-					format={appLocalizer.date_format}
-					currency={{
-						currencySymbol: appLocalizer.currency_symbol,
-						priceDecimals: appLocalizer.price_decimals,
-						decimalSeparator: appLocalizer.decimal_separator,
-						thousandSeparator: appLocalizer.thousand_separator,
-						currencyPosition: appLocalizer.currency_position,
+					sample={
+						<TableCard
+							{...tableProps}
+							rows={SAMPLE_STORES.map(toInfoRow)}
+							totalRows={SAMPLE_STORES.length}
+							categoryCounts={sampleCategoryCounts(
+								SAMPLE_STORES,
+								{
+									active: __('Active', 'multivendorx'),
+									under_review: __(
+										'Under Review',
+										'multivendorx'
+									),
+								},
+								__('All', 'multivendorx')
+							)}
+						/>
+					}
+					isEmpty={hasNoRecords}
+					empty={{
+						heading: __('No stores yet', 'multivendorx'),
+						description: __(
+							'Each seller gets a store. They show here once sellers sign up from your registration page, or when you add one yourself.',
+							'multivendorx'
+						),
+						actions: (
+							<>
+								{onAddStore && (
+									<button
+										type="button"
+										className="mvx-locked-button"
+										onClick={onAddStore}
+									>
+										{__('Add a store', 'multivendorx')}
+									</button>
+								)}
+								<a
+									className="mvx-locked-link"
+									href="#&tab=settings&subtab=registration"
+								>
+									{__('Set up registration', 'multivendorx')}
+								</a>
+							</>
+						),
+						note: __(
+							'A preview with sample stores. Yours show here once the first one is added.',
+							'multivendorx'
+						),
 					}}
-				/>
+				>
+					<TableCard
+						{...tableProps}
+						rows={infoRows}
+						totalRows={totalRows}
+						isLoading={isLoading}
+						onQueryUpdate={gatedProps.onQueryUpdate}
+						ids={rowIds}
+						categoryCounts={categoryCounts}
+						bulkActions={bulkActions}
+						onBulkActionApply={(
+							action: string,
+							selectedIds: []
+						) => {
+							handleBulkAction(action, selectedIds);
+						}}
+					/>
+				</ListGate>
 			</ColumnComponent>
 		</ContainerComponent>
 	);

@@ -260,6 +260,7 @@ const StoreReview: React.FC = () => {
 					onClose={() => setSelectedReview(null)}
 					width={31.25}
 					height="70%"
+					className="popup-drawer"
 					header={{
 						icon: 'store-review',
 						title: `${__('Reply to Review', 'multivendorx')} – ${selectedReview?.store_name}`,

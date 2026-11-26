@@ -71,7 +71,7 @@ export const getTourSteps = (appLocalizer: AppLocalizer): TourStep[] => [
 			'multivendorx'
 		),
 		next: {
-			link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=modules`,
+			link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=modules`,
 			step: 4,
 		},
 	},
@@ -84,7 +84,7 @@ export const getTourSteps = (appLocalizer: AppLocalizer): TourStep[] => [
 			'multivendorx'
 		),
 		next: {
-			link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=modules`,
+			link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=modules`,
 			step: 5,
 		},
 	},
@@ -97,7 +97,7 @@ export const getTourSteps = (appLocalizer: AppLocalizer): TourStep[] => [
 			'multivendorx'
 		),
 		next: {
-			link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=modules`,
+			link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=modules`,
 			step: 6,
 		},
 	},

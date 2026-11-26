@@ -14,9 +14,8 @@ import {
 	EmailBuilder,
 	legacyEmailBlocksToEmailBlocks,
 	emailBlocksToLegacyEmailBlocks,
-	renderBlocksToHTML,
-	htmlToBlocks,
-} from '@zyra/builders';
+} from '@zyra/builderform';
+import { renderBlocksToHTML, htmlToBlocks } from '../../../services/emailHtml';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { salesReport } from '../../../assets/template/emailTemplate/salesReport';
@@ -533,6 +532,7 @@ const EventRules: React.FC = () => {
 					onClose={() => setOpenChannel(null)}
 					width="90%"
 					height="90%"
+					className="popup-drawer"
 					header={{
 						icon: 'notification',
 						title: `${
@@ -557,16 +557,20 @@ const EventRules: React.FC = () => {
 									if (!formData.id) {
 										return;
 									}
-									// Saved as HTML, same as before, so existing
-									// notifications keep loading.
-									const updatedForm = {
-										...formData,
-										email_body: renderBlocksToHTML(
-											emailBlocksToLegacyEmailBlocks(blocks)
-										),
-									};
-									setFormData(updatedForm);
-									handleEmailSave(updatedForm.id, updatedForm);
+									// EmailBuilder calls this while it renders (zyra 1.0.65); update
+									// the form once that render is done.
+									queueMicrotask(() => {
+										// Saved as HTML, same as before, so existing
+										// notifications keep loading.
+										const updatedForm = {
+											...formData,
+											email_body: renderBlocksToHTML(
+												emailBlocksToLegacyEmailBlocks(blocks)
+											),
+										};
+										setFormData(updatedForm);
+										handleEmailSave(updatedForm.id, updatedForm);
+									});
 								}}
 							/>
 						)}
@@ -673,6 +677,7 @@ const EventRules: React.FC = () => {
 					onClose={() => setEditingNotification(null)}
 					width={32.25}
 					height="60%"
+					className="popup-drawer"
 					header={{
 						icon: 'notification',
 						title: `${__('Settings', 'multivendorx')} - ${editNotification?.event ?? ''}`,

@@ -10,6 +10,7 @@ namespace MultiVendorX\RestAPI;
 use MultiVendorX\RestAPI\Controllers\ImportDummyData;
 use MultiVendorX\RestAPI\Controllers\Settings;
 use MultiVendorX\RestAPI\Controllers\Dashboard;
+use MultiVendorX\RestAPI\Controllers\AdminDashboard;
 use MultiVendorX\RestAPI\Controllers\Stores;
 use MultiVendorX\RestAPI\Controllers\Commissions;
 use MultiVendorX\RestAPI\Controllers\Status;
@@ -659,10 +660,9 @@ class Rest {
             if ( $store->exists() ) {
                 $phone_meta      = $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] );
                 $formatted_phone = '';
-                if ( ! empty( $phone_meta['country_code'] ) && ! empty( $phone_meta['phone'] ) ) {
+                if ( is_array( $phone_meta ) && ! empty( $phone_meta['country_code'] ) && ! empty( $phone_meta['phone'] ) ) {
                     $formatted_phone = $phone_meta['country_code'] . '-' . $phone_meta['phone'];
                 }
-
                 $response->data['store_id']      = $store_id;
                 $response->data['store_name']    = (string) $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
                 $response->data['store_slug']    = (string) $store->get( Utill::STORE_SETTINGS_KEYS['slug'] );
@@ -1145,6 +1145,7 @@ class Rest {
         $this->container = array(
             'settings'          => new Settings(),
             'dashboard'         => new Dashboard(),
+            'admin_dashboard'   => new AdminDashboard(),
             'store'             => new Stores(),
             'commission'        => new Commissions(),
             'status'            => new Status(),

@@ -83,5 +83,41 @@ export default {
                 'notifima'
             ),
         },
+        {
+            key: 'subscriber_report_frequency',
+            type: 'choice-toggle',
+            label: __('Subscriber report frequency', 'notifima'),
+            settingDescription: __(
+                'Choose how often to receive subscriber reports.',
+                'notifima'
+            ),
+            options: [
+                {
+                    key: 'daily',
+                    label: __('Daily', 'notifima'),
+                    value: 'daily',
+                },
+                {
+                    key: 'weekly',
+                    label: __('Weekly', 'notifima'),
+                    value: 'weekly',
+                },
+                {
+                    key: 'biweekly',
+                    label: __('Every 2 weeks', 'notifima'),
+                    value: 'biweekly',
+                },
+                {
+                    key: 'monthly',
+                    label: __('Monthly', 'notifima'),
+                    value: 'monthly',
+                },
+                {
+                    key: 'quarterly',
+                    label: __('Quarterly', 'notifima'),
+                    value: 'quarterly',
+                },
+            ],
+        },
     ],
 };

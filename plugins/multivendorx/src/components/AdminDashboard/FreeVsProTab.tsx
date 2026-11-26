@@ -1,386 +1,550 @@
-import React from 'react';
-import { CardComponent, ColumnComponent, ContainerComponent } from '@zyra/components';
-import { __ } from '@wordpress/i18n';
-import freePro from '../../assets/images/dashboard-1.png';
+import React, { useState } from 'react';
+import { __, sprintf } from '@wordpress/i18n';
+import { LICENSES, ProPopupDialog } from '../Popup/Popup';
+import './free-vs-pro.scss';
+
 interface Feature {
 	name: string;
 	free: boolean | string;
 	pro: boolean | string;
+	/** Another plugin the feature works with, e.g. "Needs WooCommerce Bookings". */
+	note?: string;
 }
 
 interface Section {
 	title: string;
 	features: Feature[];
 }
+
+/** A feature in both Free and Pro. */
+const free = (name: string, note?: string): Feature => ({
+	name,
+	free: true,
+	pro: true,
+	note,
+});
+
+/** A feature only in Pro. */
+const pro = (name: string, note?: string): Feature => ({
+	name,
+	free: false,
+	pro: true,
+	note,
+});
+
+/* translators: %s: name of another WordPress plugin, e.g. "WooCommerce Bookings". */
+const needs = (plugin: string) =>
+	sprintf(__('Needs %s', 'multivendorx'), plugin);
+
+/*
+ * Every module and setting MultiVendorX ships, Free or Pro, as the Modules screen and the settings mark them
+ * (src/components/Modules/index.ts, `proSetting` in the settings). Grouped by what a marketplace owner sets out to do,
+ * the way buyers compare marketplace plugins. Keep in step with the modules: a new module gets a row here.
+ */
 const sections: Section[] = [
 	{
-		title: __('Product & store tools', 'multivendorx'),
+		title: __('Run your marketplace', 'multivendorx'),
 		features: [
-			{
-				name: __('Multiple stores per product', 'multivendorx'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Store policies', 'multivendorx'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Store reviews', 'multivendorx'),
-				free: true,
-				pro: true,
-			},
-			{ name: __('Follow store', 'multivendorx'), free: true, pro: true },
-			{
-				name: __(
-					'Privacy controls to show/hide store details)',
+			free(
+				__('Store dashboard for sellers on your site', 'multivendorx')
+			),
+			free(__('Store sign-up form you can customize', 'multivendorx')),
+			free(
+				__(
+					'Approve new stores, products and coupons before they go live',
 					'multivendorx'
-				),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __(
-					'Confirm vendor identity with documents',
+				)
+			),
+			free(__('Orders split by store automatically', 'multivendorx')),
+			free(__('Marketplace reports for admin', 'multivendorx')),
+			free(__('Announcements to all stores', 'multivendorx')),
+			free(__('Knowledgebase articles for stores', 'multivendorx')),
+			free(
+				__('Compliance checks on stores and listings', 'multivendorx')
+			),
+			free(
+				__(
+					'Email and on-site notifications you can customize',
 					'multivendorx'
-				),
-				free: false,
-				pro: true,
-			},
-			{
-				name: __(
-					'Bulk upload/download product via CSV',
+				)
+			),
+			pro(
+				__(
+					'Store membership plans with their own limits and capabilities',
 					'multivendorx'
-				),
-				free: false,
-				pro: true,
-			},
-			{
-				name: __('Display store opening/closing times', 'multivendorx'),
-				free: false,
-				pro: true,
-			},
-			{
-				name: __(
-					'Store can temporarily close shop with customer notice',
+				)
+			),
+			pro(
+				__(
+					'Franchise ordering, with orders assigned to the nearest store',
 					'multivendorx'
-				),
-				free: false,
-				pro: true,
-			},
-			{
-				name: __(
-					'Assign assistants to your store and control what they can access',
-					'multivendorx'
-				),
-				free: false,
-				pro: true,
-			},
+				)
+			),
 		],
 	},
 	{
-		title: __(' Get paid without hassle', 'multivendorx'),
+		title: __('Products you can sell', 'multivendorx'),
 		features: [
-			{
-				name: __('Bank transfer', 'multivendorx'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('PayPal payout', 'multivendorx'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Stripe connect', 'multivendorx'),
-				free: true,
-				pro: true,
-			},
-			{ name: __('Razorpay', 'multivendorx'), free: true, pro: true },
-			{
-				name: __('Real-time split payments', 'multivendorx'),
-				free: false,
-				pro: true,
-			},
+			free(__('Simple products, physical or digital', 'multivendorx')),
+			free(
+				__(
+					'One product sold by several stores (shared listing)',
+					'multivendorx'
+				)
+			),
+			free(__('Minimum and maximum order quantities', 'multivendorx')),
+			free(
+				__('AI-written product descriptions and images', 'multivendorx')
+			),
+			pro(__('Variable products', 'multivendorx')),
+			pro(__('Grouped products', 'multivendorx')),
+			pro(__('External and affiliate products', 'multivendorx')),
+			pro(
+				__('Product bundles', 'multivendorx'),
+				needs('Product Bundles')
+			),
+			pro(
+				__('Gift cards', 'multivendorx'),
+				needs('YITH WooCommerce Gift Cards')
+			),
+			pro(
+				__(
+					'Product add-ons, like gift wrap or engraving',
+					'multivendorx'
+				),
+				needs('Product Add-Ons')
+			),
+			pro(
+				__('Custom product fields', 'multivendorx'),
+				needs('Advanced Custom Fields')
+			),
 		],
 	},
 	{
-		title: __(' Deliver seamless shopping experiences', 'multivendorx'),
+		title: __('Marketplace types', 'multivendorx'),
 		features: [
-			{ name: __('Product Q&A', 'multivendorx'), free: true, pro: true },
-			{
-				name: __('Marketplace refunds', 'multivendorx'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Announcements', 'multivendorx'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Product abuse report', 'multivendorx'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Invoices & packing slips', 'multivendorx'),
-				free: false,
-				pro: true,
-			},
-			{ name: __('Live chat', 'multivendorx'), free: false, pro: true },
-			{
-				name: __('Customer support', 'multivendorx'),
-				free: false,
-				pro: true,
-			},
-			{
-				name: __('Product enquiry', 'multivendorx'),
-				free: false,
-				pro: true,
-			},
+			pro(
+				__('Bookings for services and equipment', 'multivendorx'),
+				needs('WooCommerce Bookings')
+			),
+			pro(
+				__('Appointments', 'multivendorx'),
+				needs('WooCommerce Appointments')
+			),
+			pro(
+				__('Accommodation and overnight stays', 'multivendorx'),
+				needs('WooCommerce Accommodation Bookings')
+			),
+			pro(
+				__('Rentals', 'multivendorx'),
+				needs('RnB – WooCommerce Rental & Bookings')
+			),
+			pro(__('Subscription products', 'multivendorx')),
+			pro(
+				__('Auctions', 'multivendorx'),
+				needs('YITH WooCommerce Auctions')
+			),
 		],
 	},
 	{
-		title: __(' Ship the way you want', 'multivendorx'),
+		title: __('Tools for stores', 'multivendorx'),
 		features: [
-			{
-				name: __('Zone-based shipping', 'multivendorx'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Distance-based shipping', 'multivendorx'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Country restrictions', 'multivendorx'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Weight-based shipping', 'multivendorx'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Per-product shipping', 'multivendorx'),
-				free: false,
-				pro: true,
-			},
+			free(
+				__('Store policies: returns, refunds, shipping', 'multivendorx')
+			),
+			free(__('Store location on a map', 'multivendorx')),
+			free(
+				__(
+					'Privacy controls to show or hide store details',
+					'multivendorx'
+				)
+			),
+			pro(__('Media library for each store', 'multivendorx')),
+			pro(__('Bulk import and export products with CSV', 'multivendorx')),
+			pro(
+				__(
+					'Stock management, low-stock alerts and waitlists',
+					'multivendorx'
+				)
+			),
+			pro(__('Opening hours shown on the store', 'multivendorx')),
+			pro(
+				__('Vacation mode, with a notice for customers', 'multivendorx')
+			),
+			pro(__('Staff accounts with role-based access', 'multivendorx')),
+			pro(
+				__('Identity verification and a verified badge', 'multivendorx')
+			),
+			pro(__('Store analytics, with Google Analytics', 'multivendorx')),
 		],
 	},
 	{
-		title: __(' Sell in different ways', 'multivendorx'),
+		title: __('Commissions and payouts', 'multivendorx'),
 		features: [
-			{
-				name: __(
-					'Optimize store & product SEO with Yoast or Rank Math',
+			free(
+				__(
+					'Commission per order or per item, with tiers by price or order value',
 					'multivendorx'
-				),
-				free: false,
-				pro: true,
-			},
-			{
-				name: __('Sales, revenue, and order reports', 'multivendorx'),
-				free: false,
-				pro: true,
-			},
-			{
-				name: __(
-					'Store with different capabilities as per subsctiption plan',
+				)
+			),
+			free(
+				__(
+					'Split tax and shipping between marketplace and store',
 					'multivendorx'
-				),
-				free: false,
-				pro: true,
-			},
-			{
-				name: __('Paid product promotions', 'multivendorx'),
-				free: false,
-				pro: true,
-			},
-			{
-				name: __(
-					'Special pricing & bulk rules for groups',
+				)
+			),
+			free(
+				__(
+					'Store wallets with clearing period, reserve and payout minimum',
 					'multivendorx'
-				),
-				free: false,
-				pro: true,
-			},
-			{
-				name: __(
-					'Low-stock alerts, waitlists, inventory management',
+				)
+			),
+			free(
+				__(
+					'Automatic payouts: hourly, daily, weekly or monthly',
 					'multivendorx'
-				),
-				free: false,
-				pro: true,
-			},
+				)
+			),
+			free(
+				__(
+					'Pay stores by bank transfer, PayPal Payouts, Stripe Connect or cash',
+					'multivendorx'
+				)
+			),
+			free(__('Pass payment gateway fees to stores', 'multivendorx')),
+			free(
+				__(
+					'Choose who pays for coupons: marketplace or store',
+					'multivendorx'
+				)
+			),
+			pro(
+				__(
+					'Instant split payments with Stripe Marketplace',
+					'multivendorx'
+				)
+			),
+			pro(
+				__(
+					'Instant split payments with PayPal Marketplace',
+					'multivendorx'
+				)
+			),
+			pro(__('Marketplace fees per order or per store', 'multivendorx')),
+			pro(
+				__(
+					'Share a commission with a facilitator or agent',
+					'multivendorx'
+				)
+			),
 		],
 	},
 	{
-		title: __('Automate rules and commissions', 'multivendorx'),
+		title: __('Shipping and delivery', 'multivendorx'),
+		features: [
+			free(__('Shipping by zone, country or distance', 'multivendorx')),
+			free(__('Shipment tracking with major carriers', 'multivendorx')),
+			free(__('Marketplace refunds', 'multivendorx')),
+			pro(
+				__(
+					'Delivery stages: processing, shipped, delivered',
+					'multivendorx'
+				)
+			),
+			pro(
+				__(
+					'Shipping by weight, order value or quantity',
+					'multivendorx'
+				),
+				needs('Table Rate Shipping')
+			),
+			pro(
+				__('Shipping rate per product', 'multivendorx'),
+				needs('Per Product Shipping for WooCommerce')
+			),
+			pro(__('Invoices and packing slips', 'multivendorx')),
+			pro(__('Shipping labels with ShipStation', 'multivendorx')),
+			pro(__('Print on demand with Printful', 'multivendorx')),
+		],
+	},
+	{
+		title: __('Customer experience', 'multivendorx'),
+		features: [
+			free(__('Store ratings and reviews', 'multivendorx')),
+			free(__('Follow a store', 'multivendorx')),
+			free(__('Product questions and answers', 'multivendorx')),
+			free(__('Report a product or store', 'multivendorx')),
+			pro(__('Live chat between customers and stores', 'multivendorx')),
+			pro(__('Support tickets for each store', 'multivendorx')),
+		],
+	},
+	{
+		title: __('Marketing and growth', 'multivendorx'),
+		features: [
+			pro(
+				__('SEO for stores and products', 'multivendorx'),
+				needs('Yoast SEO or Rank Math')
+			),
+			pro(__('Paid product promotions', 'multivendorx')),
+			pro(
+				__(
+					'Wholesale prices for selected customer groups',
+					'multivendorx'
+				)
+			),
+			pro(
+				__('Affiliate program for stores', 'multivendorx'),
+				needs('AffiliateWP')
+			),
+		],
+	},
+	{
+		title: __('Works with', 'multivendorx'),
+		features: [
+			free(
+				__('Elementor store page designs', 'multivendorx'),
+				needs('Elementor')
+			),
+			free(
+				__('Multilingual stores and products', 'multivendorx'),
+				needs('WPML')
+			),
+			free(
+				__('Social profiles for stores', 'multivendorx'),
+				needs('BuddyPress')
+			),
+		],
+	},
+	{
+		title: __('Support and updates', 'multivendorx'),
 		features: [
 			{
-				name: __('Payment gateway fees', 'multivendorx'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Min/Max quantities', 'multivendorx'),
-				free: true,
-				pro: true,
-			},
-			{
-				name: __('Facilitator fees', 'multivendorx'),
-				free: false,
-				pro: true,
-			},
-			{
-				name: __('Marketplace fees', 'multivendorx'),
-				free: false,
-				pro: true,
+				name: __('Support', 'multivendorx'),
+				free: __('Community forum', 'multivendorx'),
+				pro: __('Priority support', 'multivendorx'),
 			},
 		],
 	},
 ];
 
-const FreeVsProTab: React.FC<object> = () => {
-	const renderCell = (value: string | boolean) => {
-		if (typeof value === 'boolean') {
-			return value ? (
-				<i className="check-icon adminfont-check"></i>
-			) : (
-				<i className="close-icon adminfont-close"></i>
-			);
-		}
-		return value;
-	};
+/** Counts, for the hero: what Free includes, and how many more Pro adds on top. */
+// A feature can be listed under more than one section; count it once.
+const allFeatures = [
+	...new Map(
+		sections
+			.flatMap((section) => section.features)
+			.map((feature): [string, Feature] => [feature.name, feature])
+	).values(),
+];
+const freeCount = allFeatures.filter((feature) => feature.free).length;
+const proOnlyCount = allFeatures.length - freeCount;
+
+/** A Free/Pro cell: a mark for sighted readers, and the words for screen readers. */
+const Cell: React.FC<{ value: boolean | string; pro?: boolean }> = ({
+	value,
+	pro = false,
+}) => {
+	if ('string' === typeof value) {
+		return <>{value}</>;
+	}
+
+	return value ? (
+		<span className={`mvx-fvp-yes${pro ? ' is-pro' : ''}`}>
+			<i className="adminfont-check" aria-hidden="true" />
+			<span className="screen-reader-text">
+				{__('Included', 'multivendorx')}
+			</span>
+		</span>
+	) : (
+		<span className="mvx-fvp-no">
+			<span aria-hidden="true">—</span>
+			<span className="screen-reader-text">
+				{__('Not included', 'multivendorx')}
+			</span>
+		</span>
+	);
+};
+
+/**
+ * Dashboard → Free vs Pro (free sites only): what Pro adds, feature by feature. One upgrade button at the top and one
+ * at the end, both opening the Pro popup (features, plans, buy) like every other upgrade button in MultiVendorX.
+ */
+const FreeVsProTab: React.FC = () => {
+	const [open, setOpen] = useState(false);
+	const lowestPrice = LICENSES[0]?.price;
+
+	const upgradeButton = (className = '') => (
+		<button
+			type="button"
+			className={`admin-btn mvx-upgrade-btn mvx-fvp-upgrade ${className}`.trim()}
+			onClick={() => setOpen(true)}
+		>
+			<i className="adminfont-pro-tag" aria-hidden="true" />
+			{__('Upgrade to Pro', 'multivendorx')}
+		</button>
+	);
 
 	return (
-		<ContainerComponent>
-			<ColumnComponent grid={8}>
-				<CardComponent
-					title={__('Free vs Pro comparison', 'multivendorx')}
-					titleIcon="pro-tag"
-					desc={__(
-						'See what you get with MultiVendorX Pro',
-						'multivendorx'
-					)}
-					action={
-						<a
-							href="https://multivendorx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx"
-							className="admin-btn btn-purple"
-						>
-							{__('Get Pro Access Today!', 'multivendorx')}
-							<i className="adminfont-arrow-right icon-pro-btn"></i>
-						</a>
-					}
-				>
-					<div id="free-vs-pro" className="free-vs-pro">
-						{sections.map((section, idx) => (
-							<table key={idx}>
-								<thead>
-									<tr>
-										<td>
-											{__(section.title, 'multivendorx')}
-										</td>
-										<td>{__('Free', 'multivendorx')}</td>
-										<td>{__('Pro', 'multivendorx')}</td>
-									</tr>
-								</thead>
-								<tbody>
-									{section.features.map((feature, i) => (
-										<tr key={i}>
-											<td>
-												{__(
-													feature.name,
-													'multivendorx'
-												)}
-											</td>
-											<td>{renderCell(feature.free)}</td>
-											<td>{renderCell(feature.pro)}</td>
-										</tr>
-									))}
-								</tbody>
-							</table>
-						))}
-					</div>
-				</CardComponent>
-			</ColumnComponent>
-
-			<ColumnComponent grid={4}>
-				<CardComponent>
-					<div className="right-pro-banner">
-						<div className="image-wrapper">
-							<img src={freePro} alt="" />
-						</div>
-
-						<div className="title">
-							{__(
-								'Join 8,000+ successful marketplace owners',
-								'multivendorx'
-							)}
-						</div>
-
-						<div className="des">
-							{__(
-								'Build, manage, and expand your marketplace with confidence. Loved by entrepreneurs globally.',
-								'multivendorx'
-							)}
-						</div>
-
-						<ul>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Flexible selling models', 'multivendorx')}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__(
-									'Effortless inventory control',
-									'multivendorx'
+		<div className="mvx-fvp">
+			<section className="mvx-fvp-hero">
+				<div className="mvx-fvp-hero-text">
+					<span className="mvx-fvp-pill">
+						<i className="adminfont-pro-tag" aria-hidden="true" />
+						{'MultiVendorX Pro'}
+					</span>
+					<h2>
+						{__(
+							'Everything in Free, plus memberships, verified stores and new ways to sell',
+							'multivendorx'
+						)}
+					</h2>
+					<p>
+						{__(
+							'Keep every store, product and setting you have today. Pro adds store memberships, verification, bookings, subscriptions and more on top.',
+							'multivendorx'
+						)}
+					</p>
+					<div className="mvx-fvp-hero-actions">
+						{upgradeButton('is-large')}
+						{lowestPrice && (
+							<span className="mvx-fvp-price">
+								{sprintf(
+									/* translators: %s: lowest Pro license price, e.g. $299. */
+									__('Plans from %s', 'multivendorx'),
+									lowestPrice
 								)}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Intelligent alert system', 'multivendorx')}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Secure seller onboarding', 'multivendorx')}
-							</li>
-							<li>
-								<i className="adminfont-check"></i>
-								{__('Recurring revenue tools', 'multivendorx')}
-							</li>
-						</ul>
-
-						<div className="button-wrapper">
-							<a
-								href="https://multivendorx.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=multivendorx"
-								className="admin-btn btn-purple"
-							>
-								<i className="adminfont-pro-tag"></i>
-								{__('Upgrade Now', 'multivendorx')}
-								<i className="adminfont-arrow-right icon-pro-btn"></i>
-							</a>
-
-							<div
-								onClick={() =>
-									(window.location.href = `?page=multivendorx-setup`)
-								}
-								className="admin-btn"
-							>
-								{__('Launch Setup Wizard', 'multivendorx')}
-								<i className="adminfont-import"></i>
-							</div>
-						</div>
+							</span>
+						)}
 					</div>
-				</CardComponent>
-			</ColumnComponent>
-		</ContainerComponent>
+				</div>
+				<dl className="mvx-fvp-stats">
+					<div>
+						<dt>{__('Included in Free', 'multivendorx')}</dt>
+						<dd>{freeCount}</dd>
+					</div>
+					<div className="is-pro">
+						<dt>{__('More with Pro', 'multivendorx')}</dt>
+						<dd>+{proOnlyCount}</dd>
+					</div>
+				</dl>
+			</section>
+
+			<section
+				className="mvx-fvp-compare"
+				aria-labelledby="mvx-fvp-compare-title"
+			>
+				<header className="mvx-fvp-compare-head">
+					<h3 id="mvx-fvp-compare-title">
+						{__('Compare feature by feature', 'multivendorx')}
+					</h3>
+					<p>
+						{__(
+							'Pro includes every Free feature. Rows marked Pro are what you unlock.',
+							'multivendorx'
+						)}
+					</p>
+				</header>
+				<table className="mvx-fvp-table">
+					<thead>
+						<tr>
+							<th scope="col">
+								<span className="screen-reader-text">
+									{__('Feature', 'multivendorx')}
+								</span>
+							</th>
+							<th scope="col">{__('Free', 'multivendorx')}</th>
+							<th scope="col" className="is-pro">
+								{__('Pro', 'multivendorx')}
+							</th>
+						</tr>
+					</thead>
+					{sections.map((section) => {
+						const added = section.features.filter(
+							(feature) => !feature.free
+						).length;
+
+						return (
+							<tbody key={section.title}>
+								<tr className="mvx-fvp-group">
+									<th scope="rowgroup" colSpan={2}>
+										{section.title}
+										{added > 0 && (
+											<span className="mvx-fvp-added">
+												{sprintf(
+													/* translators: %d: number of features only in Pro. */
+													__(
+														'+%d with Pro',
+														'multivendorx'
+													),
+													added
+												)}
+											</span>
+										)}
+									</th>
+									<td className="is-pro" aria-hidden="true" />
+								</tr>
+								{section.features.map((feature) => (
+									<tr
+										key={feature.name}
+										className={
+											feature.free ? '' : 'is-pro-only'
+										}
+									>
+										<th scope="row">
+											{feature.name}
+											{!feature.free && (
+												<span className="admin-tag pro-tag">
+													<i
+														className="adminfont-pro-tag"
+														aria-hidden="true"
+													/>
+													{__('Pro', 'multivendorx')}
+												</span>
+											)}
+											{feature.note && (
+												<span className="mvx-fvp-note">
+													{feature.note}
+												</span>
+											)}
+										</th>
+										<td>
+											<Cell value={feature.free} />
+										</td>
+										<td className="is-pro">
+											<Cell value={feature.pro} pro />
+										</td>
+									</tr>
+								))}
+							</tbody>
+						);
+					})}
+				</table>
+			</section>
+
+			<section className="mvx-fvp-cta">
+				<div>
+					<h3>
+						{sprintf(
+							/* translators: %d: number of features only in Pro. */
+							__(
+								'Unlock all %d Pro features today',
+								'multivendorx'
+							),
+							proOnlyCount
+						)}
+					</h3>
+					<p>
+						{__(
+							'Every plan includes every Pro feature. Plans differ only in how many sites you activate.',
+							'multivendorx'
+						)}
+					</p>
+				</div>
+				{upgradeButton('is-light')}
+			</section>
+
+			{open && <ProPopupDialog onClose={() => setOpen(false)} />}
+		</div>
 	);
 };
 

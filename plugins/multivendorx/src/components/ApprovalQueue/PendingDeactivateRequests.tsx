@@ -6,6 +6,9 @@ import { getApiLink } from '@zyra/core';
 import { ButtonInput } from '@zyra/inputs';
 import { QueryProps, TableCard, TableRow } from '@zyra/table';
 import { formatDate, getUrl, truncateText } from '@/services/commonFunction';
+import ListGate from '../Popup/ListGate';
+import useNoRecordsYet from '../Popup/useNoRecordsYet';
+import { SAMPLE_DEACTIVATIONS } from '../Popup/sampleRows';
 
 const PendingDeactivateRequests: React.FC<object> = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -102,7 +105,8 @@ const PendingDeactivateRequests: React.FC<object> = () => {
 			});
 	};
 
-	const infoRows = rows.map((row: any) => ({
+	/** A record as a table row; the sample rows go through it too, so they look like real ones. */
+	const toInfoRow = (row: any) => ({
 		...row,
 		info_icon: 'store-inventory',
 		info_link: getUrl(row.id, 'store', 'edit'),
@@ -114,19 +118,63 @@ const PendingDeactivateRequests: React.FC<object> = () => {
 			},
 		],
 		info_badges: [{ text: formatDate(row.date), color: 'blue' }],
-	}));
+	});
+	const infoRows = rows.map(toInfoRow);
+
+	const sampleRowsData = SAMPLE_DEACTIVATIONS;
+	const { props: gatedProps, hasNoRecords } = useNoRecordsYet({
+		rows: infoRows,
+		isLoading,
+		onQueryUpdate: doRefreshTableData,
+	});
 
 	return (
-		<TableCard
-			headers={headers}
-			variant="transparent"
-			rows={infoRows}
-			totalRows={totalRows}
-			isLoading={isLoading}
-			onQueryUpdate={doRefreshTableData}
-			ids={rowIds}
-			format={appLocalizer.date_format}
-		/>
+		<ListGate
+			feature={{
+				title: __('Deactivation requests', 'multivendorx'),
+				description: '',
+				icon: 'storefront',
+			}}
+			sample={
+				<TableCard
+					headers={headers}
+					variant="transparent"
+					format={appLocalizer.date_format}
+					rows={sampleRowsData.map(toInfoRow)}
+					totalRows={sampleRowsData.length}
+				/>
+			}
+			isEmpty={hasNoRecords}
+			empty={{
+				heading: __('No deactivation requests', 'multivendorx'),
+				description: __(
+					'When a store asks to close, the request and its reason wait here so you can approve it or follow up.',
+					'multivendorx'
+				),
+				actions: (
+					<>
+						<a className="mvx-locked-button" href={'#&tab=stores'}>
+							{__('View all stores', 'multivendorx')}
+						</a>
+					</>
+				),
+				note: __(
+					'A preview with sample requests. Real ones show here.',
+					'multivendorx'
+				),
+			}}
+		>
+			<TableCard
+				headers={headers}
+				variant="transparent"
+				rows={infoRows}
+				totalRows={totalRows}
+				isLoading={isLoading}
+				onQueryUpdate={gatedProps.onQueryUpdate}
+				ids={rowIds}
+				format={appLocalizer.date_format}
+			/>
+		</ListGate>
 	);
 };
 

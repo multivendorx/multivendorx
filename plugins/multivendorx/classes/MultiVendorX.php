@@ -135,8 +135,6 @@ final class MultiVendorX {
         }
 
         add_action( 'init', array( $this, 'multivendorx_register_setup_wizard' ) );
-
-        add_filter( 'woocommerce_email_classes', array( $this, 'setup_email_class' ) );
     }
 
 
@@ -175,9 +173,11 @@ final class MultiVendorX {
         $this->container['widgets']         = new Widgets();
         $this->container['pattern']         = new Pattern();
         $this->container['tracker']         = new Tracker();
+        $this->container['admin_notice']    = new AdminNotice();
         $this->container['promotions']      = new Promotions();
         $this->container['migration']       = new Migration\Cron();
-        $this->container['vulomail_migration'] = new Integrations\VuloMailMigration();
+        $this->container['vulomail']        = new Integrations\VuloMail\Integration();
+        $this->container['vuloform']        = new Integrations\VuloForm\Integration();
         $this->container['abilities']       = new Abilities();
 
         $this->initialize_multivendorx_log();
@@ -202,16 +202,6 @@ final class MultiVendorX {
             wp_safe_redirect( admin_url( 'admin.php?page=multivendorx-setup' ) );
             exit;
         }
-    }
-
-    /**
-     * Add MultiVendorX Email Class.
-     *
-     * @param array $emails  All MultiVendorX emails.
-     * @return array
-     */
-    public function setup_email_class( $emails ) {
-        return $emails;
     }
 
     /**

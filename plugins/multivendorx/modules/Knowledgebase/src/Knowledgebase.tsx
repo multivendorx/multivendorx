@@ -24,6 +24,12 @@ import {
 	formatDate,
 	formatLocalDate,
 } from '../../../src/services/commonFunction';
+import ListGate from '../../../src/components/Popup/ListGate';
+import useNoRecordsYet from '../../../src/components/Popup/useNoRecordsYet';
+import {
+	SAMPLE_ARTICLES,
+	sampleCategoryCounts,
+} from '../../../src/components/Popup/sampleRows';
 
 type KBForm = {
 	title: string;
@@ -230,7 +236,8 @@ export const KnowledgeBase: React.FC = () => {
 		return plain.length > limit ? `${plain.slice(0, limit)}...` : plain;
 	};
 
-	const infoRows = rows.map((row: any) => ({
+	/** A record as a table row; the sample rows go through it too, so they look like real ones. */
+	const toInfoRow = (row: any) => ({
 		...row,
 		title: truncateChars(row.title, 15),
 		info_icon: 'knowledgebase',
@@ -244,7 +251,8 @@ export const KnowledgeBase: React.FC = () => {
 			{ text: row.status_label, color: `badge-${row.status}` },
 			{ text: formatDate(row.date_created), color: 'blue' },
 		],
-	}));
+	});
+	const infoRows = rows.map(toInfoRow);
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -328,6 +336,13 @@ export const KnowledgeBase: React.FC = () => {
 		{ label: __('Pending', 'multivendorx'), value: 'pending' },
 		{ label: __('Delete', 'multivendorx'), value: 'delete' },
 	];
+	const sampleRowsData = SAMPLE_ARTICLES;
+	const { props: gatedProps, hasNoRecords } = useNoRecordsYet({
+		rows: infoRows,
+		isLoading,
+		onQueryUpdate: doRefreshTableData,
+	});
+
 	return (
 		<>
 			<PopupComponent
@@ -343,9 +358,9 @@ export const KnowledgeBase: React.FC = () => {
 					confirmMessage={
 						selectedKb
 							? __(
-								'Are you sure you want to delete this knowledge base?',
-								'multivendorx'
-							)
+									'Are you sure you want to delete this knowledge base?',
+									'multivendorx'
+								)
 							: ''
 					}
 					confirmYesText={__('Delete', 'multivendorx')}
@@ -446,9 +461,9 @@ export const KnowledgeBase: React.FC = () => {
 									}
 									usePlainText={false}
 									tinymceApiKey={
-										appLocalizer.admin_settings[
-										'overview'
-										]['tinymce_api_section'] ?? ''
+										appLocalizer.admin_settings['overview'][
+											'tinymce_api_section'
+										] ?? ''
 									}
 									msg={{
 										type: 'error',
@@ -496,26 +511,89 @@ export const KnowledgeBase: React.FC = () => {
 			)}
 			<ContainerComponent general>
 				<ColumnComponent>
-					<TableCard
-						headers={headers}
-						variant="transparent"
-						rows={infoRows}
-						totalRows={totalRows}
-						isLoading={isLoading}
-						onQueryUpdate={doRefreshTableData}
-						ids={rowIds}
-						categoryCounts={categoryCounts}
-						search={{}}
-						filters={filters}
-						bulkActions={bulkActions}
-						onBulkActionApply={(
-							action: string,
-							selectedIds: []
-						) => {
-							handleBulkAction(action, selectedIds);
+					<ListGate
+						feature={{
+							title: __('Knowledgebase', 'multivendorx'),
+							description: '',
+							icon: 'knowledgebase',
 						}}
-						format={appLocalizer.date_format}
-					/>
+						sample={
+							<TableCard
+								headers={headers}
+								variant="transparent"
+								search={{}}
+								filters={filters}
+								onBulkActionApply={(
+									action: string,
+									selectedIds: []
+								) => {
+									handleBulkAction(action, selectedIds);
+								}}
+								format={appLocalizer.date_format}
+								rows={sampleRowsData.map(toInfoRow)}
+								totalRows={sampleRowsData.length}
+								categoryCounts={sampleCategoryCounts(
+									sampleRowsData,
+									{
+										publish: __(
+											'Published',
+											'multivendorx'
+										),
+										pending: __('Pending', 'multivendorx'),
+										draft: __('Draft', 'multivendorx'),
+									},
+									__('All', 'multivendorx')
+								)}
+							/>
+						}
+						isEmpty={hasNoRecords}
+						empty={{
+							heading: __('No articles yet', 'multivendorx'),
+							description: __(
+								'Write guides and how-tos for your stores. They read them from their store dashboard.',
+								'multivendorx'
+							),
+							actions: (
+								<>
+									<button
+										type="button"
+										className="mvx-locked-button"
+										onClick={() => {
+											setValidationErrors({});
+											setAddEntry(true);
+										}}
+									>
+										{__('Add an article', 'multivendorx')}
+									</button>
+								</>
+							),
+							note: __(
+								'A preview with sample articles. Yours show here.',
+								'multivendorx'
+							),
+						}}
+					>
+						<TableCard
+							headers={headers}
+							variant="transparent"
+							rows={infoRows}
+							totalRows={totalRows}
+							isLoading={isLoading}
+							onQueryUpdate={gatedProps.onQueryUpdate}
+							ids={rowIds}
+							categoryCounts={categoryCounts}
+							search={{}}
+							filters={filters}
+							bulkActions={bulkActions}
+							onBulkActionApply={(
+								action: string,
+								selectedIds: []
+							) => {
+								handleBulkAction(action, selectedIds);
+							}}
+							format={appLocalizer.date_format}
+						/>
+					</ListGate>
 				</ColumnComponent>
 			</ContainerComponent>
 		</>

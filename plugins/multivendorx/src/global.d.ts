@@ -22,6 +22,12 @@ declare global {
 		restUrl: string;
 		nonce: string;
 		khali_dabba: string | boolean;
+		/** The admin's first name (or display name), for the dashboard greeting; empty when logged out. */
+		user_first_name?: string;
+		/** Ids of the modules that are on. */
+		active_modules?: string[];
+		/** VuloForm's install state/form id for the Registration settings tab. */
+		vuloform: VuloFormAdminData;
 		tab_name: string;
 		order_statuses?: { label: string; value: string }[];
 		admin_settings: any;
@@ -68,6 +74,8 @@ declare global {
 		pro_data: {
 			version: string | boolean;
 			manage_plan_url: string;
+			/** Settings → License's form, from MultiVendorX Pro (LicenseManager::get_settings_form_data()). */
+			license?: unknown;
 		};
 		shop_url: string;
 		admin_url: string;
@@ -103,13 +111,21 @@ declare global {
 	}
 	interface RegistrationForm {
 		apiUrl: string;
+		restUrl: string;
 		nonce: string;
-		settings: Array;
-		default_placeholder: Array;
+		/** The configured VuloForm form id, 0 when none is set. */
+		vuloform_form_id: number;
 		content_before_form: string;
 		content_after_form: string;
-		error_strings: Array;
 		is_user_logged_in: boolean;
+		dashboard_redirect_url: string;
+	}
+
+	interface VuloFormAdminData {
+		installed: boolean;
+		plugin_url: string;
+		can_activate: boolean;
+		form_id: number;
 	}
 
 	var appLocalizer: AppLocalizer;

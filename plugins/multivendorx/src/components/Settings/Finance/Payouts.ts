@@ -14,10 +14,14 @@ export default {
 	submitUrl: 'settings',
 	modal: [
 		{
-			key: 'section',
+			key: 'section_payout_schedule',
 			type: 'section',
 			icon: 'dollar',
 			title: __('Payout Schedule', 'multivendorx'),
+			desc: __(
+				'When store earnings become payable, and how often they are paid out.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'store_rating_page',
@@ -461,10 +465,14 @@ export default {
 			},
 		},
 		{
-			key: 'section',
+			key: 'section_withdrawal_rules_limits',
 			type: 'section',
 			icon: 'withdraw',
 			title: __('Withdrawal Rules & Limits', 'multivendorx'),
+			desc: __(
+				'How stores ask for their money, and what each withdrawal costs.',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'withdraw_type',

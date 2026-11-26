@@ -8,6 +8,8 @@
 namespace CatalogX\Enquiry;
 
 use CatalogX\Utill;
+use CatalogX\Integrations\VuloMail\Integration as VuloMailIntegration;
+use CatalogX\Integrations\VuloMail\Templates as VuloMailTemplates;
 
 /**
  * CatalogX Enquiry Module Rest class
@@ -84,13 +86,17 @@ class Rest {
             global $wpdb;
 
             $quantity            = absint( $request->get_param( 'quantity' ) );
-            $product_id          = absint( $request->get_param( 'productId' ) );
+            $product_id_param    = $request->get_param( 'productId' );
+            $product_id          = absint( $product_id_param );
             $enquiry_form_fields = $request->get_body_params();
             $uploaded_files      = $request->get_file_params();
 
             $user       = CatalogX()->current_user;
             $user_name  = $user->display_name;
             $user_email = $user->user_email;
+
+            $attachment_id = null;
+            $attachments   = array();
 
             // Create attachment of files.
             foreach ( $uploaded_files as $file ) {
@@ -100,12 +106,23 @@ class Rest {
                 }
             }
 
-            unset( $enquiry_form_fields['quantity'], $enquiry_form_fields['productId'] );
+            unset( $enquiry_form_fields['quantity'], $enquiry_form_fields['productId'], $enquiry_form_fields['user_id'] );
 
-            // Gather product information.
+            // Gather product information. `productId` is either a single product id (the
+            // single-product enquiry button) or a JSON `{product_id: quantity}` map (the
+            // enquiry cart's bulk "Send enquiry", baked in via the same `?productId=` query
+            // param at embed time -- see catalogx-pro's EnquiryCartTable.tsx).
             $product_info = apply_filters( 'catalogx_set_enquiry_product_info', array() );
+            $cart_products = json_decode( (string) $product_id_param, true );
+
             if ( empty( $product_info ) ) {
-                $product_info[ $product_id ] = $quantity;
+                if ( is_array( $cart_products ) ) {
+                    foreach ( $cart_products as $cart_product_id => $cart_quantity ) {
+                        $product_info[ absint( $cart_product_id ) ] = absint( $cart_quantity );
+                    }
+                } else {
+                    $product_info[ $product_id ] = $quantity;
+                }
             }
 
             // Get extra fields.
@@ -113,17 +130,26 @@ class Rest {
             foreach ( $enquiry_form_fields as $key => $value ) {
                 switch ( $key ) {
                     case 'name':
-                        $customer_name = ! empty( $user_name ) ? $user_name : $value;
+                        $customer_name = ! empty( $user_name ) ? $user_name : sanitize_text_field( (string) $value );
                         break;
 
                     case 'email':
-                        $customer_email = ! empty( $user_email ) ? $user_email : $value;
+                        $submitted_email = sanitize_email( $value );
+                        $customer_email  = ! empty( $user_email ) ? $user_email : ( is_email( $submitted_email ) ? $submitted_email : '' );
                         break;
 
                     default:
+                        if ( is_array( $value ) ) {
+                            $field_value = array_key_exists( 'phone', $value )
+                                ? sanitize_text_field( (string) $value['phone'] )
+                                : implode( ', ', array_map( 'sanitize_text_field', array_map( 'strval', $value ) ) );
+                        } else {
+                            $field_value = $value;
+                        }
+
                         $additional_fields[] = array(
                             'name'  => $key,
-                            'value' => $value,
+                            'value' => $field_value,
                         );
                         break;
                 }
@@ -136,6 +162,7 @@ class Rest {
                 'user_name'              => $customer_name ?? $user_name,
                 'user_email'             => $customer_email ?? $user_email,
                 'user_additional_fields' => serialize( $additional_fields ),
+                'date'                   => current_time( 'mysql', true ),
             );
 
             if ( ! WC()->session ) {
@@ -201,9 +228,57 @@ class Rest {
 
                 $attachments      = apply_filters( 'catalogx_set_enquiry_pdf_and_attachments', array(), $enquiry_id, $enquiry_data );
                 $additional_email = CatalogX()->setting->get_setting( 'additional_alert_email' );
-                $email_handler    = WC()->mailer()->emails['EnquiryEmail'];
 
-                $email_handler->trigger( $additional_email, $enquiry_data, $attachments );
+                // Store emails, same as the old EnquiryEmail::add_store_emails().
+                if ( Utill::is_active_plugin( 'multivendorx' ) ) {
+                    foreach ( $product_info as $enquired_product_id => $quantity ) {
+                        $store_id = get_post_meta( $enquired_product_id, 'multivendorx_store_id', true );
+                        $store    = new \MultiVendorX\Store\Store( $store_id );
+
+                        if ( $store ) {
+                            $additional_email .= ', ' . sanitize_email( $store->get( 'email' ) );
+                        }
+                    }
+                }
+
+                $enquired_product_names = array();
+
+                foreach ( $product_info as $enquired_product_id => $quantity ) {
+                    $enquired_product = wc_get_product( $enquired_product_id );
+
+                    if ( $enquired_product ) {
+                        $enquired_product_names[] = $enquired_product->get_name();
+                    }
+                }
+
+                $product_name_text = count( $enquired_product_names ) > 1
+                    ? __( 'MULTIPLE PRODUCTS', 'catalogx' )
+                    : ( $enquired_product_names[0] ?? '' );
+
+                $enquiry_details = '';
+
+                foreach ( (array) $additional_fields as $field ) {
+                    if ( ! empty( $field['name'] ) && isset( $field['value'] ) && '' !== $field['value'] ) {
+                        $enquiry_details .= esc_html( $field['name'] ) . ': ' . esc_html( $field['value'] ) . '<br>';
+                    }
+                }
+
+                $reply_to_name  = str_replace( array( "\r", "\n" ), '', (string) $enquiry_data['user_name'] );
+                $reply_to_email = sanitize_email( (string) $enquiry_data['user_email'] );
+                $reply_to       = is_email( $reply_to_email ) ? 'Reply-to: ' . $reply_to_name . ' <' . $reply_to_email . '>' : '';
+
+                VuloMailIntegration::send(
+                    VuloMailTemplates::ENQUIRY,
+                    $additional_email,
+                    array(
+                        '{product_name}'   => $product_name_text,
+                        '{user_name}'      => (string) $enquiry_data['user_name'],
+                        '{user_email}'     => (string) $enquiry_data['user_email'],
+                        '{enquiry_details}' => $enquiry_details,
+                    ),
+                    $reply_to,
+                    $attachments
+                );
 
                 // Check if page redirection after enquiry is enabled.
 

@@ -1,0 +1,1081 @@
+// ---- A store's page (Stores → a store): the dashboard's look ----
+// One breadcrumb back to the list, a compact hero card (short banner, logo, name, one line of facts, two figures),
+// underline tabs, then the tab's cards. The rules in ViewStore.scss stay for the parts not restyled here; these win
+// by being scoped to the page.
+
+#admin-main-wrapper.admin-main-wrapper .settings-wrapper.mvx-store-page {
+	// zyra's title row (breadcrumb "Store / Overview" and an "Overview" title) repeats the tab and links nowhere useful:
+	// the page's own breadcrumb above the hero replaces it.
+	> .title-section {
+		display: none;
+	}
+
+	.mvx-store-breadcrumb {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+
+		// The same side gutter as the cards under it.
+		margin: 1rem 1.25rem 0.75rem;
+		color: var(--mvx-muted);
+		font-size: 0.8125rem;
+		line-height: 1.5;
+
+		a {
+			color: var(--mvx-primary);
+			font-weight: 500;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+
+		[aria-current="page"] {
+			color: var(--mvx-ink);
+			font-weight: 500;
+		}
+	}
+
+	// ---- Header: the store's profile card ----
+	// A cover (the store's banner, or a brand gradient), the logo overlapping its lower edge, the name, status, facts
+	// and actions beside it, the key figures, and the section tabs along the card's bottom edge.
+	.mvx-store-hero {
+		position: relative;
+		margin: 0 1.25rem;
+		overflow: hidden;
+		border: 1px solid var(--mvx-border);
+		border-bottom: 0;
+		border-radius: 0.875rem 0.875rem 0 0;
+		background: var(--mvx-surface);
+		box-shadow: 0 1px 2px rgb(22 21 29 / 4%);
+	}
+
+	.mvx-store-cover {
+		position: relative;
+		height: 10rem;
+		background-color: #ece4fb;
+		background-position: center;
+		background-size: cover;
+
+		// No banner yet: the brand's purples, softly lit, instead of a placeholder.
+		&.is-empty {
+			background-image:
+				radial-gradient(circle at 18% 30%, rgb(255 255 255 / 55%) 0, transparent 38%),
+				radial-gradient(circle at 85% 120%, rgb(123 47 240 / 35%) 0, transparent 45%),
+				linear-gradient(120deg, #5007aa 0%, #7b2ff0 55%, #a874f5 100%);
+		}
+	}
+
+	.mvx-store-cover-edit {
+		position: absolute;
+		top: 0.875rem;
+		right: 0.875rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		padding: 0.375rem 0.75rem;
+		border: 0;
+		border-radius: 0.5rem;
+		background: rgb(255 255 255 / 92%);
+		color: var(--mvx-ink);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		box-shadow: 0 1px 3px rgb(22 21 29 / 18%);
+		cursor: pointer;
+		backdrop-filter: blur(4px);
+
+		&:hover {
+			background: #fff;
+		}
+	}
+
+	.mvx-store-hero-main {
+		display: flex;
+		align-items: flex-start;
+		gap: 1.25rem;
+		padding: 0 1.75rem 1.25rem;
+	}
+
+	// The logo sits half over the cover, ringed in white so it reads on any banner.
+	.mvx-store-hero-logo {
+		position: relative;
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		width: 6rem;
+		height: 6rem;
+		margin-top: -3rem;
+		border: 4px solid var(--mvx-surface);
+		border-radius: 1.125rem;
+		background: linear-gradient(135deg, #f1eafc, #faf7ff);
+		color: var(--mvx-primary);
+		font-size: 2.25rem;
+		font-weight: 700;
+		box-shadow: 0 4px 14px rgb(22 21 29 / 14%);
+
+		img {
+			width: 100%;
+			height: 100%;
+			border-radius: 0.875rem;
+			object-fit: cover;
+		}
+	}
+
+	.mvx-store-logo-edit {
+		position: absolute;
+		right: -0.5rem;
+		bottom: -0.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.875rem;
+		height: 1.875rem;
+		padding: 0;
+		border: 2px solid var(--mvx-surface);
+		border-radius: 50%;
+		background: var(--mvx-primary);
+		color: #fff;
+		font-size: 0.8125rem;
+		cursor: pointer;
+		box-shadow: 0 1px 3px rgb(22 21 29 / 25%);
+	}
+
+	.mvx-store-hero-text {
+		flex: 1;
+		min-width: 0;
+		padding-top: 0.875rem;
+	}
+
+	.mvx-store-hero-title {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.375rem 0.75rem;
+
+		h1 {
+			margin: 0;
+			padding: 0;
+			color: var(--mvx-ink);
+			font-size: 1.625rem;
+			font-weight: 700;
+			line-height: 1.2;
+			letter-spacing: -0.02em;
+		}
+	}
+
+	.mvx-store-hero-desc {
+		max-width: 48rem;
+		margin: 0.375rem 0 0;
+		color: var(--mvx-muted);
+		font-size: 0.875rem;
+		line-height: 1.5;
+	}
+
+	.mvx-store-hero-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.375rem 1.25rem;
+		margin: 0.625rem 0 0;
+		padding: 0;
+		list-style: none;
+
+		li {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.375rem;
+			margin: 0;
+			color: var(--mvx-muted);
+			font-size: 0.8125rem;
+		}
+
+		i {
+			font-size: 0.9375rem;
+		}
+
+		a {
+			color: var(--mvx-primary);
+			font-weight: 500;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	.mvx-store-hero-actions {
+		display: flex;
+		flex: none;
+		align-items: center;
+		gap: 0.5rem;
+		padding-top: 0.875rem;
+
+		.admin-btn {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.375rem;
+		}
+
+		.popup.menu-dropdown {
+			position: relative;
+		}
+	}
+
+	// A status as a soft pill with a dot: green for selling, amber for waiting, red for stopped.
+	.mvx-status-pill {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		padding: 0.1875rem 0.625rem;
+		border-radius: 999px;
+		background: #f1f2f6;
+		color: #4b5563;
+		font-size: 0.75rem;
+		font-weight: 600;
+		line-height: 1.4;
+
+		&::before {
+			width: 0.4375rem;
+			height: 0.4375rem;
+			border-radius: 50%;
+			background: currentcolor;
+			content: "";
+		}
+
+		&.is-active {
+			background: #e8f7ee;
+			color: #15803d;
+		}
+
+		&.is-pending,
+		&.is-under-review {
+			background: #fef6e4;
+			color: #b45309;
+		}
+
+		&.is-suspended {
+			background: #e8f0fe;
+			color: #1d4ed8;
+		}
+
+		&.is-rejected,
+		&.is-permanently-rejected,
+		&.is-deactivated {
+			background: #fdecec;
+			color: #b91c1c;
+		}
+	}
+
+	// Key figures: a quiet row inside the card, the number over its label.
+	// Right of the name: the actions, then the figures under them, as on a profile page.
+	.mvx-store-hero-side {
+		display: flex;
+		flex: none;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 1.125rem;
+		padding-top: 0.875rem;
+
+		.mvx-store-hero-actions {
+			padding-top: 0;
+		}
+	}
+
+	.mvx-store-hero-figures {
+		display: flex;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+
+		> li {
+			display: flex;
+			margin: 0;
+
+			+ li {
+				border-left: 1px solid var(--mvx-border-soft);
+			}
+		}
+	}
+
+	.mvx-figure {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		min-width: 4.5rem;
+		padding: 0.125rem 1.25rem;
+		border: 0;
+		background: none;
+		color: inherit;
+		font: inherit;
+		text-align: right;
+		text-decoration: none;
+
+		li:last-child > & {
+			padding-right: 0;
+		}
+
+		&.is-link {
+			cursor: pointer;
+
+			&:hover,
+			&:focus-visible {
+				color: inherit;
+
+				.mvx-figure-value {
+					color: var(--mvx-primary);
+				}
+
+				.mvx-figure-label {
+					color: var(--mvx-primary);
+					text-decoration: underline;
+					text-underline-offset: 0.1875rem;
+				}
+			}
+
+			&:focus-visible {
+				border-radius: 0.375rem;
+				outline: 2px solid var(--mvx-primary);
+				outline-offset: 2px;
+			}
+		}
+	}
+
+	.mvx-figure-value {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3125rem;
+		color: var(--mvx-ink);
+		font-size: 1.5rem;
+		font-weight: 700;
+		line-height: 1.15;
+		letter-spacing: -0.02em;
+		font-variant-numeric: tabular-nums;
+		transition: color 0.15s ease;
+
+		i {
+			color: #f59e0b;
+			font-size: 1.125rem;
+		}
+	}
+
+	.mvx-figure-label {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3125rem;
+		margin-top: 0.1875rem;
+		color: var(--mvx-muted);
+		font-size: 0.75rem;
+		font-weight: 500;
+		white-space: nowrap;
+		transition: color 0.15s ease;
+
+		i {
+			color: var(--mvx-primary);
+			font-size: 0.875rem;
+			opacity: 0.85;
+		}
+	}
+
+	// "Owned by <name>": the name opens the Staff tab.
+	.mvx-store-hero-link {
+		padding: 0;
+		border: 0;
+		background: none;
+		color: var(--mvx-primary);
+		font: inherit;
+		font-weight: 500;
+		cursor: pointer;
+
+		&:hover {
+			text-decoration: underline;
+		}
+
+		&:focus-visible {
+			border-radius: 0.25rem;
+			outline: 2px solid var(--mvx-primary);
+			outline-offset: 2px;
+		}
+	}
+
+	// ---- Tabs: along the bottom edge of the profile card ----
+	// Underlined section tabs, as on a GitHub repository or a Shopify customer page: the card's last row, the open
+	// tab marked by a purple underline that sits on the card's edge.
+	> .tabs-wrapper.settings-tab {
+		display: flex;
+		align-items: stretch;
+
+		// The column's own gap spaces the content below, as it spaces the cards.
+		margin: 0 1.25rem;
+		padding: 0 1.75rem;
+		border: 1px solid var(--mvx-border);
+		border-top: 1px solid var(--mvx-border-soft);
+		border-radius: 0 0 0.875rem 0.875rem;
+		background: var(--mvx-surface);
+		box-shadow: 0 1px 2px rgb(22 21 29 / 4%);
+
+		.tabs-item {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.25rem;
+			padding: 0;
+			border: 0;
+			background: transparent;
+		}
+
+		.tab {
+			position: relative;
+			margin: 0 0 -1px;
+			padding: 0.875rem 0.875rem 0.8125rem;
+			border: 0;
+			border-bottom: 2px solid transparent;
+			border-radius: 0;
+			background: transparent;
+			color: var(--mvx-muted);
+			font-size: 0.875rem;
+			font-weight: 500;
+			box-shadow: none;
+
+			&::after {
+				display: none;
+			}
+
+			&:hover {
+				color: var(--mvx-ink);
+			}
+
+			&.active-tab {
+				border-bottom-color: var(--mvx-primary);
+				background: transparent;
+				color: var(--mvx-primary);
+				font-weight: 600;
+				box-shadow: none;
+			}
+		}
+
+		// The page actions live in the header now.
+		.action-wrapper:empty {
+			display: none;
+		}
+	}
+
+	// ---- Store profile: image rows ----
+	.mvx-upload-row {
+		display: flex;
+		align-items: center;
+		gap: 0.875rem;
+	}
+
+	.mvx-upload-preview {
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		width: 3.5rem;
+		height: 3.5rem;
+		overflow: hidden;
+		border: 1px solid var(--mvx-border);
+		border-radius: 0.625rem;
+		background: #f6f6fa;
+		color: var(--mvx-muted);
+		font-size: 1.25rem;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+	}
+
+	.is-banner .mvx-upload-preview {
+		width: 6.5rem;
+	}
+
+	.mvx-upload-state {
+		flex: 1;
+		color: var(--mvx-muted);
+		font-size: 0.8125rem;
+	}
+
+	.mvx-upload-actions {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	// ---- Tab content ----
+	// Card titles without icons, as on the dashboard and in Settings.
+	.card-content .card-header .left > i {
+		display: none;
+	}
+
+	.mvx-store-more {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 0;
+		border: 0;
+		background: none;
+		color: var(--mvx-primary);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		white-space: nowrap;
+		cursor: pointer;
+
+		&:hover {
+			text-decoration: underline;
+		}
+
+		&.is-danger {
+			color: #b91c1c;
+		}
+
+		i {
+			font-size: 0.875rem;
+		}
+	}
+
+	.mvx-store-empty {
+		margin: 0;
+		padding: 0.25rem 0;
+		color: var(--mvx-muted);
+		font-size: 0.875rem;
+	}
+
+	.mvx-store-muted {
+		color: var(--mvx-muted);
+	}
+
+	// Store details: label left, value right, a hairline between rows.
+	.mvx-store-facts {
+		margin: 0;
+
+		> div {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 1rem;
+			padding: 0.75rem 0;
+
+			+ div {
+				border-top: 1px solid var(--mvx-border-soft);
+			}
+		}
+
+		dt {
+			color: var(--mvx-muted);
+			font-size: 0.8125rem;
+		}
+
+		dd {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 0.25rem 0.75rem;
+			min-width: 0;
+			margin: 0;
+			color: var(--mvx-ink);
+			font-size: 0.875rem;
+			font-weight: 500;
+			text-align: right;
+			overflow-wrap: anywhere;
+
+			a {
+				color: var(--mvx-primary);
+			}
+		}
+	}
+
+	// ---- Every tab but the Overview: one column of cards, a row per field ----
+	// As on the Settings screens (and Educube's): cards stacked full width; in each, label and help text on the left,
+	// the control on the right, a hairline between rows. The Overview keeps its two columns (figures and a side card).
+	.tab-content .mvx-store-layout-main > .container-wrapper {
+		flex-direction: column;
+		box-sizing: border-box;
+		width: 100%;
+
+		> .card-wrapper {
+			flex: 1 1 auto;
+			width: 100%;
+			max-width: none;
+		}
+	}
+
+	.mvx-store-form {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		box-sizing: border-box;
+		width: 100%;
+	}
+
+	// ---- Every tab but the Overview: the form, and at its right a column that stays in view ----
+	// As on Educube's settings: the form gets a reading width (inputs no longer stretch across a wide screen), and
+	// the side column carries the tab's sections and the store's setup checklist.
+	.mvx-store-layout {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) 18rem;
+		gap: 1.5rem;
+		align-items: start;
+		max-width: 84rem;
+	}
+
+	.mvx-store-layout-main {
+		min-width: 0;
+	}
+
+	.mvx-store-aside {
+		position: sticky;
+		top: 3.25rem; // under the 32px admin bar, with air
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		min-width: 0;
+	}
+
+	.mvx-aside-card {
+		padding: 1.125rem 1.25rem;
+		border: 1px solid var(--mvx-border-soft);
+		border-radius: 0.875rem;
+		background: var(--mvx-surface);
+
+		ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		li {
+			margin: 0;
+		}
+	}
+
+	.mvx-aside-title {
+		margin: 0;
+		color: var(--mvx-ink);
+		font-size: 0.875rem;
+		font-weight: 600;
+		line-height: 1.4;
+	}
+
+	// The tab's sections: a slim rail; the one being read is marked in brand purple.
+	.mvx-aside-sections {
+		.mvx-aside-title {
+			margin-bottom: 0.625rem;
+		}
+
+		ul {
+			border-left: 2px solid var(--mvx-border-soft);
+		}
+
+		button {
+			display: block;
+			width: 100%;
+			margin-left: -2px;
+			padding: 0.375rem 0 0.375rem 0.875rem;
+			border: 0;
+			border-left: 2px solid transparent;
+			background: none;
+			color: var(--mvx-muted);
+			font: inherit;
+			font-size: 0.8125rem;
+			text-align: left;
+			cursor: pointer;
+			transition:
+				color 0.15s ease,
+				border-color 0.15s ease;
+
+			&:hover {
+				color: var(--mvx-ink);
+			}
+
+			&.is-active {
+				border-left-color: var(--mvx-primary);
+				color: var(--mvx-primary);
+				font-weight: 600;
+			}
+
+			&:focus-visible {
+				outline: 2px solid var(--mvx-primary);
+				outline-offset: 2px;
+				border-radius: 0.25rem;
+			}
+		}
+	}
+
+	// The setup checklist.
+	.mvx-aside-setup-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+
+	.mvx-aside-count {
+		color: var(--mvx-muted);
+		font-size: 0.75rem;
+		font-weight: 600;
+	}
+
+	.mvx-aside-progress {
+		height: 0.375rem;
+		margin: 0.75rem 0 0.625rem;
+		overflow: hidden;
+		border-radius: 1rem;
+		background: var(--mvx-border-soft);
+
+		> span {
+			display: block;
+			height: 100%;
+			border-radius: inherit;
+			background: var(--mvx-primary);
+			transition: width 0.4s ease;
+		}
+	}
+
+	.mvx-aside-note,
+	.mvx-aside-done {
+		margin: 0 0 0.75rem;
+		color: var(--mvx-muted);
+		font-size: 0.8125rem;
+		line-height: 1.5;
+	}
+
+	.mvx-aside-done {
+		display: flex;
+		gap: 0.375rem;
+		align-items: center;
+		color: #15803d;
+		font-weight: 500;
+	}
+
+	.mvx-aside-steps button {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		width: 100%;
+		margin: 0 -0.5rem;
+		padding: 0.4375rem 0.5rem;
+		box-sizing: content-box;
+		border: 0;
+		border-radius: 0.5rem;
+		background: none;
+		color: var(--mvx-ink);
+		font: inherit;
+		font-size: 0.8125rem;
+		text-align: left;
+		cursor: pointer;
+		transition: background 0.15s ease;
+
+		&:hover,
+		&:focus-visible {
+			background: var(--mvx-surface-hover);
+
+			.mvx-aside-go {
+				opacity: 1;
+				transform: translateX(0);
+			}
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--mvx-primary);
+			outline-offset: 0;
+		}
+
+		&.is-done .mvx-aside-step-label {
+			color: var(--mvx-muted);
+			text-decoration: line-through;
+			text-decoration-color: var(--mvx-border-soft);
+		}
+	}
+
+	.mvx-aside-check {
+		display: inline-flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		width: 1.125rem;
+		height: 1.125rem;
+		border: 1.5px solid var(--mvx-border);
+		border-radius: 50%;
+		box-sizing: border-box;
+		font-size: 0.6875rem;
+	}
+
+	.mvx-aside-steps .is-done .mvx-aside-check {
+		border-color: #16a34a;
+		background: #16a34a;
+		color: #fff;
+	}
+
+	.mvx-aside-step-label {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.mvx-aside-go {
+		flex: none;
+		color: var(--mvx-muted);
+		font-size: 0.75rem;
+		opacity: 0;
+		transform: translateX(-0.25rem);
+		transition:
+			opacity 0.15s ease,
+			transform 0.15s ease;
+	}
+
+	// A field reached from the checklist: a soft purple wash that fades, so the eye lands on it.
+	.mvx-field-flash {
+		border-radius: 0.5rem;
+		animation: mvx-field-flash 1.8s ease-out;
+	}
+
+	@keyframes mvx-field-flash {
+		0%,
+		35% {
+			background: rgb(80 7 170 / 8%);
+			box-shadow: 0 0 0 0.5rem rgb(80 7 170 / 8%);
+		}
+
+		100% {
+			background: transparent;
+			box-shadow: 0 0 0 0.5rem transparent;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.mvx-field-flash {
+			animation-duration: 0.01s;
+			outline: 2px solid var(--mvx-primary);
+			outline-offset: 0.25rem;
+		}
+
+		.mvx-aside-progress > span,
+		.mvx-aside-go {
+			transition: none;
+		}
+	}
+
+	// Narrower screens: one column; the checklist follows the form and the section rail (no room to stay in view)
+	// is left out.
+	@media (width <= 1180px) {
+		.mvx-store-layout {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.mvx-store-aside {
+			position: static;
+		}
+
+		.mvx-aside-sections {
+			display: none;
+		}
+	}
+
+	// No withdrawal methods yet: the line and its "Add New" button share one row instead of the button stranded
+	// below at the far right.
+	.card-body:has(> .mvx-store-empty + .expandable-panel-group > .buttons-wrapper:only-child) {
+		display: flex;
+		flex-flow: row wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem 1rem;
+
+		> .mvx-store-empty {
+			flex: 1 1 16rem;
+			margin: 0;
+		}
+
+		> .expandable-panel-group {
+			flex: none;
+			width: auto;
+			margin: 0;
+		}
+
+		.buttons-wrapper {
+			margin: 0;
+			padding: 0;
+		}
+	}
+
+	.tab-content {
+		.card-content {
+			container-type: inline-size;
+		}
+
+		// Fields split over several wrappers (social links, commission) read as one list: no gap between them.
+		.card-body:has(> .form-group-wrapper + .form-group-wrapper) {
+			gap: 0;
+		}
+
+		.form-group-wrapper {
+			gap: 0;
+			margin: 0;
+			padding: 0;
+		}
+
+		// Social links: a little space between a network's icon and its name.
+		.settings-form-label .form-icon {
+			margin-right: 0.375rem;
+		}
+
+		// Phone: the country code and the number on one line.
+		.mvx-phone-input {
+			display: flex;
+			gap: 0.5rem;
+
+			> :first-child {
+				flex: none;
+				width: 9rem;
+			}
+
+			> :last-child {
+				flex: 0 1 14rem;
+				min-width: 0;
+			}
+		}
+
+		// Commission: the fixed amount, "+", the percentage, on one line.
+		.mvx-commission-input {
+			display: flex;
+			align-items: center;
+			gap: 0.625rem;
+
+			// An amount is a few digits: each box is sized for that, not for the whole column.
+			> :not(span) {
+				flex: 0 1 9rem;
+				min-width: 0;
+			}
+
+			> span {
+				flex: none;
+				color: var(--mvx-muted);
+				font-weight: 600;
+			}
+		}
+
+		// The storefront's full address, under its input.
+		.mvx-store-url {
+			margin-top: 0.5rem;
+			color: var(--mvx-muted);
+			font-size: 0.8125rem;
+			overflow-wrap: anywhere;
+		}
+
+		// A field with nothing in it (the map, when no map provider is set up) takes no row.
+		.form-group:has(> .settings-input-content:empty) {
+			display: none;
+		}
+
+		.settings-input-content > * {
+			box-sizing: border-box;
+			max-width: 100%;
+		}
+
+		// Empty states inside a card: one quiet block, not a poster.
+		.module-guard {
+			min-height: 0;
+			padding: 1.5rem 1rem;
+		}
+	}
+
+	@container (width >= 36rem) {
+		.tab-content .form-group {
+			display: grid;
+			grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+			column-gap: 2rem;
+			align-items: start;
+			box-sizing: border-box;
+			width: 100%;
+			max-width: none;
+			margin: 0;
+			padding: 1.125rem 0;
+			border-top: 1px solid var(--mvx-border-soft);
+
+			// zyra's half-width fields (city beside zip) become rows of their own.
+			&[data-cols] {
+				flex: 1 1 100%;
+			}
+
+			> .settings-form-label {
+				grid-column: 1;
+				grid-row: 1;
+				margin: 0;
+				padding: 0;
+
+				.typography-title {
+					color: var(--mvx-ink);
+					font-size: 0.875rem;
+					font-weight: 600;
+				}
+			}
+
+			// The control's own wrapper steps aside so its help text can sit under the label, in the left column.
+			> .settings-input-content {
+				display: contents;
+
+				> * {
+					grid-column: 2;
+					min-width: 0;
+				}
+
+				// In the label's cell, just under it (the label is one line), so it reads as the label's own help and
+				// doesn't wait for the control's row to end.
+				> .settings-metabox-description {
+					grid-column: 1;
+					grid-row: 1;
+					margin: 1.5rem 0 0;
+					padding: 0;
+					color: var(--mvx-muted);
+					font-size: 0.8125rem;
+					line-height: 1.5;
+				}
+			}
+
+			// A row with no label (the map, a notice) uses the whole width.
+			&:not(:has(> .settings-form-label)) > .settings-input-content > * {
+				grid-column: 1 / -1;
+			}
+		}
+	}
+
+	@media (width <= 782px) {
+		.mvx-store-hero-main {
+			flex-wrap: wrap;
+			padding-inline: 1.25rem;
+		}
+
+		.mvx-store-hero-actions {
+			width: 100%;
+			padding-top: 0;
+		}
+
+		// The column drops under the name: the figures start at the left.
+		.mvx-store-hero-side {
+			align-items: flex-start;
+			width: 100%;
+			padding-top: 0;
+		}
+
+		.mvx-figure {
+			align-items: flex-start;
+			padding-inline: 1rem;
+			text-align: left;
+
+			li:first-child > & {
+				padding-left: 0;
+			}
+		}
+
+		> .tabs-wrapper.settings-tab {
+			padding-inline: 0.5rem;
+			overflow-x: auto;
+
+			.tabs-item {
+				flex-wrap: nowrap;
+			}
+		}
+	}
+}

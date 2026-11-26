@@ -22,6 +22,13 @@
     padding: 1rem;
     position: relative;
 
+    .notifima-popup-logo {
+      display: block;
+      max-width: 160px;
+      height: auto;
+      margin: 0 auto 1rem;
+    }
+
     .notifima-popup-close {
       position: absolute;
       right: 1rem;
@@ -50,6 +57,7 @@
 .notifima-subscribe-form form {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 @media screen and (width <=37.5rem) {

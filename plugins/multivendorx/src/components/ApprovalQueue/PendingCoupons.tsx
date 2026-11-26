@@ -14,6 +14,9 @@ import {
 	getUrl,
 	toWcIsoDate,
 } from '@/services/commonFunction';
+import ListGate from '../Popup/ListGate';
+import useNoRecordsYet from '../Popup/useNoRecordsYet';
+import { SAMPLE_PENDING_COUPONS } from '../Popup/sampleRows';
 type StoreOption = {
 	label: string;
 	value: number;
@@ -203,7 +206,8 @@ const PendingCoupons: React.FC<object> = () => {
 			});
 	};
 
-	const infoRows = rows.map((row: any) => ({
+	/** A record as a table row; the sample rows go through it too, so they look like real ones. */
+	const toInfoRow = (row: any) => ({
 		...row,
 		info_icon: 'coupon',
 		info_link: getUrl(row.id, 'coupon') || '',
@@ -226,29 +230,98 @@ const PendingCoupons: React.FC<object> = () => {
 			},
 			{ text: formatDate(row.date_created), color: 'blue' },
 		],
-	}));
+	});
+	const infoRows = rows.map(toInfoRow);
+
+	const sampleRowsData = SAMPLE_PENDING_COUPONS;
+	const { props: gatedProps, hasNoRecords } = useNoRecordsYet({
+		rows: infoRows,
+		isLoading,
+		onQueryUpdate: doRefreshTableData,
+	});
 
 	return (
 		<>
-			<TableCard
-				headers={headers}
-				variant="transparent"
-				rows={infoRows}
-				totalRows={totalRows}
-				isLoading={isLoading}
-				onQueryUpdate={doRefreshTableData}
-				ids={rowIds}
-				search={{}}
-				filters={filters}
-				format={appLocalizer.date_format}
-				currency={{
-					currencySymbol: appLocalizer.currency_symbol,
-					priceDecimals: appLocalizer.price_decimals,
-					decimalSeparator: appLocalizer.decimal_separator,
-					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition: appLocalizer.currency_position,
+			<ListGate
+				feature={{
+					title: __('Coupons awaiting review', 'multivendorx'),
+					description: '',
+					icon: 'coupon',
 				}}
-			/>
+				sample={
+					<TableCard
+						headers={headers}
+						variant="transparent"
+						search={{
+							placeholder: __('Search coupons…', 'multivendorx'),
+						}}
+						filters={filters}
+						format={appLocalizer.date_format}
+						currency={{
+							currencySymbol: appLocalizer.currency_symbol,
+							priceDecimals: appLocalizer.price_decimals,
+							decimalSeparator: appLocalizer.decimal_separator,
+							thousandSeparator: appLocalizer.thousand_separator,
+							currencyPosition: appLocalizer.currency_position,
+						}}
+						rows={sampleRowsData.map(toInfoRow)}
+						totalRows={sampleRowsData.length}
+					/>
+				}
+				isEmpty={hasNoRecords}
+				empty={{
+					heading: __(
+						'No coupons waiting for review',
+						'multivendorx'
+					),
+					description: __(
+						'When stores need approval to publish coupons, each one they create waits here until you publish or reject it.',
+						'multivendorx'
+					),
+					actions: (
+						<>
+							<a
+								className="mvx-locked-button"
+								href={'#&tab=settings&subtab=store-permissions'}
+							>
+								{__('Store permissions', 'multivendorx')}
+							</a>
+							<a
+								className="mvx-locked-link"
+								href={`${appLocalizer.admin_url}edit.php?post_type=shop_coupon`}
+							>
+								{__('View coupons', 'multivendorx')}
+							</a>
+						</>
+					),
+					note: __(
+						'A preview with sample coupons. Submissions show here.',
+						'multivendorx'
+					),
+				}}
+			>
+				<TableCard
+					headers={headers}
+					variant="transparent"
+					rows={infoRows}
+					totalRows={totalRows}
+					isLoading={isLoading}
+					onQueryUpdate={gatedProps.onQueryUpdate}
+					ids={rowIds}
+					search={{
+						placeholder: __('Search coupons…', 'multivendorx'),
+					}}
+					filters={filters}
+					format={appLocalizer.date_format}
+					currency={{
+						currencySymbol: appLocalizer.currency_symbol,
+						priceDecimals: appLocalizer.price_decimals,
+						decimalSeparator: appLocalizer.decimal_separator,
+						thousandSeparator: appLocalizer.thousand_separator,
+						currencyPosition: appLocalizer.currency_position,
+					}}
+				/>
+			</ListGate>
 			{/* Reject Coupon Popup */}
 			{rejectPopupOpen && (
 				<PopupComponent
@@ -259,6 +332,7 @@ const PendingCoupons: React.FC<object> = () => {
 						setIsSubmitting(false);
 					}}
 					width="31.25rem"
+					className="popup-drawer"
 					header={{
 						icon: 'cart',
 						title: __('Reason', 'multivendorx'),

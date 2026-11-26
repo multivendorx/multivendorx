@@ -1,4 +1,4 @@
-import { render } from '@wordpress/element';
+import { createRoot } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import StoreTabs from './StoreTabs';
 
@@ -9,10 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		return;
 	}
 
-	render(
+	createRoot(el).render(
 		<BrowserRouter>
 			<StoreTabs />
-		</BrowserRouter>,
-		el
+		</BrowserRouter>
 	);
 });

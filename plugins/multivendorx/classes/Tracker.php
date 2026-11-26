@@ -7,6 +7,9 @@
 
 namespace MultiVendorX;
 
+use MultiVendorX\Integrations\VuloMail\Integration as VuloMailIntegration;
+use MultiVendorX\VuloMail\Templates as VuloMailTemplates;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -326,10 +329,14 @@ class Tracker {
         update_option( 'multivendorx_deactivation_reason_' . $slug, $reason, false );
         update_option( 'multivendorx_deactivation_details_' . $slug, $details, false );
 
-        $mailer = WC()->mailer()->emails['WC_Email_Plugin_Deactivated_Mail'] ?? null;
-        if ( $mailer ) {
-            $mailer->trigger( get_current_user_id() );
-        }
+        // VuloMailIntegration::send(
+        //     VuloMailTemplates::PLUGIN_DEACTIVATED,
+        //     get_option( 'admin_email' ),
+        //     array(
+        //         '{reason}'  => $reason,
+        //         '{details}' => $details,
+        //     )
+        // );
 
         wp_send_json_success();
     }

@@ -39,22 +39,23 @@
   "devDependencies": {
     "@babel/core": "^7.27.1",
     "@eslint/js": "^9.28.0",
+    "@storybook/addon-docs": "^10.1.10",
+    "@storybook/react-vite": "^10.1.10",
     "@types/node": "^22.15.29",
     "@typescript-eslint/eslint-plugin": "^8.33.1",
     "@typescript-eslint/parser": "^8.33.1",
     "@wordpress/babel-preset-default": "^8.23.0",
     "@wordpress/dependency-extraction-webpack-plugin": "^6.31.0",
+    "@wordpress/env": "10.23.x",
     "@wordpress/eslint-plugin": "^22.9.0",
     "@wordpress/prettier-config": "^4.23.0",
     "@wordpress/scripts": "^30.16.0",
-    "@wordpress/env": "11.6.0",
     "autoprefixer": "^10.4.21",
     "babel-loader": "^10.0.0",
     "chalk": "^5.4.1",
     "clean-css": "^5.3.3",
     "copy-webpack-plugin": "^13.0.0",
     "css-loader": "^7.1.2",
-    "style-loader": "^4.0.0",
     "eslint": "^9.28.0",
     "fs-extra": "^11.3.0",
     "glob": "^11.0.2",
@@ -67,6 +68,7 @@
     "rimraf": "^6.0.1",
     "sass": "^1.88.0",
     "sass-loader": "^16.0.5",
+    "style-loader": "^4.0.0",
     "stylelint": "^16.19.1",
     "stylelint-config-standard-scss": "^15.0.1",
     "stylelint-scss": "^6.12.1",
@@ -77,8 +79,6 @@
     "webpack": "^5.105.0",
     "wireit": "^0.14.12",
     "wp-readme-to-markdown": "^1.0.1",
-    "wp-textdomain": "^1.0.1",
-    "@storybook/addon-docs": "^10.1.10",
-    "@storybook/react-vite": "^10.1.10"
+    "wp-textdomain": "^1.0.1"
   }
 }

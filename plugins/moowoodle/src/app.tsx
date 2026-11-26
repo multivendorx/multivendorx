@@ -1,37 +1,73 @@
 /* global appLocalizer */
-import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { __ } from '@wordpress/i18n';
+import { NoticeComponent } from '@zyra/components';
 
 import Settings from './components/Settings/Settings';
 import Synchronization from './components/Synchronization/Synchronization';
 import Cohort from './components/Cohort/Cohort';
 import Enrollment from './components/Enrollment/Enrollment';
 import Courses from './components/Courses/Courses';
-import { useState } from 'react';
-import { searchIndex, SearchItem } from './searchIndex';
-import MoowoodleLogo from './assets/images/moowoodle-logo.png';
-import { __ } from '@wordpress/i18n';
-import { NoticeComponent, HeaderComponent } from '@zyra/components';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
-import HelpSupport from './components/HelpSupport/HelpSupport';
+import SearchHeader from './components/Header/SearchHeader';
+import './styles/admin.scss';
 
+/** Help & Support was its own tab; it is now a card on the dashboard, and old links scroll to it. */
+const HELP_SUPPORT_LINK = '#&tab=dashboard&view=help-support';
+
+/**
+ * Picks the screen for the open tab. Tabs are admin sidebar submenu entries (classes/Admin.php), each pointing to
+ * `moowoodle#&tab={tab}`, so switching tabs only changes the hash.
+ */
 const Route = () => {
-	const currentTab = new URLSearchParams(useLocation().hash);
-	return (
-		<>
-			{currentTab.get('tab') === 'settings' && (
-				<Settings id={'settings'} />
-			)}
+	const location = useLocation();
+	const navigate = useNavigate();
+	const tab = new URLSearchParams(location.hash).get('tab');
+	const isOldHelpLink = 'help-support' === tab;
 
-			{currentTab.get('tab') === 'synchronization' && (
-				<Synchronization id={'synchronization'} />
-			)}
-			{currentTab.get('tab') === 'courses' && <Courses />}
-			{currentTab.get('tab') === 'enrolments' && <Enrollment />}
-			{currentTab.get('tab') === 'cohorts' && <Cohort />}
-			{currentTab.get('tab') === 'dashboard' && <AdminDashboard />}
-			{currentTab.get('tab') === 'help-support' && <HelpSupport />}
-		</>
-	);
+	useEffect(() => {
+		if (isOldHelpLink) {
+			navigate(
+				`${location.pathname}${location.search}${HELP_SUPPORT_LINK}`,
+				{ replace: true }
+			);
+		}
+	}, [isOldHelpLink]);
+
+	// The submenu entries are hash tabs, which WordPress can't match on the server, so mark the open one here.
+	useEffect(() => {
+		document
+			.querySelectorAll('#toplevel_page_moowoodle .wp-submenu li')
+			.forEach((item) => {
+				const link = item.querySelector('a');
+				const href = link?.getAttribute('href') ?? '';
+				const linkTab = new URLSearchParams(
+					href.split('#')[1] ?? ''
+				).get('tab');
+				const isCurrent = !!tab && linkTab === tab;
+
+				item.classList.toggle('current', isCurrent);
+				link?.classList.toggle('current', isCurrent);
+			});
+	}, [tab]);
+
+	switch (tab) {
+		case 'settings':
+			return <Settings id="settings" />;
+		case 'synchronization':
+			return <Synchronization id="synchronization" />;
+		case 'courses':
+			return <Courses />;
+		case 'enrolments':
+			return <Enrollment />;
+		case 'cohorts':
+			return <Cohort />;
+		case 'dashboard':
+			return <AdminDashboard />;
+		default:
+			return null;
+	}
 };
 
 const bannerItem = [
@@ -52,111 +88,48 @@ const bannerItem = [
 		'moowoodle'
 	),
 	__(
-		'<b>Automatic User Synchronization for Moodle™ and WordPress:</b>Syncs users between Moodle™ and WordPress for seamless account management across both platforms.',
+		'<b>Automatic User Synchronization for Moodle™ and WordPress:</b> Syncs users between Moodle™ and WordPress for seamless account management across both platforms.',
 		'moowoodle'
 	),
 ];
-const App = () => {
-	const currentTabParams = new URLSearchParams(useLocation().hash);
-	const [, setQuery] = useState('');
-	const [results, setResults] = useState<SearchItem[]>([]);
-	const selectValue = 'all';
 
-	document
-		.querySelectorAll('#toplevel_page_moowoodle>ul>li>a')
-		.forEach((menuItem) => {
-			const menuItemUrl = new URL((menuItem as HTMLAnchorElement).href);
-			const menuItemHashParams = new URLSearchParams(
-				menuItemUrl.hash.substring(1)
-			);
+/**
+ * Keyframes for the Pro banner's rotation, sized to its message count.
+ *
+ * zyra's banner (NoticeComponent, `type="banner"`) starts message i at i × 4s in a cycle of count × 4s, but its own
+ * `cycle-banner` keyframes show each message for a fixed 12.5% of the cycle — right only for 8 messages. With 5 it
+ * showed each for 2.5s of its 4s slot, leaving the banner blank for 1.5s after every message. Here each message is
+ * shown for exactly its share of the cycle (100% / count), so one hands over to the next with no gap.
+ */
+const bannerShare = 100 / bannerItem.length;
+const bannerCycleCss = `
+@keyframes moowoodle-banner-cycle {
+	0%, ${bannerShare.toFixed(3)}% { opacity: 1; visibility: visible; }
+	${(bannerShare + 0.001).toFixed(3)}%, 100% { opacity: 0; visibility: hidden; }
+}
+#wpbody .ui-notice.type-banner .notice-desc { animation-name: moowoodle-banner-cycle; }
+`;
 
-			if (menuItem.parentNode) {
-				(menuItem.parentNode as HTMLElement).classList.remove(
-					'current'
-				);
-			}
-			if (menuItemHashParams.get('tab') === currentTabParams.get('tab')) {
-				(menuItem.parentNode as HTMLElement).classList.add('current');
-			}
-		});
-	// 🔹 Search handlers
-	const handleSearchChange = (value: string) => {
-		setQuery(value);
-
-		if (!value.trim()) {
-			setResults([]);
-			return;
-		}
-
-		const lowerValue = value.toLowerCase();
-
-		const filtered = searchIndex.filter((item) => {
-			// Filter by dropdown selection
-			if (selectValue !== 'all' && item.tab !== selectValue) {
-				return false;
-			}
-
-			// Case-insensitive search
-			const name = item.name?.toLowerCase() || '';
-			const desc = item.desc?.toLowerCase() || '';
-			return name.includes(lowerValue) || desc.includes(lowerValue);
-		});
-
-		setResults(filtered);
-	};
-
-	const handleResultClick = (item: SearchItem) => {
-		window.location.hash = item.link;
-		setQuery('');
-		setResults([]);
-	};
-	const profileItems = [
-		{
-			title: __('Manage Plan', 'moowoodle'),
-			icon: 'person',
-			link: 'https://dualcube.com/my-account/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
-			targetBlank: true,
-		},
-		{
-			title: __('Contact Support', 'moowoodle'),
-			icon: 'user-network-icon',
-			link: 'https://dualcube.com/contact-us/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=moowoodle',
-			targetBlank: true,
-		},
-	];
-	const utilityList = [
-		{
-			toggleIcon: 'admin-icon adminfont-user-circle',
-			tooltipName: __('Support', 'moowoodle'),
-			tooltipPosition: 'bottom',
-			items: profileItems,
-		},
-	];
-	return (
-		<>
-			<HeaderComponent
-				brandImg={MoowoodleLogo}
-				results={results}
-				onQueryUpdate={handleSearchChange}
-				onResultClick={handleResultClick}
-				free={appLocalizer.free_version}
-				pro={appLocalizer.pro_data.version}
-				utilityList={utilityList}
-			/>
+/** Root of the admin app: the search header, the Pro banner (Free only) and the screen for the open tab. */
+const App = () => (
+	<>
+		<SearchHeader />
+		{!appLocalizer.khali_dabba && <style>{bannerCycleCss}</style>}
+		{!appLocalizer.khali_dabba && (
 			<NoticeComponent
 				uniqueKey="banner"
 				type="banner"
 				validity="lifetime"
 				displayPosition="banner"
 				message={bannerItem}
-				actionLabel="Upgrade Now"
+				actionLabel={__('Upgrade Now', 'moowoodle')}
 				onAction={() => {
 					window.location.href = appLocalizer.shop_url;
 				}}
 			/>
-			<Route />
-		</>
-	);
-};
+		)}
+		<Route />
+	</>
+);
 
 export default App;

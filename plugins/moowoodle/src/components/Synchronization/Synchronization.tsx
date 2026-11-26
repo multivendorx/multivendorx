@@ -1,91 +1,17 @@
-/* global appLocalizer */
-import React, { useEffect, JSX } from 'react';
+import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { getTemplateData } from '../../services/templateService';
-
-import { InputRenderer } from '@zyra/inputs';
-import {
-	getAvailableSettings,
-	getSettingById,
-	useModules,
-	SettingProvider,
-	useSetting,
-} from '@zyra/core';
-import { NavigatorComponent } from '@zyra/components';
-import ShowProPopup from '../Popup/Popup';
-import { useLocation, Link } from 'react-router-dom';
+import SettingsNavigator from '../SettingsNavigator/SettingsNavigator';
 
 interface SettingsProps {
 	id: string;
 }
 
-const Synchronization: React.FC<SettingsProps> = () => {
-	const settingsArray = getAvailableSettings(
-		getTemplateData('synchronization'),
-		[]
-	);
-	const location = new URLSearchParams(useLocation().hash.substring(1));
-
-	// Render the dynamic form
-	const GetForm = (currentTab: string | null): JSX.Element | null => {
-		// get the setting context
-		const { setting, settingName, setSetting, updateSetting } =
-			useSetting();
-		const { modules } = useModules();
-
-		if (!currentTab) {
-			return null;
-		}
-		const settingModal = getSettingById(settingsArray, currentTab);
-		// Ensure settings context is initialized
-		if (settingName !== currentTab) {
-			setSetting(
-				currentTab,
-				appLocalizer.admin_settings[currentTab] || {}
-			);
-		}
-
-		useEffect(() => {
-			if (settingName === currentTab) {
-				appLocalizer.admin_settings[settingName] = setting;
-			}
-		}, [setting, settingName, currentTab]);
-
-		return (
-			<>
-				{settingName === currentTab ? (
-					<InputRenderer
-						settings={settingModal}
-						proSetting={appLocalizer.pro_settings_list}
-						setting={setting}
-						updateSetting={updateSetting}
-						appLocalizer={appLocalizer}
-						modules={modules}
-						Popup={ShowProPopup}
-						groupBySections={settingModal?.groupBySections}
-					/>
-				) : (
-					<>{__('Loading...', 'moowoodle')}</>
-				)}
-			</>
-		);
-	};
-	return (
-		<SettingProvider>
-			<NavigatorComponent
-				settingContent={settingsArray}
-				currentSetting={location.get('subtab') as string}
-				getForm={GetForm}
-				prepareUrl={(subTab: string) =>
-					`?page=moowoodle#&tab=synchronization&subtab=${subTab}`
-				}
-				appLocalizer={appLocalizer}
-				Link={Link}
-				settingName={'Synchronization'}
-				className="admin-settings"
-			/>
-		</SettingProvider>
-	);
-};
+/** Synchronization screen. The tabs are the `*.ts` files in this folder (collected by services/templateService.ts). */
+const Synchronization: React.FC<SettingsProps> = () => (
+	<SettingsNavigator
+		type="synchronization"
+		title={__('Synchronization', 'moowoodle')}
+	/>
+);
 
 export default Synchronization;

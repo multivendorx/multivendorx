@@ -12,6 +12,9 @@ import {
 	getUrl,
 	toWcIsoDate,
 } from '@/services/commonFunction';
+import ListGate from '../Popup/ListGate';
+import useNoRecordsYet from '../Popup/useNoRecordsYet';
+import { SAMPLE_PENDING_PRODUCTS } from '../Popup/sampleRows';
 
 type StoreOption = {
 	label: string;
@@ -202,7 +205,8 @@ const PendingProducts: React.FC<object> = () => {
 			});
 	};
 
-	const infoRows = rows.map((row: any) => ({
+	/** A record as a table row; the sample rows go through it too, so they look like real ones. */
+	const toInfoRow = (row: any) => ({
 		...row,
 		info_icon: 'single-product',
 		info_link: getUrl(row.id, 'product') || '',
@@ -230,29 +234,98 @@ const PendingProducts: React.FC<object> = () => {
 				color: 'purple',
 			})),
 		],
-	}));
+	});
+	const infoRows = rows.map(toInfoRow);
+
+	const sampleRowsData = SAMPLE_PENDING_PRODUCTS;
+	const { props: gatedProps, hasNoRecords } = useNoRecordsYet({
+		rows: infoRows,
+		isLoading,
+		onQueryUpdate: doRefreshTableData,
+	});
 
 	return (
 		<>
-			<TableCard
-				headers={headers}
-				variant="transparent"
-				rows={infoRows}
-				totalRows={totalRows}
-				isLoading={isLoading}
-				onQueryUpdate={doRefreshTableData}
-				ids={rowIds}
-				search={{}}
-				filters={filters}
-				format={appLocalizer.date_format}
-				currency={{
-					currencySymbol: appLocalizer.currency_symbol,
-					priceDecimals: appLocalizer.price_decimals,
-					decimalSeparator: appLocalizer.decimal_separator,
-					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition: appLocalizer.currency_position,
+			<ListGate
+				feature={{
+					title: __('Products awaiting review', 'multivendorx'),
+					description: '',
+					icon: 'single-product',
 				}}
-			/>
+				sample={
+					<TableCard
+						headers={headers}
+						variant="transparent"
+						search={{
+							placeholder: __('Search products…', 'multivendorx'),
+						}}
+						filters={filters}
+						format={appLocalizer.date_format}
+						currency={{
+							currencySymbol: appLocalizer.currency_symbol,
+							priceDecimals: appLocalizer.price_decimals,
+							decimalSeparator: appLocalizer.decimal_separator,
+							thousandSeparator: appLocalizer.thousand_separator,
+							currencyPosition: appLocalizer.currency_position,
+						}}
+						rows={sampleRowsData.map(toInfoRow)}
+						totalRows={sampleRowsData.length}
+					/>
+				}
+				isEmpty={hasNoRecords}
+				empty={{
+					heading: __(
+						'No products waiting for review',
+						'multivendorx'
+					),
+					description: __(
+						'When stores need approval to publish, each product they submit waits here until you publish or reject it.',
+						'multivendorx'
+					),
+					actions: (
+						<>
+							<a
+								className="mvx-locked-button"
+								href={'#&tab=settings&subtab=store-permissions'}
+							>
+								{__('Store permissions', 'multivendorx')}
+							</a>
+							<a
+								className="mvx-locked-link"
+								href={`${appLocalizer.admin_url}edit.php?post_type=product`}
+							>
+								{__('View products', 'multivendorx')}
+							</a>
+						</>
+					),
+					note: __(
+						'A preview with sample products. Submissions show here.',
+						'multivendorx'
+					),
+				}}
+			>
+				<TableCard
+					headers={headers}
+					variant="transparent"
+					rows={infoRows}
+					totalRows={totalRows}
+					isLoading={isLoading}
+					onQueryUpdate={gatedProps.onQueryUpdate}
+					ids={rowIds}
+					search={{
+						placeholder: __('Search products…', 'multivendorx'),
+					}}
+					filters={filters}
+					format={appLocalizer.date_format}
+					currency={{
+						currencySymbol: appLocalizer.currency_symbol,
+						priceDecimals: appLocalizer.price_decimals,
+						decimalSeparator: appLocalizer.decimal_separator,
+						thousandSeparator: appLocalizer.thousand_separator,
+						currencyPosition: appLocalizer.currency_position,
+					}}
+				/>
+			</ListGate>
 			{/* Reject Product Popup */}
 			{rejectPopupOpen && (
 				<PopupComponent
@@ -263,6 +336,7 @@ const PendingProducts: React.FC<object> = () => {
 						setIsSubmitting(false);
 					}}
 					width={31.25}
+					className="popup-drawer"
 					header={{
 						icon: 'cart',
 						title: __('Reason', 'multivendorx'),

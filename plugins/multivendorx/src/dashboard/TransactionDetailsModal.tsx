@@ -37,6 +37,7 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 				onClose={onClose}
 				width={33}
 				height="70%"
+				className="popup-drawer"
 				header={{
 					icon: 'wallet-in',
 					title: __('Transaction Details', 'multivendorx'),

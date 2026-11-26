@@ -26,7 +26,7 @@ class Util {
      */
     public static function is_available() {
         // Get the current user.
-        $current_user = wp_get_current_user();
+        $current_user = CatalogX()->current_user;
 
         // Get exclusion setting.
         $enquiry_exclusion_setting = CatalogX()->setting->get_option(
@@ -69,113 +69,85 @@ class Util {
      * @return bool True if enquiry is available, false otherwise.
      */
     public static function is_available_for_product( $product_id ) {
-
-        $settings = CatalogX()->setting->get_option(
-            'catalogx_enquiry_quote_exclusion_settings',
-            array()
-        );
-
-        $settings = isset( $settings['exclusion'] )
-            ? $settings['exclusion']
-            : array();
-
-        // Product exclusion.
-        $excluded_products = isset( $settings['enquiry_exclusion_value_product_list'] )
-            ? array_map( 'intval', $settings['enquiry_exclusion_value_product_list'] )
-            : array();
-
-        if ( in_array( $product_id, $excluded_products, true ) ) {
+        if ( Utill::is_product_excluded( $product_id, 'enquiry' ) ) {
             return false;
         }
 
-        if ( Utill::is_active_plugin( 'multivendorx' ) ) {
-            $product_author = get_post_meta( $product_id, 'multivendorx_store_id', true ) ?? 0;
-            $store          = new Store( $product_author );
-            if ( $product_author ) {
-                $excluded_products = $store->get_meta( 'woocommerce_product_list' ) ?? array();
-                if ( ! empty( $excluded_products ) && in_array( (string) $product_id, $excluded_products, true ) ) {
-                    return false;
-                }
-            }
+        // On a MultiVendorX marketplace, the product's store can exclude its own products, categories and tags too.
+        if ( ! Utill::is_active_plugin( 'multivendorx' ) ) {
+            return true;
+        }
 
-            // Product categories.
-            $product_categories = wp_get_post_terms(
-                $product_id,
-                'product_cat',
-                array( 'fields' => 'ids' )
-            );
+        $store_id = get_post_meta( $product_id, 'multivendorx_store_id', true );
+        $store    = new Store( $store_id ?: 0 );
 
-            $excluded_categories = array_map(
-                'intval',
-                (array) $store->get_meta( 'woocommerce_category_list' )
-            );
+        if ( $store_id && in_array( (string) $product_id, (array) ( $store->get_meta( 'woocommerce_product_list' ) ?? array() ), true ) ) {
+            return false;
+        }
 
-            if ( ! empty( $excluded_categories ) && ! empty( array_intersect( $product_categories, $excluded_categories ) ) ) {
+        foreach ( array( 'woocommerce_category_list' => 'product_cat', 'woocommerce_tag_list' => 'product_tag' ) as $meta_key => $taxonomy ) {
+            $excluded = array_map( 'intval', (array) $store->get_meta( $meta_key ) );
+            $terms    = wp_get_post_terms( $product_id, $taxonomy, array( 'fields' => 'ids' ) );
+
+            if ( ! empty( $excluded ) && ! is_wp_error( $terms ) && array_intersect( $terms, $excluded ) ) {
                 return false;
             }
-
-            // Product tags.
-            $product_tags = wp_get_post_terms(
-                $product_id,
-                'product_tag',
-                array( 'fields' => 'ids' )
-            );
-
-            $excluded_tags = array_map(
-                'intval',
-                (array) $store->get_meta( 'woocommerce_tag_list' )
-            );
-
-            if ( ! empty( $excluded_tags ) && ! empty( array_intersect( $product_tags, $excluded_tags ) ) ) {
-                return false;
-            }
-        }
-
-        // Category exclusion.
-        $excluded_categories = isset( $settings['enquiry_exclusion_value_category_list'] )
-            ? array_map( 'intval', $settings['enquiry_exclusion_value_category_list'] )
-            : array();
-
-        $product_categories = wp_get_post_terms(
-            $product_id,
-            'product_cat',
-            array( 'fields' => 'ids' )
-        );
-
-        if ( array_intersect( $excluded_categories, $product_categories ) ) {
-            return false;
-        }
-
-        // Tag exclusion.
-        $excluded_tags = isset( $settings['enquiry_exclusion_value_tag_list'] )
-            ? array_map( 'intval', $settings['enquiry_exclusion_value_tag_list'] )
-            : array();
-
-        $product_tags = wp_get_post_terms(
-            $product_id,
-            'product_tag',
-            array( 'fields' => 'ids' )
-        );
-
-        if ( array_intersect( $excluded_tags, $product_tags ) ) {
-            return false;
-        }
-
-        // Brand exclusion.
-        $excluded_brands = isset( $settings['enquiry_exclusion_value_brand_list'] )
-            ? array_map( 'intval', $settings['enquiry_exclusion_value_brand_list'] )
-            : array();
-
-        $product_brands = wp_get_post_terms(
-            $product_id,
-            'product_brand',
-            array( 'fields' => 'ids' )
-        );
-
-        if ( array_intersect( $excluded_brands, $product_brands ) ) {
-            return false;
         }
 
         return true;
     }
+
+    /**
+     * Get enquiries.
+     *
+     * @param array $query_args Filter options.
+     * @return array
+     */
+    public static function get_enquiries( $query_args = array() ) {
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . Utill::TABLES['enquiry'];
+
+        $conditions = array();
+        $values     = array();
+
+        if ( ! empty( $query_args['id'] ) ) {
+            $ids          = array_map( 'intval', (array) $query_args['id'] );
+            $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+            $conditions[] = 'id IN (' . $placeholders . ')';
+            $values       = array_merge( $values, $ids );
+        }
+
+        if ( isset( $query_args['user_id'] ) ) {
+            $conditions[] = 'user_id = %d';
+            $values[]     = (int) $query_args['user_id'];
+        }
+
+        if ( ! empty( $query_args['product_ids'] ) ) {
+            $conditions[] = 'product_info REGEXP %s';
+            $values[]     = 'i:(' . implode( '|', array_map( 'absint', (array) $query_args['product_ids'] ) ) . ');i:';
+        }
+        
+        if ( ! empty( $query_args['start_date'] ) ) {
+            $conditions[] = 'date >= %s';
+            $values[]     = gmdate( 'Y-m-d 00:00:00', strtotime( $query_args['start_date'] ) );
+        }
+
+        if ( ! empty( $query_args['end_date'] ) ) {
+            $conditions[] = 'date < %s';
+            $values[]     = gmdate( 'Y-m-d 00:00:00', strtotime( $query_args['end_date'] . ' +1 day' ) );
+        }
+
+        $where_sql = $conditions ? ' WHERE ' . implode( ' AND ', $conditions ) : '';
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT * FROM %i' . $where_sql . ' ORDER BY date DESC',
+                $table_name,
+                ...$values
+            )
+        ) ?? array();
+    }
+
 }

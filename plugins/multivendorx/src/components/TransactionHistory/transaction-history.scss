@@ -1,0 +1,128 @@
+// Transaction history (TransactionHistory.tsx): the store switcher sits in the page header, beside the title it
+// changes, as a labelled field rather than an icon and "Switch Store:" on the tab row.
+#admin-main-wrapper.admin-main-wrapper .mvx-transaction-history {
+	.mvx-store-switcher {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+
+		label {
+			color: var(--mvx-muted, #6b7280);
+			font-size: 0.8125rem;
+			font-weight: 600;
+		}
+	}
+
+	// The tab row no longer carries the switcher; let the tabs use the whole row.
+	> .tabs-wrapper.settings-tab > .custom-content:empty {
+		display: none;
+	}
+}
+
+// One line under the tabs saying what the open tab lists (e.g. Monthly tax reports, from MultiVendorX Pro).
+#admin-main-wrapper.admin-main-wrapper .mvx-transaction-history .mvx-tab-intro {
+	margin: 0 0 1rem;
+	color: var(--mvx-muted, #6b7280);
+	font-size: 0.875rem;
+	line-height: 1.5;
+}
+
+// The wallet table's filter selects ("Select transaction type", "Financial transactions"): zyra caps each filter at
+// 12rem (`.group-field`), which wrapped the placeholder onto two lines. 15rem keeps it on one; the field's own inline
+// 13rem width is replaced so it fills that.
+#admin-main-wrapper.admin-main-wrapper .mvx-transaction-history .table-filter .group-field:has(.form-select-field) {
+	min-width: 15rem;
+	max-width: none;
+
+	.form-select-field {
+		width: 100% !important;
+	}
+}
+
+// Tabs: a slim underline bar instead of zyra's 72px icon-over-label tiles. Icon beside the label, muted until hovered
+// or open; the open tab is purple with a 2px underline that sits on the bar's own hairline.
+#admin-main-wrapper.admin-main-wrapper .settings-wrapper.mvx-transaction-history > .tabs-wrapper.settings-tab {
+	align-items: flex-end;
+	margin-top: 1.75rem;
+	border-bottom: 1px solid var(--mvx-border, #e3e6ef);
+
+	&::after {
+		display: none;
+	}
+
+	.tabs-item {
+		gap: 0.25rem;
+		margin-bottom: -1px;
+	}
+
+	.tab {
+		width: auto;
+		height: auto;
+		padding: 0.75rem 0.875rem;
+		border-radius: 0.5rem 0.5rem 0 0;
+		background: transparent;
+		box-shadow: none;
+		color: var(--mvx-muted, #6b7280);
+		transition:
+			color 0.15s ease,
+			background-color 0.15s ease;
+
+		&::before,
+		&::after {
+			display: none;
+		}
+
+		.tab-name {
+			flex-direction: row;
+			align-items: center;
+			gap: 0.5rem;
+			height: auto;
+			color: inherit;
+			font-size: 0.875rem;
+			font-weight: 600;
+			white-space: nowrap;
+
+			i {
+				width: auto;
+				height: auto;
+				color: inherit;
+				font-size: 1.125rem;
+			}
+		}
+
+		&:hover {
+			background: rgb(80 7 170 / 4%);
+			color: #16151d;
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--mvx-primary, #5007aa);
+			outline-offset: -2px;
+		}
+
+		&.active-tab {
+			background: transparent;
+			box-shadow: inset 0 -2px 0 var(--mvx-primary, #5007aa);
+			color: var(--mvx-primary, #5007aa);
+		}
+	}
+}
+
+// Phones: zyra stacks the tabs into a column. Keep them one row, scrolling sideways if they ever run out of room.
+@media (width <= 782px) {
+	#admin-main-wrapper.admin-main-wrapper .settings-wrapper.mvx-transaction-history > .tabs-wrapper.settings-tab {
+		flex-direction: row;
+
+		.tabs-item {
+			flex-flow: row nowrap;
+			width: 100%;
+			overflow-x: auto;
+			scrollbar-width: none;
+		}
+
+		.tab {
+			flex: none;
+			padding-inline: 0.625rem;
+		}
+	}
+}

@@ -10,6 +10,8 @@ type SettingNode = {
 	type: 'folder' | 'file';
 	content: SettingNode[] | any;
 	folderPriority?: number;
+	/** The folder's menu icon (zyra's NavigatorComponent reads `headerIcon` on a folder as on a tab). */
+	headerIcon?: string;
 };
 
 const importAll = (
@@ -19,6 +21,8 @@ const importAll = (
 
 	// Step 1: Build folder priority map
 	const folderPriorityMap: Record<string, number> = {};
+	// A folder's menu icon, from `headerIcon` in its FolderPriority.ts (a tab file sets its own).
+	const folderIconMap: Record<string, string> = {};
 
 	inpContext.keys().forEach((key) => {
 		if (key.endsWith('FolderPriority.ts')) {
@@ -28,6 +32,9 @@ const importAll = (
 			const priorityData = inpContext(key)?.default;
 			if (priorityData && typeof priorityData.priority === 'number') {
 				folderPriorityMap[folderPath] = priorityData.priority;
+			}
+			if (priorityData && typeof priorityData.headerIcon === 'string') {
+				folderIconMap[folderPath] = priorityData.headerIcon;
 			}
 		}
 	});
@@ -66,6 +73,7 @@ const importAll = (
 					type: 'folder',
 					content: [],
 					folderPriority: folderPriorityMap[fullPath], // attach priority if exists
+					headerIcon: folderIconMap[fullPath],
 				};
 				currentFolder.push(folderObject);
 			}

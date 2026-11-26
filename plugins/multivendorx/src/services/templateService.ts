@@ -4,7 +4,6 @@ import { applyFilters } from '@wordpress/hooks';
 // Predefined contexts
 const contexts: Record<string, __WebpackModuleApi.RequireContext> = {
 	settings: require.context('../components/Settings', true, /\.ts$/),
-	tools: require.context('../components/StatusAndTools', true, /\.ts$/),
 	storeStatus: require.context('../components/StoreStatus', true, /\.ts$/),
 	dashboardSettings: require.context(
 		'../dashboard/DashboardSettings',
@@ -18,15 +17,66 @@ type SettingNode = {
 	type: 'folder' | 'file';
 	content: SettingNode[] | any;
 	folderPriority?: number;
+	/** The folder's menu icon (zyra's NavigatorComponent reads `headerIcon` on a folder as on a tab). */
+	headerIcon?: string;
+};
+
+/** Fields whose `desc` is not the help text under an input, so it stays where the field draws it. */
+const DESC_STAYS_RIGHT = new Set(['section', 'notice', 'expandable-panel']);
+
+type SettingField = {
+	type?: string;
+	label?: unknown;
+	desc?: unknown;
+	settingDescription?: unknown;
+};
+
+/**
+ * Settings → every labelled field: the help text sits under the field's name on the left (zyra draws
+ * `settingDescription` there) rather than under the input on the right, so the right column holds only the control.
+ * A field that already has left-hand text keeps it first, with the old right-hand text after it.
+ */
+const moveDescriptionsUnderLabels = <T extends { modal?: SettingField[] }>(
+	tab: T
+): T => {
+	if (!tab || !Array.isArray(tab.modal)) {
+		return tab;
+	}
+
+	return {
+		...tab,
+		modal: tab.modal.map((field: SettingField) => {
+			if (
+				!field?.label ||
+				!field.desc ||
+				typeof field.desc !== 'string' ||
+				DESC_STAYS_RIGHT.has(field.type ?? '')
+			) {
+				return field;
+			}
+
+			const { desc, ...rest } = field;
+
+			return {
+				...rest,
+				settingDescription: field.settingDescription
+					? `${field.settingDescription}<br/>${desc}`
+					: desc,
+			};
+		}),
+	};
 };
 
 const importAll = (
-	inpContext: __WebpackModuleApi.RequireContext
+	inpContext: __WebpackModuleApi.RequireContext,
+	descriptionsUnderLabels = false
 ): SettingNode[] => {
 	const folderStructure: SettingNode[] = [];
 
 	// Step 1: Build folder priority map
 	const folderPriorityMap: Record<string, number> = {};
+	// A folder's menu icon, from `headerIcon` in its FolderPriority.ts (a tab file sets its own).
+	const folderIconMap: Record<string, string> = {};
 
 	inpContext.keys().forEach((key) => {
 		if (key.endsWith('FolderPriority.ts')) {
@@ -36,6 +86,9 @@ const importAll = (
 			const priorityData = inpContext(key)?.default;
 			if (priorityData && typeof priorityData.priority === 'number') {
 				folderPriorityMap[folderPath] = priorityData.priority;
+			}
+			if (priorityData && typeof priorityData.headerIcon === 'string') {
+				folderIconMap[folderPath] = priorityData.headerIcon;
 			}
 		}
 	});
@@ -74,6 +127,7 @@ const importAll = (
 					type: 'folder',
 					content: [],
 					folderPriority: folderPriorityMap[fullPath], // attach priority if exists
+					headerIcon: folderIconMap[fullPath],
 				};
 				currentFolder.push(folderObject);
 			}
@@ -86,7 +140,9 @@ const importAll = (
 			currentFolder.push({
 				name: fileName!.replace('.ts', ''), // keep raw file name
 				type: 'file',
-				content: inpContext(key).default,
+				content: descriptionsUnderLabels
+					? moveDescriptionsUnderLabels(inpContext(key).default)
+					: inpContext(key).default,
 			});
 		}
 	});
@@ -126,7 +182,7 @@ const importAll = (
 };
 
 const getTemplateData = (
-	type: 'settings' | 'tools' | 'storeStatus' | 'dashboardSettings'
+	type: 'settings' | 'storeStatus' | 'dashboardSettings'
 ): SettingNode[] => {
 	let ctx = contexts[type];
 
@@ -137,7 +193,7 @@ const getTemplateData = (
 
 	ctx = applyFilters('multivendorx_settings_context', ctx, type);
 
-	return importAll(ctx);
+	return importAll(ctx, 'settings' === type);
 };
 
 const getModuleData = () => {

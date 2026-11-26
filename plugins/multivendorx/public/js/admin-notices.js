@@ -31,7 +31,18 @@ jQuery(function ($) {
 		})
 		.on('click', '.tracking-toggle', function (e) {
 			e.preventDefault();
+			const expanded = $(this).attr('aria-expanded') === 'true';
+			$(this).attr('aria-expanded', String(!expanded));
 			$('.tracking-details').slideToggle('fast');
+		})
+
+		// A notice rendered with a `dismiss_key` (AdminNotice::render()) stays closed for this user.
+		.on('click', '.multivendorx-notice[data-dismiss-key] .notice-dismiss', function () {
+			$.post(ajaxurl, {
+				action: 'multivendorx_dismiss_admin_notice',
+				nonce: ajaxData.nonce,
+				dismiss_key: $(this).closest('.multivendorx-notice').data('dismiss-key'),
+			});
 		})
 
 		// Free pro notice dismiss

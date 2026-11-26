@@ -598,7 +598,7 @@ class Stores extends \WP_REST_Controller {
                         : null,
                 )
             );
-        } catch ( \Exception $e ) {
+        } catch ( \Throwable $e ) {
             MultiVendorX()->util->log( $e );
 
             return new \WP_Error(

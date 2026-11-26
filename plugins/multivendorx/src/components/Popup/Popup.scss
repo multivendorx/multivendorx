@@ -146,6 +146,31 @@
     height: 75% !important;
 }
 
+// Store dashboard > Coupons > Add Coupon (and any other popup given an explicit `height` prop,
+// e.g. height="70%", without also using zyra's "slide"/"lightbox" position variants) --
+// zyra's default .popup-content isn't a flex column, so .popup-body's own flex:1/overflow-y:auto
+// rule never gets a bounded height to scroll within: tall content (here, three tabs of form
+// fields) just overflows past the popup's edge instead of scrolling inside it.
+// Stores > Add Store is the same variant but passes no `height` prop at all -- with nothing
+// bounding .popup-content's height, flex-direction: column alone does nothing (there's no
+// constraint for .popup-body to scroll within), so tall content just grows the box past the
+// viewport. Its own .popup-footer is `position: fixed` (zyra's base rule) and so never reserves
+// space in the flow either way, meaning the footer overlaps the bottom of that overflowing
+// content instead of the body scrolling under it. A sane default max-height fixes both: it gives
+// flex-direction: column something to bound against even with no explicit `height` prop, and
+// keeps the whole popup from ever exceeding the viewport regardless of content length.
+.popup-content:not([data-position]) {
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+
+    .popup-body {
+        flex: 1 1 auto;
+        min-height: 0; // flex children don't shrink below content size without this
+        overflow-y: auto;
+    }
+}
+
 // requied plugin popup
 .required-popup {
     padding: 1.5rem 1.5rem 5.5rem;
@@ -164,4 +189,271 @@
             font-weight: 500;
         }
     }
+}
+// ---- The Pro upgrade popup (Popup.tsx's default branch; opened by zyra for locked settings) ----
+// Header with what was asked for, a scrolling grid of everything Pro adds, and a footer that keeps the license picker
+// and buy button in view. Same design as Notifima's, MooWoodle's and CatalogX's.
+.popup-content:has(.mvx-pro-popup) {
+	width: 46rem !important; // zyra opens its locked-setting popup at 31.25rem.
+	max-width: calc(100vw - 2rem) !important;
+	height: auto !important;
+	max-height: 88vh !important;
+	padding: 0 !important;
+	overflow: hidden !important;
+	border-radius: 1rem !important;
+}
+
+.popup-content:has(.mvx-pro-popup) .popup-body {
+	padding: 0 !important;
+}
+
+// Doubled class: the popup renders inside the page, whose heading/paragraph colours and zyra's centred popup text
+// would otherwise win.
+.mvx-pro-popup.mvx-pro-popup {
+	display: flex;
+	flex-direction: column;
+	max-height: 88vh;
+	color: #16151d;
+	text-align: left;
+
+	.mvx-pro-popup-head {
+		flex: none;
+		padding: 2rem 2.25rem 1.75rem;
+		background:
+			radial-gradient(120% 140% at 100% 0%, rgb(255 255 255 / 16%) 0, transparent 55%),
+			linear-gradient(135deg, #3d0585 0%, #5007aa 45%, #7c3aed 100%);
+		color: #fff;
+
+		h2 {
+			margin: 0.875rem 0 0.375rem;
+			color: #fff;
+			font-size: 1.625rem;
+			font-weight: 700;
+			line-height: 1.25;
+			letter-spacing: -0.01em;
+		}
+
+		p {
+			max-width: 34rem;
+			margin: 0;
+			color: rgb(255 255 255 / 85%);
+			font-size: 0.9375rem;
+			line-height: 1.5;
+		}
+	}
+
+	.mvx-pro-popup-pill {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		padding: 0.25rem 0.75rem;
+		border: 1px solid rgb(255 255 255 / 30%);
+		border-radius: 999px;
+		background: rgb(255 255 255 / 12%);
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+
+	.mvx-pro-popup-feature {
+		display: flex;
+		align-items: center;
+		gap: 0.875rem;
+		margin-top: 1.25rem;
+		padding: 0.875rem 1rem;
+		border-radius: 0.75rem;
+		background: #fff;
+		color: #16151d;
+		box-shadow: 0 0.5rem 1.5rem rgb(22 21 29 / 18%);
+
+		> span:nth-child(2) {
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+			gap: 0.125rem;
+			color: #5b5f6e;
+			font-size: 0.8125rem;
+			line-height: 1.45;
+		}
+
+		strong {
+			color: #16151d;
+			font-size: 0.9375rem;
+		}
+	}
+
+	.mvx-pro-popup-check {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: none;
+		width: 1.75rem;
+		height: 1.75rem;
+		border-radius: 50%;
+		background: #dcfce7;
+		color: #15803d;
+		font-size: 0.875rem;
+	}
+
+	.mvx-pro-popup-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: none;
+		width: 2.25rem;
+		height: 2.25rem;
+		border-radius: 0.625rem;
+		background: #f3ecfb;
+		color: #5007aa;
+		font-size: 1.125rem;
+	}
+
+	.mvx-pro-popup-body {
+		flex: 1 1 auto;
+		min-height: 0;
+		padding: 1.5rem 2.25rem;
+		overflow-y: auto;
+	}
+
+	.mvx-pro-popup-label {
+		margin-bottom: 0.875rem;
+		color: #6b6f80;
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+
+	ul {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.5rem 1.25rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	li {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75rem;
+		margin: 0;
+		padding: 0.625rem 0.5rem;
+		border-radius: 0.625rem;
+
+		&:hover {
+			background: #faf9fe;
+		}
+
+		> span:last-child {
+			display: flex;
+			flex-direction: column;
+			gap: 0.125rem;
+			min-width: 0;
+		}
+
+		strong {
+			font-size: 0.875rem;
+			font-weight: 600;
+		}
+
+		span span {
+			display: -webkit-box;
+			overflow: hidden;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 2;
+			color: #6b6f80;
+			font-size: 0.8125rem;
+			line-height: 1.45;
+		}
+	}
+
+	.mvx-pro-popup-foot {
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 1rem 2.25rem;
+		border-top: 1px solid #eceef4;
+		background: #fafafd;
+		color: #6b6f80;
+		font-size: 0.8125rem;
+	}
+
+	// "$199 [1 site ▾] license": the price, then the tier picker as a quiet inline select.
+	.mvx-pro-popup-license {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+
+		select {
+			min-height: 2rem;
+			padding: 0 1.75rem 0 0.625rem;
+			border: 1px solid #dcdfea;
+			border-radius: 0.5rem;
+			background-color: #fff;
+			color: #16151d;
+			font-size: 0.8125rem;
+			font-weight: 500;
+
+			&:focus {
+				border-color: #5007aa;
+				box-shadow: 0 0 0 3px rgb(80 7 170 / 14%);
+				outline: 0;
+			}
+		}
+	}
+
+	.mvx-pro-popup-price {
+		color: #16151d;
+		font-size: 1.375rem;
+		font-weight: 700;
+		letter-spacing: -0.01em;
+	}
+
+	.mvx-pro-popup-buy {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		height: 2.75rem;
+		padding: 0 1.375rem;
+		border-radius: 0.625rem;
+		background: #5007aa;
+		color: #fff;
+		font-size: 0.9375rem;
+		font-weight: 600;
+		text-decoration: none;
+		white-space: nowrap;
+		box-shadow: 0 0.375rem 1rem rgb(80 7 170 / 30%);
+
+		&:hover,
+		&:focus-visible {
+			background: #3d0585;
+			color: #fff;
+		}
+	}
+
+	@media (width <= 640px) {
+		ul {
+			grid-template-columns: 1fr;
+		}
+
+		.mvx-pro-popup-head,
+		.mvx-pro-popup-body,
+		.mvx-pro-popup-foot {
+			padding-inline: 1.25rem;
+		}
+
+		.mvx-pro-popup-foot {
+			flex-direction: column;
+			align-items: stretch;
+			text-align: center;
+		}
+
+		.mvx-pro-popup-license {
+			justify-content: center;
+		}
+	}
 }

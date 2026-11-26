@@ -1,8 +1,12 @@
+/* global appLocalizer */
 import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps } from '@wordpress/block-editor';
-import { render } from '@wordpress/element';
+import { createRoot } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
+import { configureZyra } from '@zyra/core';
 import SetupWizard from './SetupWizard';
+
+configureZyra(appLocalizer);
 
 // EditBlock for Gutenberg editor
 const EditBlock = () => {
@@ -34,11 +38,10 @@ registerBlockType('multivendorx/setup-wizard', {
 document.addEventListener('DOMContentLoaded', () => {
 	const element = document.getElementById('multivendorx-setup-wizard');
 	if (element) {
-		render(
+		createRoot(element).render(
 			<BrowserRouter>
 				<SetupWizard />
-			</BrowserRouter>,
-			element
+			</BrowserRouter>
 		);
 	}
 });

@@ -9,7 +9,7 @@ namespace Notifima;
 
 defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
-use Notifima\Discovery\Communications;
+use Notifima\Discovery\Communications as DiscoveryCommunications;
 use Notifima\Discovery\Tracker;
 use Notifima\RestAPI\Rest;
 
@@ -169,7 +169,6 @@ class Notifima {
     public function init_plugin() {
         $this->load_plugin_textdomain();
         $this->init_classes();
-        add_filter( 'woocommerce_email_classes', array( $this, 'setup_email_class' ) );
 
         do_action( 'notifima_loaded' );
     }
@@ -194,24 +193,24 @@ class Notifima {
         $this->container['rest']            = new Rest();
         $this->container['block']           = new Block();
         $this->container['frontendScripts'] = new FrontendScripts();
-        $this->container['communications']  = new Communications();
-        $this->container['tracker']         = new Tracker();
-        $this->container['engagement']      = new EngagementProvider();
-    }
-
-    /**
-     * Add Notifima Email Class.
-     *
-     * @param array $emails  All notifima emails.
-     * @return array
-     */
-    public function setup_email_class( $emails ) {
-
-        $emails['Admin_New_Subscriber_Email']    = new Emails\AdminNewSubscriberEmail();
-        $emails['Subscriber_Confirmation_Email'] = new Emails\SubscriberConfirmationEmail();
-        $emails['Product_Back_In_Stock_Email']   = new Emails\ProductBackInStockEmail();
-
-        return $emails;
+        $this->container['communications']    = new Communications();
+        $this->container['discoveryCommunications'] = new DiscoveryCommunications();
+        $this->container['tracker']           = new Tracker();
+        $this->container['engagement']        = new EngagementProvider();
+        $this->container['vuloform']          = new Integrations\VuloForm\Integration();
+        $this->container['vulomail']          = new Integrations\PluginInstaller(
+            'vulomail',
+            '\VuloMail\VuloMail',
+            static function ( $error_message ) {
+                return sprintf(
+                    /* translators: %s: error message. */
+                    __( 'Notifima could not automatically install the VuloMail plugin needed to deliver its emails: %s. Please install and activate "VuloMail" manually from the Plugins screen.', 'notifima' ),
+                    $error_message
+                );
+            }
+        );
+        $this->container['vulomailTemplates'] = new Integrations\VuloMail\Templates();
+        $this->container['cron']              = new Cron();
     }
 
     /**
