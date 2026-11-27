@@ -426,12 +426,24 @@ class Subscriber {
             }
         }
 
+        // Lets an add-on (e.g. NotifimaPro\Frontend::insert_unsubscribe_link(), already hooked
+        // on this action) print extra content -- such as an unsubscribe link -- into the
+        // confirmation email via the {unsubscribe_footer} merge tag below. The email's own
+        // content is a plain `{tag}`-substituted string, not executed PHP (see
+        // Integrations\VuloMail\Integration::send_template()), so the action's output has to be
+        // captured here and handed over as a tag value rather than called from inside the
+        // template string itself.
+        ob_start();
+        do_action( 'notifima_subscriber_confirmation_email_footer', $product->get_id(), $customer_email );
+        $unsubscribe_footer = ob_get_clean();
+
         $merge_tags = array(
-            '{site_title}'     => get_bloginfo( 'name' ),
-            '{product_name}'   => $product->get_name(),
-            '{product_price}'  => wp_strip_all_tags( wc_price( wc_get_price_to_display( $product ) ) ),
-            '{product_url}'    => $product->get_permalink(),
-            '{customer_email}' => $customer_email,
+            '{site_title}'         => get_bloginfo( 'name' ),
+            '{product_name}'       => $product->get_name(),
+            '{product_price}'      => wp_strip_all_tags( wc_price( wc_get_price_to_display( $product ) ) ),
+            '{product_url}'        => $product->get_permalink(),
+            '{customer_email}'     => $customer_email,
+            '{unsubscribe_footer}' => $unsubscribe_footer,
         );
 
         // Trigger the additional email.
