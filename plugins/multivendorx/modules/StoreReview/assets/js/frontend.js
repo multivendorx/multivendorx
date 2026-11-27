@@ -96,7 +96,7 @@ jQuery(document).ready(function ($) {
 	}
 
 	// Submit Review
-	$('#review_submit').on('click', function (e) {
+	$(document).on('click', '#review_submit', function (e) {
 		e.preventDefault();
 
 		// Clear previous messages
@@ -115,6 +115,22 @@ jQuery(document).ready(function ($) {
 						? __('Please enter a Review Title.', 'multivendorx')
 						: __('Please enter your Review Content.', 'multivendorx')
 				}
+				</div>
+			`);
+			return;
+		}
+
+		// A star left unclicked keeps its default value="0" -- Util::sanitize_rating_values()
+		// drops anything < 1 server-side, so an all-zero submission is rejected outright
+		// ("Missing required fields.") with no indication the ratings were the reason.
+		const hasRating = $('.multivendorx-rating-select').toArray().some(
+			(el) => parseInt($(el).val(), 10) > 0
+		);
+
+		if (!hasRating) {
+			$('#commentform').prepend(`
+				<div class="woocommerce-error review-message">
+					${__('Please select a rating.', 'multivendorx')}
 				</div>
 			`);
 			return;

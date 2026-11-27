@@ -47,6 +47,17 @@ class Integration {
      * @return array {installed, plugin_url, can_activate, form_id}
      */
     public static function get_admin_localize_data() {
+        return self::build_install_state( array( Migration::class, 'ensure_form' ) );
+    }
+
+    /**
+     * Shared by this class and CatalogX Pro's wholesale-registration Integration -- only the
+     * form id resolver differs between the two, called only once VuloForm is confirmed active.
+     *
+     * @param callable $resolve_form_id Returns the resolved VuloForm form id for this form.
+     * @return array {installed, plugin_url, can_activate, form_id}
+     */
+    public static function build_install_state( callable $resolve_form_id ) {
         // "Installed" (active) means VuloForm's classes autoload -- they only do while active.
         $installed = class_exists( '\VuloForm\VuloForm' );
 
@@ -55,7 +66,7 @@ class Integration {
                 'installed'    => true,
                 'plugin_url'   => '',
                 'can_activate' => false,
-                'form_id'      => Migration::ensure_form(),
+                'form_id'      => $resolve_form_id(),
             );
         }
 

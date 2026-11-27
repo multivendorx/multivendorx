@@ -104,6 +104,7 @@ const RegistrationForm = () => {
 			// Auto-complete step 1 if there's nothing to show.
 			if (!hasBeforeFormContent && storeList.length === 0) {
 				setStep1Completed(true);
+				setCurrentStep(2);
 			}
 		});
 	}, []);
@@ -153,6 +154,11 @@ const RegistrationForm = () => {
 			<VuloFormEmbed
 				formId={registrationForm.vuloform_form_id}
 				apiUrl={registrationForm.apiUrl}
+				// Without this, the embed fetch runs anonymous and VuloForm never hands the
+				// rendered form a `restNonce` -- the registering vendor's own store-creation
+				// submission would carry no WP identity at all (Integration::maybe_register_store()
+				// then has nothing to attribute the store to).
+				nonce={registrationForm.nonce}
 				className="multivendorx-vuloform-embed"
 				queryParams={prefill}
 				onSubmitted={handleRegistrationSubmitted}

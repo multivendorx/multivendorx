@@ -43,7 +43,7 @@ class Integration {
         );
         new Templates();
 
-        add_action( 'vuloform_submission_created', array( $this, 'maybe_register_store' ), 10, 3 );
+        add_action( 'vuloform_submission_created', array( $this, 'maybe_register_store' ), 10, 4 );
     }
 
     /**
@@ -82,9 +82,13 @@ class Integration {
      * @param int   $submission_id VuloForm submission id (unused -- matching is on form id).
      * @param array $values        Field key => submitted value.
      * @param array $form          The VuloForm form (id, title, status, schema, ...).
+     * @param int   $user_id       `get_current_user_id()` as resolved by `PublicForms::submit()`
+     *                             -- 0 unless the embed itself carried a `restNonce` (see
+     *                             `Renderer::render()`/`registrationForm.tsx`'s `nonce` prop),
+     *                             since VuloForm's submit request otherwise runs fully anonymous.
      * @return void
      */
-    public function maybe_register_store( $submission_id, $values, $form ) {
+    public function maybe_register_store( $submission_id, $values, $form, $user_id ) {
         $configured_form_id = (int) MultiVendorX()->setting->get_setting( 'vuloform_store_registration_form_id', 0 );
 
         if ( ! $configured_form_id || $configured_form_id !== (int) $form['id'] ) {
@@ -97,8 +101,10 @@ class Integration {
             $body[ $key ] = is_scalar( $value ) ? sanitize_text_field( (string) $value ) : $value;
         }
 
+        MultiVendorX()->current_user    = wp_set_current_user( $user_id );
+        MultiVendorX()->current_user_id = $user_id;
+
         $request = new \WP_REST_Request( 'POST', '/' . MultiVendorX()->rest_namespace . '/stores' );
-        // No X-WP-Nonce header available here, so issue one for this same request.
         $request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
         // Matches the header the old FormViewer-based submission sent -- create_item() returns
         // the applicant's own existing registration data under this flag.

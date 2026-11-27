@@ -25,7 +25,7 @@ const Attributes = ({ product, setProduct, productFields }) => {
         if (alreadyExists) return;
 
         axios
-            .get(`${appLocalizer.apiUrl}/wc/v3/products/attributes/${selectedAttribute.value}/terms`, {
+            .get(`${appLocalizer.apiUrl}/wc/v3/products/attributes/${selectedAttribute.value}/terms?per_page=100`, {
                 headers: { 'X-WP-Nonce': appLocalizer.nonce },
             })
             .then((res) => {

@@ -1848,3 +1848,29 @@
 		mask-image: linear-gradient(to right, transparent 0, #000 2rem, #000 100%);
 	}
 }
+
+// The Publishing card's catalog-visibility/status/date rows (metaBoxes/publishingSection.tsx) have no styling of
+// their own anywhere in the codebase, so the value + chevron just flow as plain inline content: a short value like
+// "Draft" sits flush against the row's right edge, but a long one like "Shop and search results" wraps and drags its
+// chevron inward with it, landing at a different horizontal position per row. Pin the chevron to the row's right
+// edge and let only the label text wrap under it, so every row's control lines up the same regardless of value length.
+#admin-main-wrapper.admin-main-wrapper .catalog-visibility {
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+
+	> div {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		cursor: pointer;
+	}
+
+	.catalog-visibility-value {
+		text-align: right;
+	}
+
+	.adminfont-arrow-down-up {
+		flex: none;
+	}
+}
