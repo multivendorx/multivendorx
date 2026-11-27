@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-27T08:57:04+00:00\n"
+"POT-Creation-Date: 2026-11-27T13:19:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: multivendorx\n"
@@ -17,12 +17,13 @@ msgstr ""
 #. Author of the plugin
 #: dc_product_vendor.php
 #: classes/Abilities/Abilities.php:67
-#: classes/FrontendScripts.php:441
-#: classes/Integrations/VuloForm/Templates.php:44
+#: classes/FrontendScripts.php:445
+#: classes/Integrations/VuloForm/Templates.php:51
 #: classes/Integrations/VuloMail/Templates.php:41
 #: classes/Pattern.php:46
 #: classes/Status.php:43
 #: modules/Elementor/WidgetLoader.php:106
+#: assets/js/block/setup-wizard/index.js:1
 msgid "MultiVendorX"
 msgstr ""
 
@@ -265,58 +266,54 @@ msgstr ""
 msgid "Once Monthly"
 msgstr ""
 
-#: classes/Frontend.php:254
+#: classes/Frontend.php:255
 msgid "This product cannot be purchased at the moment."
 msgstr ""
 
-#: classes/Frontend.php:286
+#: classes/Frontend.php:287
 msgid "Checkout blocked: your cart contains products from a restricted store."
 msgstr ""
 
-#: classes/Frontend.php:346
-#: classes/Frontend.php:361
+#: classes/Frontend.php:347
+#: classes/Frontend.php:362
 msgid "Your cart has products from various stores. They’ll be processed and shipped individually, so expect more than one delivery."
 msgstr ""
 
 #. translators: %s: Current user display name
-#: classes/Frontend.php:677
+#: classes/Frontend.php:678
 #, php-format
 msgid " %s you're one step away from setting up your store. Fill in your business information below to get started."
 msgstr ""
 
-#: classes/Frontend.php:686
-msgid "Step 1 of 2"
-msgstr ""
-
-#: classes/Frontend.php:687
+#: classes/Frontend.php:702
 msgid "Create your account"
 msgstr ""
 
-#: classes/Frontend.php:688
+#: classes/Frontend.php:703
 msgid "Start by setting up a free account. If you already have one, just sign in."
 msgstr ""
 
-#: classes/Frontend.php:690
+#: classes/Frontend.php:705
 msgid "Already have an account"
 msgstr ""
 
-#: classes/Frontend.php:691
+#: classes/Frontend.php:706
 msgid "New here? Sign up"
 msgstr ""
 
-#: classes/Frontend.php:787
+#: classes/Frontend.php:824
 msgid "Manage your store"
 msgstr ""
 
-#: classes/Frontend.php:789
+#: classes/Frontend.php:826
 msgid "To view orders, manage products, and access your full store settings, visit your store dashboard."
 msgstr ""
 
-#: classes/Frontend.php:792
+#: classes/Frontend.php:829
 msgid "Go to store dashboard"
 msgstr ""
 
-#: classes/FrontendScripts.php:487
+#: classes/FrontendScripts.php:491
 msgid "Select an item..."
 msgstr ""
 
@@ -332,30 +329,66 @@ msgstr ""
 msgid "MultiVendorX could not automatically install the VuloForm plugin needed for its forms: %s. Please install and activate \"VuloForm\" manually from the Plugins screen."
 msgstr ""
 
-#: classes/Integrations/VuloForm/Migration.php:91
-#: classes/Integrations/VuloForm/Templates.php:37
+#: classes/Integrations/VuloForm/LoginField.php:120
+msgid "Account"
+msgstr ""
+
+#: classes/Integrations/VuloForm/LoginField.php:130
+msgid "Questions"
+msgstr ""
+
+#: classes/Integrations/VuloForm/LoginField.php:135
+msgid "Text and layout"
+msgstr ""
+
+#: classes/Integrations/VuloForm/LoginField.php:140
+msgid "Special fields"
+msgstr ""
+
+#: classes/Integrations/VuloForm/LoginField.php:199
+msgid "Username or email address"
+msgstr ""
+
+#: classes/Integrations/VuloForm/LoginField.php:203
+msgid "Password"
+msgstr ""
+
+#: classes/Integrations/VuloForm/LoginField.php:216
+msgid "WooCommerce login / registration"
+msgstr ""
+
+#: classes/Integrations/VuloForm/LoginField.php:219
+msgid "On the live site, this is replaced with the WooCommerce login/register form."
+msgstr ""
+
+#: classes/Integrations/VuloForm/LoginField.php:223
+msgid "Can't be edited, dragged, or deleted here."
+msgstr ""
+
+#: classes/Integrations/VuloForm/Migration.php:98
+#: classes/Integrations/VuloForm/Templates.php:44
 msgid "Register your store"
 msgstr ""
 
-#: classes/Integrations/VuloForm/Migration.php:92
+#: classes/Integrations/VuloForm/Migration.php:101
 msgid "Store registration form"
 msgstr ""
 
-#: classes/Integrations/VuloForm/Templates.php:41
+#: classes/Integrations/VuloForm/Templates.php:48
 msgid "Store registration (MultiVendorX)"
 msgstr ""
 
-#: classes/Integrations/VuloForm/Templates.php:42
+#: classes/Integrations/VuloForm/Templates.php:49
 msgid "Store name, description, contact details and address for a new vendor application."
 msgstr ""
 
-#: classes/Integrations/VuloForm/Templates.php:68
+#: classes/Integrations/VuloForm/Templates.php:82
 #: assets/js/index.js:1
 #: assets/js/index.js:5
 msgid "Store name"
 msgstr ""
 
-#: classes/Integrations/VuloForm/Templates.php:75
+#: classes/Integrations/VuloForm/Templates.php:89
 #: modules/Elementor/Tags/StoreInfo.php:85
 #: modules/MarketplaceCompliance/Frontend.php:118
 #: assets/js/block/contact-info/index.js:1
@@ -364,27 +397,35 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: classes/Integrations/VuloForm/Templates.php:82
+#: classes/Integrations/VuloForm/Templates.php:96
 #: assets/js/index.js:1
 #: assets/js/index.js:5
 msgid "Store description"
 msgstr ""
 
-#: classes/Integrations/VuloForm/Templates.php:88
+#: classes/Integrations/VuloForm/Templates.php:102
 #: assets/js/index.js:1
 #: assets/js/index.js:5
 msgid "Phone"
 msgstr ""
 
-#: classes/Integrations/VuloForm/Templates.php:96
+#: classes/Integrations/VuloForm/Templates.php:110
 msgid "PayPal email"
 msgstr ""
 
-#: classes/Integrations/VuloForm/Templates.php:102
+#: classes/Integrations/VuloForm/Templates.php:116
 #: modules/Elementor/Tags/StoreInfo.php:75
 #: assets/js/index.js:1
 #: assets/js/index.js:5
 msgid "Address"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:138
+msgid "Woocommerce login/registration block"
+msgstr ""
+
+#: classes/Integrations/VuloForm/Templates.php:139
+msgid "This fields are non editable."
 msgstr ""
 
 #. translators: %s: error message.
@@ -3194,86 +3235,18 @@ msgstr ""
 
 #: assets/js/block/registration-form/index.js:1
 #: assets/js/block/registration-form/view.js:1
-msgid "Store created successfully"
-msgstr ""
-
-#: assets/js/block/registration-form/index.js:1
-#: assets/js/block/registration-form/view.js:1
-msgid "Error creating store"
-msgstr ""
-
-#: assets/js/block/registration-form/index.js:1
-#: assets/js/block/registration-form/view.js:1
-msgid "Account"
-msgstr ""
-
-#: assets/js/block/registration-form/index.js:1
-#: assets/js/block/registration-form/view.js:1
-msgid "Store info"
-msgstr ""
-
-#: assets/js/block/registration-form/index.js:1
-#: assets/js/block/registration-form/view.js:1
-msgid "Select Your Store"
-msgstr ""
-
-#: assets/js/block/registration-form/index.js:1
-#: assets/js/block/registration-form/index.js:3
-#: assets/js/block/registration-form/view.js:1
-#: assets/js/block/registration-form/view.js:3
 msgid "Store Note"
 msgstr ""
 
 #: assets/js/block/registration-form/index.js:1
-#: assets/js/block/registration-form/index.js:3
 #: assets/js/block/registration-form/view.js:1
-#: assets/js/block/registration-form/view.js:3
 #: assets/js/index.js:5
 msgid "Note"
 msgstr ""
 
 #: assets/js/block/registration-form/index.js:1
 #: assets/js/block/registration-form/view.js:1
-msgid "Continue to Store Details"
-msgstr ""
-
-#: assets/js/block/registration-form/index.js:1
-#: assets/js/block/registration-form/view.js:1
-msgid "Tell us about your store"
-msgstr ""
-
-#: assets/js/block/registration-form/index.js:1
-#: assets/js/block/registration-form/view.js:1
-msgid "This information will be reviewed by our team before your store goes live. Please fill it in accurately."
-msgstr ""
-
-#: assets/js/block/registration-form/index.js:1
-#: assets/js/block/registration-form/view.js:1
-msgid "Selected Store:"
-msgstr ""
-
-#. translators: %s: Field label.
-#: assets/js/block/registration-form/index.js:3
-#: assets/js/block/registration-form/index.js:5
-#: assets/js/block/registration-form/view.js:3
-#: assets/js/block/registration-form/view.js:5
-#, js-format
-msgid "%s is required."
-msgstr ""
-
-#: assets/js/block/registration-form/index.js:3
-#: assets/js/block/registration-form/index.js:5
-#: assets/js/block/registration-form/view.js:3
-#: assets/js/block/registration-form/view.js:5
-#: modules/MarketplaceCompliance/assets/js/frontend.js:122
-msgid "Please enter a valid email address."
-msgstr ""
-
-#: assets/js/block/registration-form/index.js:3
-#: assets/js/block/registration-form/index.js:5
-#: assets/js/block/registration-form/view.js:3
-#: assets/js/block/registration-form/view.js:5
-msgid "Please accept the Terms & Conditions."
+msgid "Select Your Store"
 msgstr ""
 
 #: assets/js/block/setup-wizard/index.js:1
@@ -7464,6 +7437,10 @@ msgid "What happens when a store is missing documents or breaks the marketplace 
 msgstr ""
 
 #: assets/js/index.js:1
+msgid "PRO"
+msgstr ""
+
+#: assets/js/index.js:1
 msgid "Identity verification"
 msgstr ""
 
@@ -9389,11 +9366,41 @@ msgid "Registration"
 msgstr ""
 
 #: assets/js/index.js:1
-msgid "Customise personalised store registration form for marketplace."
+msgid "Preview the store registration form and edit it in VuloForm."
 msgstr ""
 
 #: assets/js/index.js:1
 msgid "Only store owners can apply for store registration. Applicants must log in or create an account before proceeding. So, Make sure WooCommerce’s Account & Privacy settings are configured to allow user registration."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "The form could not be loaded."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Enable VuloForm"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "This form is built with VuloForm. Activate the plugin to show it and edit it here."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Activate VuloForm"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Install VuloForm"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Edit form"
+msgstr ""
+
+#. translators: %s: VuloForm link.
+#: assets/js/index.js:1
+#, js-format
+msgid "This form is editable in %s. Use Edit form to change its fields and settings. Changes show here after you save the form and reload this page."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -10211,6 +10218,14 @@ msgstr ""
 
 #: assets/js/index.js:1
 msgid "Sale price"
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Each variation has its own price — set it in the Variations section below."
+msgstr ""
+
+#: assets/js/index.js:1
+msgid "Pricing for this product type is set further down the page."
 msgstr ""
 
 #: assets/js/index.js:1
@@ -11443,6 +11458,10 @@ msgstr ""
 
 #: assets/js/index.js:5
 msgid "Distance-wise Shipping Configuration"
+msgstr ""
+
+#: assets/js/index.js:5
+msgid "Manage your store's shipping rate per delivery distance."
 msgstr ""
 
 #: assets/js/index.js:5
@@ -14743,6 +14762,10 @@ msgstr ""
 
 #: modules/MarketplaceCompliance/assets/js/frontend.js:112
 msgid "All fields are required."
+msgstr ""
+
+#: modules/MarketplaceCompliance/assets/js/frontend.js:122
+msgid "Please enter a valid email address."
 msgstr ""
 
 #: modules/MarketplaceCompliance/assets/js/frontend.js:179

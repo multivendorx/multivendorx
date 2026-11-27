@@ -80,7 +80,7 @@ class Templates {
                 'group'       => __( 'Subscriptions', 'notifima' ),
                 'recipients'  => array( 'customer' ),
                 'subject'     => __( 'You have subscribed to a product on {site_title}', 'notifima' ),
-                'content'     => '<h2>' . esc_html__( 'Welcome to {site_title}', 'notifima' ) . '</h2><p><a href="{product_url}">{product_name}</a> &mdash; {product_price}</p><p>' . esc_html__( 'We will email {customer_email} when it is back in stock.', 'notifima' ) . '</p>',
+                'content'     => '<h2>' . esc_html__( 'Welcome to {site_title}', 'notifima' ) . '</h2><p><a href="{product_url}">{product_name}</a> &mdash; {product_price}</p><p>' . esc_html__( 'We will email {customer_email} when it is back in stock.', 'notifima' ) . '</p><p>{unsubscribe_footer}</p>',
             ),
             self::SUBSCRIBER_REPORT       => array(
                 'title'       => __( 'Subscriber report', 'notifima' ),

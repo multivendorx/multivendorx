@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-25T11:52:47+00:00\n"
+"POT-Creation-Date: 2026-11-27T13:30:29+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: notifima\n"
@@ -153,38 +153,38 @@ msgid "Subscription form"
 msgstr ""
 
 #. translators: %s: companion plugin slug, e.g. vulomail.
-#: classes/Integrations/PluginInstaller.php:191
+#: classes/Integrations/PluginInstaller.php:188
 #, php-format
 msgid "%s could not be installed."
 msgstr ""
 
 #. translators: %s: error message.
-#: classes/Integrations/VuloForm/Integration.php:47
+#: classes/Integrations/VuloForm/Integration.php:39
 #, php-format
 msgid "Notifima could not automatically install the VuloForm plugin needed for subscription forms: %s. Please install and activate \"VuloForm\" manually from the Plugins screen."
 msgstr ""
 
-#: classes/Integrations/VuloForm/Integration.php:79
+#: classes/Integrations/VuloForm/Integration.php:71
 msgid "VuloForm is deactivated. Notifima's subscription form will not render on the frontend until you reactivate it."
 msgstr ""
 
-#: classes/Integrations/VuloForm/Integration.php:108
+#: classes/Integrations/VuloForm/Integration.php:100
 msgid "Before you deactivate VuloForm, please note:"
 msgstr ""
 
-#: classes/Integrations/VuloForm/Integration.php:109
+#: classes/Integrations/VuloForm/Integration.php:101
 msgid "The back-in-stock subscription form on your out-of-stock product pages is powered by VuloForm. If you deactivate it, this form will no longer be displayed, and customers will not be able to subscribe to back-in-stock notifications."
 msgstr ""
 
-#: classes/Integrations/VuloForm/Integration.php:110
+#: classes/Integrations/VuloForm/Integration.php:102
 msgid "Do you still want to proceed with deactivating VuloForm?"
 msgstr ""
 
-#: classes/Integrations/VuloForm/Integration.php:111
+#: classes/Integrations/VuloForm/Integration.php:103
 msgid "Cancel"
 msgstr ""
 
-#: classes/Integrations/VuloForm/Integration.php:112
+#: classes/Integrations/VuloForm/Integration.php:104
 msgid "Deactivate anyway"
 msgstr ""
 
@@ -457,7 +457,7 @@ msgid_plural "Unsubscribed <span class=\"count\">( %s )</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: classes/Subscriber.php:591
+#: classes/Subscriber.php:603
 msgid "Notifima Retry Interval"
 msgstr ""
 
