@@ -271,11 +271,13 @@ const RegistrationForm = () => {
 						/>
 					)}
 
-					<div className="multivendorxstep-actions">
-						<button onClick={goToNextStep}>
-							{__('Continue to Store Details', 'multivendorx')}
-						</button>
-					</div>
+					{registrationForm.is_user_logged_in && (
+						<div className="multivendorxstep-actions">
+							<button onClick={goToNextStep}>
+								{__('Continue to Store Details', 'multivendorx')}
+							</button>
+						</div>
+					)}
 				</div>
 			)}
 
