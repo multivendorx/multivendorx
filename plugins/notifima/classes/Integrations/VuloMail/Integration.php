@@ -27,7 +27,30 @@ class Integration {
     public static function send( $name, $to, array $tags, $headers = '' ) {
         $default = Templates::defaults()[ $name ] ?? null;
 
-        if ( ! $default || ! $to ) {
+        if ( ! $default ) {
+            return false;
+        }
+
+        return self::send_template( $name, $default, $to, $tags, $headers );
+    }
+
+    /**
+     * Shared by this class and Notifima Pro's `VuloMail\Mailer::send()` -- the only things that
+     * differ between a free and a Pro transactional email are which `Templates::defaults()` the
+     * fallback subject/content comes from (each plugin keeps its own) and the `$source` tag
+     * passed to `vulomail_send_email()`; everything else (VuloMail registry override, tag
+     * substitution, the `wp_mail()` fallback) is identical and lives here once.
+     *
+     * @param string $name    `plugin/name` registered in the caller's `Templates::defaults()`.
+     * @param array  $default `['subject' => ..., 'content' => ...]`, the caller's own fallback.
+     * @param string $to      Recipient(s) -- a single address, or a comma-separated string for more than one.
+     * @param array  $tags    `{tag}` => replacement value, applied to both subject and content.
+     * @param string $headers Optional extra headers (e.g. a `Cc:` line), same format `wp_mail()` accepts.
+     * @param string $source  Passed to `vulomail_send_email()` to identify which plugin sent it.
+     * @return bool Whether the email was sent.
+     */
+    public static function send_template( $name, array $default, $to, array $tags, $headers = '', $source = 'notifima' ) {
+        if ( ! $to ) {
             return false;
         }
 
@@ -53,7 +76,7 @@ class Integration {
                     'subject' => $subject,
                     'message' => $content,
                     'headers' => $headers,
-                    'source'  => 'notifima',
+                    'source'  => $source,
                 )
             );
 

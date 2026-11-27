@@ -81,14 +81,23 @@ class Migration {
     public static function ensure_form() {
         $form_id = (int) MultiVendorX()->setting->get_setting( 'vuloform_store_registration_form_id', 0 );
 
-        if ( $form_id && vuloform_get_form( $form_id ) ) {
-            return $form_id;
+        if ( $form_id ) {
+            $form = vuloform_get_form( $form_id );
+
+            if ( $form ) {
+                self::ensure_login_field( $form_id, $form );
+                return $form_id;
+            }
         }
 
         $old_fields = self::old_fields();
 
         if ( $old_fields ) {
-            $schema  = self::schema_from_old_fields( $old_fields, __( 'Register your store', 'multivendorx' ) );
+            $schema  = self::schema_from_old_fields(
+                $old_fields,
+                __( 'Register your store', 'multivendorx' ),
+                array( Templates::locked_login_field() )
+            );
             $form_id = (int) VuloForm()->forms->create( __( 'Store registration form', 'multivendorx' ), $schema, 'published' );
         } else {
             $form_id = self::create_default_form();
@@ -103,6 +112,52 @@ class Migration {
         }
 
         return $form_id;
+    }
+
+    /**
+     * Backfills a store registration form that already existed before the locked "account status"
+     * field (and its builder-lock, keyed on `settings.template`) were introduced -- a site that
+     * configured its registration form id before this version never gets either automatically just
+     * because `Templates::fields()`/`add_templates()` changed, since `ensure_form()` only builds a
+     * schema from scratch when no form id is configured yet. Runs every time (each check is itself
+     * the gate: nothing to do once both are already in place), same as
+     * `Integration::ensure_login_field_present()` does for builder saves going forward.
+     *
+     * @param int   $form_id Existing form id.
+     * @param array $form    `vuloform_get_form( $form_id )` result ({id, title, status, schema, ...}).
+     * @return void
+     */
+    private static function ensure_login_field( $form_id, array $form ) {
+        $schema  = $form['schema'];
+        $changed = false;
+
+        $has_login_field = false;
+
+        foreach ( (array) ( $schema['fields'] ?? array() ) as $field ) {
+            if ( Templates::LOGIN_FIELD_KEY === ( $field['key'] ?? '' ) ) {
+                $has_login_field = true;
+                break;
+            }
+        }
+
+        if ( ! $has_login_field ) {
+            $fields = (array) ( $schema['fields'] ?? array() );
+            array_unshift( $fields, Templates::locked_login_field() );
+            $schema['fields'] = $fields;
+            $changed          = true;
+        }
+
+        // Needed for `Integration::lock_login_field()`'s builder lock (zyra's `lockOf()`) to find
+        // this form -- without it VuloForm's `Templates::all()` has no chance to set it, since this
+        // form wasn't (re)created from the template after `'plugin' => 'multivendorx'` was added.
+        if ( Templates::TEMPLATE_ID !== ( $schema['settings']['template'] ?? '' ) ) {
+            $schema['settings']['template'] = Templates::TEMPLATE_ID;
+            $changed                        = true;
+        }
+
+        if ( $changed ) {
+            VuloForm()->forms->update( $form_id, array( 'schema' => $schema ) );
+        }
     }
 
     /**
@@ -147,12 +202,13 @@ class Migration {
      *
      * @param array  $old_fields   The old `formfieldlist` array.
      * @param string $submit_label Fallback submit button label (a 'button' entry overrides it).
-     * @param array  $extra_fields Infrastructure fields the caller wants appended as-is, since
-     *                             the legacy field list never had anything equivalent to convert.
+     * @param array  $extra_fields Infrastructure fields the caller wants prepended as-is (ahead of
+     *                             the migrated fields), since the legacy field list never had
+     *                             anything equivalent to convert.
      * @return array Sanitized VuloForm schema ({version, fields, settings}).
      */
     private static function schema_from_old_fields( array $old_fields, $submit_label, array $extra_fields = array() ) {
-        $fields = array();
+        $fields = $extra_fields;
 
         foreach ( $old_fields as $old_field ) {
             $type = (string) ( $old_field['type'] ?? '' );
@@ -179,10 +235,6 @@ class Migration {
             }
 
             $fields[] = self::mapped_field( $old_field, $type );
-        }
-
-        foreach ( $extra_fields as $extra_field ) {
-            $fields[] = $extra_field;
         }
 
         $settings                    = \VuloForm\Forms\Schema::default_settings();

@@ -115,7 +115,6 @@ declare global {
 		nonce: string;
 		/** The configured VuloForm form id, 0 when none is set. */
 		vuloform_form_id: number;
-		content_before_form: string;
 		content_after_form: string;
 		is_user_logged_in: boolean;
 		dashboard_redirect_url: string;
