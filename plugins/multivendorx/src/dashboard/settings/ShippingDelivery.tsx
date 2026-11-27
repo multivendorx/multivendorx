@@ -364,13 +364,17 @@ const ShippingDelivery = () => {
 								'shipping_by_distance' &&
 								selectedMethodExists && (
 									<>
-										<SectionComponent
+										<SettingsGroup
+											icon="dollar"
 											title={__(
 												'Distance-wise Shipping Configuration',
 												'multivendorx'
 											)}
-										/>
-
+											desc={__(
+												"Manage your store's shipping rate per delivery distance.",
+												'multivendorx'
+											)}
+										>
 										{/* Default Cost */}
 										<FormGroupComponent
 											row
@@ -574,6 +578,7 @@ const ShippingDelivery = () => {
 												}}
 											/>
 										</FormGroupComponent>
+										</SettingsGroup>
 									</>
 								)}
 						</>

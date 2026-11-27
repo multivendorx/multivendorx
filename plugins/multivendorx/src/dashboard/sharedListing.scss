@@ -31,8 +31,43 @@
             cursor: pointer;
         }
 
+        // design-system.scss has this same icon-left, flat-field pattern, but it's scoped to
+        // #admin-main-wrapper (the WP-admin MultiVendorX screens) -- this screen renders in the
+        // vendor-facing store dashboard, which doesn't get that scope, so it needs its own copy.
+        .search-field {
+            display: flex;
+            align-items: stretch;
+            box-sizing: border-box;
+            overflow: hidden;
+            border: $border-light-small;
+            border-radius: $border-radius-small;
+            background: $background-white;
+            transition: border-color 0.15s;
+
+            &:focus-within {
+                border-color: $theme-color;
+            }
+        }
+
         .search-section {
+            display: flex;
+            flex: 1 1 auto;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 0;
             width: 100%;
+            padding: 0 0.75rem;
+        }
+
+        .adminfont-search {
+            order: -1;
+            padding: 0;
+            color: $sub-text-color;
+            font-size: 1rem;
+        }
+
+        .search-field:focus-within .adminfont-search {
+            color: $theme-color;
         }
     }
 

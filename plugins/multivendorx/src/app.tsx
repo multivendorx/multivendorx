@@ -1,6 +1,6 @@
 /* global appLocalizer */
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { Component as ReactComponent, useEffect, useState } from 'react';
 import { FormGroupComponent, FormGroupWrapperComponent, PopupComponent, NoticeComponent, TourComponent, HeaderComponent } from '@zyra/components';
 import { TaskExecutorInput } from '@zyra/inputs';
 
@@ -122,14 +122,51 @@ const Route = () => {
 	}
 
 	return (
-		<Component
-			id={tab}
-			location={location}
-			navigate={navigate}
-			Link={Link}
-		/>
+		<RouteErrorBoundary tab={tab}>
+			<Component
+				id={tab}
+				location={location}
+				navigate={navigate}
+				Link={Link}
+			/>
+		</RouteErrorBoundary>
 	);
 };
+
+// A route component throwing during render otherwise unmounts the whole admin app with no
+// fallback (no error boundary existed anywhere in this tree), showing a blank white screen with
+// the real exception only visible in the browser console. This surfaces it on the page instead.
+class RouteErrorBoundary extends ReactComponent<
+	{ tab: string; children: React.ReactNode },
+	{ error: Error | null }
+> {
+	constructor(props) {
+		super(props);
+		this.state = { error: null };
+	}
+
+	static getDerivedStateFromError(error: Error) {
+		return { error };
+	}
+
+	componentDidCatch(error: Error, info: { componentStack: string }) {
+		console.error(`MultiVendorX: "${this.props.tab}" tab failed to render`, error, info.componentStack);
+	}
+
+	render() {
+		if (this.state.error) {
+			return (
+				<div style={{ padding: '2rem', whiteSpace: 'pre-wrap' }}>
+					<h2>{__('Something went wrong loading this page.', 'multivendorx')}</h2>
+					<p>{String(this.state.error?.message || this.state.error)}</p>
+					<p>{__('Check the browser console for the full error.', 'multivendorx')}</p>
+				</div>
+			);
+		}
+
+		return this.props.children;
+	}
+}
 
 const App = () => {
 	const currentTabParams = new URLSearchParams(useLocation().hash);

@@ -96,7 +96,7 @@ jQuery(document).ready(function ($) {
 	}
 
 	// Submit Review
-	$('#review_submit').on('click', function (e) {
+	$(document).on('click', '#review_submit', function (e) {
 		e.preventDefault();
 
 		// Clear previous messages

@@ -1,8 +1,9 @@
 /* global jQuery */
 
-jQuery(document).ready(function ($) {
-	$('.multivendorx-policies-accordion .accordion-header').on(
+(function ($) {
+	$(document).on(
 		'click',
+		'.multivendorx-policies-accordion .accordion-header',
 		function () {
 			var $currentItem = $(this).closest('.accordion-item');
 			var $currentBody = $currentItem.find('.accordion-body');
@@ -16,4 +17,4 @@ jQuery(document).ready(function ($) {
 	$(
 		'.multivendorx-policies-accordion .accordion-item:first .accordion-body'
 	).slideDown(0);
-});
+})(jQuery);
