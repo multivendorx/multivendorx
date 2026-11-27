@@ -33,9 +33,10 @@ type StoreData = {
  * The form itself is now built and rendered in VuloForm -- actually registering/updating the
  * store happens server-side (`MultiVendorX\Integrations\VuloForm\Integration::maybe_register_store()`,
  * hooked on `vuloform_submission_created`) once VuloForm accepts the submission, reusing the
- * existing `multivendorx/v1/stores` REST route as-is. This component just handles the step
- * wizard UI around it, the store picker (for a vendor who already has one, re-editing it), and
- * prefilling the embed with that vendor's existing data.
+ * existing `multivendorx/v1/stores` REST route as-is. This component renders the account/login
+ * status and store picker (for a vendor who already has one, re-editing it) as a single page,
+ * directly above the embed, instead of as a separate wizard step, and prefills the embed with
+ * that vendor's existing data.
  */
 const RegistrationForm = () => {
 	const [stores, setStores] = useState<StoreOption[]>([]);
@@ -45,16 +46,6 @@ const RegistrationForm = () => {
 	const [inputs, setInputs] = useState<RegistrationResponse | null>(null);
 	const [allStoreData, setAllStoreData] = useState<StoreData[]>([]);
 	const [storeData, setStoreData] = useState<StoreData | null>(null);
-
-	// Step wizard state
-	const [currentStep, setCurrentStep] = useState<1 | 2>(1);
-	const [step1Completed, setStep1Completed] = useState<boolean>(false);
-
-	const hasBeforeFormContent =
-		registrationForm.content_before_form &&
-		registrationForm.content_before_form.trim().length > 0;
-	const hasStoreSelector = stores.length > 0;
-	const shouldShowStep1 = hasBeforeFormContent || hasStoreSelector;
 
 	useEffect(() => {
 		axios({
@@ -100,12 +91,6 @@ const RegistrationForm = () => {
 					}
 				}
 			}
-
-			// Auto-complete step 1 if there's nothing to show.
-			if (!hasBeforeFormContent && storeList.length === 0) {
-				setStep1Completed(true);
-				setCurrentStep(2);
-			}
 		});
 	}, []);
 
@@ -117,14 +102,6 @@ const RegistrationForm = () => {
 			(item) => String(item.id) === String(val)
 		);
 		setStoreData(dataMatch || null);
-	};
-
-	const goToNextStep = () => {
-		if (currentStep === 1 && shouldShowStep1) {
-			setStep1Completed(true);
-			setCurrentStep(2);
-			window.scrollTo({ top: 0, behavior: 'smooth' });
-		}
 	};
 
 	// VuloForm's script swaps the <form> for a `.vuloform-message--success` node on success --
@@ -186,134 +163,30 @@ const RegistrationForm = () => {
 		</div>
 	);
 
-	// If there's no step 1 content, just show the form directly.
-	if (!shouldShowStep1) {
-		return (
-			<div className="woocommerce">
-				{storeSelector}
-				{form}
+	// Single page: the store picker, then the VuloForm embed, which now renders the
+	// account/login status itself as the locked first field of its own schema
+	// (Templates::locked_login_field()) -- no step wizard, no page break, no separate
+	// content_before_form render here.
+	return (
+		<div className="multivendorxregistration-page">
+			{stores.length > 0 && (
+				<div className="multivendorxstore-selector-section">
+					<h3>{__('Select Your Store', 'multivendorx')}</h3>
+					{storeSelector}
+				</div>
+			)}
+
+			{form}
+
+			{registrationForm.content_after_form && (
 				<div
+					className="multivendorxafter-form-content"
 					dangerouslySetInnerHTML={{
 						__html: registrationForm.content_after_form,
 					}}
 				/>
-			</div>
-		);
-	}
-
-	return (
-		<>
-			<div className="multivendorxstep-wizard">
-				<div className="multivendorxsteps-container">
-					<div
-						className={`multivendorxstep-item ${currentStep === 1 ? 'active' : ''} ${step1Completed ? 'completed' : ''}`}
-						onClick={() =>
-							currentStep === 2 && setCurrentStep(1)
-						}
-					>
-						<div className="multivendorxstep-number">
-							{step1Completed ? (
-								<svg
-									width="16"
-									height="16"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="3"
-								>
-									<polyline points="20 6 9 17 4 12"></polyline>
-								</svg>
-							) : (
-								<span>1</span>
-							)}
-						</div>
-						<h4 className="multivendorxstep-label">
-							{__('Account', 'multivendorx')}
-						</h4>
-					</div>
-
-					<div className="multivendorx-step-divider"></div>
-
-					<div
-						className={`multivendorxstep-item ${currentStep === 2 ? 'active' : ''}`}
-					>
-						<div className="multivendorxstep-number">
-							<span>2</span>
-						</div>
-						<h4 className="multivendorxstep-label">
-							{__('Store info', 'multivendorx')}
-						</h4>
-					</div>
-				</div>
-				<div className="multivendorxprogress-bar">
-					<div
-						className="multivendorxprogress-fill"
-						style={{ width: currentStep === 1 ? '50%' : '100%' }}
-					></div>
-				</div>
-			</div>
-
-			{currentStep === 1 && (
-				<div className="multivendorxstep-content multivendorxstep-1-content">
-					{stores.length > 0 && (
-						<div className="multivendorxstore-selector-section">
-							<h3>{__('Select Your Store', 'multivendorx')}</h3>
-							{storeSelector}
-						</div>
-					)}
-
-					{registrationForm.content_before_form && (
-						<div
-							className="multivendorxbefore-form-content"
-							dangerouslySetInnerHTML={{
-								__html: registrationForm.content_before_form,
-							}}
-						/>
-					)}
-
-					{registrationForm.is_user_logged_in && (
-						<div className="multivendorxstep-actions">
-							<button onClick={goToNextStep}>
-								{__('Continue to Store Details', 'multivendorx')}
-							</button>
-						</div>
-					)}
-				</div>
 			)}
-
-			{currentStep === 2 && (
-				<div className="multivendorxstep-content">
-					<div className="multivendorxform-header">
-						<p>Step 2 of 2</p>
-						<h3>{__('Tell us about your store', 'multivendorx')}</h3>
-						<p>
-							{__(
-								'This information will be reviewed by our team before your store goes live. Please fill it in accurately.',
-								'multivendorx'
-							)}
-						</p>
-					</div>
-
-					{stores.length > 0 && selectedStore && (
-						<div className="multivendorxselected-store-info">
-							<strong>{__('Selected Store:', 'multivendorx')}</strong>{' '}
-							{selectedStore.label}
-						</div>
-					)}
-
-					{form}
-
-					{registrationForm.content_after_form && (
-						<div
-							className="multivendorxafter-form-content"
-							dangerouslySetInnerHTML={{
-								__html: registrationForm.content_after_form,
-							}}
-						/>
-					)}
-				</div>
-			)}
-		</>
+		</div>
 	);
 };
 

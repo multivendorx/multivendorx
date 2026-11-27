@@ -51,6 +51,7 @@ class Frontend {
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
         // user information before registration.
         add_filter( 'multivendorx_add_content_before_form', array( $this, 'add_woocommerce_login_form' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'add_registration_login_form_script' ) );
 
         // Restrict media for store dashboard.
         add_filter( 'ajax_query_attachments_args', array( $this, 'multivendorx_restrict_store_media' ) );
@@ -681,9 +682,23 @@ class Frontend {
         </p>
 			<?php
 		} else {
+			ob_start();
+			wc_get_template( 'myaccount/form-login.php' );
+			$login_form = ob_get_clean();
+
+			// `wc_get_template( 'myaccount/form-login.php' )` renders a real `<form>`, but this whole
+			// block is itself content of one VuloForm field, inside VuloForm's own `<form>`
+			// (`LoginField::render()`) -- nested `<form>` elements are invalid HTML, and a browser's
+			// parser closes the OUTER form early as soon as it hits this inner form's closing tag, which
+			// breaks VuloForm's page-break/multi-page navigation (everything after that point, including
+			// further pages and the Prev/Next/Submit buttons, ends up outside the real form element).
+			// Unwrapped to a plain `.multivendorx-login-form` `<div>` instead --
+			// `self::add_registration_login_form_script()` is what makes clicking inside it still
+			// actually submit the login.
+			$login_form = (string) preg_replace( '/<form\b[^>]*>/i', '<div class="multivendorx-login-form">', $login_form, 1 );
+			$login_form = (string) preg_replace( '/<\/form>/i', '</div>', $login_form, 1 );
 			?>
 			<div class="multivendorx-registration woocommerce">
-            <p><?php esc_html_e( 'Step 1 of 2', 'multivendorx' ); ?></p>
             <h3><?php esc_html_e( 'Create your account', 'multivendorx' ); ?></h3>
             <p><?php esc_html_e( 'Start by setting up a free account. If you already have one, just sign in.', 'multivendorx' ); ?></p>
             <div class="multivendorx-tabs">
@@ -691,12 +706,34 @@ class Frontend {
                 <div class="multivendorx-tab" data-tab="register"><?php esc_html_e( 'New here? Sign up', 'multivendorx' ); ?></div>
             </div>
 
-            <?php wc_get_template( 'myaccount/form-login.php' ); ?>
+            <?php echo $login_form; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wc_get_template()'s own output, already escaped by that WooCommerce template; only the <form>/<div> wrapper tag is replaced above. ?>
         </div>
 			<?php
 		}
 
 		return ob_get_clean();
+	}
+
+	/**
+	 * Enqueues `public/js/registration-login-form.js` (built to
+	 * `assets/js/public/multivendorx-registration-login-form.min.js`, registered in
+	 * `FrontendScripts::register_frontend_scripts()`), which submits the account/login section's
+	 * WooCommerce login form (`add_woocommerce_login_form()`) on click, as a real, standalone
+	 * `<form>` it creates and submits itself.
+	 *
+	 * That section is rendered inside the store registration form's VuloForm embed
+	 * (`Integrations\VuloForm\LoginField::render()`), itself inside VuloForm's own `<form>` -- so
+	 * the WooCommerce login form can't keep its own native `<form>` tag there (nested `<form>`
+	 * elements are invalid HTML; a browser closes the OUTER form as soon as it hits the inner
+	 * one's closing tag, which breaks VuloForm's own page-break/multi-page navigation by orphaning
+	 * everything after that point outside the real form). `add_woocommerce_login_form()` already
+	 * unwraps it to a plain `.multivendorx-login-form` `<div>` for that reason; this script is what
+	 * makes clicking inside it still actually submit the login.
+	 *
+	 * @return void
+	 */
+	public function add_registration_login_form_script() {
+		FrontendScripts::enqueue_script( 'multivendorx-registration-login-form-script' );
 	}
 
     /**

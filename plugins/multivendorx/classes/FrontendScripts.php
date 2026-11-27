@@ -114,6 +114,10 @@ class FrontendScripts {
 					'src'  => $base_url . 'public/' . MULTIVENDORX_PLUGIN_SLUG . '-store-products.min.js',
 					'deps' => $common_deps,
 				),
+                'multivendorx-registration-login-form-script' => array(
+					'src'  => $base_url . 'public/' . MULTIVENDORX_PLUGIN_SLUG . '-registration-login-form.min.js',
+					'deps' => array(),
+				),
             )
         );
 
@@ -543,7 +547,6 @@ class FrontendScripts {
                     'use_rest'    => true,
                     'data'        => array(
                         'vuloform_form_id'    => (int) MultiVendorX()->setting->get_setting( 'vuloform_store_registration_form_id', 0 ),
-                        'content_before_form' => apply_filters( 'multivendorx_add_content_before_form', '' ),
                         'content_after_form'  => apply_filters( 'multivendorx_add_content_after_form', '' ),
                         'dashboard_redirect_url' => esc_url(
                             get_permalink( (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) )
@@ -555,7 +558,6 @@ class FrontendScripts {
                     'use_rest'    => true,
                     'data'        => array(
                         'vuloform_form_id'    => (int) MultiVendorX()->setting->get_setting( 'vuloform_store_registration_form_id', 0 ),
-                        'content_before_form' => apply_filters( 'multivendorx_add_content_before_form', '' ),
                         'content_after_form'  => apply_filters( 'multivendorx_add_content_after_form', '' ),
                         'is_user_logged_in'   => is_user_logged_in(),
                         'dashboard_redirect_url' => esc_url(

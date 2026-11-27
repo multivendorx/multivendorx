@@ -137,9 +137,10 @@ class Migration {
 
     /**
      * Maps the old block-builder field list shape ({id, type, label, required?, placeholder?,
-     * name, options?}) to a VuloForm form schema. CatalogX Pro keeps its own copy of this
-     * (`Integrations\VuloForm\Migration`) rather than depending on this one across the plugin
-     * boundary.
+     * name, options?}) to a VuloForm form schema. Shared with CatalogX Pro's wholesale-registration
+     * `Integrations\VuloForm\Migration::maybe_migrate()` -- the old block-builder field shape and
+     * the VuloForm schema it maps to are identical between the two, only the submit label, the
+     * created form's title, and the resulting form id's setting differ.
      *
      * @param array  $old_fields   The old `formfieldlist` array.
      * @param string $submit_label Fallback submit button label (a 'button' entry overrides it).
@@ -148,7 +149,7 @@ class Migration {
      *                             legacy field list never had anything equivalent to convert.
      * @return array Sanitized VuloForm schema ({version, fields, settings}).
      */
-    private static function schema_from_old_fields( array $old_fields, $submit_label, array $extra_fields = array() ) {
+    public static function schema_from_old_fields( array $old_fields, $submit_label, array $extra_fields = array() ) {
         $fields = array();
 
         foreach ( $old_fields as $old_field ) {
